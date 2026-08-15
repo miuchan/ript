@@ -35,7 +35,18 @@ Build the project with:
 lake build
 ```
 
-Run the focused executable example and assumption audit with:
+Before submitting a change, run the complete code-quality gate:
+
+```bash
+./scripts/quality-gate.sh
+```
+
+This verifies source hygiene, root-module coverage, a warning-free kernel build,
+Mathlib declaration lint, exact executable-example output, and the documented
+axiom allowlist. GitHub Actions runs the same checks for every pull request and
+every push to `main`.
+
+The focused executable example and assumption audit remain available with:
 
 ```bash
 lake env lean Ript/Examples/BitProcesses.lean

@@ -10,4 +10,5 @@ require mathlib from git
     "db584cd6d46c92f209a44c0f1c829460d327499d" -- v4.33.0
 
 @[default_target]
-lean_lib Ript
+lean_lib Ript where
+  moreLeanArgs := #["-DwarningAsError=true"]

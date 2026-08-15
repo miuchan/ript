@@ -1,22 +1,42 @@
-name: Lean
+name: Quality Gate
 
 on:
   push:
+    branches:
+      - main
   pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  quality:
+    name: Lean quality gate
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
-      - name: Reject proof placeholders
-        run: |
-          if git grep -n -E '\b(sorry|admit)\b|sorryAx|Lean\.trustCompiler' -- '*.lean'; then
-            exit 1
-          fi
-      - uses: leanprover/lean-action@v1
+      - name: Check out repository
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+
+      - name: Check source quality
+        run: ./scripts/check-source-quality.sh
+
+      - name: Build with pinned Lean and Mathlib
+        uses: leanprover/lean-action@38fbc41a8c28c4cbaec22d7f7de508ec2e7c0dd9 # v1.5.0
         with:
           build: true
+          mk_all-check: true
+
+      - name: Lint all declarations
+        run: lake env lean Ript/Audit/Lint.lean
+
+      - name: Verify executable examples
+        run: ./scripts/check-examples.sh
+
+      - name: Enforce axiom allowlist
+        run: ./scripts/check-axioms.sh

@@ -13,7 +13,7 @@ set_option autoImplicit false
 
 namespace Ript.Syntax
 
-open CategoryTheory
+open CategoryTheory MonoidalCategory
 
 universe u w
 
@@ -48,14 +48,14 @@ theorem normalForm_of {R : Type w} {signature : MonoidalSignature.{u, w} R}
 /-- The tensor unit normalizes to the empty list. -/
 @[simp]
 theorem normalForm_unit {R : Type w} {signature : MonoidalSignature.{u, w} R} :
-    normalForm (signature := signature) .unit = [] :=
+    normalForm (signature := signature) (𝟙_ (FreeMonoidalCategory signature.Wire)) = [] :=
   rfl
 
 /-- Tensor normalizes by concatenating the component normal forms. -/
 @[simp]
 theorem normalForm_tensor {R : Type w} {signature : MonoidalSignature.{u, w} R}
     (X Y : signature.Obj) :
-    normalForm (.tensor X Y) = normalForm X ++ normalForm Y :=
+    normalForm (X ⊗ Y) = normalForm X ++ normalForm Y :=
   rfl
 
 end MonoidalSignature
