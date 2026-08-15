@@ -22,14 +22,16 @@ finiaj distribuoj, kaj fidelan semantikan ponton al la mezurteoria kategorio
 ekzaktan plenumeblan finian Bayes-riskon, rimed-limigitan decidriskon kaj
 task-rilatan semantikan valoron. Ĝi ankaŭ enhavas kategoriojn de totalaj kaj
 eble malsukcesaj komputoj kun eksplicitaj paŝaj, demandaj, memoraj kaj pordegaj
-rimedoj. Finiaj kaŭzaj intervenoj, ĝeneralaj mezureblaj modeloj, la inversa
-Blackwell-teoremo, termodinamiko, kvantuma teorio kaj pli altaj kategorioj
-restas esplorvojoj.
+rimedoj. Ĝi nun ankaŭ enhavas plenumeblajn finiajn DAG-kaŭzajn modelojn,
+ekzaktajn mekanismojn kiuj legas nur gepatrojn, normaligitajn observajn kunajn
+distribuojn, malmolajn intervenojn kaj ekzaktan `FinStoch`-semantikon. Ĝeneralaj
+mezureblaj kaŭzaj modeloj, la inversa Blackwell-teoremo, termodinamiko,
+kvantuma teorio kaj pli altaj kategorioj restas esplorvojoj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–6 kaj la komputa parto de Etapo 7 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–7 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -277,6 +279,35 @@ partajn komputojn kaj konservas ĉiujn rimedkoordinatojn. Komuna tiphava
 demando/nego/gardilo-programo ruliĝas en ambaŭ modeloj kun `eval_cost_le` kaj
 plenumeblaj buĝetkontroloj.
 
+### 10. Finiaj DAG-kaŭzaj modeloj kaj malmolaj intervenoj
+
+`FiniteDAG n` uzas nodojn `Fin n` kaj rekte konservas topologian atestilon:
+ĉiu deklarita gepatro havas pli malgrandan indekson ol sia infano. La kanona
+ordo do estas plenumebla kaj pruvite sencikla; konstruado de kuna distribuo ne
+bezonas klasike elektitan topologian ordigon. Ĉiu finia DAG povas uzi la
+interfacon post elekto de topologia numerado ĉe sia limo.
+
+`FiniteCausalModel n Value` atribuas ekzaktan normaligitan mekanismon
+`FinDist Value` al ĉiu nodo. Mekanismo ricevas nur valorojn de siaj deklaritaj
+gepatroj. Ript multiplikas la lokajn kondiĉajn masojn laŭ topologia ordo,
+indukte pruvas normaligon de ĉiu prefikso, kaj ricevas plenumeblan kunan
+distribuon kiu plenumas la observan faktorigon.
+
+`Intervention` estas parta asigno de nodoj. `do(node = value)` anstataŭigas la
+lokan mekanismon per `FinDist.pure value`; ĝi ne estas difinita kiel kondiĉigo
+de la observa kuna distribuo. Ripeto de interveno estas idempotenta, kaj
+intervenoj kun disaj subtenoj komutas. Normaligo kaj faktorigo restas validaj
+post anstataŭigo. Ĉiu loka mekanismo fariĝas `FinStoch`-kanalo de gepatraj
+asignoj al noda valoro, kaj observaj kaj intervenaj kunaj distribuoj fariĝas
+ekzaktaj stokastaj statoj el `Object.unit`.
+
+La plenumebla dunoda ekzemplo havas justan Bulean kaŭzon kaj efikon kiu kopias
+ĝin. Observe, malkongruaj asignoj havas mason nul. Post `do(effect = true)`, la
+kaŭzo restas justa kaj la antaŭe neebla asigno `(false, true)` havas ekzaktan
+mason `1/2`. Tio distingas intervenon disde ordinara kondiĉigo per kontrolitaj
+datumoj. La unua modelo intence uzas komunan finian valortipon por ĉiuj nodoj;
+heterogenaj nodaj portantoj kaj ĝenerala do-kalkulo restas estontaj etendaĵoj.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -333,6 +364,15 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Computation.Partial.ofTotal_resource` | La total-al-parta funktoro konservas ĉiujn rimedojn. |
 | `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | Ĝenerala sintakskosta ĝusteco validas por la totala plenumilo. |
 | `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | La parta kontrolilo atestas la ekzaktan sintaksan buĝeton. |
+| `Ript.Models.Causal.FiniteDAG.acyclic` | La atestita gepatra rilato ne havas direktitan ciklon. |
+| `Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized` | Normaligitaj lokaj mekanismoj generas normaligitan topologian prefikson. |
+| `Ript.Models.Causal.FiniteCausalModel.observational_factorization` | Kuna maso ekzakte egalas la produton de gepatro-lokaj kondiĉaj masoj. |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_same` | Malmola interveno anstataŭigas la celan mekanismon per Dirac-distribuo. |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_idempotent` | Ripeti la saman intervenon ne plu ŝanĝas la modelon. |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint` | Intervenoj kun disaj subtenoj komutas. |
+| `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | Ĉiu malmole intervenita kuna distribuo restas normaligita. |
+| `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | Intervena stato faktoriĝas en neŝanĝitajn kondiĉojn kaj celajn Dirac-faktorojn. |
+| `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | La Bulea ĉena ekzemplo ekzakte distingas intervenon disde observado. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -355,7 +395,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 5 | Fidela finia-kanala ponto al Mathlib `Stoch` | **PROVED** |
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
-| 7, kaŭzeco | Finiaj DAG-mekanismoj kaj intervenoj | **OPEN RESEARCH** |
+| 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
 | 8–11 | Termikaj, kvantumaj, dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -372,12 +412,15 @@ La realigita modelsubteno estas intence mallarĝa:
 | Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | La Blackwell-ordo respektas `FinStoch`-produktojn; finiaj minimumoj, buĝetoj kaj task-rilata valoro |
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
+| Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
 Mathlib `Stoch`. La ekzakta finia decidtavolo ankaŭ havas kompilitajn teoremojn
-pri Blackwell, Bayes-risko, rimedoj kaj semantika valoro. La inversa finia
-Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj decidproblemoj,
+pri Blackwell, Bayes-risko, rimedoj kaj semantika valoro; la homogena finia
+DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
+finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
+decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, termika strukturo,
 kvantumaj kanaloj, univalenteco kaj pli altkategoria strukturo estas **ne
 realigitaj**. Vidu
@@ -423,6 +466,11 @@ flowchart LR
   TC --> PC["Option Kleisli parta kategorio"]
   TC --> CE["Komuna tiphava komputekzemplo"]
   PC --> CE
+  DAG["Topologie numerita finia DAG"] --> CM["Gepatro-lokaj ekzaktaj mekanismoj"]
+  CM --> OJ["Normaligita observa kuna distribuo"]
+  CM --> DO["Malmolaj mekanism-anstataŭigaj intervenoj"]
+  DO --> IS["Ekzaktaj intervenaj FinStoch-statoj"]
+  CK --> IS
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -431,8 +479,8 @@ flowchart LR
 | Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj kaj posttrakta simulado |
 | Plenumebla sintakso | `Ript.Syntax.*` | Tiphavaj esprimoj, rekursia kosto, derivoj |
 | Semantiko | `Ript.Semantics.*` | Interpretoj, interpretado, ĝusteco, kompleteco |
-| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, finia probablo, Blackwell-komparo kaj decidrisko |
-| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj kaj decidvaloroj |
+| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, probablo, Blackwell-decidoj, komputado kaj finiaj kaŭzaj mekanismoj |
+| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj, decidvaloroj kaj intervenoj |
 | Revizia surfaco | `Ript.Audit.*` | Deklar-lintado kaj raportado de kernaj aksiomoj |
 
 La sinsekva kerno restas memstare uzebla. La simetria monoida tavolo etendas ĝin
@@ -462,7 +510,8 @@ finiaj funkciospacoj, mezuroj kaj kategorioj. Rultempaj datumoj uzas eksplicitaj
 enumeradon kaj decideblan egalecon: finiaj kanaloj, riskoj, buĝetitaj riskoj kaj
 semantikaj valoroj estas plenumeblaj ekzaktaj `ℚ≥0`-datumoj. Nekomputebleco
 aperas nur ĉe la mezurteoria `Stoch`/semantika-Bayes-riska limo. Totalaj funkcioj,
-`Option`-malsukceso, rimedvektoroj kaj komputaj buĝetkontroloj estas plenumeblaj.
+`Option`-malsukceso, rimedvektoroj, komputaj buĝetkontroloj, finiaj kaŭzaj kunaj
+distribuoj kaj malmolaj intervenoj estas plenumeblaj.
 `AXIOMS.md` fiksas
 la efektivan rezulton por ĉiu teoremo per ekzakta komparo.
 
@@ -580,6 +629,13 @@ totala kaj `Option`-parta kategorioj, kalkulas la ekzaktan rimedvektoron
 `(paŝoj, demandoj, memoro, pordegoj) = (3, 1, 0, 1)`, ekzercas sukceson kaj
 malsukceson, kaj kontrolas ambaŭ buĝetojn. Sep `#eval decide` eligas `true`.
 
+`Ript/Examples/SimpleCausalModel.lean` rulas dunodan Bulean ĉenon. Justa radiko
+kaŭzas infanon kiu kopias ĝin, do observaj malkongruoj havas mason nul. La
+malmola interveno `do(effect = true)` anstataŭigas nur la infanan mekanismon:
+la supra radiko restas justa kaj `(false, true)` ricevas ekzaktan mason `1/2`.
+Kvin `#eval decide`-kontraktoj kontrolas normaligon, observan subtenon,
+ekskludon de kontraŭaj valoroj kaj supran invariadon.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -602,6 +658,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- aŭ, por rimed-konscia totala kaj parta komputado:
 import Ript.Models.Computation.Partial
+-- aŭ, por finiaj DAG-oj, malmolaj intervenoj kaj ekzaktaj stokastaj statoj:
+import Ript.Models.Causal.FinStoch
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -616,7 +674,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj kaj totalaj/partaj komputmodeloj |
+| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj kaj finiaj kaŭzaj modeloj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -656,9 +714,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    kanonan modelon kaj pruvan limon.
 6. **Trakti aksiomojn kiel versionitan API-surfacon.** Nova aksiomo en teoremo
    estas tuj kontroleraro, ne posta piednoto.
-7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo kaj la
-   ekzakta finia decidtavolo estas realigitaj; inversa prezento kaj ĝeneralaj
-   stokastaj, kaŭzaj, termikaj, kvantumaj kaj pli altaj tavoloj restas malfermaj.
+7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo, la
+   ekzakta finia decidtavolo kaj la homogena finia DAG-kaŭza tavolo estas
+   realigitaj; inversa prezento kaj ĝeneralaj stokastaj, kaŭzaj, termikaj,
+   kvantumaj kaj pli altaj tavoloj restas malfermaj.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -666,6 +725,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    redukto liveras kaj decidkvalitan limon kaj adician kostan supran limon.
 10. **Ne konfuzi formalan koston kun pasinta tempo.** Komputrimedoj estas
     semantikaj markoj kun pruvitaj kunmetleĝoj, ne rendimentaj asertoj.
+11. **Ne konfuzi intervenon kun kondiĉigo.** Malmola interveno anstataŭigas
+    lokan mekanismon antaŭ regeneri la kunan distribuon; observa kondiĉigo estas
+    aparta operacio kaj ne estas uzata kiel surogato.
 
 ## Vojmapo
 
@@ -695,14 +757,17 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Kvar-koordinata komputrimedo kaj ĝusta plenumebla buĝetkontrolilo
 - [x] Totalaj kaj `Option`-partaj kategorioj kun ekzaktaj sinsekvaj kaj paralelaj kostoj
 - [x] Produktaj bifunktoroj, interchange, rimed-konserva totala enigo kaj tiphava ekzemplo
+- [x] Topologie atestitaj finiaj DAG-oj kaj gepatro-lokaj ekzaktaj mekanismoj
+- [x] Normaligitaj observaj kunaj distribuoj, malmolaj intervenoj, intervenaj leĝoj kaj `FinStoch`-statoj
+- [x] Plenumebla Bulea kaŭza ĉeno kiu ekzakte distingas `do` disde observado
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
 
 - [ ] Semantike pravigitaj kopi- kaj forĵet-kapabloj ekster la finia stokasta modelo
 - [ ] Ĝenerala stokasta semantiko sur mezureblaj spacoj preter la finia diskreta bildo
-- [ ] Konveksa kaj kaŭza strukturo
-- [ ] Finiaj DAG-kaŭzaj mekanismoj, normaligita kuna distribuo kaj intervenoj
+- [ ] Ĝeneralaj konveksaj kaj kaŭzaj kapablo-interfacoj
+- [ ] Heterogenaj nodaj portantoj, ĝeneralaj mezureblaj kaŭzaj modeloj, kondiĉigo kaj do-kalkulaj etendaĵoj
 - [ ] Denaska monoida pakado por la totala kaj parta komputkategorioj
 - [ ] Inversa finia Blackwell--Sherman--Stein-prezenta teoremo
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
@@ -761,6 +826,11 @@ Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 La inversa finia Blackwell-prezenta teoremo kaj ĝenerala mezurebla decidteorio
 ankoraŭ ne estas pruvitaj.
+Ript ankaŭ subtenas topologie numeritajn finiajn DAG-ojn kun komuna finia
+valortipo, gepatro-lokajn ekzaktajn mekanismojn, normaligitajn observajn kunajn
+distribuojn, malmolajn intervenojn kaj ekzaktajn `FinStoch`-statojn.
+Heterogenaj portantoj, ĝeneralaj mezureblaj kaŭzaj modeloj, kondiĉiga API kaj
+kompleteco de do-kalkulo ankoraŭ ne estas realigitaj.
 
 ### Ĉu semantika valoro estas la sama kiel reciproka informo?
 

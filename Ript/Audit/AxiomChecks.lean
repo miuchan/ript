@@ -1,4 +1,5 @@
 import Ript.Examples.BitProcesses
+import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.StochasticBits
 import Ript.Models.Decision.SemanticValue
@@ -70,3 +71,12 @@ set_option autoImplicit false
 #print axioms Ript.Models.Computation.Partial.ofTotal_resource
 #print axioms Ript.Examples.SimpleComputation.total_interpreter_cost_sound
 #print axioms Ript.Examples.SimpleComputation.partial_budget_checker_sound
+#print axioms Ript.Models.Causal.FiniteDAG.acyclic
+#print axioms Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized
+#print axioms Ript.Models.Causal.FiniteCausalModel.observational_factorization
+#print axioms Ript.Models.Causal.FiniteCausalModel.intervene_same
+#print axioms Ript.Models.Causal.FiniteCausalModel.intervene_idempotent
+#print axioms Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint
+#print axioms Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization
+#print axioms Ript.Models.Causal.FiniteCausalModel.interventional_factorization
+#print axioms Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism
