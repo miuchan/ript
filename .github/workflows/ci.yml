@@ -1,0 +1,22 @@
+name: Lean
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Reject proof placeholders
+        run: |
+          if git grep -n -E '\b(sorry|admit)\b|sorryAx|Lean\.trustCompiler' -- '*.lean'; then
+            exit 1
+          fi
+      - uses: leanprover/lean-action@v1
+        with:
+          build: true
