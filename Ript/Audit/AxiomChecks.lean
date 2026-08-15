@@ -1,4 +1,5 @@
 import Ript.Examples.BitProcesses
+import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleThermalModel
@@ -88,3 +89,11 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free
 #print axioms Ript.Models.Thermal.Divergence.athermality_monotone
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
+#print axioms Ript.Models.Quantum.KrausRepresentation.map_posSemidef
+#print axioms Ript.Models.Quantum.KrausRepresentation.map_trace
+#print axioms Ript.Models.Quantum.KrausChannel.map_posSemidef
+#print axioms Ript.Models.Quantum.KrausChannel.map_trace
+#print axioms Ript.Models.Quantum.KrausChannel.identity_applyDensity
+#print axioms Ript.Models.Quantum.KrausChannel.comp_applyDensity
+#print axioms Ript.Examples.QubitChannel.bitFlipOperator_complete
+#print axioms Ript.Examples.QubitChannel.bitFlip_basisDensity

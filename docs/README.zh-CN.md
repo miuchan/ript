@@ -21,11 +21,13 @@ Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风
 有限 DAG 因果模型、只读取父节点的精确机制、归一化观测联合分布、硬干预及其精确
 `FinStoch` 语义。下一层还加入了带指定平衡分布的有限热系统、Gibbs-preserving 精确信道
 范畴及 tensor bifunctor、自由平衡态制备，以及通用 divergence 单调性。一般可测因果模型、
-Blackwell 反向表示定理、有限 KL 数据处理、由能量导出的 Gibbs 态、量子理论和高阶范畴仍是
-研究方向。
+Blackwell 反向表示定理、有限 KL 数据处理、由能量导出的 Gibbs 态仍是研究方向。Ript 现在还
+拥有一个与经典随机模型分离的有限维复数量子核心：正半定、迹为一的密度矩阵；由有限完备
+Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
+Pauli-X 量子比特证明。量子 tensor/丢弃、经典随机嵌入与高阶范畴仍是开放研究。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–8 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–8 与 Stage 9 的有限 Kraus 核心已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -261,6 +263,30 @@ divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较�
 未经证明宣称。具体有限 KL 及其 DPI、能量函数、温度、Gibbs 公式、自由能和 Landauer 型不等式
 仍是独立研究义务。
 
+### 12. 有限复密度矩阵与 Kraus 信道
+
+量子系统使用独立的有限基对象；它不是经典有限随机对象的别名，也不会自动继承经典复制。
+`DensityMatrix X` 是复矩阵 `ρ : Matrix X X ℂ`，同时携带 Mathlib 的算子正半定证明
+`ρ.PosSemidef` 与精确归一化 `trace ρ = 1`。这里是二次型意义上的正性，不是矩阵条目逐项非负。
+
+`KrausRepresentation X Y map` 给出有限个矩形算子 `Kᵢ : Matrix Y X ℂ`，证明精确公式
+
+```text
+map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
+```
+
+并认证 `∑ i, Kᵢᴴ Kᵢ = I`。Ript 用 `KρKᴴ` 对正半定性的封闭与有限求和证明正性保持，再用
+迹的循环性和完备方程证明迹保持。因此 `KrausChannel.applyDensity` 会把每个源密度矩阵构造成
+真正的目标密度矩阵。
+
+`KrausChannel` 直接存储操作映射，只把 Kraus 证书的存在性作命题截断。Kraus 表示并不唯一，
+所以信道相等性比较实际作用，而不是任意表示选择。单元素恒等族与全部乘积 `LⱼKᵢ` 分别证明
+恒等和串行复合封闭，最终形成范畴。量子比特示例证明 Pauli-X 满足 `XᴴX = I`，并精确交换两个
+计算基密度矩阵。
+
+当前切片尚未提供量子 tensor、作为信道的丢弃/迹、显式完全正性放大定理或经典随机信道嵌入。
+这些是明确列出的 Stage 9 扩展义务，而不是串行核心的隐含性质。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -332,6 +358,14 @@ divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较�
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | 每个指定平衡态都是自由制备。 |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | 每个带 DPI 的 divergence 都给出 Gibbs-preserving 热单调量。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
+| `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 每个有限 Kraus 和都保持复算子正性。 |
+| `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完备性蕴含精确迹保持。 |
+| `Ript.Models.Quantum.KrausChannel.map_posSemidef` | 每个已认证信道都保持正半定性。 |
+| `Ript.Models.Quantum.KrausChannel.map_trace` | 每个已认证信道都在任意矩阵上保持迹。 |
+| `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | 单元素恒等 Kraus 族固定每个密度矩阵。 |
+| `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | 复合信道演化等于依次演化密度矩阵。 |
+| `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X 满足 Kraus 完备方程 `XᴴX = I`。 |
+| `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X 交换两个计算基密度矩阵。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -353,7 +387,9 @@ divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较�
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
 | 8 | 有限平衡系统、Gibbs-preserving 过程与通用 divergence 单调性 | **PROVED** |
-| 9–11 | 量子、双范畴与单值层 | **OPEN RESEARCH** |
+| 9，有限 Kraus 核心 | 复密度矩阵、TP Kraus 信道、态保持与串行范畴 | **PROVED** |
+| 9，量子扩展 | tensor/丢弃、CP 放大定理与经典随机嵌入 | **OPEN RESEARCH** |
+| 10–11 | 双范畴与单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -371,14 +407,15 @@ divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较�
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
 | 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 可执行 | 指定精确平衡态；自由平衡态与通用 DPI 提升 |
+| 有限量子 Kraus 核心 | Kraus 范畴 | 否 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态与有限完备 Kraus 证书；尚无量子 tensor/丢弃 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
-量子信道，以及单值或高阶范畴结构都
-**尚未实现**。权威能力矩阵见
+量子 tensor/丢弃与经典嵌入，以及单值或高阶范畴结构都**尚未实现**。串行有限 Kraus 信道
+核心本身已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
 
@@ -429,6 +466,9 @@ flowchart LR
   CK --> GP["Gibbs-preserving 信道范畴"]
   TE --> GP
   GP --> TM["通用 divergence 热单调量"]
+  QB["复 PSD 迹一矩阵"] --> QK["有限完备 Kraus 证书"]
+  QK --> QC["迹保持 Kraus 信道范畴"]
+  QC --> QX["精确 Pauli-X 量子比特证明"]
 ```
 
 | 层 | 主要模块 | 职责 |
@@ -437,8 +477,8 @@ flowchart LR
 | 过程能力 | `Ript.Core.*` | 串行、张量、结构成本律与后处理模拟 |
 | 可执行语法 | `Ript.Syntax.*` | 带类型表达式、递归成本与推导 |
 | 语义 | `Ript.Semantics.*` | 解释、求值、可靠性与完备性 |
-| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 决策、计算、有限因果机制与有限热系统 |
-| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率、精确决策价值、干预与保持平衡的过程 |
+| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 决策、计算、有限因果、有限热系统与有限复 Kraus 信道 |
+| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率、精确决策价值、干预、保持平衡过程与量子基作用 |
 | 审计界面 | `Ript.Audit.*` | 声明 lint 与内核假设报告 |
 
 串行核心可以独立使用。对称幺半群层通过独立接口扩展它，而不会把张量假设强行塞入每个
@@ -577,6 +617,11 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 六个 `#eval decide` 契约检查精确归一化、信道条目、演化质量、自由态制备、积质量 `1/4` 和
 双翻转恒等过程。
 
+`Ript/Examples/QubitChannel.lean` 定义 Boolean 基量子比特、复 Pauli-X 矩阵与计算基纯密度矩阵。
+Lean 证明 `XᴴX = I`，把 Pauli-X 封装成单算子迹保持 Kraus 信道，并证明
+`X |b⟩⟨b| Xᴴ = |¬b⟩⟨¬b|`。两个 `#eval decide` 契约执行离散基标签作用；任意复矩阵相等性
+留在内核证明层，因为实数相等性不可计算判定。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -602,6 +647,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- 或者导入有限 Gibbs-preserving 过程与通用热单调量：
 import Ript.Models.Thermal.Monotone
+-- 或者导入复密度矩阵与迹保持 Kraus 信道：
+import Ript.Models.Quantum.Kraus
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -615,7 +662,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果与有限热模型 |
+| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果、有限热与有限量子模型 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -649,8 +696,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 5. **明确完备性的范围。**每项完备性结论都点名规范模型和证明边界。
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
 7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
-   平衡态的有限热层已经实现；反向表示、一般随机与因果、解析热力学、量子和高阶层仍必须
-   清楚标记为开放研究。
+   平衡态的有限热层与串行有限 Kraus 核心已经实现；反向表示、一般随机与因果、解析热力学、
+   量子 tensor/经典嵌入和高阶层仍必须清楚标记为开放研究。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -660,6 +707,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
     不能作为替代实现。
 12. **不偷渡热力学分析。**指定平衡态是操作性数据，通用 divergence 定理要求显式 DPI 证明；
     能量导出的 Gibbs 公式、KL 数据处理和自由能仍是明确列出的研究义务。
+13. **不把经典结构偷渡进量子系统。**量子基对象与 `FinStoch` 分离；Kraus 形式和完备性是显式
+    证书，而复制、tensor、丢弃与经典嵌入都需要独立证明。
 
 ## 路线图
 
@@ -694,6 +743,10 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] Gibbs-preserving 范畴、tensor bifunctor 与自由平衡态
 - [x] 带显式 DPI 前提的通用 divergence-to-thermal-monotone 定理
 - [x] 具有保持平衡翻转的可执行均匀热比特示例
+- [x] 复正半定、迹一密度矩阵
+- [x] 有限完备 Kraus 表示，以及正性和迹保持证明
+- [x] 外延 Kraus 信道的恒等、串行复合、范畴律与态演化
+- [x] 精确 Pauli-X 完备性与计算基态变换
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
@@ -709,7 +762,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [ ] 具体有限 KL divergence 与经过证明的数据处理不等式
 - [ ] 能量函数、逆温度、Gibbs 构造、自由能与 Landauer 界
-- [ ] 量子信道模型
+- [ ] 量子 tensor、丢弃/迹信道与幺半群定律
+- [ ] Kraus 映射的显式完全正性放大定理
+- [ ] 有限经典随机信道到量子层的嵌入
 - [ ] 严格隔离的单价或高阶范畴层
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
@@ -748,7 +803,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复合、tensor、Dirac、复制与丢弃，
 并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。项目还给出了到 Mathlib 测度论
 范畴 `Stoch` 的 faithful 函子，在规范比较同构下保持确定性信道与 tensor。任意可测空间上的
-随机模型和量子信道仍属于路线图。Ript 现在也支持带指定精确平衡分布的有限系统、
+随机模型仍属于路线图。Ript 现在也有有限复数量子核心：密度矩阵正半定且迹为一，信道携带
+有限完备 Kraus 证书；正性保持、迹保持、恒等、复合、范畴律、密度态演化及 Pauli-X 量子比特
+例子都已证明。量子 tensor/丢弃、显式 CP 放大定理和经典随机嵌入仍属于路线图。Ript 也支持带指定精确平衡分布的有限系统、
 Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence 提供已证明 DPI 时的通用
 热单调性；但尚未从能量导出平衡态，也没有有限 KL 与自由能定理。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
