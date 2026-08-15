@@ -14,11 +14,11 @@ Ript 形式化了 **Resource-Indexed Information Process Theory（资源索引�
 的一组小而严谨的核心结构：带类型的过程、可组合的资源上界、可执行的解释、显式的等式
 推导，以及通过规范项模型建立的相对完备性。
 
-本项目严格按层推进。目前已经包含一个精确、可执行的有限随机模型；测度论概率、决策论、
-热力学、量子理论和高阶范畴仍是研究方向，而不是当前能力。
+本项目严格按层推进。目前已经包含精确、可执行的有限随机模型及其有限分布 Kleisli 表示；
+测度论概率、决策论、热力学、量子理论和高阶范畴仍是研究方向，而不是当前能力。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–3 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–4 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -133,6 +133,17 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 数据，因此通用带类型求值器可以直接运行公平硬币和带噪布尔信道，不使用浮点近似。复制与
 丢弃是显式 Dirac 信道，`comp_discard` 为每个归一化有限信道证明因果丢弃律。
 
+### 6. 有限分布 Kleisli 表示
+
+`FinDist X` 封装精确的归一化质量函数 `X → ℚ≥0`。可执行的 `pure` 与 `bind` 已证明满足
+左单位律、右单位律和结合律。把 Kleisli 对象限制为与 `FinStoch` 相同的可执行有限载体后，
+态射就是 `X → FinDist Y`，并确实构成一个范畴。
+
+显式的行/矩阵转换给出两个方向的函子。两个态射转换都被证明互逆，对象对应是定义性的，
+`kleisliEquivalence` 将相应自然同构封装为范畴等价。这里的限制是必要的：有限载体上的所有
+有理概率分布通常仍构成无限集合，因此不会闭合在 Mathlib 无限制 `CategoryTheory.Kleisli`
+所要求的有限载体基范畴中。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -160,6 +171,12 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | Dirac 嵌入保持确定性复合。 |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | 不同确定性函数产生不同 Dirac 信道。 |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | 每个归一化有限信道都满足因果丢弃律。 |
+| `Ript.Models.FiniteDistribution.FinDist.pure_bind` | 点分布是有限分布 bind 的左单位元。 |
+| `Ript.Models.FiniteDistribution.FinDist.bind_pure` | 点分布是有限分布 bind 的右单位元。 |
+| `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | 精确有限分布 bind 满足结合律。 |
+| `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | 矩阵到 Kleisli 的转换被反向转换逆转。 |
+| `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | Kleisli 到矩阵的转换被反向转换逆转。 |
+| `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` 等价于 `FinDist` 的有限载体 Kleisli 范畴。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -175,7 +192,7 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 | 1 | 串行资源过程核心 | **PROVED** |
 | 2 | 张量、对称性、并行资源与严格自由普遍提升 | **PROVED** |
 | 3 | 可执行的有限随机模型 | **PROVED** |
-| 4 | 有限分布的 Kleisli 表示 | **OPEN RESEARCH** |
+| 4 | 有限分布的 Kleisli 表示 | **PROVED** |
 | 5–11 | 后续语义模型与高阶层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -187,6 +204,7 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 | 串行项模型 | 是 | 否 | 证明层 | 按显式范畴推导取商 |
 | 对称幺半群项模型 | 是 | 是 | 证明层 | 按显式幺半群推导取商 |
 | 精确有限随机信道 | 是 | 是 | 可执行 | 归一化 `ℚ≥0` 矩阵、Dirac、复制与丢弃 |
+| 有限分布 Kleisli 范畴 | 是 | 否 | 可执行 | 精确 `pure`/`bind`，与 `FinStoch` 范畴等价 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律。通用凸结构、测度论随机语义、
 热结构、量子信道，以及单价或高阶范畴结构都**尚未实现**。权威能力矩阵见
@@ -216,6 +234,9 @@ flowchart LR
   T --> U
   F["精确有限随机矩阵"] --> CK["Chapman–Kolmogorov 范畴"]
   CK --> EX["可执行的带类型解释"]
+  FD["精确 FinDist pure 与 bind"] --> KL["有限载体 Kleisli 范畴"]
+  CK <--> EQ["范畴等价"]
+  KL <--> EQ
 ```
 
 | 层 | 主要模块 | 职责 |
@@ -224,7 +245,7 @@ flowchart LR
 | 过程能力 | `Ript.Core.*` | 串行、张量和结构成本律 |
 | 可执行语法 | `Ript.Syntax.*` | 带类型表达式、递归成本与推导 |
 | 语义 | `Ript.Semantics.*` | 解释、求值、可靠性与完备性 |
-| 具体模型 | `Ript.Models.*` | 有限函数、显式计量函数与精确有限随机信道 |
+| 具体模型 | `Ript.Models.*` | 有限函数、有限分布与精确有限随机信道 |
 | 可执行示例 | `Ript.Examples.*` | 计算行为、预算检查与有理概率 |
 | 审计界面 | `Ript.Audit.*` | 声明 lint 与内核假设报告 |
 
@@ -245,7 +266,7 @@ Ript 的目标是让证明信任可以检查，而不是隐含在工程习惯里
 - 未证明的研究主张只能进入 `CONJECTURES.md`，不能伪装成已完成定理进入命名空间。
 
 Stage 1 和 Stage 2 的旗舰审计只在必要处报告 Lean 的标准原则 `propext` 与
-`Quot.sound`。有限随机定理的证明还会通过 Mathlib 通用 `Fintype` 与有限和证明基础设施
+`Quot.sound`。有限随机和 Kleisli 表示定理的证明还会通过 Mathlib 通用 `Fintype` 与有限和证明基础设施
 报告 `Classical.choice`；运行时信道数据由显式、可计算的 `Fintype` 和 `DecidableEq` 提供，
 没有有限模型定义被标为 `noncomputable`，CI 会实际执行精确 `ℚ≥0` 示例。审计不含编译器
 信任逃逸或占位证明公理。
@@ -333,6 +354,10 @@ true
 
 CI 会精确比较这段输出，因此任何非预期的可执行行为变化都会使质量门禁失败。
 
+`Ript/Examples/StochasticBits.lean` 另外执行公平硬币、带噪否定、独立 tensor、复制和通用带类型
+解释器，五个精确检查全部输出 `true`。`Ript/Examples/KleisliBits.lean` 继续执行点分布、Kleisli
+bind、双向矩阵转换和范畴等价中的函子，四个检查也全部输出 `true`。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -361,7 +386,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 具体的有限确定性模型 |
+| [`Ript/Models/`](../Ript/Models/) | 有限确定性模型、有限分布与精确有限随机信道 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -412,12 +437,13 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 带类型的对称幺半群语法与结构重布线
 - [x] 幺半群可靠性与项模型相对完备性
 - [x] 精确有限随机范畴、tensor bifunctor、Dirac 嵌入、复制、丢弃和带类型示例
+- [x] 精确有限分布、Kleisli 范畴、双向比较函子与范畴等价
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
 ### 开放研究方向
 
-- [ ] 有限分布 Kleisli 表示与比较结果
+- [ ] 将精确有限随机信道桥接到 Mathlib 的测度论 `Stoch`
 - [ ] 将复制/丢弃能力接口推广到有限随机模型以外
 - [ ] 凸结构与因果结构
 - [ ] 热力学与资源理论模型
@@ -457,8 +483,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 
 ### Ript 已经支持概率或量子信道了吗？
 
-Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复合、tensor、Dirac、复制与丢弃。
-Kleisli 表示、一般测度论概率、热模型和量子信道仍属于路线图。
+Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复合、tensor、Dirac、复制与丢弃，
+并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。一般测度论概率、热模型和量子信道
+仍属于路线图。
 
 ### 幺半群层是否自动带来复制或丢弃？
 

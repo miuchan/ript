@@ -1,5 +1,6 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.StochasticBits
+import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Resource.ParallelBudget
 import Ript.Semantics.Completeness
 import Ript.Semantics.MonoidalCompleteness
@@ -38,3 +39,9 @@ set_option autoImplicit false
 #print axioms Ript.Models.FiniteStochastic.FinStoch.dirac_comp
 #print axioms Ript.Models.FiniteStochastic.FinStoch.dirac_faithful
 #print axioms Ript.Models.FiniteStochastic.FinStoch.comp_discard
+#print axioms Ript.Models.FiniteDistribution.FinDist.pure_bind
+#print axioms Ript.Models.FiniteDistribution.FinDist.bind_pure
+#print axioms Ript.Models.FiniteDistribution.FinDist.bind_assoc
+#print axioms Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli
+#print axioms Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel
+#print axioms Ript.Models.FiniteStochastic.kleisliEquivalence

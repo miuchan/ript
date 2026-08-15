@@ -49,6 +49,12 @@ flowchart LR
   FiniteStochastic --> StochasticBits["Examples.StochasticBits"]
   Eval --> StochasticBits
   StochasticBits --> Audit
+  FiniteStochastic --> FiniteDistribution["Models.FiniteDistribution"]
+  FiniteDistribution --> FiniteKleisli["Models.FiniteStochastic.Kleisli"]
+  FiniteStochastic --> FiniteKleisli
+  FiniteKleisli --> KleisliBits["Examples.KleisliBits"]
+  StochasticBits --> KleisliBits
+  FiniteKleisli --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -61,7 +67,7 @@ Every node in this graph is an existing compiled module.
 | 1 | Sequential resource-process vertical slice | PROVED |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | PROVED |
 | 3 | Executable finite stochastic model | PROVED |
-| 4 | Finite-distribution Kleisli representation | OPEN_RESEARCH |
+| 4 | Finite-distribution Kleisli representation | PROVED |
 | 5-11 | Semantic models and higher layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
@@ -407,6 +413,143 @@ the channel definitions contain neither `noncomputable` nor `classical`.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/FiniteStochastic.lean`.
 
+## Stage-4 flagship theorem records
+
+Stage 4 represents normalized stochastic-matrix rows as exact finite
+distributions. Its Kleisli category is restricted to finite source and target
+carriers because the type of all rational distributions on a finite carrier is
+generally infinite and therefore is not closed in the finite-object category.
+
+### `Ript.Models.FiniteDistribution.FinDist.pure_bind`
+
+- Natural-language statement: substituting into a point distribution returns
+  the distribution selected at that point.
+- Lean type:
+
+  ```lean
+  theorem pure_bind (x : X) (f : X → FinDist Y) :
+      bind (pure x) f = f x
+  ```
+
+- Prerequisite definitions: exact normalized `FinDist`, executable `pure`, and
+  executable finite-sum `bind`.
+- Prerequisite lemmas: `Fintype.sum_ite_eq` and finite-sum simplification over
+  exact `ℚ≥0` values.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's finite-sum
+  infrastructure; `pure` and `bind` use explicit runtime finite data.
+- Computable: yes; both sides reduce to exact finite mass functions.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteDistribution.lean`.
+
+### `Ript.Models.FiniteDistribution.FinDist.bind_pure`
+
+- Natural-language statement: substituting point distributions into an exact
+  finite distribution leaves it unchanged.
+- Lean type:
+
+  ```lean
+  theorem bind_pure (p : FinDist X) : bind p pure = p
+  ```
+
+- Prerequisite definitions: `FinDist`, `pure`, and `bind`.
+- Prerequisite lemmas: finite-sum elimination for the single nonzero Dirac
+  entry and `FinDist.ext`.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's finite-sum
+  infrastructure; no choice produces a distribution value.
+- Computable: yes; the equality relates executable exact mass functions.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteDistribution.lean`.
+
+### `Ript.Models.FiniteDistribution.FinDist.bind_assoc`
+
+- Natural-language statement: nested exact finite-distribution substitution is
+  associative.
+- Lean type:
+
+  ```lean
+  theorem bind_assoc (p : FinDist W) (f : W → FinDist X)
+      (g : X → FinDist Y) :
+      bind (bind p f) g = bind p (fun w ↦ bind (f w) g)
+  ```
+
+- Prerequisite definitions: normalized `FinDist` and finite-sum `bind`.
+- Prerequisite lemmas: distributivity of multiplication over finite sums,
+  `Finset.sum_comm`, and associativity of multiplication in `ℚ≥0`.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's generic finite
+  summation; all substituted distributions remain executable.
+- Computable: yes; both sides execute as nested finite rational sums.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteDistribution.lean`.
+
+### `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli`
+
+- Natural-language statement: converting a stochastic matrix to its family of
+  row distributions and back recovers the original channel.
+- Lean type:
+
+  ```lean
+  theorem kleisliToChannel_channelToKleisli (f : FinStoch X Y) :
+      kleisliToChannel (channelToKleisli f) = f
+  ```
+
+- Prerequisite definitions: `channelToKleisli`, `kleisliToChannel`, `FinStoch`,
+  and `FinDist`.
+- Prerequisite lemmas: entrywise extensionality for `FinStoch`.
+- Status: `PROVED`.
+- Classical choice: yes in audited proof dependencies inherited from the
+  finite structures; the conversion functions are definitionally executable.
+- Computable: yes; every converted matrix entry is the original exact entry.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic/Kleisli.lean`.
+
+### `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel`
+
+- Natural-language statement: converting a finite-carrier Kleisli morphism to
+  a stochastic matrix and back recovers the original family of distributions.
+- Lean type:
+
+  ```lean
+  theorem channelToKleisli_kleisliToChannel (f : X → FinDist Y) :
+      channelToKleisli (kleisliToChannel f) = f
+  ```
+
+- Prerequisite definitions: both row/matrix conversions and finite-carrier
+  Kleisli morphisms.
+- Prerequisite lemmas: function extensionality and `FinDist.ext`.
+- Status: `PROVED`.
+- Classical choice: yes in audited proof dependencies; no choice is used to
+  calculate the converted distributions.
+- Computable: yes; conversion reduces entrywise.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic/Kleisli.lean`.
+
+### `Ript.Models.FiniteStochastic.kleisliEquivalence`
+
+- Natural-language statement: exact finite stochastic matrices are
+  categorically equivalent to finite-carrier Kleisli morphisms of exact finite
+  distributions.
+- Lean type:
+
+  ```lean
+  def kleisliEquivalence : Object ≌ Kleisli
+  ```
+
+- Prerequisite definitions: the finite-carrier Kleisli category,
+  `toKleisli`, `fromKleisli`, `unitIso`, and `counitIso`.
+- Prerequisite lemmas: the three `FinDist` laws, both conversion inverse
+  theorems, and the ordinary category laws.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through finite sums and
+  Mathlib's categorical equivalence infrastructure; the packaged functors map
+  morphisms by executable conversions.
+- Computable: the two functors and their morphism maps are executable; the
+  natural isomorphisms and equivalence laws are proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic/Kleisli.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -433,3 +576,11 @@ the channel definitions contain neither `noncomputable` nor `classical`.
 8. Stage 3 provides an actual category, an independent-product bifunctor, and
    a faithful deterministic Dirac functor. It does not claim a measure-theoretic
    probability monad or generic convex interface; those require later stages.
+9. `FinDist` is a normalized mass function over an explicitly finite carrier.
+   Its `pure` and `bind` operations are executable and prove the monad laws,
+   while the corresponding Kleisli category keeps only finite carriers as
+   objects. This is the precise closure boundary for the representation.
+10. The Stage-4 result is a category equivalence with explicit functors and
+    natural isomorphisms. Tensor, copy, and discard can be transported along
+    the equivalence, but are not marked as native Kleisli capabilities until
+    their operations and laws receive a dedicated compiled interface.
