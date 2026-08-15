@@ -1,5 +1,5 @@
 import Mathlib.Tactic.NormNum
-import Ript.Models.Quantum.Kraus
+import Ript.Models.Quantum.Discard
 
 /-!
 # Exact one-qubit Kraus example
@@ -61,6 +61,20 @@ theorem bitFlip_basisDensity (value : Bool) :
     simp [bitFlip, KrausChannel.ofOperators, bitFlipOperator,
       basisDensity, Matrix.mul_apply,
       Matrix.conjTranspose_apply, Matrix.diagonal_apply]
+
+/-- Two independent Pauli-X channels exchange both computational-basis bits. -/
+theorem bitFlip_tensor_basisDensity (left right : Bool) :
+    (KrausChannel.tensor bitFlip bitFlip).applyDensity
+        ((basisDensity left).tensor (basisDensity right)) =
+      (basisDensity (!left)).tensor (basisDensity (!right)) := by
+  rw [KrausChannel.tensor_applyDensity, bitFlip_basisDensity,
+    bitFlip_basisDensity]
+
+/-- Discarding either computational-basis state returns its unit trace. -/
+theorem discard_basisDensity (value : Bool) :
+    (KrausChannel.discard qubit).map (basisDensity value).matrix
+        PUnit.unit PUnit.unit = 1 := by
+  rw [KrausChannel.discard_map_entry, (basisDensity value).trace_one]
 
 /-- Executable action of Pauli-X on computational-basis labels. -/
 def bitFlipBasisLabel (value : Bool) : Bool :=

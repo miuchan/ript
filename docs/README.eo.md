@@ -34,8 +34,9 @@ Ript nun ankaŭ havas apartan fini-dimensian kompleksan kvantuman kernon:
 pozitivajn duondifinajn densmatricojn kun spuro unu, operaciajn mapojn
 atestitajn per finiaj kompletaj Kraus-familioj, pruvitan konservon de pozitiveco
 kaj spuro, fermitecon sub idento kaj sinsekva kunmeto, kanalkategorion kaj
-ekzaktan Pauli-X-kvubitan pruvon. Kvantuma tensoro/forĵeto, la klasika stokasta
-enigo kaj pli altaj kategorioj restas malfermaj.
+kanonan kanaltensoron, interchange, baz-bra-an spuro/forĵeto-kanalon kun kaŭza
+unikeco, kaj ekzaktajn unu- kaj du-kvubitajn Pauli-X-pruvojn. La klasika
+stokasta enigo kaj pli altaj kategorioj restas malfermaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -368,8 +369,14 @@ produktoj `LⱼKᵢ` pruvas fermitecon sub idento kaj sinsekva kunmeto, kaj dona
 kategorion. La kvubita ekzemplo pruvas `XᴴX = I` por Pauli-X kaj ke ĝi ekzakte
 interŝanĝas la du komputbazajn densmatricojn.
 
-Kvantuma tensoro, forĵeto/spuro kiel kanalo, eksplicita amplifa teoremo pri
-kompleta pozitiveco kaj enigo de klasikaj stokastaj kanaloj ankoraŭ mankas.
+La tensoro dependas nur de la operacia kanala ago: Kraus-ago estas levita al
+kanona kompleksa lineara mapo, transportita tra la matrica/tensorprodukta
+lineara ekvivalento de Mathlib, kaj paroformaj Kronecker-Kraus-operatoroj
+atestas la rezulton sur ĉiu matrico. Komponenta statevoluo, tensora idento kaj
+interchange estas pruvitaj. Forĵeto estas la spurkanalo konstruita el bazaj
+bra-oj; ĝi estas la unika kanalo al la unudimensia sistemo, do ĉiu kanalo
+plenumas la kaŭzan forĵetleĝon. Eksplicita amplifa teoremo pri kompleta
+pozitiveco kaj enigo de klasikaj stokastaj kanaloj restas etap-9-aj devoj.
 Tiuj estas eksplicitaj etapo-9-etendaj devoj.
 
 ## Kio estas pruvita
@@ -450,8 +457,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Quantum.KrausChannel.map_trace` | Ĉiu atestita kanalo konservas spuron por arbitraj matricoj. |
 | `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | La unuelementa identa Kraus-familio fiksas ĉiun densmatricon. |
 | `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | Kunmetita kanalevoluo egalas sinsekvan densmatrican evoluon. |
+| `Ript.Models.Quantum.KrausChannel.tensor_applyDensity` | Tensoraj kanaloj evoluigas tensorproduktajn statojn komponente. |
+| `Ript.Models.Quantum.KrausChannel.tensor_identity` | La tensoro de du identaj kanaloj estas la idento de la produkta sistemo. |
+| `Ript.Models.Quantum.KrausChannel.tensor_comp` | Kvantuma kanaltensoro plenumas interchange kun sinsekva kunmeto. |
+| `Ript.Models.Quantum.KrausChannel.eq_discard` | La spurkanalo estas la unika Kraus-kanalo al la unusistemo. |
+| `Ript.Models.Quantum.KrausChannel.comp_discard` | Ĉiu finia Kraus-kanalo plenumas la kaŭzan forĵetleĝon. |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X plenumas la Kraus-kompletecon `XᴴX = I`. |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X interŝanĝas la du komputbazajn densmatricojn. |
+| `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | Du sendependaj Pauli-X-kanaloj ekzakte renversas ambaŭ komputbazajn statojn. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -476,8 +489,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
 | 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj kaj ĝenerala diverĝenca monotoneco | **PROVED** |
-| 9, finia Kraus-kerno | Kompleksaj densmatricoj, TP Kraus-kanaloj, statkonservo kaj sinsekva kategorio | **PROVED** |
-| 9, kvantumaj etendaĵoj | Tensoro/forĵeto, CP-amplifa teoremo kaj klasika stokasta enigo | **OPEN RESEARCH** |
+| 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto kaj kaŭza unikeco | **PROVED** |
+| 9, kvantumaj etendaĵoj | CP-amplifa teoremo kaj klasika stokasta enigo | **OPEN RESEARCH** |
 | 10–11 | Dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -496,7 +509,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
 | Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Plenumebla | Specifita ekzakta ekvilibro; liberaj ekvilibraj statoj kaj ĝenerala DPI-levo |
-| Finia kvantuma Kraus-kerno | Kraus-kategorio | Ne | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj kaj finiaj kompletaj Kraus-atestiloj; ankoraŭ sen kvantuma tensoro/forĵeto |
+| Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro kaj spura forĵeto; sen kopiado |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -506,9 +519,9 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
-KL-datumtraktado, energio-derivitaj Gibbs-statoj, kvantuma tensoro/forĵeto kaj
-klasika enigo, univalenteco kaj pli altkategoria strukturo estas **ne
-realigitaj**. La sinsekva finia Kraus-kanala kerno mem estas realigita kaj
+KL-datumtraktado, energio-derivitaj Gibbs-statoj, klasika-al-kvantuma enigo,
+univalenteco kaj pli altkategoria strukturo estas **ne realigitaj**. La finia
+Kraus-kanala kerno kun tensoro kaj forĵeto estas realigita kaj
 kernel-kontrolita. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
 [CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
@@ -888,6 +901,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Kompleksaj pozitivaj duondifinaj densmatricoj kun spuro unu
 - [x] Finiaj kompletaj Kraus-prezentoj kun pruvita pozitiveco kaj spurokonservo
 - [x] Ekstensionalaj Kraus-kanalaj idento, sinsekva kunmeto, kategoriaj leĝoj kaj statevoluo
+- [x] Kvantuma tensoro, spura forĵeto, idento/interchange kaj kaŭza forĵetleĝo
 - [x] Ekzaktaj Pauli-X-kompleteco kaj komputbaza stattransformo
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
@@ -903,7 +917,6 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [ ] Konkreta finia KL-diverĝenco kaj pruvita datumtrakta neegalaĵo
 - [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
-- [ ] Kvantuma tensoro, forĵeta/spura kanalo kaj monoidaj leĝoj
 - [ ] Eksplicita kompleta-pozitiveca amplifa teoremo por Kraus-mapoj
 - [ ] Enigo de finiaj klasikaj stokastaj kanaloj en la kvantuman tavolon
 - [ ] Zorge izolitaj univalentaj aŭ pli altkategoriaj tavoloj
@@ -955,9 +968,10 @@ konservas determinismajn kanalojn kaj tensoron ĝis kanona kompara izomorfio.
 Stokastaj modeloj sur arbitraj mezureblaj spacoj restas vojmapaj eroj. Ript
 nun ankaŭ havas finian kompleksan kvantuman kernon: densmatricoj estas pozitivaj
 duondifinaj kun spuro unu; kanaloj portas finiajn kompletajn Kraus-atestilojn;
-pozitiveco, spurokonservo, idento, kunmeto, kategoriaj leĝoj, denseca statevoluo
-kaj Pauli-X-kvubita ekzemplo estas pruvitaj. Kvantuma tensoro/forĵeto,
-eksplicita CP-amplifa teoremo kaj la klasika stokasta enigo restas vojmapaj.
+pozitiveco, spurokonservo, idento, kunmeto, kategoriaj leĝoj, kanona tensoro kaj
+interchange, denseca statevoluo, spura forĵeto kun kaŭza unikeco, kaj unu- kaj
+du-kvubitaj Pauli-X-ekzemploj estas pruvitaj. Eksplicita CP-amplifa teoremo kaj
+la klasika stokasta enigo restas vojmapaj.
 Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
 ekvilibro, Gibbs-konservan kunmeton kaj tensoron, liberajn ekvilibrajn statojn
 kaj ĝeneralan termikan monotonecon kiam diverĝenco liveras pruvitan DPI. Ĝi

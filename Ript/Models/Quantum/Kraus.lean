@@ -72,6 +72,25 @@ theorem map_trace (rep : KrausRepresentation X Y map)
       rw [Matrix.sum_mul]
     _ = ρ.trace := by rw [rep.completeness, one_mul]
 
+/-- A Kraus representation acts additively on matrices. -/
+theorem map_add (rep : KrausRepresentation X Y map)
+    (ρ σ : Matrix X X ℂ) : map (ρ + σ) = map ρ + map σ := by
+  rw [rep.map_eq, rep.map_eq, rep.map_eq]
+  simp_rw [Matrix.mul_add, Matrix.add_mul]
+  exact Finset.sum_add_distrib
+
+/-- A Kraus representation sends the zero matrix to zero. -/
+theorem map_zero (rep : KrausRepresentation X Y map) : map 0 = 0 := by
+  rw [rep.map_eq]
+  simp
+
+/-- A Kraus representation commutes with complex scalar multiplication. -/
+theorem map_smul (rep : KrausRepresentation X Y map) (c : ℂ)
+    (ρ : Matrix X X ℂ) : map (c • ρ) = c • map ρ := by
+  rw [rep.map_eq, rep.map_eq]
+  simp_rw [Matrix.mul_smul, Matrix.smul_mul]
+  rw [← Finset.smul_sum]
+
 end KrausRepresentation
 
 /-- A matrix transformation equipped with the mere existence of a finite
@@ -120,6 +139,32 @@ theorem map_posSemidef (channel : KrausChannel X Y)
 theorem map_trace (channel : KrausChannel X Y) (ρ : Matrix X X ℂ) :
     (channel.map ρ).trace = ρ.trace :=
   channel.has_representation.elim fun rep ↦ rep.map_trace ρ
+
+/-- Every Kraus channel acts additively on matrices. -/
+theorem map_add (channel : KrausChannel X Y) (ρ σ : Matrix X X ℂ) :
+    channel.map (ρ + σ) = channel.map ρ + channel.map σ :=
+  channel.has_representation.elim fun rep ↦ rep.map_add ρ σ
+
+/-- Every Kraus channel sends the zero matrix to zero. -/
+theorem map_zero (channel : KrausChannel X Y) : channel.map 0 = 0 :=
+  channel.has_representation.elim fun rep ↦ rep.map_zero
+
+/-- Every Kraus channel commutes with complex scalar multiplication. -/
+theorem map_smul (channel : KrausChannel X Y) (c : ℂ) (ρ : Matrix X X ℂ) :
+    channel.map (c • ρ) = c • channel.map ρ :=
+  channel.has_representation.elim fun rep ↦ rep.map_smul c ρ
+
+/-- The canonical complex-linear map underlying a Kraus channel. -/
+def toLinearMap (channel : KrausChannel X Y) :
+    Matrix X X ℂ →ₗ[ℂ] Matrix Y Y ℂ where
+  toFun := channel.map
+  map_add' := channel.map_add
+  map_smul' := channel.map_smul
+
+/-- Coercing the canonical linear map recovers the operational channel map. -/
+@[simp]
+theorem toLinearMap_apply (channel : KrausChannel X Y) (ρ : Matrix X X ℂ) :
+    channel.toLinearMap ρ = channel.map ρ := rfl
 
 /-- The one-operator Kraus family `{I}` is the identity channel. -/
 def identity (X : Object.{u}) : KrausChannel X X :=

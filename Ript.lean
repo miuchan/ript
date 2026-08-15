@@ -31,7 +31,9 @@ import Ript.Models.FiniteStochastic
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.Quantum.Basic
+import Ript.Models.Quantum.Discard
 import Ript.Models.Quantum.Kraus
+import Ript.Models.Quantum.Tensor
 import Ript.Models.Thermal.Equilibrium
 import Ript.Models.Thermal.GibbsPreserving
 import Ript.Models.Thermal.Monotone

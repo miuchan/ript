@@ -79,8 +79,16 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Quantum.KrausChannel.map_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
 | `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
 | `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.KrausChannel.tensor_applyDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Tensor.lean` |
+| `Ript.Models.Quantum.KrausChannel.tensor_identity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Tensor.lean` |
+| `Ript.Models.Quantum.KrausChannel.tensor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Tensor.lean` |
+| `Ript.Models.Quantum.KrausChannel.basisBra_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Discard.lean` |
+| `Ript.Models.Quantum.KrausChannel.eq_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Discard.lean` |
+| `Ript.Models.Quantum.KrausChannel.comp_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Discard.lean` |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.discard_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -129,8 +137,12 @@ The finite quantum slice is intentionally separate from the classical
 stochastic object type. Density matrices are complex positive-semidefinite
 matrices of trace one, and every operational map carries the mere existence of
 an explicit finite Kraus family with completeness equation
-`∑ i, Kᵢᴴ Kᵢ = I`. The audited positivity, trace-preservation, identity,
-composition, and Pauli-X results inherit `Classical.choice` and `Quot.sound`
+`∑ i, Kᵢᴴ Kᵢ = I`. Operational actions are proved complex-linear; their
+canonical tensor is certified by pairwise Kronecker Kraus operators on all
+matrices. Basis bras define the trace channel, whose uniqueness proves the
+causal discard law without introducing copying. The audited positivity,
+trace-preservation, identity, composition, tensor, discard, and Pauli-X results
+inherit `Classical.choice` and `Quot.sound`
 from Mathlib's finite-sum, matrix-order, complex-number, and category proof
 infrastructure. No choice-derived data is used in the channel action: the
 operational map is stored directly, while its Kraus certificate is proof-only.

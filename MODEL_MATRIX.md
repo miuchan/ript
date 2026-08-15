@@ -16,4 +16,9 @@ Only implemented and compiled capabilities are marked as supported.
 | Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
 | Finite thermal systems (specified equilibrium) | Gibbs-preserving category | Bifunctor | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes | Yes |
-| Finite quantum Kraus core (`ℂ`) | Kraus category | No | No | No | No | No | No | No | Matrix proof layer; basis labels executable |
+| Finite quantum Kraus channels (`ℂ`) | Kraus category | Yes | Yes | No | No | Yes | No | No | Matrix proof layer; basis labels executable |
+
+For the quantum row, “Discard” is the proved trace channel and “Causal” means
+the compiled uniqueness/compatibility laws `eq_discard` and `comp_discard`.
+“Copy” remains deliberately unsupported: no classical copying structure is
+inferred from the chosen quantum basis.
