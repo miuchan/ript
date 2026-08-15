@@ -27,6 +27,9 @@ flowchart LR
   FiniteFunction --> BitProcesses["Examples.BitProcesses"]
   Completeness --> Audit["Audit.AxiomChecks"]
   Costed --> ParallelCost["Core.ParallelCost"]
+  Costed --> Monotone["Core.Monotone"]
+  Budget --> ResourceMonotone["Resource.Monotone"]
+  Monotone --> ResourceMonotone
   ParallelCost --> ParallelBudget["Resource.ParallelBudget"]
   MonoidalSignature["Syntax.MonoidalSignature"] --> MonoidalExpr["Syntax.Monoidal"]
   MonoidalExpr --> MonoidalCost["Syntax.MonoidalCost"]
@@ -38,7 +41,10 @@ flowchart LR
   MonoidalDerivation --> MonoidalTermModel["Semantics.MonoidalTermModel"]
   MonoidalSoundness --> MonoidalTermModel
   MonoidalTermModel --> MonoidalCompleteness["Semantics.MonoidalCompleteness"]
+  MonoidalTermModel --> MonoidalInitiality["Semantics.MonoidalInitiality"]
+  ResourceMonotone --> MonoidalInitiality
   MonoidalCompleteness --> Audit
+  MonoidalInitiality --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -49,7 +55,7 @@ Every node in this graph is an existing compiled module.
 | --- | --- | --- |
 | 0 | Environment, project scaffold, documentation, CI, audit baseline | PROVED |
 | 1 | Sequential resource-process vertical slice | PROVED |
-| 2 | Tensor, symmetry, and parallel resources | PROVED |
+| 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | PROVED |
 | 3 | Executable finite stochastic model | OPEN_RESEARCH |
 | 4 | Finite-distribution Kleisli representation | OPEN_RESEARCH |
 | 5-11 | Semantic models and higher layers | OPEN_RESEARCH |
@@ -231,6 +237,45 @@ Every node in this graph is an existing compiled module.
 - Kernel assumptions: `[propext, Quot.sound]`.
 - Source: `Ript/Semantics/MonoidalCompleteness.lean`.
 
+### `Ript.Semantics.Free.lift_on_generator`
+
+- Natural-language statement: the functor induced by an interpretation agrees
+  with that interpretation on every primitive generator.
+- Prerequisites: the quotient symmetric monoidal term model, semantic
+  soundness, and recursive monoidal evaluation.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: the map is executable on raw representatives; quotient
+  elimination confines this result to the proof layer.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/MonoidalInitiality.lean`.
+
+### `Ript.Semantics.Free.lift_preserves_cost`
+
+- Natural-language statement: the universal functor induced by any legal
+  interpretation never increases the resource cost of a process.
+- Prerequisites: generator cost bounds, sequential and parallel
+  subadditivity, and zero-cost structural rewiring.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: the underlying evaluation is executable; the inequality is
+  proof data over the quotient term model.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/MonoidalInitiality.lean`.
+
+### `Ript.Semantics.Free.lift_unique`
+
+- Natural-language statement: every strict resource-aware symmetric monoidal
+  extension agreeing with a given interpretation on generators has exactly
+  the same action as the universal lift on every quotient morphism.
+- Prerequisites: strict preservation of identity, composition, tensor,
+  associators, unitors, braiding, and generators.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: no; literal uniqueness is stated at the quotient proof layer.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/MonoidalInitiality.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -246,3 +291,7 @@ Every node in this graph is an existing compiled module.
 5. The monoidal term model uses a one-field object wrapper instead of a
    reducible alias. This prevents Lean from confusing its quotient category
    instance with Mathlib's existing category on raw free-monoidal object trees.
+6. Literal uniqueness is proved for strict resource-aware symmetric monoidal
+   extensions, whose object action and structural maps are fixed. Uniqueness
+   for arbitrary strong monoidal functors belongs at the monoidal-natural-
+   isomorphism level and is not conflated with strict equality.

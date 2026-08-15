@@ -140,6 +140,9 @@ layer—by the symmetric monoidal coherence laws.
   interpretation implies formal derivability.
 - **Budget completeness in the free model:** term-model evaluation has exactly
   the recursively computed syntax cost.
+- **Strict free universal property:** every legal interpretation induces a
+  strong symmetric monoidal, resource-nonincreasing functor from the term
+  model; among strict extensions agreeing on generators, its action is unique.
 
 The word *relative* matters: the completeness theorem is about equality in the
 canonical quotient term model, not an unqualified claim about every conceivable
@@ -164,6 +167,9 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Semantics.monoidal_soundness` | Symmetric monoidal derivations are semantically sound. |
 | `Ript.Semantics.monoidal_complete_via_term_model` | Monoidal term-model equality implies derivability. |
 | `Ript.Semantics.monoidal_budget_complete_in_free_model` | Monoidal term-model cost equals syntax cost. |
+| `Ript.Semantics.Free.lift_on_generator` | The universal lift agrees with the interpretation on generators. |
+| `Ript.Semantics.Free.lift_preserves_cost` | The universal lift never increases process cost. |
+| `Ript.Semantics.Free.lift_unique` | Every strict structure-preserving extension has the same action as the universal lift. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -180,7 +186,7 @@ finished physical theory.
 | --- | --- | --- |
 | 0 | Reproducible project, documentation, CI, and audit baseline | **PROVED** |
 | 1 | Sequential resource-process core | **PROVED** |
-| 2 | Tensor, symmetry, structural rewiring, and parallel resources | **PROVED** |
+| 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | **PROVED** |
 | 3 | Executable finite stochastic model | **OPEN RESEARCH** |
 | 4 | Finite-distribution Kleisli representation | **OPEN RESEARCH** |
 | 5–11 | Further semantic and higher layers | **OPEN RESEARCH** |
@@ -219,6 +225,8 @@ flowchart LR
   E --> SO
   D --> T["Quotient term model"]
   T --> CO["Relative completeness"]
+  I --> U["Universal resource-nonincreasing lift"]
+  T --> U
 ```
 
 | Layer | Main modules | Responsibility |
@@ -431,6 +439,7 @@ updated assumption audit.
 - [x] Parallel cost capability and additive tensor budgets
 - [x] Typed symmetric monoidal syntax and structural rewiring
 - [x] Monoidal soundness and term-model relative completeness
+- [x] Strong symmetric monoidal, resource-nonincreasing free lift and strict uniqueness
 - [x] Zero-cost and explicitly metered finite deterministic examples
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 

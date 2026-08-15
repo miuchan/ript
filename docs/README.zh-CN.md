@@ -121,6 +121,8 @@ Ript 不通过定义相等直接识别表达式。它定义了一个由范畴律
 - **可靠性（soundness）：**每个形式推导在每个兼容解释下都求值为相等态射。
 - **相对完备性（relative completeness）：**规范项模型解释中的相等蕴含形式可推导性。
 - **自由模型中的预算完备性：**项模型求值的成本恰好等于递归计算的语法成本。
+- **严格自由普遍性质：**每个合法解释都会诱导一个从项模型出发、保持强对称幺半群结构且
+  资源非增的函子；在生成元上一致的严格扩张中，它的作用是唯一的。
 
 “相对”二字非常重要：完备性定理针对规范商项模型中的相等，而不是对所有可能语义宇宙
 作不加限定的宣称。
@@ -143,6 +145,9 @@ Ript 不通过定义相等直接识别表达式。它定义了一个由范畴律
 | `Ript.Semantics.monoidal_soundness` | 对称幺半群推导在语义上可靠。 |
 | `Ript.Semantics.monoidal_complete_via_term_model` | 幺半群项模型中的相等蕴含可推导性。 |
 | `Ript.Semantics.monoidal_budget_complete_in_free_model` | 幺半群项模型成本等于语法成本。 |
+| `Ript.Semantics.Free.lift_on_generator` | 普遍提升在生成元上与给定解释一致。 |
+| `Ript.Semantics.Free.lift_preserves_cost` | 普遍提升不会增加过程成本。 |
+| `Ript.Semantics.Free.lift_unique` | 每个严格保持结构的扩张都与普遍提升具有相同作用。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -156,7 +161,7 @@ Ript 不通过定义相等直接识别表达式。它定义了一个由范畴律
 | --- | --- | --- |
 | 0 | 可复现工程、文档、CI 与审计基线 | **PROVED** |
 | 1 | 串行资源过程核心 | **PROVED** |
-| 2 | 张量、对称性、结构重布线与并行资源 | **PROVED** |
+| 2 | 张量、对称性、并行资源与严格自由普遍提升 | **PROVED** |
 | 3 | 可执行的有限随机模型 | **OPEN RESEARCH** |
 | 4 | 有限分布的 Kleisli 表示 | **OPEN RESEARCH** |
 | 5–11 | 后续语义模型与高阶层 | **OPEN RESEARCH** |
@@ -193,6 +198,8 @@ flowchart LR
   E --> SO
   D --> T["商项模型"]
   T --> CO["相对完备性"]
+  I --> U["资源非增的普遍提升"]
+  T --> U
 ```
 
 | 层 | 主要模块 | 职责 |
