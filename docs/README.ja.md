@@ -14,14 +14,15 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 のための、小さく厳密な核を形式化します。型付きプロセス、合成可能な資源上界、実行可能な
 解釈、明示的な等式導出、そして標準項モデルによる相対完全性がその中心です。
 
-本プロジェクトは各層を厳密な順序で構築します。現在は、正確で実行可能な有限確率モデルと
-その有限分布 Kleisli 表現までを含みます。測度論的確率、意思決定理論、熱力学、量子理論、
-高次圏は引き続き研究課題です。
+本プロジェクトは各層を厳密な順序で構築します。現在は、正確で実行可能な有限確率モデル、
+その有限分布 Kleisli 表現、そして Mathlib の測度論的圏 `Stoch` への忠実な意味論的橋渡しを
+含みます。一般の可測空間上の確率モデル、意思決定理論、熱力学、量子理論、高次圏は
+引き続き研究課題です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 4 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 5 は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -159,6 +160,30 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 分布全体は一般に無限集合なので、Mathlib の無制限 `CategoryTheory.Kleisli` が要求する有限台の
 基礎圏には閉じません。
 
+### 7. Mathlib `Stoch` への忠実な橋渡し
+
+`Ript.Models.Probability.StochFunctor` は、有限の実行可能な核を置き換えることなく、正確な
+行列を Mathlib の測度論的確率ライブラリへ接続します。各有限台には離散可測空間を与え、
+行列の一行 `p : Y → ℚ≥0` を次の確率測度として解釈します。
+
+```math
+\sum_{y \in Y} \uparrow p(y) \; \delta_y.
+```
+
+元の行の正規化からこの測度の全質量が 1 だと分かるため、各 `FinStoch` 射は Markov kernel を
+定めます。得られる `toStoch` 関手は恒等射と Chapman–Kolmogorov 合成を保存し、さらに：
+
+- 有限 Dirac 行列を Mathlib の決定論的 kernel へ写します。
+- 単点集合の質量から `ℝ≥0∞` への単射的な埋め込みを通じて全ての正確な行列要素を復元できる
+  ため、忠実です。
+- Mathlib の積可測対象と、同じ有限積に離散最大可測構造を直接与えた対象との明示的な決定論的
+  同型を介して、独立なテンソル合成を保存します。
+
+最後の性質は、定義上の等しさや未宣言のモノイダル関手インスタンスではなく、`Stoch` 内の
+可換図式として述べられます。これにより可測構造の同一視が定理の境界に明示されます。
+非計算性はこの意味論的橋渡しだけに局所化され、`FinStoch`、`FinDist`、その合成と実行例は
+正確な `ℚ≥0` データとして引き続き実行可能です。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -193,6 +218,12 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 | `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | 行列から Kleisli への変換は逆変換で元に戻ります。 |
 | `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | Kleisli から行列への変換は逆変換で元に戻ります。 |
 | `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` は `FinDist` の有限台 Kleisli 圏と同値です。 |
+| `Ript.Models.Probability.StochFunctor.rowMeasure_singleton` | 解釈された行測度の単点質量は元の正確な行列要素を復元します。 |
+| `Ript.Models.Probability.StochFunctor.toKernel_comp` | 正確な Chapman–Kolmogorov 合成は Mathlib の kernel 合成になります。 |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_dirac` | Dirac 行列は決定論的な `Stoch` kernel になります。 |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | `Stoch` 解釈は正確な有限チャネルの情報を失いません。 |
+| `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | 有限離散可測空間の積も離散です。 |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | 独立なテンソル合成は標準比較同型を介して保存されます。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -210,7 +241,8 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 | 2 | テンソル、対称性、並列資源、厳密な自由普遍リフト | **PROVED** |
 | 3 | 実行可能な有限確率モデル | **PROVED** |
 | 4 | 有限分布の Kleisli 表現 | **PROVED** |
-| 5–11 | 追加の意味論モデルと高次層 | **OPEN RESEARCH** |
+| 5 | Mathlib `Stoch` への忠実な有限チャネル橋 | **PROVED** |
+| 6–11 | 追加の意味論モデルと高次層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -222,9 +254,12 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 | 対称モノイダル項モデル | 可 | 可 | 証明層 | 明示的モノイダル導出による商 |
 | 正確な有限確率チャネル | 可 | 可 | 実行可能 | 正規化された `ℚ≥0` 行列、Dirac、コピー、破棄 |
 | 有限分布 Kleisli 圏 | 可 | 不可 | 実行可能 | 正確な `pure`/`bind`、`FinStoch` と圏同値 |
+| Mathlib `Stoch` 橋の有限離散像 | 可 | 可（標準同型を介して） | 意味論層 | 忠実な Markov-kernel 解釈；元の行列は実行可能 |
 
-有限確率モデルにはコピー、破棄、因果性が実装されています。一般の凸構造、測度論的確率、
-熱的構造、量子チャネル、ユニバレント構造、高次圏構造は**未実装**です。正式な能力表は
+有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
+検証済みの測度論的意味論もあります。任意の可測空間上の一般的な確率モデル、一般的な
+コピー・破棄および凸構造のインターフェース、熱的構造、量子チャネル、ユニバレント構造、
+高次圏構造は**未実装**です。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
 [CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
 
@@ -254,6 +289,8 @@ flowchart LR
   FD["正確な FinDist pure と bind"] --> KL["有限台 Kleisli 圏"]
   CK <--> EQ["圏同値"]
   KL <--> EQ
+  CK --> ST["忠実な Mathlib Stoch 意味論的橋"]
+  ST --> MT["有限離散 Markov kernels"]
 ```
 
 | 層 | 主なモジュール | 責務 |
@@ -283,10 +320,11 @@ Ript は、証明への信頼を暗黙の慣習ではなく検査可能な対象
 - 未証明の研究上の主張は `CONJECTURES.md` に置き、完成済み定理として名前空間に入れません。
 
 Stage 1 と Stage 2 の主要定理の監査では、必要な箇所に Lean 標準の `propext` と
-`Quot.sound` のみが現れます。有限確率と Kleisli 表現定理の証明では、Mathlib の一般的な `Fintype` と有限和の
-証明基盤を通して `Classical.choice` も報告されます。これは実行時データの生成には使われません。
-確率対象は列挙と決定可能等式を明示的に保持し、定義に `noncomputable` や `classical` はなく、CI は
-正確な `ℚ≥0` の計算を実行します。`AXIOMS.md` は各定理の実際の監査出力を完全一致で固定します。
+`Quot.sound` のみが現れます。有限確率、Kleisli、`Stoch` 橋の定理では、Mathlib の一般的な
+有限和・測度・圏論の基盤を通して `Classical.choice` も報告されます。実行時データは列挙と
+決定可能等式を明示的に保持し、有限モデルの定義は `noncomputable` ではなく、CI は正確な
+`ℚ≥0` の計算を実行します。非計算性は測度論的意味論モジュールだけに現れます。
+`AXIOMS.md` は各定理の実際の監査出力を完全一致で固定します。
 
 定理ごとの正確な出力は、次で確認できます。
 
@@ -379,6 +417,11 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 `Ript/Examples/KleisliBits.lean` は点分布、Kleisli bind、双方向の行列変換、圏同値に含まれる
 関手を実行します。4 つの正確な検査もすべて `true` を出力します。
 
+`Ript/Examples/StochBits.lean` はさらに Mathlib `Stoch` 内で、解釈された公平なコインの単点
+質量、ノイズ付き否定による公平分布の保存、決定論的否定が決定論的 kernel になること、二つの
+公平なコインがテンソル比較図式を満たすことを証明します。これらは意味論的証明例であり、追加の
+実行時出力はありません。
+
 ## Lean 依存パッケージとして使う
 
 Ript はルートモジュール `Ript` を公開します。プレリリース期間中は、変化するブランチではなく、
@@ -395,6 +438,8 @@ require ript from git
 import Ript
 -- または、依存境界を小さくする場合：
 import Ript.Semantics.Eval
+-- または、有限の測度論的橋だけを使う場合：
+import Ript.Models.Probability.StochFunctor
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -408,7 +453,7 @@ import Ript.Semantics.Eval
 | [`Ript/Resource/`](../Ript/Resource/) | 資源代数と検証済み予算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
-| [`Ript/Models/`](../Ript/Models/) | 有限決定論モデル、有限分布、正確な有限確率チャネル |
+| [`Ript/Models/`](../Ript/Models/) | 決定論モデル、正確な有限確率、Mathlib `Stoch` 橋 |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -441,7 +486,8 @@ import Ript.Semantics.Eval
 4. **実行可能構文と証明用の商を分離する。** 完全性の商モデルを理由に計算コードを非計算的にしません。
 5. **完全性の範囲を明記する。** すべての完全性主張が標準モデルと証明境界を指定します。
 6. **仮定をバージョン付き API として扱う。** 新しい公理は後日の注釈ではなく即時のゲート失敗です。
-7. **実装と構想を区別する。** 有限確率モデルと、一般確率・熱・量子・高次の未解決層を明確に分けます。
+7. **実装と構想を区別する。** 有限離散 `Stoch` 像は実装済みです。一般確率・因果・熱・量子・
+   高次の未解決層とは明確に分けます。
 
 ## ロードマップ
 
@@ -461,12 +507,13 @@ import Ript.Semantics.Eval
 - [x] コスト 0 および明示的計量付きの有限決定論例
 - [x] 正確で実行可能な有限確率チャネル、Dirac 埋め込み、テンソル、コピー、破棄
 - [x] 正確な有限分布、Kleisli 圏、双方向の比較関手、圏同値
+- [x] Mathlib `Stoch` への忠実な有限チャネル関手、決定論的およびテンソル比較定理
 - [x] 再現可能な CI、宣言 lint、仮定許可リスト
 
 ### 未解決の研究トラック
 
-- [ ] 正確な有限確率チャネルから Mathlib の測度論的 `Stoch` への橋渡し
 - [ ] 有限確率モデル以外への、意味論的に正当化されたコピー・破棄能力の拡張
+- [ ] 有限離散像を越える一般可測空間上の確率意味論
 - [ ] 凸構造と因果構造
 - [ ] 熱力学的・資源理論的モデル
 - [ ] 量子チャネルモデル
@@ -509,8 +556,9 @@ import Ript.Semantics.Eval
 ### 確率や量子チャネルはすでにサポートされていますか？
 
 正確な有限確率チャネルはサポートされています。確率は `ℚ≥0` で表され、有限和として実行され、
-正確な有限分布の有限台 Kleisli 圏との同値も証明済みです。測度論的確率、熱モデル、量子チャネルは
-ロードマップ項目です。
+正確な有限分布の有限台 Kleisli 圏との同値も証明済みです。さらに Mathlib の測度論的圏
+`Stoch` への忠実な関手があり、決定論的チャネルとテンソルを標準比較同型を介して保存します。
+任意の可測空間上の確率モデル、熱モデル、量子チャネルはロードマップ項目です。
 
 ### モノイダル層があればコピーや破棄も可能ですか？
 

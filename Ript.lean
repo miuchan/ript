@@ -6,11 +6,13 @@ import Ript.Core.ParallelCost
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
 import Ript.Examples.KleisliBits
+import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
 import Ript.Models.FiniteDistribution
 import Ript.Models.FiniteFunction
 import Ript.Models.FiniteStochastic
 import Ript.Models.FiniteStochastic.Kleisli
+import Ript.Models.Probability.StochFunctor
 import Ript.Resource.Basic
 import Ript.Resource.Budget
 import Ript.Resource.Monotone

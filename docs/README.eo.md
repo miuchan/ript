@@ -16,14 +16,15 @@ tiphavajn procezojn, kunmeteblajn rimedlimojn, plenumeblajn interpretojn,
 eksplicitajn egalecderivojn, kaj relativan kompletecon per kanonaj termmodeloj.
 
 La projekto konstruas siajn tavolojn laŭ rigora sinsekvo. Ĝi nun inkluzivas
-ekzaktan, plenumeblan finian stokastan modelon kaj ĝian Kleisli-prezenton per
-finiaj distribuoj. Mezurteoria probablo,
-decidteorio, termodinamiko, kvantuma teorio kaj pli altaj kategorioj restas
-esplorvojoj. Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
+ekzaktan, plenumeblan finian stokastan modelon, ĝian Kleisli-prezenton per
+finiaj distribuoj, kaj fidelan semantikan ponton al la mezurteoria kategorio
+`Stoch` de Mathlib. Ĝeneralaj modeloj sur mezureblaj spacoj, decidteorio,
+termodinamiko, kvantuma teorio kaj pli altaj kategorioj restas esplorvojoj.
+Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–4 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–5 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -176,6 +177,34 @@ La limigo estas necesa: ĉiuj racionalaj distribuoj sur finia portanto ĝenerale
 formas senfinan aron, do ili ne restas en la finia baza kategorio postulata de
 la nelimigita `CategoryTheory.Kleisli` de Mathlib.
 
+### 7. Fidela ponto al Mathlib `Stoch`
+
+`Ript.Models.Probability.StochFunctor` konektas la ekzaktajn matricojn al la
+mezurteoria probablobiblioteko de Mathlib sen anstataŭigi la finian plenumeblan
+kernon. Ĉiu finia portanto ricevas la diskretan mezureblan strukturon, kaj
+matrica vico `p : Y → ℚ≥0` interpretiĝas kiel la probablomezuro
+
+```math
+\sum_{y \in Y} \uparrow p(y) \; \delta_y.
+```
+
+La normaligo de la fonta vico pruvas, ke tiu mezuro havas tutan mason unu; tial
+ĉiu morfio de `FinStoch` induktas Markov-kernon. La rezulta funktoro `toStoch`
+konservas identojn kaj Chapman–Kolmogorov-kunmeton. Ĝi ankaŭ:
+
+- sendas finiajn Dirac-matricojn al la determinismaj kernoj de Mathlib;
+- estas fidela, ĉar maso de unuopaĵo reakiras ĉiun ekzaktan racionalan matrican
+  elementon post la injekta enigo en `ℝ≥0∞`;
+- konservas sendependan tensoran kunmeton tra eksplicita determinisma izomorfio
+  inter la produkta mezurebla objekto de Mathlib kaj la sama finia produto kun
+  la rekte donita diskreta supra mezurebla strukturo.
+
+La lasta eco estas esprimita kiel komuta diagramo en `Stoch`, ne kiel difina
+egaleco aŭ nedeklarita monoida-funktora instanco. Tiel la identigo de la
+mezureblaj strukturoj restas videbla ĉe la teorema limo. Ĉiu nekomputebleco estas
+izolita en ĉi tiu semantika ponto; `FinStoch`, `FinDist`, iliaj kunmetoj kaj
+rultempaj ekzemploj restas plenumeblaj ekzaktaj datumoj en `ℚ≥0`.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -210,6 +239,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | La inversa konverto reakiras ĉiun matricon. |
 | `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | La inversa konverto reakiras ĉiun Kleisli-morfion. |
 | `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` ekvivalentas al la fini-portanta Kleisli-kategorio de `FinDist`. |
+| `Ript.Models.Probability.StochFunctor.rowMeasure_singleton` | La unuopaĵa maso de interpretita vico reakiras la ekzaktan fontan matric-elementon. |
+| `Ript.Models.Probability.StochFunctor.toKernel_comp` | Ekzakta Chapman–Kolmogorov-kunmeto fariĝas kunmeto de Mathlib-kernoj. |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_dirac` | Dirac-matricoj fariĝas determinismaj `Stoch`-kernoj. |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | La `Stoch`-interpreto ne perdas informon pri ekzaktaj finiaj kanaloj. |
+| `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | Produto de finiaj diskretaj mezureblaj spacoj estas denove diskreta. |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | Sendependa tensora kunmeto konserviĝas tra la kanona kompara izomorfio. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -229,7 +264,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 2 | Tensoro, simetrio, paralelaj rimedoj kaj la strikta libera universala levo | **PROVED** |
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
-| 5–11 | Pliaj semantikaj modeloj kaj pli altaj tavoloj | **OPEN RESEARCH** |
+| 5 | Fidela finia-kanala ponto al Mathlib `Stoch` | **PROVED** |
+| 6–11 | Pliaj semantikaj modeloj kaj pli altaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -241,10 +277,14 @@ La realigita modelsubteno estas intence mallarĝa:
 | Simetria monoida termmodelo | Jes | Jes | Pruva tavolo | Kvociento laŭ eksplicitaj monoidaj derivoj |
 | Ekzaktaj finiaj stokastaj kanaloj | Jes | Jes | Plenumebla | Normaligitaj `ℚ≥0`-matricoj, Dirac, kopiado, forĵetado |
 | Fini-distribua Kleisli-kategorio | Jes | Ne | Plenumebla | Ekzaktaj `pure`/`bind`; kategorie ekvivalenta al `FinStoch` |
+| Finia diskreta bildo de la Mathlib-`Stoch`-ponto | Jes | Jes, ĝis kanona izomorfio | Semantika tavolo | Fidela Markov-kerna interpreto; la fontaj matricoj restas plenumeblaj |
 
-Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo.
-Ĝenerala konvekseco, mezurteoria probablo, termika strukturo, kvantumaj kanaloj,
-univalenteco kaj pli altkategoria strukturo estas **ne realigitaj**. Vidu
+Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
+kaj ĝia finia diskreta bildo nun havas kontrolitan mezurteorian semantikon en
+Mathlib `Stoch`. Ĝeneralaj stokastaj modeloj sur arbitraj mezureblaj spacoj,
+ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, termika strukturo,
+kvantumaj kanaloj, univalenteco kaj pli altkategoria strukturo estas
+**ne realigitaj**. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
 [CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
 Nuntempe neniu konjekto estas registrita.
@@ -275,6 +315,8 @@ flowchart LR
   FD["Ekzaktaj FinDist pure kaj bind"] --> KL["Fini-portanta Kleisli-kategorio"]
   CK <--> EQ["Kategoria ekvivalenteco"]
   KL <--> EQ
+  CK --> ST["Fidela semantika ponto al Mathlib Stoch"]
+  ST --> MT["Finiaj diskretaj Markov-kernoj"]
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -308,12 +350,13 @@ Ript estas projektita tiel, ke pruva fido estas inspektebla, ne implicita.
 
 La revizio de la ĉefaj teoremoj de Etapoj 1 kaj 2 raportas nur la normajn
 Lean-principojn `propext` kaj `Quot.sound` kie necesas. La pruvoj pri finiaj
-stokastaj kaj Kleisli-prezentaj teoremoj ankaŭ raportas `Classical.choice` tra la ĝenerala pruva
-infrastrukturo de Mathlib por `Fintype` kaj finiaj sumoj. Tio ne produktas
-rultempajn datumojn: stokastaj objektoj eksplicite portas enumeradon kaj
-decideblan egalecon, la difinoj uzas nek `noncomputable` nek `classical`, kaj CI
-plenumas ekzaktajn kalkulojn en `ℚ≥0`. `AXIOMS.md` fiksas la efektivan rezulton
-por ĉiu teoremo per ekzakta komparo.
+stokastaj, Kleisli-prezentaj kaj `Stoch`-pontaj teoremoj ankaŭ raportas
+`Classical.choice` tra la ĝenerala infrastrukturo de Mathlib por finiaj sumoj,
+mezuroj kaj kategorioj. Tio ne produktas rultempajn datumojn: stokastaj objektoj
+eksplicite portas enumeradon kaj decideblan egalecon, neniu fini-modela difino
+estas `noncomputable`, kaj CI plenumas ekzaktajn kalkulojn en `ℚ≥0`.
+Nekomputebleco aperas nur en la mezurteoria semantika modulo. `AXIOMS.md` fiksas
+la efektivan rezulton por ĉiu teoremo per ekzakta komparo.
 
 Por la preciza rezulto de ĉiu teoremo, rulu:
 
@@ -409,6 +452,12 @@ konfirmas ekzakte la probablon `1/4` por paro da justaj bitoj.
 ambaŭ matricajn konvertojn kaj la funktorojn de la kategoria ekvivalenteco.
 Ĝiaj kvar ekzaktaj kontroloj ankaŭ eligas `true`.
 
+`Ript/Examples/StochBits.lean` poste pruvas ene de Mathlib `Stoch`, ke la
+interpretita justa monero havas la atendatan unuopaĵan mason, brua nego konservas
+la justan distribuon, determinisma nego estas determinisma kerno, kaj du justaj
+moneroj plenumas la tensoran kompar-diagramon. Tiuj estas semantikaj pruvekzemploj,
+ne pliaj rultempaj eligoj.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -425,6 +474,8 @@ Poste importu la tutan publikan surfacon aŭ pli mallarĝan modulon:
 import Ript
 -- aŭ, por pli malgranda dependolimo:
 import Ript.Semantics.Eval
+-- aŭ, por la finia mezurteoria ponto:
+import Ript.Models.Probability.StochFunctor
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -439,7 +490,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Finiaj determinismaj modeloj, distribuoj kaj ekzaktaj stokastaj kanaloj |
+| [`Ript/Models/`](../Ript/Models/) | Determinismaj modeloj, ekzakta finia probablo kaj la Mathlib-`Stoch`-ponto |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -479,8 +530,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    kanonan modelon kaj pruvan limon.
 6. **Trakti aksiomojn kiel versionitan API-surfacon.** Nova aksiomo en teoremo
    estas tuj kontroleraro, ne posta piednoto.
-7. **Distingi realigon disde aspiro.** La finia stokasta modelo restas klare
-   apartigita de ĝeneralaj probablaj, termikaj, kvantumaj kaj pli altaj tavoloj.
+7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo estas
+   realigita; ĝeneralaj stokastaj, kaŭzaj, termikaj, kvantumaj kaj pli altaj
+   tavoloj restas klare markitaj kiel malfermita esploro.
 
 ## Vojmapo
 
@@ -501,12 +553,13 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Senkostaj kaj eksplicite mezuritaj finiaj determinismaj ekzemploj
 - [x] Ekzaktaj plenumeblaj finiaj stokastaj kanaloj, Dirac, tensoro, kopiado kaj forĵetado
 - [x] Ekzaktaj finiaj distribuoj, Kleisli-kategorio, du komparfunktoroj kaj kategoria ekvivalenteco
+- [x] Fidela funktoro de finiaj kanaloj al Mathlib `Stoch`, kun determinismaj kaj tensor-komparaj teoremoj
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
 
-- [ ] Ponto de ekzaktaj finiaj stokastaj kanaloj al la mezurteoria `Stoch` de Mathlib
 - [ ] Semantike pravigitaj kopi- kaj forĵet-kapabloj ekster la finia stokasta modelo
+- [ ] Ĝenerala stokasta semantiko sur mezureblaj spacoj preter la finia diskreta bildo
 - [ ] Konveksa kaj kaŭza strukturo
 - [ ] Termikaj kaj rimedteoriaj modeloj
 - [ ] Kvantum-kanalaj modeloj
@@ -553,8 +606,11 @@ sinsekva kaj monoida termmodeloj.
 
 Ekzaktaj finiaj stokastaj kanaloj jam estas subtenataj. Probabloj estas valoroj
 en `ℚ≥0`, ĉiuj sumoj estas finiaj kaj plenumeblaj, kaj la ekvivalenteco kun la
-fini-portanta Kleisli-kategorio de ekzaktaj distribuoj estas pruvita.
-Mezurteoria probablo, termikaj modeloj kaj kvantumaj kanaloj restas vojmapaj eroj.
+fini-portanta Kleisli-kategorio de ekzaktaj distribuoj estas pruvita. Fidela
+funktoro ankaŭ sendas ilin al la mezurteoria kategorio `Stoch` de Mathlib kaj
+konservas determinismajn kanalojn kaj tensoron ĝis kanona kompara izomorfio.
+Stokastaj modeloj sur arbitraj mezureblaj spacoj, termikaj modeloj kaj kvantumaj
+kanaloj restas vojmapaj eroj.
 
 ### Ĉu la monoida tavolo implicas kopiadon aŭ forĵetadon?
 

@@ -35,6 +35,12 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
 | `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
 | `Ript.Models.FiniteStochastic.kleisliEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
+| `Ript.Models.Probability.StochFunctor.rowMeasure_singleton` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
+| `Ript.Models.Probability.StochFunctor.toKernel_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_dirac` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
+| `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -42,9 +48,13 @@ to proof semantics. The stage-1 and stage-2 flagship theorems do not depend on
 classical choice. The finite stochastic and finite-distribution representation
 theorems report `Classical.choice` through Mathlib's generic
 `Fintype` and finite-sum proof infrastructure. Runtime channel data instead
-uses explicitly supplied `Fintype` and `DecidableEq` values; no definition is
-`noncomputable`, and the checked `#eval` examples execute exact rational
-probabilities. In particular,
+uses explicitly supplied `Fintype` and `DecidableEq` values; no definition in
+the executable finite model is `noncomputable`, and the checked `#eval`
+examples execute exact rational probabilities. The Stage-5 bridge is
+deliberately noncomputable only in its measure-theoretic semantic module:
+finite rational rows are interpreted as finite sums of Dirac measures and then
+packaged as Mathlib `Stoch` kernels. It does not feed choice-derived data back
+into the executable model. In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that
 dependency from derived coherence lemmas.

@@ -55,6 +55,10 @@ flowchart LR
   FiniteKleisli --> KleisliBits["Examples.KleisliBits"]
   StochasticBits --> KleisliBits
   FiniteKleisli --> Audit
+  FiniteStochastic --> StochFunctor["Models.Probability.StochFunctor"]
+  StochFunctor --> StochBits["Examples.StochBits"]
+  StochasticBits --> StochBits
+  StochFunctor --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -68,7 +72,8 @@ Every node in this graph is an existing compiled module.
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | PROVED |
 | 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | PROVED |
-| 5-11 | Semantic models and higher layers | OPEN_RESEARCH |
+| 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
+| 6-11 | Decision, thermal, quantum, and higher layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -550,6 +555,79 @@ generally infinite and therefore is not closed in the finite-object category.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/FiniteStochastic/Kleisli.lean`.
 
+## Stage-5 flagship theorem records
+
+Stage 5 is a one-way semantic bridge. The exact `ℚ≥0` matrix model remains the
+executable source of truth; `Ript.Models.Probability.StochFunctor` equips each
+finite carrier with the discrete measurable space and interprets each row as a
+finite weighted sum of Dirac measures in Mathlib. Noncomputability is confined
+to this semantic module.
+
+### `Ript.Models.Probability.StochFunctor.rowMeasure_singleton`
+
+- Natural-language statement: the measure assigned to a matrix row gives a
+  singleton exactly the corresponding matrix entry, coerced to `ℝ≥0∞`.
+- Prerequisites: finite Dirac sums and discrete measurability.
+- Status: `PROVED`.
+- Computable: semantic proof layer; the source probability remains executable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/StochFunctor.lean`.
+
+### `Ript.Models.Probability.StochFunctor.toKernel_comp`
+
+- Natural-language statement: interpreting exact Chapman–Kolmogorov
+  composition equals Mathlib kernel composition.
+- Prerequisites: `lintegral_rowMeasure`, `Kernel.comp_apply'`, and exact cast
+  preservation for finite sums and products.
+- Status: `PROVED`.
+- Computable: no; this is the measure-theoretic semantic layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/StochFunctor.lean`.
+
+### `Ript.Models.Probability.StochFunctor.toStoch_map_dirac`
+
+- Natural-language statement: the bridge sends a finite Dirac matrix to
+  Mathlib's deterministic-kernel constructor.
+- Prerequisites: discrete measurability and singleton measure extensionality.
+- Status: `PROVED`.
+- Computable: the source Dirac matrix is executable; its `Stoch` image is semantic.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/StochFunctor.lean`.
+
+### `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff`
+
+- Natural-language statement: two interpreted `Stoch` morphisms are equal if
+  and only if their exact source matrices are equal.
+- Prerequisites: singleton recovery and injectivity of `ℚ≥0 → ℝ≥0∞`.
+- Status: `PROVED`; equivalently, `toStoch` is faithful.
+- Computable: equality reflection is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/StochFunctor.lean`.
+
+### `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top`
+
+- Natural-language statement: the product σ-algebra on two finite discrete
+  carriers contains every subset and therefore equals `⊤`.
+- Prerequisites: finite countability and measurable singletons.
+- Status: `PROVED`.
+- Computable: proof-layer identification of measurable structures.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/StochFunctor.lean`.
+
+### `Ript.Models.Probability.StochFunctor.toStoch_map_tensor`
+
+- Natural-language statement: interpreting independent finite tensor
+  composition agrees with Mathlib parallel kernel composition, up to the
+  canonical identity-kernel isomorphism between the product and explicit
+  discrete measurable structures.
+- Prerequisites: `Kernel.parallelComp_apply_prod`, product discreteness, and
+  exact preservation of nonnegative-rational multiplication in `ℝ≥0∞`.
+- Status: `PROVED`.
+- Computable: no; the source tensor is executable, while this comparison lives
+  in the semantic `Stoch` layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/StochFunctor.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -584,3 +662,10 @@ generally infinite and therefore is not closed in the finite-object category.
     natural isomorphisms. Tensor, copy, and discard can be transported along
     the equivalence, but are not marked as native Kleisli capabilities until
     their operations and laws receive a dedicated compiled interface.
+11. The Stage-5 bridge reuses Mathlib's `Kernel`, `SFinKer`, and `Stoch`; Ript
+    does not maintain a parallel measure theory. Exact finite rows are the
+    executable source, while finite Dirac measures are their semantic image.
+12. The target tensor uses Mathlib's product σ-algebra, whereas the object
+    functor uses `⊤` on every finite carrier. Their equality is proved, and the
+    morphism theorem is stated through an explicit deterministic identity
+    isomorphism rather than relying on hidden definitional equality.
