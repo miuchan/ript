@@ -18,12 +18,15 @@ canonical term models.
 The project builds these layers in a strict order. It now includes an exact,
 executable finite stochastic model, its finite-distribution Kleisli
 representation, and a faithful semantic bridge into Mathlib's
-measure-theoretic category `Stoch`. General measurable-space models, decision
-theory, thermodynamics, quantum theory, and higher categories remain research
-directions rather than current capabilities.
+measure-theoretic category `Stoch`. On top of that bridge, Ript now formalizes
+Blackwell comparison, exact executable finite Bayes risk, resource-bounded
+decision risk, and task-relative semantic value. General measurable-space
+models, the converse Blackwell representation theorem, thermodynamics,
+quantum theory, and higher categories remain research directions rather than
+current capabilities.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–5 are implemented and
+> Ript is early-stage research software. Stages 1–6 are implemented and
 > checked by Lean's kernel; the public API is not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
 
@@ -204,6 +207,54 @@ All noncomputability is confined to this semantic bridge; `FinStoch`,
 `FinDist`, their compositions, and their examples remain executable exact
 `ℚ≥0` data.
 
+### 8. Blackwell comparison and task-relative decision value
+
+An exact finite experiment is a channel `P : Θ ⟶ X` from hidden states to
+observations. Ript says that `P` Blackwell-dominates `Q : Θ ⟶ Y` precisely when
+there is a stochastic garbling `κ : X ⟶ Y` with
+
+```math
+P mathbin{\gg} \kappa = Q.
+```
+
+This is an operational simulation order, not an entropy comparison. It is
+reflexive and transitive, is preserved by common preprocessing and independent
+tensor products, and has a resource-certified variant whose post-processing
+budgets compose additively.
+
+Ript supplies two deliberately separated decision layers:
+
+- The semantic layer sends exact finite data through `toStoch` and reuses
+  Mathlib's `bayesRisk_le_bayesRisk_comp`. Therefore garbling cannot decrease
+  optimal measure-theoretic Bayes risk.
+- The executable layer defines `DecisionProblem` with a `FinDist` prior,
+  finite actions, and exact `ℚ≥0` loss. `finiteBayesRisk` is a sum of genuine
+  `Finset.min'` minima—not an unconditional infimum—and Ript proves that no
+  randomized finite decision channel can beat it. This yields an independent
+  exact-rational data-processing proof.
+
+For computational constraints, `DecisionResourceModel` assigns a natural-
+number cost to each deterministic decision rule and supplies a zero-cost
+fallback. `resourceBayesRisk` minimizes over the finitely enumerated feasible
+rules. More budget cannot worsen risk. A `DecisionReduction` must explicitly
+prove both that lifted rules lose no decision quality and that their cost grows
+by at most a stated additive overhead; the zero-overhead specialization says
+free post-processing cannot create resource-bounded value.
+
+Finally,
+
+```math
+\operatorname{value}(P;\text{task},\text{baseline})
+= \operatorname{risk}(\text{baseline})-\operatorname{risk}(P)
+```
+
+defines semantic value relative to an explicit prior, action space, loss,
+baseline experiment, and optional budget. The same channel can therefore have
+positive value for one task and zero value for another. Ript proves garbling
+monotonicity, invariance under information equivalence, zero value at the
+baseline, task irrelevance for zero loss, and budget monotonicity. It does
+**not** identify this task-relative quantity with Shannon information.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -244,6 +295,16 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | The `Stoch` interpretation is faithful on exact finite channels. |
 | `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | A product of finite discrete measurable spaces is again discrete. |
 | `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | Independent tensor composition is preserved through the canonical comparison isomorphism. |
+| `Ript.Core.Simulates.trans` | Post-processing simulation is transitive. |
+| `Ript.Core.SimulatesWithin.trans` | Resource-certified simulations compose with additive budgets. |
+| `Ript.Models.Decision.Blackwell.dominates_tensor` | Independent products preserve Blackwell dominance. |
+| `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell dominance implies Mathlib's Bayes-risk order. |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | No randomized finite rule beats the computed finite optimum. |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Garbling cannot improve exact executable finite Bayes risk. |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | More decision budget cannot worsen optimal risk. |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Certified reductions transport risk with explicit additive overhead. |
+| `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling cannot increase task-relative semantic value. |
+| `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | Resource value obeys certified reductions and their overhead. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -264,7 +325,8 @@ finished physical theory.
 | 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
 | 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
-| 6–11 | Further semantic and higher layers | **OPEN RESEARCH** |
+| 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
+| 7–11 | Causal, computational, thermal, quantum, and higher layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -277,13 +339,16 @@ Implemented model support is intentionally narrow:
 | Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
 | Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
 | Mathlib `Stoch` bridge, finite discrete image | Yes | Yes, up to canonical isomorphism | Semantic layer | Faithful Markov-kernel interpretation; source matrices stay executable |
+| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Blackwell order respects `FinStoch` products; finite minima, resource budgets, task-relative value |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
-discard law. Its finite discrete image now has checked measure-theoretic
-semantics in Mathlib `Stoch`. Generic stochastic models over arbitrary
-measurable spaces, generic copy/discard and convex interfaces, thermal
-structure, quantum channels, and univalent or higher-categorical structure are
-**not implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
+discard law. Its finite discrete image has checked measure-theoretic semantics
+in Mathlib `Stoch`, and its exact finite decision layer has compiled Blackwell,
+Bayes-risk, resource, and semantic-value theorems. The converse finite
+Blackwell--Sherman--Stein representation theorem, general measurable decision
+problems, generic copy/discard and convex interfaces, thermal structure,
+quantum channels, and univalent or higher-categorical structure are **not
+implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
 statements. There are currently no registered conjectures.
 
@@ -315,16 +380,22 @@ flowchart LR
   KL <--> EQ
   CK --> ST["Faithful Mathlib Stoch semantic bridge"]
   ST --> MT["Finite discrete Markov kernels"]
+  CK --> BW["Blackwell garbling order"]
+  ST --> SB["Mathlib semantic Bayes risk"]
+  BW --> FR["Executable finite Bayes risk"]
+  FR --> RR["Resource-bounded decision risk"]
+  RR --> SV["Task-relative semantic value"]
+  BW --> SB
 ```
 
 | Layer | Main modules | Responsibility |
 | --- | --- | --- |
 | Resource interfaces | `Ript.Resource.*` | Ordered budgets, budgeted morphisms, weakening |
-| Process capabilities | `Ript.Core.*` | Sequential, tensor, and structural cost laws |
+| Process capabilities | `Ript.Core.*` | Sequential, tensor, structural cost laws, and post-processing simulation |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Deterministic functions, finite distributions, and stochastic channels |
-| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, and rational probabilities |
+| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, Blackwell comparison, and decision risk |
+| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, and exact decision values |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
 The sequential core remains independently usable. The symmetric monoidal layer
@@ -348,13 +419,14 @@ Ript is designed so that proof trust is inspectable rather than implicit.
   namespace disguised as completed results.
 
 The stage-1 and stage-2 flagship audit reports only Lean's standard `propext`
-and `Quot.sound` principles where required. Finite-stochastic, Kleisli, and
-`Stoch` bridge theorem proofs also report `Classical.choice` through Mathlib's
-generic finite-sum, measure, and category infrastructure. Runtime data is
-supplied by explicit computational `Fintype` and `DecidableEq` values: no
-finite-model definition is `noncomputable`, and CI executes exact `ℚ≥0`
-examples. Noncomputability appears only in the measure-theoretic semantic
-module. The audit reports no compiler-trust escape or placeholder-proof axiom.
+and `Quot.sound` principles where required. Finite-stochastic, Kleisli,
+decision, and `Stoch` theorem proofs also report `Classical.choice` through
+Mathlib's generic finite-sum, finite-function, measure, and category
+infrastructure. Runtime data is supplied by explicit computational `Fintype`
+and `DecidableEq` values: finite channels, finite risks, budgeted risks, and
+semantic values are executable exact `ℚ≥0` data. Noncomputability appears only
+in the measure-theoretic `Stoch`/semantic-Bayes-risk boundary. The audit reports
+no compiler-trust escape or placeholder-proof axiom.
 
 For exact per-theorem output, read [AXIOMS.md](AXIOMS.md) or run:
 
@@ -457,6 +529,14 @@ the fair distribution, deterministic negation is a deterministic kernel, and
 two fair coins satisfy the tensor comparison diagram. These are semantic proof
 examples rather than additional runtime output.
 
+`Ript/Examples/SimpleDecision.lean` closes the loop with a fair hidden bit and
+zero-one guessing loss. Perfect observation has risk `0`; an independent
+observation has risk `1/2`. A resource model charges `0` for constant rules and
+`1` for observation-dependent rules, so the perfect experiment's budgeted risk
+falls from `1/2` to `0` when the budget grows from `0` to `1`. Its task value is
+exactly `1/2` for guessing and `0` for a zero-loss irrelevant task. Six exact
+`#eval decide` contracts all print `true` and are checked by CI.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -475,6 +555,8 @@ import Ript
 import Ript.Semantics.Eval
 -- or, for the finite measure-theoretic bridge:
 import Ript.Models.Probability.StochFunctor
+-- or, for Blackwell order and task-relative decision value:
+import Ript.Models.Decision.SemanticValue
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -488,7 +570,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Deterministic models, exact finite probability, and the Mathlib `Stoch` bridge |
+| [`Ript/Models/`](Ript/Models/) | Deterministic models, exact finite probability, the Mathlib `Stoch` bridge, and finite decision theory |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -529,8 +611,15 @@ force-pushes and branch deletion are disabled.
 6. **Treat assumptions as versioned API surface.** A theorem acquiring a new
    axiom is a gate failure, not a footnote discovered later.
 7. **Distinguish implementation from aspiration.** The finite discrete `Stoch`
-   image is implemented; general stochastic, causal, thermal, quantum, and
-   higher layers remain visibly marked as open research.
+   image and exact finite decision layer are implemented; converse
+   representation, general stochastic, causal, thermal, quantum, and higher
+   layers remain visibly marked as open research.
+8. **Make information task-relative when value is the claim.** A semantic-value
+   statement names its prior, actions, loss, baseline, and resource budget; it
+   is not silently promoted to a task-independent entropy claim.
+9. **Charge computation explicitly.** A post-processing becomes a resource
+   comparison only after a reduction supplies both its decision-quality bound
+   and additive cost overhead.
 
 ## Roadmap
 
@@ -553,6 +642,11 @@ updated assumption audit.
 - [x] Exact finite stochastic category, tensor bifunctor, Dirac embedding, copy, discard, and typed example
 - [x] Exact finite distributions, Kleisli category, two comparison functors, and categorical equivalence
 - [x] Faithful finite-channel functor into Mathlib `Stoch`, including deterministic and tensor comparison theorems
+- [x] Blackwell garbling order, equivalence, tensor compatibility, and Mathlib Bayes-risk data processing
+- [x] Executable exact finite Bayes risk, finite optimal decisions, and randomized-rule lower bound
+- [x] Resource-bounded decision risk, budget monotonicity, and additive-overhead reductions
+- [x] Task-relative semantic value, equivalence, garbling, budget, baseline, and task-irrelevance laws
+- [x] Executable perfect-versus-uninformative Boolean decision example
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -560,6 +654,9 @@ updated assumption audit.
 - [ ] Generic copy/discard capability interfaces beyond the finite stochastic model
 - [ ] Stochastic semantics over general measurable spaces beyond the finite discrete image
 - [ ] Convex and causal structure
+- [ ] Converse finite Blackwell--Sherman--Stein representation theorem
+- [ ] General measurable-space decision problems beyond exact finite data
+- [ ] Rich computational cost models and operationally validated reduction costs
 - [ ] Thermal/resource-theoretic models
 - [ ] Quantum-channel models
 - [ ] Carefully isolated univalent or higher-categorical layers
@@ -602,7 +699,7 @@ Not in every semantic model. The generic laws are subadditive, so syntax cost is
 a sound upper bound. Cost is proved exact in the canonical sequential and
 monoidal term models.
 
-### Does Ript already support probability or quantum channels?
+### Does Ript already support probability, decision theory, or quantum channels?
 
 Ript supports exact executable finite stochastic channels over `ℚ≥0`, including
 composition, tensor, Dirac channels, copy, and discard. It also proves their
@@ -611,6 +708,17 @@ distributions and gives a faithful functor from them into Mathlib's
 measure-theoretic category `Stoch`, preserving deterministic channels and
 tensor up to a canonical comparison isomorphism. Arbitrary measurable-space
 stochastic models, thermal models, and quantum channels remain roadmap items.
+For finite exact data, Ript also supports Blackwell garbling, executable Bayes
+risk, resource-bounded risk, and task-relative semantic value. It proves the
+forward data-processing direction. It does not yet prove the converse finite
+Blackwell representation theorem or a general measurable decision theory.
+
+### Is semantic value the same thing as mutual information?
+
+No. Ript's current `semanticValue` is a decision-theoretic risk improvement
+relative to a specified baseline. Changing the prior, action space, loss, or
+budget can change the value of the same experiment. No equality with Shannon
+mutual information is claimed.
 
 ### Does the monoidal layer imply copying or discarding?
 

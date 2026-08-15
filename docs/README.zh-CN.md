@@ -15,11 +15,13 @@ Ript 形式化了 **Resource-Indexed Information Process Theory（资源索引�
 推导，以及通过规范项模型建立的相对完备性。
 
 本项目严格按层推进。目前已经包含精确、可执行的有限随机模型、其有限分布 Kleisli 表示，
-以及到 Mathlib 测度论范畴 `Stoch` 的 faithful 语义桥。一般可测空间上的随机模型、决策论、
-热力学、量子理论和高阶范畴仍是研究方向，而不是当前能力。
+以及到 Mathlib 测度论范畴 `Stoch` 的 faithful 语义桥。在此基础上，Ript 还已形式化
+Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风险与任务相对语义价值。
+一般可测空间模型、Blackwell 反向表示定理、热力学、量子理论和高阶范畴仍是研究方向，
+而不是当前能力。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–5 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–6 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -167,6 +169,43 @@ Mathlib 的测度论概率库。每个有限载体都使用离散可测空间；
 因此可测空间之间的识别明确出现在定理边界上。所有不可计算性都被限制在这层语义桥中；
 `FinStoch`、`FinDist`、它们的复合与运行示例仍是可执行的精确 `ℚ≥0` 数据。
 
+### 8. Blackwell 比较与任务相对决策价值
+
+精确有限实验是从隐藏状态到观察的信道 `P : Θ ⟶ X`。Ript 定义 `P` Blackwell 支配
+`Q : Θ ⟶ Y`，当且仅当存在随机 garbling `κ : X ⟶ Y` 使
+
+```math
+P mathbin{\gg} \kappa = Q.
+```
+
+这是操作性的模拟序，而不是熵的比较。它具有自反性和传递性，在共同预处理与独立 tensor
+下保持；其资源认证版本还记录后处理预算，并在复合时将预算相加。
+
+Ript 有意分离两层决策理论：
+
+- 语义层通过 `toStoch` 解释精确有限数据，并直接复用 Mathlib 的
+  `bayesRisk_le_bayesRisk_comp`，从而证明 garbling 不会降低测度论最优 Bayes 风险。
+- 可执行层用 `FinDist` 先验、有限行动和精确 `ℚ≥0` 损失定义 `DecisionProblem`。
+  `finiteBayesRisk` 是一组真正 `Finset.min'` 有限最小值的和，不是无条件下确界；Ript
+  还证明任何随机化有限决策信道都不能优于这个值，由此得到独立的精确有理数数据处理证明。
+
+计算约束由 `DecisionResourceModel` 表示：它给每个确定性决策规则赋予自然数成本，并提供
+零成本后备规则。`resourceBayesRisk` 在有限枚举的可行规则中取最小值；增加预算不会使风险
+变差。`DecisionReduction` 必须显式证明提升后的规则不损失决策质量，并且成本至多增加指定
+的加法 overhead。零 overhead 的特例正是“免费后处理不能创造资源受限价值”。
+
+最后，
+
+```math
+\operatorname{value}(P;\text{任务},\text{基线})
+= \operatorname{risk}(\text{基线})-\operatorname{risk}(P)
+```
+
+把语义价值定义为相对于明确先验、行动空间、损失、基线实验与可选预算的风险改善。因此，
+同一个信道可对一个任务有正价值、对另一个任务为零。Ript 已证明 garbling 单调性、信息
+等价不变性、相对自身基线为零、零损失任务的无关性，以及预算单调性；它**不**把这个任务
+相对量等同于 Shannon 信息。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -206,6 +245,16 @@ Mathlib 的测度论概率库。每个有限载体都使用离散可测空间；
 | `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | `Stoch` 解释不会丢失精确有限信道信息。 |
 | `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | 两个有限离散可测空间的积仍是离散空间。 |
 | `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | 独立 tensor 复合在规范比较同构下得到保持。 |
+| `Ript.Core.Simulates.trans` | 后处理模拟具有传递性。 |
+| `Ript.Core.SimulatesWithin.trans` | 带资源认证的模拟按加法预算复合。 |
+| `Ript.Models.Decision.Blackwell.dominates_tensor` | 独立积保持 Blackwell 支配。 |
+| `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell 支配蕴含 Mathlib Bayes 风险序。 |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | 随机化有限规则不能优于计算出的有限最优值。 |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Garbling 不能改善精确可执行的有限 Bayes 风险。 |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | 更多决策预算不会使最优风险变差。 |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 认证 reduction 按显式加法 overhead 传递风险。 |
+| `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling 不能增加任务相对语义价值。 |
+| `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | 资源价值服从认证 reduction 及其 overhead。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -223,7 +272,8 @@ Mathlib 的测度论概率库。每个有限载体都使用离散可测空间；
 | 3 | 可执行的有限随机模型 | **PROVED** |
 | 4 | 有限分布的 Kleisli 表示 | **PROVED** |
 | 5 | 到 Mathlib `Stoch` 的 faithful 有限信道桥 | **PROVED** |
-| 6–11 | 后续语义模型与高阶层 | **OPEN RESEARCH** |
+| 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
+| 7–11 | 因果、计算、热力学、量子与高阶层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -236,10 +286,12 @@ Mathlib 的测度论概率库。每个有限载体都使用离散可测空间；
 | 精确有限随机信道 | 是 | 是 | 可执行 | 归一化 `ℚ≥0` 矩阵、Dirac、复制与丢弃 |
 | 有限分布 Kleisli 范畴 | 是 | 否 | 可执行 | 精确 `pure`/`bind`，与 `FinStoch` 范畴等价 |
 | Mathlib `Stoch` 桥的有限离散像 | 是 | 是，在规范同构意义下 | 语义层 | faithful Markov-kernel 解释；源矩阵保持可执行 |
+| 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | Blackwell 序保持 `FinStoch` 积；有限最小值、资源预算与任务相对价值 |
 
-有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像现在也具有
-经过检验的 Mathlib `Stoch` 测度论语义。任意可测空间上的通用随机模型、通用复制/丢弃与凸
-结构接口、热结构、量子信道，以及单价或高阶范畴结构都**尚未实现**。权威能力矩阵见
+有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
+的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
+资源与语义价值定理。有限 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、通用
+复制/丢弃与凸结构接口、热结构、量子信道，以及单价或高阶范畴结构都**尚未实现**。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
 
@@ -271,16 +323,22 @@ flowchart LR
   KL <--> EQ
   CK --> ST["faithful Mathlib Stoch 语义桥"]
   ST --> MT["有限离散 Markov kernels"]
+  CK --> BW["Blackwell garbling 序"]
+  ST --> SB["Mathlib 语义 Bayes 风险"]
+  BW --> FR["可执行有限 Bayes 风险"]
+  FR --> RR["资源受限决策风险"]
+  RR --> SV["任务相对语义价值"]
+  BW --> SB
 ```
 
 | 层 | 主要模块 | 职责 |
 | --- | --- | --- |
 | 资源接口 | `Ript.Resource.*` | 有序预算、预算态射与预算放宽 |
-| 过程能力 | `Ript.Core.*` | 串行、张量和结构成本律 |
+| 过程能力 | `Ript.Core.*` | 串行、张量、结构成本律与后处理模拟 |
 | 可执行语法 | `Ript.Syntax.*` | 带类型表达式、递归成本与推导 |
 | 语义 | `Ript.Semantics.*` | 解释、求值、可靠性与完备性 |
-| 具体模型 | `Ript.Models.*` | 有限函数、有限分布与精确有限随机信道 |
-| 可执行示例 | `Ript.Examples.*` | 计算行为、预算检查与有理概率 |
+| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 比较与决策风险 |
+| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率与精确决策价值 |
 | 审计界面 | `Ript.Audit.*` | 声明 lint 与内核假设报告 |
 
 串行核心可以独立使用。对称幺半群层通过独立接口扩展它，而不会把张量假设强行塞入每个
@@ -300,10 +358,11 @@ Ript 的目标是让证明信任可以检查，而不是隐含在工程习惯里
 - 未证明的研究主张只能进入 `CONJECTURES.md`，不能伪装成已完成定理进入命名空间。
 
 Stage 1 和 Stage 2 的旗舰审计只在必要处报告 Lean 的标准原则 `propext` 与
-`Quot.sound`。有限随机、Kleisli 与 `Stoch` 桥定理的证明还会通过 Mathlib 通用有限和、测度
-及范畴基础设施报告 `Classical.choice`；运行时信道数据由显式、可计算的 `Fintype` 和
-`DecidableEq` 提供，没有有限模型定义被标为 `noncomputable`，CI 会实际执行精确 `ℚ≥0`
-示例。不可计算性只出现在测度论语义模块中。审计不含编译器信任逃逸或占位证明公理。
+`Quot.sound`。有限随机、Kleisli、决策与 `Stoch` 定理的证明还会通过 Mathlib 通用有限和、
+有限函数空间、测度及范畴基础设施报告 `Classical.choice`。运行时数据由显式、可计算的
+`Fintype` 和 `DecidableEq` 提供；有限信道、有限风险、预算风险与语义价值都是可执行的精确
+`ℚ≥0` 数据。不可计算性只出现在测度论 `Stoch`/语义 Bayes 风险边界。审计不含编译器信任
+逃逸或占位证明公理。
 
 查看逐定理输出：
 
@@ -396,6 +455,12 @@ bind、双向矩阵转换和范畴等价中的函子，四个检查也全部输�
 singleton 质量；带噪否定保持公平分布；确定性否定确实成为确定性 kernel；两枚独立公平
 硬币满足 tensor 比较交换图。这些是语义证明示例，不会增加额外的运行时输出。
 
+`Ript/Examples/SimpleDecision.lean` 用公平隐藏比特与零一猜测损失闭合整条链路。完美观察的
+风险是 `0`，独立观察的风险是 `1/2`。资源模型对常量规则收费 `0`，对依赖观察的规则收费
+`1`，因此预算从 `0` 增加到 `1` 时，完美实验的预算风险由 `1/2` 降到 `0`。它对猜测任务的
+价值恰为 `1/2`，对零损失无关任务则为 `0`。六个精确 `#eval decide` 契约全部输出 `true`，
+并由 CI 检查。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -413,6 +478,8 @@ import Ript
 import Ript.Semantics.Eval
 -- 或者只导入有限测度论语义桥：
 import Ript.Models.Probability.StochFunctor
+-- 或者导入 Blackwell 序与任务相对决策价值：
+import Ript.Models.Decision.SemanticValue
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -426,7 +493,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 确定性模型、精确有限概率与 Mathlib `Stoch` 语义桥 |
+| [`Ript/Models/`](../Ript/Models/) | 确定性模型、精确有限概率、Mathlib `Stoch` 语义桥与有限决策论 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -459,8 +526,12 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 4. **分离可执行语法与证明商。**完备性使用商模型，不应让计算代码无端继承不可计算性。
 5. **明确完备性的范围。**每项完备性结论都点名规范模型和证明边界。
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
-7. **区分实现与愿景。**有限离散 `Stoch` 像已经实现；一般随机、因果、热力学、量子和高阶
-   层仍必须清楚标记为开放研究。
+7. **区分实现与愿景。**有限离散 `Stoch` 像和精确有限决策层已经实现；反向表示、一般随机、
+   因果、热力学、量子和高阶层仍必须清楚标记为开放研究。
+8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
+   不能悄然升级为任务无关的熵主张。
+9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
+   才能成为资源比较。
 
 ## 路线图
 
@@ -480,6 +551,11 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 精确有限随机范畴、tensor bifunctor、Dirac 嵌入、复制、丢弃和带类型示例
 - [x] 精确有限分布、Kleisli 范畴、双向比较函子与范畴等价
 - [x] 到 Mathlib `Stoch` 的 faithful 有限信道函子，以及确定性与 tensor 比较定理
+- [x] Blackwell garbling 序、等价、tensor 相容性与 Mathlib Bayes 风险数据处理
+- [x] 可执行精确有限 Bayes 风险、有限最优决策与随机规则下界
+- [x] 资源受限决策风险、预算单调性与带加法 overhead 的 reduction
+- [x] 任务相对语义价值的等价、garbling、预算、基线与任务无关性定律
+- [x] 完美观察对比无信息观察的可执行布尔决策示例
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
@@ -488,6 +564,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 将复制/丢弃能力接口推广到有限随机模型以外
 - [ ] 超出有限离散像的一般可测空间随机语义
 - [ ] 凸结构与因果结构
+- [ ] 有限 Blackwell--Sherman--Stein 反向表示定理
+- [ ] 超出精确有限数据的一般可测空间决策问题
+- [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [ ] 热力学与资源理论模型
 - [ ] 量子信道模型
 - [ ] 严格隔离的单价或高阶范畴层
@@ -523,12 +602,19 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 不是。通用成本律是次可加的，因此语法成本通常是可靠上界。规范串行和幺半群项模型中的
 成本已被证明与语法成本精确相等。
 
-### Ript 已经支持概率或量子信道了吗？
+### Ript 已经支持概率、决策论或量子信道了吗？
 
 Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复合、tensor、Dirac、复制与丢弃，
 并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。项目还给出了到 Mathlib 测度论
 范畴 `Stoch` 的 faithful 函子，在规范比较同构下保持确定性信道与 tensor。任意可测空间上的
-随机模型、热模型和量子信道仍属于路线图。
+随机模型、热模型和量子信道仍属于路线图。对于精确有限数据，Ript 还支持 Blackwell
+garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
+反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
+
+### 语义价值等同于互信息吗？
+
+不等同。当前 `semanticValue` 是相对于指定基线的决策风险改善。改变先验、行动空间、损失或
+预算，都可能改变同一个实验的价值。项目没有声称它与 Shannon 互信息相等。
 
 ### 幺半群层是否自动带来复制或丢弃？
 

@@ -16,13 +16,14 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 
 本プロジェクトは各層を厳密な順序で構築します。現在は、正確で実行可能な有限確率モデル、
 その有限分布 Kleisli 表現、そして Mathlib の測度論的圏 `Stoch` への忠実な意味論的橋渡しを
-含みます。一般の可測空間上の確率モデル、意思決定理論、熱力学、量子理論、高次圏は
-引き続き研究課題です。
+含みます。その上に、Blackwell 比較、正確で実行可能な有限 Bayes リスク、資源制約付き
+意思決定リスク、タスク相対的な意味価値も形式化しました。一般の可測空間モデル、Blackwell
+逆表現定理、熱力学、量子理論、高次圏は引き続き研究課題です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 5 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 6 は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -184,6 +185,47 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 非計算性はこの意味論的橋渡しだけに局所化され、`FinStoch`、`FinDist`、その合成と実行例は
 正確な `ℚ≥0` データとして引き続き実行可能です。
 
+### 8. Blackwell 比較とタスク相対的な意思決定価値
+
+正確な有限実験は、隠れ状態から観測へのチャネル `P : Θ ⟶ X` です。Ript では、確率的
+garbling `κ : X ⟶ Y` が存在して
+
+```math
+P mathbin{\gg} \kappa = Q
+```
+
+となるとき、かつそのときに限り `P` が `Q : Θ ⟶ Y` を Blackwell 支配すると定義します。
+これはエントロピー比較ではなく操作的シミュレーション順序です。反射的・推移的で、共通の
+前処理と独立テンソル積で保存されます。資源認証版は後処理予算も記録し、合成時に加算します。
+
+Ript は二つの意思決定層を意図的に分離します。
+
+- 意味論層は正確な有限データを `toStoch` で写し、Mathlib の
+  `bayesRisk_le_bayesRisk_comp` を再利用します。したがって garbling は測度論的な最適
+  Bayes リスクを減少させません。
+- 実行可能層の `DecisionProblem` は `FinDist` 事前分布、有限行動、正確な `ℚ≥0` 損失を
+  持ちます。`finiteBayesRisk` は無条件の下限ではなく、実際の `Finset.min'` 有限最小値の
+  和です。ランダム化された有限意思決定チャネルもこの値を下回れないため、正確な有理数だけで
+  独立したデータ処理証明が得られます。
+
+計算制約には `DecisionResourceModel` を使います。各決定論的ルールへ自然数コストを割り当て、
+コスト 0 のフォールバックを備えます。`resourceBayesRisk` は有限に列挙された実行可能ルール上で
+最小化され、予算を増やしてもリスクは悪化しません。`DecisionReduction` は、持ち上げたルールの
+意思決定品質が低下しないことと、コスト増加が明示した加法的 overhead 以下であることの両方を
+証明します。overhead が 0 の場合、自由な後処理は資源制約付き価値を作れません。
+
+最後に、
+
+```math
+\operatorname{value}(P;\text{タスク},\text{基準})
+= \operatorname{risk}(\text{基準})-\operatorname{risk}(P)
+```
+
+として、意味価値を明示的な事前分布、行動空間、損失、基準実験、任意の予算に相対化します。
+同じチャネルが、あるタスクでは正の価値を持ち、別のタスクでは 0 になり得ます。garbling
+単調性、情報同値での不変性、基準自身でのゼロ、ゼロ損失タスクでの無関連性、予算単調性を
+証明済みです。このタスク相対量を Shannon 情報と同一視してはいません。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -224,6 +266,16 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 | `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | `Stoch` 解釈は正確な有限チャネルの情報を失いません。 |
 | `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | 有限離散可測空間の積も離散です。 |
 | `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | 独立なテンソル合成は標準比較同型を介して保存されます。 |
+| `Ript.Core.Simulates.trans` | 後処理シミュレーションは推移的です。 |
+| `Ript.Core.SimulatesWithin.trans` | 資源認証付きシミュレーションは加法予算で合成されます。 |
+| `Ript.Models.Decision.Blackwell.dominates_tensor` | 独立積は Blackwell 支配を保存します。 |
+| `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell 支配から Mathlib の Bayes リスク順序が従います。 |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | ランダム化有限ルールは計算済み有限最適値を下回りません。 |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Garbling は正確で実行可能な有限 Bayes リスクを改善しません。 |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | 意思決定予算を増やしても最適リスクは悪化しません。 |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 認証付き reduction は明示的な加法 overhead とともにリスクを移送します。 |
+| `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling はタスク相対的意味価値を増やしません。 |
+| `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | 資源価値は認証付き reduction と overhead に従います。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -242,7 +294,8 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 | 3 | 実行可能な有限確率モデル | **PROVED** |
 | 4 | 有限分布の Kleisli 表現 | **PROVED** |
 | 5 | Mathlib `Stoch` への忠実な有限チャネル橋 | **PROVED** |
-| 6–11 | 追加の意味論モデルと高次層 | **OPEN RESEARCH** |
+| 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
+| 7–11 | 因果・計算・熱・量子・高次の層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -255,11 +308,13 @@ Dirac 行列、合成は Chapman–Kolmogorov の有限和、テンソルは積�
 | 正確な有限確率チャネル | 可 | 可 | 実行可能 | 正規化された `ℚ≥0` 行列、Dirac、コピー、破棄 |
 | 有限分布 Kleisli 圏 | 可 | 不可 | 実行可能 | 正確な `pure`/`bind`、`FinStoch` と圏同値 |
 | Mathlib `Stoch` 橋の有限離散像 | 可 | 可（標準同型を介して） | 意味論層 | 忠実な Markov-kernel 解釈；元の行列は実行可能 |
+| 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | Blackwell 順序は `FinStoch` 積を保存；有限最小値、資源予算、タスク相対価値 |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
-検証済みの測度論的意味論もあります。任意の可測空間上の一般的な確率モデル、一般的な
-コピー・破棄および凸構造のインターフェース、熱的構造、量子チャネル、ユニバレント構造、
-高次圏構造は**未実装**です。正式な能力表は
+検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
+Bayes リスク、資源、意味価値定理があります。有限 Blackwell--Sherman--Stein 逆表現定理、
+一般可測意思決定問題、一般的なコピー・破棄および凸構造、熱的構造、量子チャネル、
+ユニバレント構造、高次圏構造は**未実装**です。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
 [CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
 
@@ -291,16 +346,22 @@ flowchart LR
   KL <--> EQ
   CK --> ST["忠実な Mathlib Stoch 意味論的橋"]
   ST --> MT["有限離散 Markov kernels"]
+  CK --> BW["Blackwell garbling 順序"]
+  ST --> SB["Mathlib 意味論的 Bayes リスク"]
+  BW --> FR["実行可能有限 Bayes リスク"]
+  FR --> RR["資源制約付き意思決定リスク"]
+  RR --> SV["タスク相対的意味価値"]
+  BW --> SB
 ```
 
 | 層 | 主なモジュール | 責務 |
 | --- | --- | --- |
 | 資源インターフェース | `Ript.Resource.*` | 順序付き予算、予算付き射、予算の弱化 |
-| プロセス能力 | `Ript.Core.*` | 直列・テンソル・構造コスト則 |
+| プロセス能力 | `Ript.Core.*` | 直列・テンソル・構造コスト則と後処理シミュレーション |
 | 実行可能構文 | `Ript.Syntax.*` | 型付き式、再帰的コスト、導出 |
 | 意味論 | `Ript.Semantics.*` | 解釈、評価、健全性、完全性 |
-| 具体モデル | `Ript.Models.*` | 有限関数、有限分布、正確な有限確率チャネル |
-| 実行可能例 | `Ript.Examples.*` | 計算結果と予算検査 |
+| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 比較、意思決定リスク |
+| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値 |
 | 監査面 | `Ript.Audit.*` | 宣言 lint とカーネル仮定の報告 |
 
 直列の核は単独で利用できます。対称モノイダル層は別のインターフェースとして拡張され、すべての
@@ -320,10 +381,11 @@ Ript は、証明への信頼を暗黙の慣習ではなく検査可能な対象
 - 未証明の研究上の主張は `CONJECTURES.md` に置き、完成済み定理として名前空間に入れません。
 
 Stage 1 と Stage 2 の主要定理の監査では、必要な箇所に Lean 標準の `propext` と
-`Quot.sound` のみが現れます。有限確率、Kleisli、`Stoch` 橋の定理では、Mathlib の一般的な
-有限和・測度・圏論の基盤を通して `Classical.choice` も報告されます。実行時データは列挙と
-決定可能等式を明示的に保持し、有限モデルの定義は `noncomputable` ではなく、CI は正確な
-`ℚ≥0` の計算を実行します。非計算性は測度論的意味論モジュールだけに現れます。
+`Quot.sound` のみが現れます。有限確率、Kleisli、意思決定、`Stoch` の定理では、Mathlib の
+一般的な有限和・有限関数空間・測度・圏論基盤を通して `Classical.choice` も報告されます。
+実行時データは列挙と決定可能等式を明示的に保持し、有限チャネル、有限リスク、予算付きリスク、
+意味価値は正確な `ℚ≥0` データとして実行可能です。非計算性は測度論的 `Stoch`／意味論的
+Bayes リスク境界だけに現れます。
 `AXIOMS.md` は各定理の実際の監査出力を完全一致で固定します。
 
 定理ごとの正確な出力は、次で確認できます。
@@ -422,6 +484,13 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 公平なコインがテンソル比較図式を満たすことを証明します。これらは意味論的証明例であり、追加の
 実行時出力はありません。
 
+`Ript/Examples/SimpleDecision.lean` は、公平な隠れビットと 0--1 推測損失で全体を結びます。
+完全観測のリスクは `0`、状態と独立な観測のリスクは `1/2` です。資源モデルは定数ルールを
+コスト `0`、観測依存ルールをコスト `1` とするため、予算を `0` から `1` に増やすと完全実験の
+予算付きリスクは `1/2` から `0` へ下がります。推測タスクでの価値は正確に `1/2`、ゼロ損失の
+無関係タスクでは `0` です。6 個の正確な `#eval decide` 契約はすべて `true` を出力し、CI が
+検査します。
+
 ## Lean 依存パッケージとして使う
 
 Ript はルートモジュール `Ript` を公開します。プレリリース期間中は、変化するブランチではなく、
@@ -440,6 +509,8 @@ import Ript
 import Ript.Semantics.Eval
 -- または、有限の測度論的橋だけを使う場合：
 import Ript.Models.Probability.StochFunctor
+-- または Blackwell 順序とタスク相対的意思決定価値を使う場合：
+import Ript.Models.Decision.SemanticValue
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -453,7 +524,7 @@ import Ript.Models.Probability.StochFunctor
 | [`Ript/Resource/`](../Ript/Resource/) | 資源代数と検証済み予算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
-| [`Ript/Models/`](../Ript/Models/) | 決定論モデル、正確な有限確率、Mathlib `Stoch` 橋 |
+| [`Ript/Models/`](../Ript/Models/) | 決定論モデル、正確な有限確率、Mathlib `Stoch` 橋、有限意思決定理論 |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -486,8 +557,12 @@ import Ript.Models.Probability.StochFunctor
 4. **実行可能構文と証明用の商を分離する。** 完全性の商モデルを理由に計算コードを非計算的にしません。
 5. **完全性の範囲を明記する。** すべての完全性主張が標準モデルと証明境界を指定します。
 6. **仮定をバージョン付き API として扱う。** 新しい公理は後日の注釈ではなく即時のゲート失敗です。
-7. **実装と構想を区別する。** 有限離散 `Stoch` 像は実装済みです。一般確率・因果・熱・量子・
-   高次の未解決層とは明確に分けます。
+7. **実装と構想を区別する。** 有限離散 `Stoch` 像と正確な有限意思決定層は実装済みです。
+   逆表現、一般確率・因果・熱・量子・高次の未解決層とは明確に分けます。
+8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
+   資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
+9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
+   加法的コスト overhead の両方を与えなければなりません。
 
 ## ロードマップ
 
@@ -508,6 +583,11 @@ import Ript.Models.Probability.StochFunctor
 - [x] 正確で実行可能な有限確率チャネル、Dirac 埋め込み、テンソル、コピー、破棄
 - [x] 正確な有限分布、Kleisli 圏、双方向の比較関手、圏同値
 - [x] Mathlib `Stoch` への忠実な有限チャネル関手、決定論的およびテンソル比較定理
+- [x] Blackwell garbling 順序、同値、テンソル互換性、Mathlib Bayes リスクのデータ処理
+- [x] 実行可能な正確有限 Bayes リスク、有限最適決定、ランダム化ルールの下界
+- [x] 資源制約付き意思決定リスク、予算単調性、加法 overhead 付き reduction
+- [x] タスク相対的意味価値の同値・garbling・予算・基準・タスク無関連性の法則
+- [x] 完全観測と無情報観測を比較する実行可能 Boolean 意思決定例
 - [x] 再現可能な CI、宣言 lint、仮定許可リスト
 
 ### 未解決の研究トラック
@@ -515,6 +595,9 @@ import Ript.Models.Probability.StochFunctor
 - [ ] 有限確率モデル以外への、意味論的に正当化されたコピー・破棄能力の拡張
 - [ ] 有限離散像を越える一般可測空間上の確率意味論
 - [ ] 凸構造と因果構造
+- [ ] 有限 Blackwell--Sherman--Stein 逆表現定理
+- [ ] 正確な有限データを越える一般可測空間の意思決定問題
+- [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
 - [ ] 熱力学的・資源理論的モデル
 - [ ] 量子チャネルモデル
 - [ ] 厳密に分離されたユニバレント層または高次圏層
@@ -553,12 +636,21 @@ import Ript.Models.Probability.StochFunctor
 いいえ。一般的なコスト則は劣加法的なので、構文コストは健全な上界です。標準の直列項モデルと
 モノイダル項モデルでは、コストが構文コストと正確に一致することを証明しています。
 
-### 確率や量子チャネルはすでにサポートされていますか？
+### 確率、意思決定理論、量子チャネルはすでにサポートされていますか？
 
 正確な有限確率チャネルはサポートされています。確率は `ℚ≥0` で表され、有限和として実行され、
 正確な有限分布の有限台 Kleisli 圏との同値も証明済みです。さらに Mathlib の測度論的圏
 `Stoch` への忠実な関手があり、決定論的チャネルとテンソルを標準比較同型を介して保存します。
-任意の可測空間上の確率モデル、熱モデル、量子チャネルはロードマップ項目です。
+任意の可測空間上の確率モデル、熱モデル、量子チャネルはロードマップ項目です。正確な有限
+データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
+相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
+一般可測意思決定理論はまだ証明していません。
+
+### 意味価値は相互情報量と同じですか？
+
+いいえ。現在の `semanticValue` は、指定した基準に対する意思決定リスクの改善です。事前分布、
+行動空間、損失、予算を変えると、同じ実験の価値も変わり得ます。Shannon 相互情報量との等式は
+主張していません。
 
 ### モノイダル層があればコピーや破棄も可能ですか？
 
