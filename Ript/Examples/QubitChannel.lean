@@ -1,15 +1,18 @@
 import Mathlib.Tactic.NormNum
+import Ript.Models.Quantum.CompletePositivity
 import Ript.Models.Quantum.Discard
 
 /-!
-# Exact one-qubit Kraus example
+# Exact qubit Kraus and Bell-density examples
 
 The Boolean basis indexes a two-dimensional quantum system.  The Pauli-X
 permutation matrix is proved unitary, packaged as a one-operator Kraus
 channel, and proved to exchange the two computational-basis density matrices.
-The final Boolean checks exercise the corresponding discrete basis action in
-the kernel; arbitrary complex matrix evaluation is intentionally kept in the
-proof layer because real-number equality is not computationally decidable.
+A normalized two-qubit Bell density matrix then exercises complete positivity
+on a non-product joint input. The final Boolean checks exercise the discrete
+basis action in the kernel; arbitrary complex matrix evaluation is
+intentionally kept in the proof layer because real-number equality is not
+computationally decidable.
 -/
 
 set_option autoImplicit false
@@ -75,6 +78,48 @@ theorem discard_basisDensity (value : Bool) :
     (KrausChannel.discard qubit).map (basisDensity value).matrix
         PUnit.unit PUnit.unit = 1 := by
   rw [KrausChannel.discard_map_entry, (basisDensity value).trace_one]
+
+/-- The unnormalized Bell vector in the two-qubit computational basis. -/
+def bellVector : qubit × qubit → ℂ :=
+  fun pair ↦ if pair.1 = pair.2 then 1 else 0
+
+/-- The rank-one projector onto the Bell vector. -/
+def bellProjector : Matrix (qubit × qubit) (qubit × qubit) ℂ :=
+  Matrix.vecMulVec bellVector (star bellVector)
+
+/-- The Bell projector is positive semidefinite. -/
+theorem bellProjector_posSemidef : bellProjector.PosSemidef :=
+  Matrix.posSemidef_vecMulVec_self_star bellVector
+
+/-- Normalizing the Bell projector by one half gives trace one. -/
+theorem bellDensity_trace_one :
+    Matrix.trace (((2 : ℝ)⁻¹) • bellProjector) = 1 := by
+  rw [Matrix.trace_smul]
+  have hcard : Fintype.card qubit = 2 := by decide
+  norm_num [bellProjector, Matrix.trace_vecMulVec, bellVector, dotProduct,
+    Fintype.sum_prod_type, hcard]
+
+/-- The normalized Bell density matrix.  This proof-layer definition is
+noncomputable only because Mathlib's complex operator-order instance is
+noncomputable; its matrix entries are explicit. -/
+noncomputable def bellDensity : DensityMatrix (Object.tensor qubit qubit) where
+  matrix := ((2 : ℝ)⁻¹) • bellProjector
+  posSemidef := bellProjector_posSemidef.smul (by norm_num)
+  trace_one := bellDensity_trace_one
+
+/-- The normalized Bell density contains the expected off-diagonal coherence
+between `|00⟩` and `|11⟩`. -/
+theorem bellDensity_cross_term :
+    bellDensity.matrix (false, false) (true, true) = (2 : ℂ)⁻¹ := by
+  norm_num [bellDensity, bellProjector, bellVector, Matrix.vecMulVec_apply]
+
+/-- Complete positivity preserves the Bell density matrix's positivity when
+Pauli-X is applied to the second qubit and the first qubit is an untouched
+auxiliary system. -/
+theorem bitFlip_amplification_bell_posSemidef :
+    (amplification qubit bitFlip.toLinearMap bellDensity.matrix).PosSemidef :=
+  bitFlip.toLinearMap_isCompletelyPositive qubit bellDensity.matrix
+    bellDensity.posSemidef
 
 /-- Executable action of Pauli-X on computational-basis labels. -/
 def bitFlipBasisLabel (value : Bool) : Bool :=

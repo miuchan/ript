@@ -252,6 +252,15 @@ theorem identity_map (X : Object.{u}) (ρ : Matrix X X ℂ) :
     (identity X).map ρ = ρ := by
   simp [identity, ofOperators]
 
+/-- The canonical linear map of the identity channel is the identity linear
+map. -/
+@[simp]
+theorem identity_toLinearMap (X : Object.{u}) :
+    (identity X).toLinearMap = LinearMap.id := by
+  apply LinearMap.ext
+  intro ρ
+  simp
+
 /-- Serial channel application is operational function composition. -/
 @[simp]
 theorem comp_map (f : KrausChannel X Y) (g : KrausChannel Y Z)

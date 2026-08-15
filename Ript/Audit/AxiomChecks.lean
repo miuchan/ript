@@ -101,7 +101,15 @@ set_option autoImplicit false
 #print axioms Ript.Models.Quantum.KrausChannel.basisBra_complete
 #print axioms Ript.Models.Quantum.KrausChannel.eq_discard
 #print axioms Ript.Models.Quantum.KrausChannel.comp_discard
+#print axioms Ript.Models.Quantum.KrausChannel.identity_toLinearMap
+#print axioms Ript.Models.Quantum.amplification_kronecker
+#print axioms Ript.Models.Quantum.KrausChannel.amplification_eq_tensor_identity
+#print axioms Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive
 #print axioms Ript.Examples.QubitChannel.bitFlipOperator_complete
 #print axioms Ript.Examples.QubitChannel.bitFlip_basisDensity
 #print axioms Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity
 #print axioms Ript.Examples.QubitChannel.discard_basisDensity
+#print axioms Ript.Examples.QubitChannel.bellProjector_posSemidef
+#print axioms Ript.Examples.QubitChannel.bellDensity_trace_one
+#print axioms Ript.Examples.QubitChannel.bellDensity_cross_term
+#print axioms Ript.Examples.QubitChannel.bitFlip_amplification_bell_posSemidef

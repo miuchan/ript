@@ -20,5 +20,9 @@ Only implemented and compiled capabilities are marked as supported.
 
 For the quantum row, “Discard” is the proved trace channel and “Causal” means
 the compiled uniqueness/compatibility laws `eq_discard` and `comp_discard`.
-“Copy” remains deliberately unsupported: no classical copying structure is
-inferred from the chosen quantum basis.
+Every channel's canonical complex-linear action is also proved completely
+positive under identity amplification by every finite auxiliary system. This
+is the ordinary finite-matrix formulation native to the current model, not an
+unproved bridge to Mathlib's analytic C\*-algebra API. “Copy” remains
+deliberately unsupported: no classical copying structure is inferred from the
+chosen quantum basis.
