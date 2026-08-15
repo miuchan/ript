@@ -16,13 +16,14 @@ tiphavajn procezojn, kunmeteblajn rimedlimojn, plenumeblajn interpretojn,
 eksplicitajn egalecderivojn, kaj relativan kompletecon per kanonaj termmodeloj.
 
 La projekto konstruas siajn tavolojn laŭ rigora sinsekvo. Ĝi nun inkluzivas
-ekzaktan, plenumeblan finian stokastan modelon. Mezurteoria probablo,
+ekzaktan, plenumeblan finian stokastan modelon kaj ĝian Kleisli-prezenton per
+finiaj distribuoj. Mezurteoria probablo,
 decidteorio, termodinamiko, kvantuma teorio kaj pli altaj kategorioj restas
 esplorvojoj. Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–3 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–4 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -160,6 +161,21 @@ kunmeton kaj tensoron. Kopiado estas la diagonala mapo, forĵetado celas la unik
 unuan valoron, kaj ĉiu finia stokasta kanalo plenumas la kaŭzan leĝon
 `f ≫ discard = discard`.
 
+### 6. Kleisli-prezento per finiaj distribuoj
+
+`FinDist X` enhavas ekzaktan normaligitan masfunkcion `X → ℚ≥0`. Ĝiaj
+plenumeblaj operacioj `pure` kaj `bind` plenumas la maldekstran kaj dekstran
+unuecleĝojn kaj asociecon. Limigante la Kleisli-objektojn al la samaj
+plenumeblaj finiaj portantoj kiel `FinStoch`, la morfioj estas
+`X → FinDist Y` kaj formas veran kategorion.
+
+Eksplicitaj vic-/matric-konvertoj donas funktorojn ambaŭdirekte. La morfiaj
+konvertoj estas reciproke inversaj, la objekta kongruo estas difina, kaj
+`kleisliEquivalence` pakas la naturajn izomorfiojn kiel kategorian ekvivalentecon.
+La limigo estas necesa: ĉiuj racionalaj distribuoj sur finia portanto ĝenerale
+formas senfinan aron, do ili ne restas en la finia baza kategorio postulata de
+la nelimigita `CategoryTheory.Kleisli` de Mathlib.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -188,6 +204,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | La Dirac-enigo konservas determinisman funkci-kunmeton. |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | La Dirac-enigo estas fidela je finiaj funkcioj. |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | Ĉiu finia stokasta kanalo konservas forĵetadon. |
+| `Ript.Models.FiniteDistribution.FinDist.pure_bind` | Punktaj distribuoj estas maldekstraj unuoj por `bind`. |
+| `Ript.Models.FiniteDistribution.FinDist.bind_pure` | Punktaj distribuoj estas dekstraj unuoj por `bind`. |
+| `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | Ekzakta fini-distribua `bind` estas asocieca. |
+| `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | La inversa konverto reakiras ĉiun matricon. |
+| `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | La inversa konverto reakiras ĉiun Kleisli-morfion. |
+| `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` ekvivalentas al la fini-portanta Kleisli-kategorio de `FinDist`. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -206,7 +228,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 1 | Sinsekva rimed-proceza kerno | **PROVED** |
 | 2 | Tensoro, simetrio, paralelaj rimedoj kaj la strikta libera universala levo | **PROVED** |
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
-| 4 | Kleisli-prezento de finiaj distribuoj | **OPEN RESEARCH** |
+| 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
 | 5–11 | Pliaj semantikaj modeloj kaj pli altaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -218,6 +240,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Sinsekva termmodelo | Jes | Ne | Pruva tavolo | Kvociento laŭ eksplicitaj kategoriaj derivoj |
 | Simetria monoida termmodelo | Jes | Jes | Pruva tavolo | Kvociento laŭ eksplicitaj monoidaj derivoj |
 | Ekzaktaj finiaj stokastaj kanaloj | Jes | Jes | Plenumebla | Normaligitaj `ℚ≥0`-matricoj, Dirac, kopiado, forĵetado |
+| Fini-distribua Kleisli-kategorio | Jes | Ne | Plenumebla | Ekzaktaj `pure`/`bind`; kategorie ekvivalenta al `FinStoch` |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo.
 Ĝenerala konvekseco, mezurteoria probablo, termika strukturo, kvantumaj kanaloj,
@@ -249,6 +272,9 @@ flowchart LR
   T --> U
   F["Ekzaktaj finiaj stokastaj matricoj"] --> CK["Chapman–Kolmogorov-kategorio"]
   CK --> EX["Plenumebla tiphava interpreto"]
+  FD["Ekzaktaj FinDist pure kaj bind"] --> KL["Fini-portanta Kleisli-kategorio"]
+  CK <--> EQ["Kategoria ekvivalenteco"]
+  KL <--> EQ
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -257,7 +283,7 @@ flowchart LR
 | Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj |
 | Plenumebla sintakso | `Ript.Syntax.*` | Tiphavaj esprimoj, rekursia kosto, derivoj |
 | Semantiko | `Ript.Semantics.*` | Interpretoj, interpretado, ĝusteco, kompleteco |
-| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, mezuritaj funkcioj kaj ekzaktaj stokastaj kanaloj |
+| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, finiaj distribuoj kaj ekzaktaj stokastaj kanaloj |
 | Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj kaj buĝetkontroloj |
 | Revizia surfaco | `Ript.Audit.*` | Deklar-lintado kaj raportado de kernaj aksiomoj |
 
@@ -282,7 +308,7 @@ Ript estas projektita tiel, ke pruva fido estas inspektebla, ne implicita.
 
 La revizio de la ĉefaj teoremoj de Etapoj 1 kaj 2 raportas nur la normajn
 Lean-principojn `propext` kaj `Quot.sound` kie necesas. La pruvoj pri finiaj
-stokastaj teoremoj ankaŭ raportas `Classical.choice` tra la ĝenerala pruva
+stokastaj kaj Kleisli-prezentaj teoremoj ankaŭ raportas `Classical.choice` tra la ĝenerala pruva
 infrastrukturo de Mathlib por `Fintype` kaj finiaj sumoj. Tio ne produktas
 rultempajn datumojn: stokastaj objektoj eksplicite portas enumeradon kaj
 decideblan egalecon, la difinoj uzas nek `noncomputable` nek `classical`, kaj CI
@@ -379,6 +405,10 @@ tensoraĵon, kopiadon kaj la ĝeneralan tiphavan interpretilon per ekzaktaj fini
 stokastaj kanaloj. Kvin pliaj kontroloj ĉiuj eligas `true`; interalie ili
 konfirmas ekzakte la probablon `1/4` por paro da justaj bitoj.
 
+`Ript/Examples/KleisliBits.lean` plenumas punktajn distribuojn, Kleisli-`bind`,
+ambaŭ matricajn konvertojn kaj la funktorojn de la kategoria ekvivalenteco.
+Ĝiaj kvar ekzaktaj kontroloj ankaŭ eligas `true`.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -409,7 +439,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Finiaj determinismaj modeloj kaj ekzaktaj stokastaj kanaloj |
+| [`Ript/Models/`](../Ript/Models/) | Finiaj determinismaj modeloj, distribuoj kaj ekzaktaj stokastaj kanaloj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -470,11 +500,12 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Monoida ĝusteco kaj termmodela relativa kompleteco
 - [x] Senkostaj kaj eksplicite mezuritaj finiaj determinismaj ekzemploj
 - [x] Ekzaktaj plenumeblaj finiaj stokastaj kanaloj, Dirac, tensoro, kopiado kaj forĵetado
+- [x] Ekzaktaj finiaj distribuoj, Kleisli-kategorio, du komparfunktoroj kaj kategoria ekvivalenteco
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
 
-- [ ] Kleisli-prezento de finiaj distribuoj kaj komparaj rezultoj
+- [ ] Ponto de ekzaktaj finiaj stokastaj kanaloj al la mezurteoria `Stoch` de Mathlib
 - [ ] Semantike pravigitaj kopi- kaj forĵet-kapabloj ekster la finia stokasta modelo
 - [ ] Konveksa kaj kaŭza strukturo
 - [ ] Termikaj kaj rimedteoriaj modeloj
@@ -521,8 +552,9 @@ sinsekva kaj monoida termmodeloj.
 ### Ĉu Ript jam subtenas probablon aŭ kvantumajn kanalojn?
 
 Ekzaktaj finiaj stokastaj kanaloj jam estas subtenataj. Probabloj estas valoroj
-en `ℚ≥0`, kaj ĉiuj sumoj estas finiaj kaj plenumeblaj. Kleisli-prezentoj,
-mezurteoria probablo, termikaj modeloj kaj kvantumaj kanaloj restas vojmapaj eroj.
+en `ℚ≥0`, ĉiuj sumoj estas finiaj kaj plenumeblaj, kaj la ekvivalenteco kun la
+fini-portanta Kleisli-kategorio de ekzaktaj distribuoj estas pruvita.
+Mezurteoria probablo, termikaj modeloj kaj kvantumaj kanaloj restas vojmapaj eroj.
 
 ### Ĉu la monoida tavolo implicas kopiadon aŭ forĵetadon?
 

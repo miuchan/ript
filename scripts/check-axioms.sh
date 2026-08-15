@@ -10,6 +10,33 @@ if ! audit_output="$(lake env lean Ript/Audit/AxiomChecks.lean 2>&1)"; then
   exit 1
 fi
 
+if printf '%s\n' "$audit_output" | grep -Fq 'error:'; then
+  printf '%s\n' "$audit_output" >&2
+  exit 1
+fi
+
+normalized_audit_output="$(printf '%s\n' "$audit_output" | awk '
+  pending != "" {
+    sub(/^[[:space:]]+/, "")
+    pending = pending " " $0
+    if ($0 ~ /]$/) {
+      print pending
+      pending = ""
+    }
+    next
+  }
+  /depends on axioms: \[/ && $0 !~ /]$/ {
+    pending = $0
+    next
+  }
+  { print }
+  END {
+    if (pending != "") {
+      print pending
+    }
+  }
+')"
+
 audit_targets="$(sed -n 's/^#print axioms //p' Ript/Audit/AxiomChecks.lean)"
 documented_targets="$(sed -n 's/^| `\([^`]*\)` |.*/\1/p' AXIOMS.md)"
 documented_axioms="$(sed -n 's/^| `\([^`]*\)` | `\([^`]*\)` |.*/\1|\2/p' AXIOMS.md)"
@@ -20,13 +47,13 @@ if [[ -z "$audit_targets" ]]; then
 fi
 
 while IFS= read -r target; do
-  matches="$(printf '%s\n' "$audit_output" | awk -v prefix="'$target' " \
+  matches="$(printf '%s\n' "$normalized_audit_output" | awk -v prefix="'$target' " \
     'index($0, prefix) == 1')"
   match_count="$(printf '%s\n' "$matches" | awk 'NF { count++ } END { print count + 0 }')"
 
   if [[ "$match_count" -ne 1 ]]; then
     printf 'Expected exactly one axiom report for %s, found %s.\n%s\n' \
-      "$target" "$match_count" "$audit_output" >&2
+      "$target" "$match_count" "$normalized_audit_output" >&2
     exit 1
   fi
 

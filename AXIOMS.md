@@ -29,12 +29,18 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteDistribution.FinDist.pure_bind` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
+| `Ript.Models.FiniteDistribution.FinDist.bind_pure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
+| `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
+| `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
+| `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
+| `Ript.Models.FiniteStochastic.kleisliEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
 to proof semantics. The stage-1 and stage-2 flagship theorems do not depend on
-classical choice. The finite stochastic theorems report `Classical.choice`
-through Mathlib's generic
+classical choice. The finite stochastic and finite-distribution representation
+theorems report `Classical.choice` through Mathlib's generic
 `Fintype` and finite-sum proof infrastructure. Runtime channel data instead
 uses explicitly supplied `Fintype` and `DecidableEq` values; no definition is
 `noncomputable`, and the checked `#eval` examples execute exact rational

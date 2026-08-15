@@ -15,13 +15,14 @@ Process Theory**: typed processes, compositional resource bounds, executable
 interpretations, explicit equational derivations, and relative completeness via
 canonical term models.
 
-The project builds these layers in a strict order. It now includes one exact,
-executable finite stochastic model; measure-theoretic probability, decision
-theory, thermodynamics, quantum theory, and higher categories remain research
+The project builds these layers in a strict order. It now includes an exact,
+executable finite stochastic model and its finite-distribution Kleisli
+representation; measure-theoretic probability, decision theory,
+thermodynamics, quantum theory, and higher categories remain research
 directions rather than current capabilities.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–3 are implemented and
+> Ript is early-stage research software. Stages 1–4 are implemented and
 > checked by Lean's kernel; the public API is not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
 
@@ -158,6 +159,21 @@ Boolean examples in the kernel without floating-point approximation. Copy and
 discard are explicit Dirac channels, and `comp_discard` proves the causal law
 for every normalized finite channel.
 
+### 6. Finite-distribution Kleisli representation
+
+`FinDist X` packages an exact normalized mass function `X → ℚ≥0`. Its
+executable `pure` and `bind` operations satisfy the left-unit, right-unit, and
+associativity laws. Restricting Kleisli objects to the same executable finite
+carriers as `FinStoch` gives morphisms `X → FinDist Y` and an actual category.
+
+Explicit row/matrix conversions define functors in both directions between
+this category and `FinStoch`. Both morphism conversions are proved inverse,
+their object correspondence is definitional, and `kleisliEquivalence` packages
+the natural isomorphisms as a categorical equivalence. The restriction is
+intentional: the set of rational distributions over a finite carrier is
+generally infinite, so it is not itself an object of the finite-carrier base
+category required by Mathlib's unrestricted `CategoryTheory.Kleisli`.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -186,6 +202,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | The Dirac embedding preserves deterministic composition. |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | Distinct deterministic functions have distinct Dirac channels. |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | Every normalized finite channel is causal under discard. |
+| `Ript.Models.FiniteDistribution.FinDist.pure_bind` | Point distributions are left units for finite-distribution bind. |
+| `Ript.Models.FiniteDistribution.FinDist.bind_pure` | Point distributions are right units for finite-distribution bind. |
+| `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | Exact finite-distribution bind is associative. |
+| `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | Matrix-to-Kleisli conversion is inverted by the reverse conversion. |
+| `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | Kleisli-to-matrix conversion is inverted by the reverse conversion. |
+| `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` is equivalent to the finite-carrier Kleisli category of `FinDist`. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -204,7 +226,7 @@ finished physical theory.
 | 1 | Sequential resource-process core | **PROVED** |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | **PROVED** |
 | 3 | Executable finite stochastic model | **PROVED** |
-| 4 | Finite-distribution Kleisli representation | **OPEN RESEARCH** |
+| 4 | Finite-distribution Kleisli representation | **PROVED** |
 | 5–11 | Further semantic and higher layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -216,6 +238,7 @@ Implemented model support is intentionally narrow:
 | Sequential term model | Yes | No | Proof layer | Quotient by explicit category derivations |
 | Symmetric monoidal term model | Yes | Yes | Proof layer | Quotient by explicit monoidal derivations |
 | Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
+| Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Generic convex structure, measure-theoretic stochastic semantics,
@@ -247,6 +270,9 @@ flowchart LR
   T --> U
   F["Exact finite stochastic matrices"] --> CK["Chapman–Kolmogorov category"]
   CK --> EX["Executable typed interpretation"]
+  FD["Exact FinDist pure and bind"] --> KL["Finite-carrier Kleisli category"]
+  CK <--> EQ["Categorical equivalence"]
+  KL <--> EQ
 ```
 
 | Layer | Main modules | Responsibility |
@@ -255,7 +281,7 @@ flowchart LR
 | Process capabilities | `Ript.Core.*` | Sequential, tensor, and structural cost laws |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Deterministic functions and exact finite stochastic channels |
+| Concrete models | `Ript.Models.*` | Deterministic functions, finite distributions, and stochastic channels |
 | Executable examples | `Ript.Examples.*` | Computed behavior, budgets, and rational probabilities |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
@@ -280,9 +306,9 @@ Ript is designed so that proof trust is inspectable rather than implicit.
   namespace disguised as completed results.
 
 The stage-1 and stage-2 flagship audit reports only Lean's standard `propext`
-and `Quot.sound` principles where required. Finite-stochastic theorem proofs
-also report `Classical.choice` through Mathlib's generic `Fintype` and finite-sum
-proof infrastructure. Runtime channel data is nevertheless supplied by
+and `Quot.sound` principles where required. Finite-stochastic and Kleisli
+representation theorem proofs also report `Classical.choice` through Mathlib's
+generic `Fintype` and finite-sum proof infrastructure. Runtime data is supplied by
 explicit computational `Fintype` and `DecidableEq` values: no finite-model
 definition is `noncomputable`, and CI executes exact `ℚ≥0` examples. The audit
 reports no compiler-trust escape or placeholder-proof axiom.
@@ -378,6 +404,10 @@ Boolean channel, independent tensor composition, copying, and the generic typed
 interpreter. Its five checks use exact nonnegative rationals and all print
 `true`.
 
+`Ript/Examples/KleisliBits.lean` executes point distributions, Kleisli bind,
+both matrix conversions, and the functors contained in the categorical
+equivalence. Its four exact checks also print `true`.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -469,11 +499,12 @@ updated assumption audit.
 - [x] Strong symmetric monoidal, resource-nonincreasing free lift and strict uniqueness
 - [x] Zero-cost and explicitly metered finite deterministic examples
 - [x] Exact finite stochastic category, tensor bifunctor, Dirac embedding, copy, discard, and typed example
+- [x] Exact finite distributions, Kleisli category, two comparison functors, and categorical equivalence
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
 
-- [ ] Finite-distribution Kleisli representation and comparison results
+- [ ] Bridge exact finite stochastic channels to Mathlib's measure-theoretic `Stoch`
 - [ ] Generic copy/discard capability interfaces beyond the finite stochastic model
 - [ ] Convex and causal structure
 - [ ] Thermal/resource-theoretic models
@@ -521,8 +552,9 @@ monoidal term models.
 ### Does Ript already support probability or quantum channels?
 
 Ript supports exact executable finite stochastic channels over `ℚ≥0`, including
-composition, tensor, Dirac channels, copy, and discard. The Kleisli
-representation, general measure-theoretic probability, thermal models, and
+composition, tensor, Dirac channels, copy, and discard. It also proves their
+equivalence with the finite-carrier Kleisli category of exact finite
+distributions. General measure-theoretic probability, thermal models, and
 quantum channels remain roadmap items.
 
 ### Does the monoidal layer imply copying or discarding?
