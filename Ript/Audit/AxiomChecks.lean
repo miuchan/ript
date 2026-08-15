@@ -1,6 +1,7 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
+import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
@@ -80,3 +81,10 @@ set_option autoImplicit false
 #print axioms Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization
 #print axioms Ript.Models.Causal.FiniteCausalModel.interventional_factorization
 #print axioms Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism
+#print axioms Ript.Models.FiniteDistribution.FinDist.push_comp
+#print axioms Ript.Models.FiniteDistribution.FinDist.push_tensor
+#print axioms Ript.Models.Thermal.GibbsPreserving.tensor_id
+#print axioms Ript.Models.Thermal.GibbsPreserving.tensor_comp
+#print axioms Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free
+#print axioms Ript.Models.Thermal.Divergence.athermality_monotone
+#print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive

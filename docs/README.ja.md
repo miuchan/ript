@@ -20,12 +20,15 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 意思決定リスク、タスク相対的な意味価値も形式化しました。また、明示的なステップ・問い合わせ・
 記憶域・ゲート資源を持つ全域計算と失敗可能計算の圏に加え、実行可能な有限 DAG 因果モデル、
 親だけを読む正確な機構、正規化観測同時分布、ハード介入、正確な `FinStoch` 意味論も含みます。
-一般の可測因果モデル、Blackwell 逆表現定理、熱力学、量子理論、高次圏は研究課題です。
+次の層として、指定平衡分布を持つ有限熱系、Gibbs-preserving な正確チャネルの圏とテンソル
+bifunctor、自由平衡状態の準備、一般 divergence の単調性も実装しました。一般の可測因果モデル、
+Blackwell 逆表現定理、有限 KL のデータ処理、エネルギーから導く Gibbs 状態、量子理論、高次圏は
+研究課題です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 7 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 8 は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -264,6 +267,23 @@ Ript は二つの意思決定層を意図的に分離します。
 `1/2` を持ちます。これは介入と通常の条件付けの違いを検証済みデータで示します。初版は意図的に
 全ノードで共通の有限値型を使い、異種ノード値域と一般 do-calculus は将来の拡張です。
 
+### 11. 有限熱系と Gibbs-preserving プロセス
+
+`ThermalObject` は実行可能な有限状態空間と、正確に正規化された一つの `EquilibriumState` を
+まとめます。この平衡分布は操作的データであり、初期層ではエネルギースペクトル、逆温度、指数型
+Gibbs 公式から導出済みだとは主張しません。`FinDist.push` は分布を `FinStoch` チャネルで発展させ、
+`FinDist.tensor` は独立系の積分布を作ります。
+
+`GibbsPreserving X Y` は `T(γX) = γY` を満たす有限確率チャネルです。恒等、合成閉包、圏構造を
+証明し、テンソルが積平衡を保存して恒等律と interchange を満たすことから明示的 bifunctor を構成
+しました。各対象の指定平衡分布は熱テンソル単位からの自由状態としても構成されます。
+
+divergence 層は仮定を隠しません。`Divergence Value` は状態比較と証明済み確率的データ処理則を
+同時に持ちます。任意のそのような divergence と Gibbs-preserving `T` に対して
+`D(Tp ‖ γY) ≤ D(p ‖ γX)` を証明し、`ThermalMonotone` としてパッケージ化します。これは KL の
+DPI を未証明のまま仮定するものではありません。具体的有限 KL とその DPI、エネルギー、温度、
+Gibbs 公式、自由エネルギー、Landauer 型不等式は独立した研究義務です。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -329,6 +349,13 @@ Ript は二つの意思決定層を意図的に分離します。
 | `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | ハード介入後の同時分布も正規化されています。 |
 | `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | 介入状態は未変更条件機構と対象 Dirac 因子に分解します。 |
 | `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | Boolean 鎖の例が介入と観測を正確に区別します。 |
+| `Ript.Models.FiniteDistribution.FinDist.push_comp` | 分布の発展は確率チャネル合成を保存します。 |
+| `Ript.Models.FiniteDistribution.FinDist.push_tensor` | 独立な発展は積分布と可換です。 |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_id` | テンソルは熱的恒等プロセスを保存します。 |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | 熱的テンソルは合成との interchange を満たします。 |
+| `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | 各指定平衡状態は自由に準備できます。 |
+| `Ript.Models.Thermal.Divergence.athermality_monotone` | DPI を持つ divergence は Gibbs-preserving 熱単調量を与えます。 |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -350,7 +377,8 @@ Ript は二つの意思決定層を意図的に分離します。
 | 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
-| 8–11 | 熱・量子・双圏・ユニバレント層 | **OPEN RESEARCH** |
+| 8 | 有限平衡系、Gibbs-preserving プロセス、一般 divergence 単調性 | **PROVED** |
+| 9–11 | 量子・双圏・ユニバレント層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -367,12 +395,14 @@ Ript は二つの意思決定層を意図的に分離します。
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
+| 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 実行可能 | 指定された正確な平衡；自由平衡状態と一般 DPI リフト |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
-完全な do-calculus、一般的なコピー・破棄および凸構造、熱的構造、量子チャネル、
+完全な do-calculus、一般的なコピー・破棄および凸構造、具体的有限 KL のデータ処理、
+エネルギー由来 Gibbs 状態、量子チャネル、
 ユニバレント構造、高次圏構造は**未実装**です。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
 [CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
@@ -420,6 +450,10 @@ flowchart LR
   CM --> DO["機構置換ハード介入"]
   DO --> IS["正確な介入 FinStoch 状態"]
   CK --> IS
+  FD --> TE["指定有限平衡状態"]
+  CK --> GP["Gibbs-preserving チャネル圏"]
+  TE --> GP
+  GP --> TM["一般 divergence 熱単調量"]
 ```
 
 | 層 | 主なモジュール | 責務 |
@@ -428,8 +462,8 @@ flowchart LR
 | プロセス能力 | `Ript.Core.*` | 直列・テンソル・構造コスト則と後処理シミュレーション |
 | 実行可能構文 | `Ript.Syntax.*` | 型付き式、再帰的コスト、導出 |
 | 意味論 | `Ript.Semantics.*` | 解釈、評価、健全性、完全性 |
-| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 意思決定、計算、有限因果機構 |
-| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値、介入 |
+| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 意思決定、計算、有限因果機構、有限熱系 |
+| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値、介入、平衡保存過程 |
 | 監査面 | `Ript.Audit.*` | 宣言 lint とカーネル仮定の報告 |
 
 直列の核は単独で利用できます。対称モノイダル層は別のインターフェースとして拡張され、すべての
@@ -570,6 +604,11 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 正確な質量 `1/2` を与えます。5 個の `#eval decide` が正規化、観測台、強制値排除、上流不変性を
 検査します。
 
+`Ript/Examples/SimpleThermalModel.lean` は Boolean 系に正確な一様平衡分布を指定します。
+決定論的ビット反転は平衡を保存し、Gibbs-preserving 合成の下で対合です。自由平衡状態の準備と
+積平衡も実行し、6 個の `#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、
+積質量 `1/4`、二重反転恒等を検査します。
+
 ## Lean 依存パッケージとして使う
 
 Ript はルートモジュール `Ript` を公開します。プレリリース期間中は、変化するブランチではなく、
@@ -594,6 +633,8 @@ import Ript.Models.Decision.SemanticValue
 import Ript.Models.Computation.Partial
 -- または有限 DAG、ハード介入、正確な確率状態：
 import Ript.Models.Causal.FinStoch
+-- または有限 Gibbs-preserving 過程と一般熱単調量：
+import Ript.Models.Thermal.Monotone
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -607,7 +648,7 @@ import Ript.Models.Causal.FinStoch
 | [`Ript/Resource/`](../Ript/Resource/) | 資源代数と検証済み予算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
-| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果モデル |
+| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果・有限熱モデル |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -641,7 +682,8 @@ import Ript.Models.Causal.FinStoch
 5. **完全性の範囲を明記する。** すべての完全性主張が標準モデルと証明境界を指定します。
 6. **仮定をバージョン付き API として扱う。** 新しい公理は後日の注釈ではなく即時のゲート失敗です。
 7. **実装と構想を区別する。** 有限離散 `Stoch` 像、正確な有限意思決定層、同種有限 DAG
-   因果層は実装済みです。逆表現、一般確率・因果・熱・量子・高次の未解決層とは明確に分けます。
+   因果層、指定平衡を持つ有限熱層は実装済みです。逆表現、一般確率・因果、解析的熱力学、
+   量子、高次の未解決層とは明確に分けます。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
@@ -650,6 +692,9 @@ import Ript.Models.Causal.FinStoch
     性能測定の主張ではありません。
 11. **介入を条件付けと混同しない。** ハード介入は局所機構を置換してから同時分布を再生成します。
     観測条件付けは別の操作であり、代替実装には使いません。
+12. **熱力学的解析を暗黙に持ち込まない。** 指定平衡は操作的データであり、一般 divergence 定理は
+    明示的な DPI 証明を要求します。エネルギー由来 Gibbs 公式、KL データ処理、自由エネルギーは
+    名前付きの未解決義務です。
 
 ## ロードマップ
 
@@ -681,6 +726,10 @@ import Ript.Models.Causal.FinStoch
 - [x] トポロジカル証明付き有限 DAG と親局所正確機構
 - [x] 正規化観測同時分布、ハード介入、介入法則、`FinStoch` 状態
 - [x] `do` と観測を正確に区別する実行可能 Boolean 因果鎖
+- [x] 正確な有限平衡系と確率状態の発展
+- [x] Gibbs-preserving 圏、テンソル bifunctor、自由平衡状態
+- [x] 明示的 DPI 前提を持つ一般 divergence-to-thermal-monotone 定理
+- [x] 平衡保存反転を持つ実行可能な一様熱ビット例
 - [x] 再現可能な CI、宣言 lint、仮定許可リスト
 
 ### 未解決の研究トラック
@@ -693,7 +742,8 @@ import Ript.Models.Causal.FinStoch
 - [ ] 有限 Blackwell--Sherman--Stein 逆表現定理
 - [ ] 正確な有限データを越える一般可測空間の意思決定問題
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
-- [ ] 熱力学的・資源理論的モデル
+- [ ] 具体的有限 KL divergence と証明済みデータ処理不等式
+- [ ] エネルギー、逆温度、Gibbs 構成、自由エネルギー、Landauer 境界
 - [ ] 量子チャネルモデル
 - [ ] 厳密に分離されたユニバレント層または高次圏層
 
@@ -736,7 +786,10 @@ import Ript.Models.Causal.FinStoch
 正確な有限確率チャネルはサポートされています。確率は `ℚ≥0` で表され、有限和として実行され、
 正確な有限分布の有限台 Kleisli 圏との同値も証明済みです。さらに Mathlib の測度論的圏
 `Stoch` への忠実な関手があり、決定論的チャネルとテンソルを標準比較同型を介して保存します。
-任意の可測空間上の確率モデル、熱モデル、量子チャネルはロードマップ項目です。正確な有限
+任意の可測空間上の確率モデルと量子チャネルはロードマップ項目です。Ript は指定された正確な
+平衡分布を持つ有限系、Gibbs-preserving 合成とテンソル、自由平衡状態、および divergence が
+証明済み DPI を持つ場合の一般熱単調性もサポートします。ただしエネルギーからの平衡導出、有限
+KL、自由エネルギー定理はまだありません。正確な有限
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
 一般可測意思決定理論はまだ証明していません。

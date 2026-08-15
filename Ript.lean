@@ -10,6 +10,7 @@ import Ript.Examples.KleisliBits
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleDecision
+import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
 import Ript.Models.Causal.DAG
@@ -28,6 +29,9 @@ import Ript.Models.FiniteFunction
 import Ript.Models.FiniteStochastic
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Models.Probability.StochFunctor
+import Ript.Models.Thermal.Equilibrium
+import Ript.Models.Thermal.GibbsPreserving
+import Ript.Models.Thermal.Monotone
 import Ript.Resource.Basic
 import Ript.Resource.Budget
 import Ript.Resource.Monotone

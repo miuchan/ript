@@ -19,11 +19,13 @@ Ript 形式化了 **Resource-Indexed Information Process Theory（资源索引�
 Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风险与任务相对语义价值。
 项目还包含带显式步数、查询、存储与门数量资源的总函数和可失败计算范畴，并已实现可执行
 有限 DAG 因果模型、只读取父节点的精确机制、归一化观测联合分布、硬干预及其精确
-`FinStoch` 语义。一般可测因果模型、Blackwell 反向表示定理、热力学、量子理论和高阶范畴
-仍是研究方向。
+`FinStoch` 语义。下一层还加入了带指定平衡分布的有限热系统、Gibbs-preserving 精确信道
+范畴及 tensor bifunctor、自由平衡态制备，以及通用 divergence 单调性。一般可测因果模型、
+Blackwell 反向表示定理、有限 KL 数据处理、由能量导出的 Gibbs 态、量子理论和高阶范畴仍是
+研究方向。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–7 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–8 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -242,6 +244,23 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 `1/2`。这用经过检验的精确数据区分了干预与普通条件化。第一版有意要求所有节点共享同一个
 有限值类型；异构节点值域和一般 do-calculus 仍是后续扩展。
 
+### 11. 有限热系统与 Gibbs-preserving 过程
+
+`ThermalObject` 把可执行有限状态空间与一个精确归一化 `EquilibriumState` 组合起来。这里的
+平衡分布是操作性数据：第一层并不假装已经从能谱、逆温度或指数 Gibbs 公式推导出它。
+`FinDist.push` 让精确分布经过 `FinStoch` 信道演化，`FinDist.tensor` 则构造独立系统的积分布。
+
+`GibbsPreserving X Y` 过程是满足 `T(γX) = γY` 的有限随机信道。Ript 已证明恒等过程
+Gibbs-preserving、此类过程对复合封闭并构成范畴；tensor 保持积平衡态并满足恒等律与
+interchange，从而得到显式 bifunctor。每个对象的指定平衡态也被构造为从热 tensor 单位出发的
+自由态制备。
+
+divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较函数与已经证明的随机数据处理
+律。对任意这样的 divergence，Ript 证明每个 Gibbs-preserving `T` 都满足
+`D(Tp ‖ γY) ≤ D(p ‖ γX)`，并把它封装为 `ThermalMonotone`。这不是对 KL 数据处理的
+未经证明宣称。具体有限 KL 及其 DPI、能量函数、温度、Gibbs 公式、自由能和 Landauer 型不等式
+仍是独立研究义务。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -306,6 +325,13 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 | `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | 每个硬干预联合分布仍然归一化。 |
 | `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | 干预状态分解为未变条件机制与目标 Dirac 因子。 |
 | `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | Boolean 链例子精确区分干预与观测。 |
+| `Ript.Models.FiniteDistribution.FinDist.push_comp` | 分布演化保持随机信道复合。 |
+| `Ript.Models.FiniteDistribution.FinDist.push_tensor` | 独立演化与积分布交换。 |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_id` | tensor 保持热恒等过程。 |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | 热 tensor 与复合满足 interchange。 |
+| `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | 每个指定平衡态都是自由制备。 |
+| `Ript.Models.Thermal.Divergence.athermality_monotone` | 每个带 DPI 的 divergence 都给出 Gibbs-preserving 热单调量。 |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -326,7 +352,8 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
-| 8–11 | 热力学、量子、双范畴与单值层 | **OPEN RESEARCH** |
+| 8 | 有限平衡系统、Gibbs-preserving 过程与通用 divergence 单调性 | **PROVED** |
+| 9–11 | 量子、双范畴与单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -343,12 +370,14 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
+| 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 可执行 | 指定精确平衡态；自由平衡态与通用 DPI 提升 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
-do-calculus、通用复制/丢弃与凸结构接口、热结构、量子信道，以及单值或高阶范畴结构都
+do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
+量子信道，以及单值或高阶范畴结构都
 **尚未实现**。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
@@ -396,6 +425,10 @@ flowchart LR
   CM --> DO["替换机制的硬干预"]
   DO --> IS["精确干预 FinStoch 状态"]
   CK --> IS
+  FD --> TE["指定的有限平衡态"]
+  CK --> GP["Gibbs-preserving 信道范畴"]
+  TE --> GP
+  GP --> TM["通用 divergence 热单调量"]
 ```
 
 | 层 | 主要模块 | 职责 |
@@ -404,8 +437,8 @@ flowchart LR
 | 过程能力 | `Ript.Core.*` | 串行、张量、结构成本律与后处理模拟 |
 | 可执行语法 | `Ript.Syntax.*` | 带类型表达式、递归成本与推导 |
 | 语义 | `Ript.Semantics.*` | 解释、求值、可靠性与完备性 |
-| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 决策、计算与有限因果机制 |
-| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率、精确决策价值与干预 |
+| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 决策、计算、有限因果机制与有限热系统 |
+| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率、精确决策价值、干预与保持平衡的过程 |
 | 审计界面 | `Ript.Audit.*` | 声明 lint 与内核假设报告 |
 
 串行核心可以独立使用。对称幺半群层通过独立接口扩展它，而不会把张量假设强行塞入每个
@@ -539,6 +572,11 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 仍然公平，`(false, true)` 获得精确质量 `1/2`。五个 `#eval decide` 契约检查归一化、观测支持、
 强制值排除和上游不变性。
 
+`Ript/Examples/SimpleThermalModel.lean` 为 Boolean 系统指定精确均匀平衡分布。确定性比特翻转
+保持该平衡态，并在 Gibbs-preserving 复合下是对合。例子还执行自由平衡态制备与积平衡态；
+六个 `#eval decide` 契约检查精确归一化、信道条目、演化质量、自由态制备、积质量 `1/4` 和
+双翻转恒等过程。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -562,6 +600,8 @@ import Ript.Models.Decision.SemanticValue
 import Ript.Models.Computation.Partial
 -- 或者导入有限 DAG、硬干预与精确随机状态：
 import Ript.Models.Causal.FinStoch
+-- 或者导入有限 Gibbs-preserving 过程与通用热单调量：
+import Ript.Models.Thermal.Monotone
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -575,7 +615,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算与有限因果模型 |
+| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果与有限热模型 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -608,8 +648,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 4. **分离可执行语法与证明商。**完备性使用商模型，不应让计算代码无端继承不可计算性。
 5. **明确完备性的范围。**每项完备性结论都点名规范模型和证明边界。
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
-7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层和同质有限 DAG 因果层已经实现；
-   反向表示、一般随机与因果、热力学、量子和高阶层仍必须清楚标记为开放研究。
+7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
+   平衡态的有限热层已经实现；反向表示、一般随机与因果、解析热力学、量子和高阶层仍必须
+   清楚标记为开放研究。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -617,6 +658,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 10. **不把形式成本混同于运行时间。**计算资源是具有已证明复合律的语义标注，不是性能宣称。
 11. **不把干预混同于条件化。**硬干预先替换局部机制再重新生成联合分布；观测条件化是不同操作，
     不能作为替代实现。
+12. **不偷渡热力学分析。**指定平衡态是操作性数据，通用 divergence 定理要求显式 DPI 证明；
+    能量导出的 Gibbs 公式、KL 数据处理和自由能仍是明确列出的研究义务。
 
 ## 路线图
 
@@ -647,6 +690,10 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 带拓扑证书的有限 DAG 与父局部精确机制
 - [x] 归一化观测联合分布、硬干预、干预定律与 `FinStoch` 状态
 - [x] 精确区分 `do` 与观测的可执行 Boolean 因果链示例
+- [x] 精确有限平衡系统与随机状态演化
+- [x] Gibbs-preserving 范畴、tensor bifunctor 与自由平衡态
+- [x] 带显式 DPI 前提的通用 divergence-to-thermal-monotone 定理
+- [x] 具有保持平衡翻转的可执行均匀热比特示例
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
@@ -660,7 +707,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 有限 Blackwell--Sherman--Stein 反向表示定理
 - [ ] 超出精确有限数据的一般可测空间决策问题
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
-- [ ] 热力学与资源理论模型
+- [ ] 具体有限 KL divergence 与经过证明的数据处理不等式
+- [ ] 能量函数、逆温度、Gibbs 构造、自由能与 Landauer 界
 - [ ] 量子信道模型
 - [ ] 严格隔离的单价或高阶范畴层
 
@@ -700,7 +748,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复合、tensor、Dirac、复制与丢弃，
 并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。项目还给出了到 Mathlib 测度论
 范畴 `Stoch` 的 faithful 函子，在规范比较同构下保持确定性信道与 tensor。任意可测空间上的
-随机模型、热模型和量子信道仍属于路线图。对于精确有限数据，Ript 还支持 Blackwell
+随机模型和量子信道仍属于路线图。Ript 现在也支持带指定精确平衡分布的有限系统、
+Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence 提供已证明 DPI 时的通用
+热单调性；但尚未从能量导出平衡态，也没有有限 KL 与自由能定理。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
 项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与

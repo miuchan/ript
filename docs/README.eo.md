@@ -25,13 +25,17 @@ eble malsukcesaj komputoj kun eksplicitaj paŝaj, demandaj, memoraj kaj pordegaj
 rimedoj. Ĝi nun ankaŭ enhavas plenumeblajn finiajn DAG-kaŭzajn modelojn,
 ekzaktajn mekanismojn kiuj legas nur gepatrojn, normaligitajn observajn kunajn
 distribuojn, malmolajn intervenojn kaj ekzaktan `FinStoch`-semantikon. Ĝeneralaj
-mezureblaj kaŭzaj modeloj, la inversa Blackwell-teoremo, termodinamiko,
-kvantuma teorio kaj pli altaj kategorioj restas esplorvojoj.
+mezureblaj kaŭzaj modeloj restas malfermaj. La sekva kompilita tavolo aldonas
+finiajn termikajn sistemojn kun specifitaj ekvilibraj distribuoj, kategorion kaj
+tensora bifunktoron de Gibbs-konservaj ekzaktaj kanaloj, liberajn ekvilibrajn
+preparojn kaj ĝeneralan diverĝencan monotonecon. La inversa Blackwell-teoremo,
+finia KL-datumtraktado, energio-derivitaj Gibbs-statoj, kvantuma teorio kaj pli
+altaj kategorioj restas esplorvojoj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–7 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–8 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -308,6 +312,29 @@ mason `1/2`. Tio distingas intervenon disde ordinara kondiĉigo per kontrolitaj
 datumoj. La unua modelo intence uzas komunan finian valortipon por ĉiuj nodoj;
 heterogenaj nodaj portantoj kaj ĝenerala do-kalkulo restas estontaj etendaĵoj.
 
+### 11. Finiaj termikaj sistemoj kaj Gibbs-konservaj procezoj
+
+`ThermalObject` kunigas plenumeblan finian statspacon kun unu ekzakta
+normaligita `EquilibriumState`. La ekvilibra distribuo estas operacia datumo:
+ĉi tiu unua tavolo ne pretendas jam derivi ĝin el energispektro, inversa
+temperaturo aŭ eksponenta Gibbs-formulo. `FinDist.push` evoluigas distribuon per
+`FinStoch`-kanalo, kaj `FinDist.tensor` konstruas la produktan distribuon de
+sendependaj sistemoj.
+
+`GibbsPreserving X Y` estas finia stokasta kanalo kiu plenumas
+`T(γX) = γY`. Ript pruvas identojn, fermitecon sub kunmeto kaj kategorian
+strukturon. Tensoro konservas produktajn ekvilibrojn kaj plenumas identan leĝon
+kaj interchange, do ĝi formas eksplicitan bifunktoron. La specifita ekvilibro
+de ĉiu objekto ankaŭ estas libera preparo el la termika tensora unuo.
+
+La diverĝenca tavolo eksplicite montras sian premison. `Divergence Value`
+enhavas statkomparon kune kun pruvita stokasta datumtrakta neegalaĵo. Por ĉiu
+tia diverĝenco kaj Gibbs-konserva `T`, Ript pruvas
+`D(Tp ‖ γY) ≤ D(p ‖ γX)` kaj pakas ĝin kiel `ThermalMonotone`. Tio ne estas
+senpruva aserto pri KL. Konkreta finia KL kaj ĝia DPI, energioj, temperaturoj,
+Gibbs-formuloj, libera energio kaj Landauer-tipaj neegalaĵoj restas apartaj
+esploraj devoj.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -373,6 +400,13 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | Ĉiu malmole intervenita kuna distribuo restas normaligita. |
 | `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | Intervena stato faktoriĝas en neŝanĝitajn kondiĉojn kaj celajn Dirac-faktorojn. |
 | `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | La Bulea ĉena ekzemplo ekzakte distingas intervenon disde observado. |
+| `Ript.Models.FiniteDistribution.FinDist.push_comp` | Distribua evoluo respektas stokastan kunmeton. |
+| `Ript.Models.FiniteDistribution.FinDist.push_tensor` | Sendependa evoluo komutas kun produktaj distribuoj. |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_id` | Tensoro konservas termikajn identajn procezojn. |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | Termika tensoro plenumas interchange kun kunmeto. |
+| `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Ĉiu specifita ekvilibro estas libera preparo. |
+| `Ript.Models.Thermal.Divergence.athermality_monotone` | Ĉiu diverĝenco kun DPI donas Gibbs-konservan termikan monotonon. |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -396,7 +430,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8–11 | Termikaj, kvantumaj, dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
+| 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj kaj ĝenerala diverĝenca monotoneco | **PROVED** |
+| 9–11 | Kvantumaj, dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -413,6 +448,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Plenumebla | Specifita ekzakta ekvilibro; liberaj ekvilibraj statoj kaj ĝenerala DPI-levo |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -421,8 +457,9 @@ pri Blackwell, Bayes-risko, rimedoj kaj semantika valoro; la homogena finia
 DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
-ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, termika strukturo,
-kvantumaj kanaloj, univalenteco kaj pli altkategoria strukturo estas **ne
+ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
+KL-datumtraktado, energio-derivitaj Gibbs-statoj, kvantumaj kanaloj,
+univalenteco kaj pli altkategoria strukturo estas **ne
 realigitaj**. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
 [CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
@@ -471,6 +508,10 @@ flowchart LR
   CM --> DO["Malmolaj mekanism-anstataŭigaj intervenoj"]
   DO --> IS["Ekzaktaj intervenaj FinStoch-statoj"]
   CK --> IS
+  FD --> TE["Specifitaj finiaj ekvilibraj statoj"]
+  CK --> GP["Gibbs-konserva kanalkategorio"]
+  TE --> GP
+  GP --> TM["Ĝenerala diverĝenca termika monotono"]
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -479,8 +520,8 @@ flowchart LR
 | Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj kaj posttrakta simulado |
 | Plenumebla sintakso | `Ript.Syntax.*` | Tiphavaj esprimoj, rekursia kosto, derivoj |
 | Semantiko | `Ript.Semantics.*` | Interpretoj, interpretado, ĝusteco, kompleteco |
-| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, probablo, Blackwell-decidoj, komputado kaj finiaj kaŭzaj mekanismoj |
-| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj, decidvaloroj kaj intervenoj |
+| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, probablo, Blackwell-decidoj, komputado, finiaj kaŭzaj mekanismoj kaj finiaj termikaj sistemoj |
+| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj, decidvaloroj, intervenoj kaj ekvilibro-konservaj procezoj |
 | Revizia surfaco | `Ript.Audit.*` | Deklar-lintado kaj raportado de kernaj aksiomoj |
 
 La sinsekva kerno restas memstare uzebla. La simetria monoida tavolo etendas ĝin
@@ -636,6 +677,13 @@ la supra radiko restas justa kaj `(false, true)` ricevas ekzaktan mason `1/2`.
 Kvin `#eval decide`-kontraktoj kontrolas normaligon, observan subtenon,
 ekskludon de kontraŭaj valoroj kaj supran invariadon.
 
+`Ript/Examples/SimpleThermalModel.lean` specifas ekzaktan unuforman ekvilibran
+distribuon por Bulea sistemo. Determinisma bitrenverso konservas la ekvilibron
+kaj estas involucio sub Gibbs-konserva kunmeto. La ekzemplo ankaŭ plenumas la
+liberan ekvilibran preparon kaj produktan ekvilibron; ses `#eval decide`-
+kontraktoj kontrolas normaligon, kanal-elementojn, evoluitan mason, liberan
+preparon, produktan mason `1/4` kaj la identecon de du renversoj.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -660,6 +708,8 @@ import Ript.Models.Decision.SemanticValue
 import Ript.Models.Computation.Partial
 -- aŭ, por finiaj DAG-oj, malmolaj intervenoj kaj ekzaktaj stokastaj statoj:
 import Ript.Models.Causal.FinStoch
+-- aŭ, por finiaj Gibbs-konservaj procezoj kaj ĝeneralaj termikaj monotonoj:
+import Ript.Models.Thermal.Monotone
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -674,7 +724,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj kaj finiaj kaŭzaj modeloj |
+| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj kaj finiaj termikaj modeloj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -715,9 +765,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
 6. **Trakti aksiomojn kiel versionitan API-surfacon.** Nova aksiomo en teoremo
    estas tuj kontroleraro, ne posta piednoto.
 7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo, la
-   ekzakta finia decidtavolo kaj la homogena finia DAG-kaŭza tavolo estas
-   realigitaj; inversa prezento kaj ĝeneralaj stokastaj, kaŭzaj, termikaj,
-   kvantumaj kaj pli altaj tavoloj restas malfermaj.
+   ekzakta finia decidtavolo, la homogena finia DAG-kaŭza tavolo kaj la
+   specif-ekvilibra finia termika tavolo estas realigitaj; inversa prezento,
+   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko, kvantumaj kaj
+   pli altaj tavoloj restas malfermaj.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -728,6 +779,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
 11. **Ne konfuzi intervenon kun kondiĉigo.** Malmola interveno anstataŭigas
     lokan mekanismon antaŭ regeneri la kunan distribuon; observa kondiĉigo estas
     aparta operacio kaj ne estas uzata kiel surogato.
+12. **Ne kaŝe enporti termodinamikan analizon.** Specifita ekvilibro estas
+    operacia datumo, kaj ĝenerala diverĝenca teoremo postulas eksplicitan DPI-
+    pruvon. Energi-derivitaj Gibbs-formuloj, KL-datumtraktado kaj libera energio
+    restas nomitaj esploraj devoj.
 
 ## Vojmapo
 
@@ -760,6 +815,10 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Topologie atestitaj finiaj DAG-oj kaj gepatro-lokaj ekzaktaj mekanismoj
 - [x] Normaligitaj observaj kunaj distribuoj, malmolaj intervenoj, intervenaj leĝoj kaj `FinStoch`-statoj
 - [x] Plenumebla Bulea kaŭza ĉeno kiu ekzakte distingas `do` disde observado
+- [x] Ekzaktaj finiaj ekvilibraj sistemoj kaj stokasta statevoluo
+- [x] Gibbs-konserva kategorio, tensora bifunktoro kaj liberaj ekvilibraj statoj
+- [x] Ĝenerala diverĝenco-al-termika-monotono kun eksplicita DPI-premiso
+- [x] Plenumebla unuforma termika bito kun ekvilibro-konserva renverso
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
@@ -772,7 +831,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Inversa finia Blackwell--Sherman--Stein-prezenta teoremo
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
-- [ ] Termikaj kaj rimedteoriaj modeloj
+- [ ] Konkreta finia KL-diverĝenco kaj pruvita datumtrakta neegalaĵo
+- [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
 - [ ] Kvantum-kanalaj modeloj
 - [ ] Zorge izolitaj univalentaj aŭ pli altkategoriaj tavoloj
 
@@ -820,8 +880,12 @@ en `ℚ≥0`, ĉiuj sumoj estas finiaj kaj plenumeblaj, kaj la ekvivalenteco kun
 fini-portanta Kleisli-kategorio de ekzaktaj distribuoj estas pruvita. Fidela
 funktoro ankaŭ sendas ilin al la mezurteoria kategorio `Stoch` de Mathlib kaj
 konservas determinismajn kanalojn kaj tensoron ĝis kanona kompara izomorfio.
-Stokastaj modeloj sur arbitraj mezureblaj spacoj, termikaj modeloj kaj kvantumaj
-kanaloj restas vojmapaj eroj. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
+Stokastaj modeloj sur arbitraj mezureblaj spacoj kaj kvantumaj kanaloj restas
+vojmapaj eroj. Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
+ekvilibro, Gibbs-konservan kunmeton kaj tensoron, liberajn ekvilibrajn statojn
+kaj ĝeneralan termikan monotonecon kiam diverĝenco liveras pruvitan DPI. Ĝi
+ankoraŭ ne derivas ekvilibrojn el energioj kaj ne havas finiajn KL- aŭ
+liberenergi-teoremojn. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 La inversa finia Blackwell-prezenta teoremo kaj ĝenerala mezurebla decidteorio

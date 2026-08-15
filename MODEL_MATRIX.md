@@ -15,4 +15,5 @@ Only implemented and compiled capabilities are marked as supported.
 | Total computation (`Fin 4 → Nat` resources) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
+| Finite thermal systems (specified equilibrium) | Gibbs-preserving category | Bifunctor | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes | Yes |
 | QuantumChannel | Planned | No | No | No | No | No | No | No | No |
