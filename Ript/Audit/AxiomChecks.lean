@@ -2,6 +2,7 @@ import Ript.Examples.BitProcesses
 import Ript.Resource.ParallelBudget
 import Ript.Semantics.Completeness
 import Ript.Semantics.MonoidalCompleteness
+import Ript.Semantics.MonoidalInitiality
 
 /-!
 # Kernel assumption checks
@@ -27,3 +28,6 @@ set_option autoImplicit false
 #print axioms Ript.Semantics.monoidal_soundness
 #print axioms Ript.Semantics.monoidal_complete_via_term_model
 #print axioms Ript.Semantics.monoidal_budget_complete_in_free_model
+#print axioms Ript.Semantics.Free.lift_on_generator
+#print axioms Ript.Semantics.Free.lift_preserves_cost
+#print axioms Ript.Semantics.Free.lift_unique

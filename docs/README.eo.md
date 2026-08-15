@@ -139,6 +139,9 @@ koherleĝoj de simetriaj monoidaj kategorioj.
   termmodela interpreto implicas formalan deriveblon.
 - **Buĝeta kompleteco en la libera modelo:** interpretado en la termmodelo havas
   precize la rekursie kalkulitan sintaksan koston.
+- **Strikta libera universala eco:** ĉiu valida interpreto induktas fortan
+  simetrian monoidan, rimed-nepligrandigan funktoron el la termmodelo; inter
+  striktaj etendaĵoj samaj je generiloj, ĝia ago estas unika.
 
 La vorto *relativa* gravas: la teoremo temas pri egaleco en la kanona kvocienta
 termmodelo, ne pri senkondiĉa aserto super ĉiu imagebla semantika universo.
@@ -162,6 +165,9 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Semantics.monoidal_soundness` | Simetriaj monoidaj derivoj estas semantike ĝustaj. |
 | `Ript.Semantics.monoidal_complete_via_term_model` | Monoida termmodela egaleco implicas deriveblon. |
 | `Ript.Semantics.monoidal_budget_complete_in_free_model` | La monoida termmodela kosto egalas la sintaksan koston. |
+| `Ript.Semantics.Free.lift_on_generator` | La universala levo kongruas kun la interpreto je generiloj. |
+| `Ript.Semantics.Free.lift_preserves_cost` | La universala levo neniam pligrandigas procezan koston. |
+| `Ript.Semantics.Free.lift_unique` | Ĉiu strikte struktur-konserva etendaĵo havas la saman agon kiel la universala levo. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -178,7 +184,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | --- | --- | --- |
 | 0 | Reproduktebla projekto, dokumentaro, CI kaj revizia bazlinio | **PROVED** |
 | 1 | Sinsekva rimed-proceza kerno | **PROVED** |
-| 2 | Tensoro, simetrio, struktura rekonekto kaj paralelaj rimedoj | **PROVED** |
+| 2 | Tensoro, simetrio, paralelaj rimedoj kaj la strikta libera universala levo | **PROVED** |
 | 3 | Plenumebla finia stokasta modelo | **OPEN RESEARCH** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **OPEN RESEARCH** |
 | 5–11 | Pliaj semantikaj modeloj kaj pli altaj tavoloj | **OPEN RESEARCH** |
@@ -217,6 +223,8 @@ flowchart LR
   E --> SO
   D --> T["Kvocienta termmodelo"]
   T --> CO["Relativa kompleteco"]
+  I --> U["Universala rimed-nepligrandiga levo"]
+  T --> U
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
