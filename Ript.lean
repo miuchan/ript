@@ -5,7 +5,9 @@ import Ript.Core.Monotone
 import Ript.Core.ParallelCost
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
+import Ript.Examples.StochasticBits
 import Ript.Models.FiniteFunction
+import Ript.Models.FiniteStochastic
 import Ript.Resource.Basic
 import Ript.Resource.Budget
 import Ript.Resource.Monotone

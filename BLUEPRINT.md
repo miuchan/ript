@@ -45,6 +45,10 @@ flowchart LR
   ResourceMonotone --> MonoidalInitiality
   MonoidalCompleteness --> Audit
   MonoidalInitiality --> Audit
+  Costed --> FiniteStochastic["Models.FiniteStochastic"]
+  FiniteStochastic --> StochasticBits["Examples.StochasticBits"]
+  Eval --> StochasticBits
+  StochasticBits --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -56,7 +60,7 @@ Every node in this graph is an existing compiled module.
 | 0 | Environment, project scaffold, documentation, CI, audit baseline | PROVED |
 | 1 | Sequential resource-process vertical slice | PROVED |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | PROVED |
-| 3 | Executable finite stochastic model | OPEN_RESEARCH |
+| 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | OPEN_RESEARCH |
 | 5-11 | Semantic models and higher layers | OPEN_RESEARCH |
 
@@ -276,6 +280,133 @@ Every node in this graph is an existing compiled module.
 - Kernel assumptions: `[propext, Quot.sound]`.
 - Source: `Ript/Semantics/MonoidalInitiality.lean`.
 
+## Stage-3 flagship theorem records
+
+Stage 3 uses exact nonnegative rationals throughout. A stochastic object bundles
+its `Fintype` enumeration and `DecidableEq` procedure as computational data;
+the channel definitions contain neither `noncomputable` nor `classical`.
+
+### `Ript.Models.FiniteStochastic.FinStoch.id_apply`
+
+- Natural-language statement: the identity channel is the Dirac stochastic
+  matrix, with probability one exactly when input and output agree.
+- Lean type:
+
+  ```lean
+  theorem id_apply (X : Object) (x y : X) :
+      (𝟙 X : X ⟶ X).prob x y = if x = y then 1 else 0
+  ```
+
+- Prerequisites: the explicit `DecidableEq` carried by `Object` and the
+  category identity definition.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's generic
+  finite-type infrastructure; no choice produces runtime channel data.
+- Computable: yes; the matrix entry reduces to an equality test in `ℚ≥0`.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic.lean`.
+
+### `Ript.Models.FiniteStochastic.FinStoch.comp_apply`
+
+- Natural-language statement: sequential channel composition is exactly the
+  Chapman–Kolmogorov finite sum over the intermediate carrier.
+- Lean type:
+
+  ```lean
+  theorem comp_apply (f : X ⟶ Y) (g : Y ⟶ Z) (x : X) (z : Z) :
+      (f ≫ g).prob x z = ∑ y, f.prob x y * g.prob y z
+  ```
+
+- Prerequisites: explicit finite enumeration of `Y`, exact `ℚ≥0`
+  multiplication and addition, and normalized stochastic rows.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's generic
+  finite-sum infrastructure; runtime enumeration is explicit.
+- Computable: yes; composition evaluates to a finite exact rational sum.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic.lean`.
+
+### `Ript.Models.FiniteStochastic.FinStoch.tensor_apply`
+
+- Natural-language statement: independent parallel composition multiplies
+  the two component probabilities entrywise.
+- Lean type:
+
+  ```lean
+  theorem tensor_apply (f : FinStoch W X) (g : FinStoch Y Z)
+      (input : W × Y) (output : X × Z) :
+      (tensor f g).prob input output =
+        f.prob input.1 output.1 * g.prob input.2 output.2
+  ```
+
+- Prerequisites: product finite types, product-sum factorization, and
+  normalization of both channels.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's generic
+  finite-sum infrastructure; product data and multiplication are executable.
+- Computable: yes; tensor entries are exact products in `ℚ≥0`.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic.lean`.
+
+### `Ript.Models.FiniteStochastic.FinStoch.dirac_comp`
+
+- Natural-language statement: the Dirac embedding preserves deterministic
+  function composition exactly.
+- Lean type:
+
+  ```lean
+  theorem dirac_comp (f : X → Y) (g : Y → Z) :
+      dirac (fun x ↦ g (f x)) = comp (dirac f) (dirac g)
+  ```
+
+- Prerequisites: executable equality on the intermediate finite carrier,
+  Chapman–Kolmogorov composition, and the single-support finite-sum identity.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's finite-sum
+  theorem; the Dirac channel itself is definitionally executable.
+- Computable: yes; both sides evaluate to exact zero-or-one matrices.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic.lean`.
+
+### `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful`
+
+- Natural-language statement: equality of Dirac channels implies equality of
+  the deterministic functions that generated them.
+- Lean type:
+
+  ```lean
+  theorem dirac_faithful {f g : X → Y} (h : dirac f = dirac g) : f = g
+  ```
+
+- Prerequisites: matrix extensionality, executable equality on `Y`, and
+  `one_ne_zero` in `ℚ≥0`.
+- Status: `PROVED`.
+- Classical choice: yes in audited proof dependencies; no choice is used by
+  the runtime Dirac definition.
+- Computable: the Dirac mapping is executable; faithfulness is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic.lean`.
+
+### `Ript.Models.FiniteStochastic.FinStoch.comp_discard`
+
+- Natural-language statement: every normalized finite stochastic channel is
+  causal—following it by discard equals immediate discard.
+- Lean type:
+
+  ```lean
+  theorem comp_discard (f : FinStoch X Y) :
+      comp f (discard Y) = discard X
+  ```
+
+- Prerequisites: row normalization, the deterministic discard channel, and
+  exact finite summation.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies through Mathlib's finite-sum
+  infrastructure; discard and composition remain executable.
+- Computable: both channels are executable; equality is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteStochastic.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -295,3 +426,10 @@ Every node in this graph is an existing compiled module.
    extensions, whose object action and structural maps are fixed. Uniqueness
    for arbitrary strong monoidal functors belongs at the monoidal-natural-
    isomorphism level and is not conflated with strict equality.
+7. Finite stochastic channels use normalized `ℚ≥0` matrices rather than
+   floating point. Objects carry executable enumeration and equality data, so
+   channel application, Chapman–Kolmogorov composition, tensor, Dirac, copy,
+   discard, and the typed example interpreter all reduce in the kernel.
+8. Stage 3 provides an actual category, an independent-product bifunctor, and
+   a faithful deterministic Dirac functor. It does not claim a measure-theoretic
+   probability monad or generic convex interface; those require later stages.

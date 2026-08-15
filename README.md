@@ -15,14 +15,13 @@ Process Theory**: typed processes, compositional resource bounds, executable
 interpretations, explicit equational derivations, and relative completeness via
 canonical term models.
 
-The project deliberately starts below the level of probability, causality,
-thermodynamics, quantum theory, or higher categories. Those are research
-directions, not current capabilities. Today, Ript provides a checked foundation
-on which such layers can be added without silently changing the meaning of
-process composition or resource accounting.
+The project builds these layers in a strict order. It now includes one exact,
+executable finite stochastic model; measure-theoretic probability, decision
+theory, thermodynamics, quantum theory, and higher categories remain research
+directions rather than current capabilities.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1 and 2 are implemented and
+> Ript is early-stage research software. Stages 1–3 are implemented and
 > checked by Lean's kernel; the public API is not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
 
@@ -148,6 +147,17 @@ The word *relative* matters: the completeness theorem is about equality in the
 canonical quotient term model, not an unqualified claim about every conceivable
 semantic universe.
 
+### 5. Exact finite stochastic channels
+
+The first probabilistic model uses normalized matrices
+`X → Y → ℚ≥0`. Composition is the exact Chapman–Kolmogorov sum, tensor
+multiplies independent probabilities, and deterministic functions embed as
+Dirac channels through a faithful functor. Objects bundle both enumeration and
+decidable equality, so the generic typed evaluator can run fair-coin and noisy
+Boolean examples in the kernel without floating-point approximation. Copy and
+discard are explicit Dirac channels, and `comp_discard` proves the causal law
+for every normalized finite channel.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -170,6 +180,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Semantics.Free.lift_on_generator` | The universal lift agrees with the interpretation on generators. |
 | `Ript.Semantics.Free.lift_preserves_cost` | The universal lift never increases process cost. |
 | `Ript.Semantics.Free.lift_unique` | Every strict structure-preserving extension has the same action as the universal lift. |
+| `Ript.Models.FiniteStochastic.FinStoch.id_apply` | Identity channels are exact Dirac matrices. |
+| `Ript.Models.FiniteStochastic.FinStoch.comp_apply` | Composition obeys the Chapman–Kolmogorov formula. |
+| `Ript.Models.FiniteStochastic.FinStoch.tensor_apply` | Tensor multiplies independent exact probabilities. |
+| `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | The Dirac embedding preserves deterministic composition. |
+| `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | Distinct deterministic functions have distinct Dirac channels. |
+| `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | Every normalized finite channel is causal under discard. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -187,7 +203,7 @@ finished physical theory.
 | 0 | Reproducible project, documentation, CI, and audit baseline | **PROVED** |
 | 1 | Sequential resource-process core | **PROVED** |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | **PROVED** |
-| 3 | Executable finite stochastic model | **OPEN RESEARCH** |
+| 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **OPEN RESEARCH** |
 | 5–11 | Further semantic and higher layers | **OPEN RESEARCH** |
 
@@ -199,10 +215,12 @@ Implemented model support is intentionally narrow:
 | `FiniteFunction.Metered` | Yes | No | Executable | Functions carry explicit natural-number costs |
 | Sequential term model | Yes | No | Proof layer | Quotient by explicit category derivations |
 | Symmetric monoidal term model | Yes | Yes | Proof layer | Quotient by explicit monoidal derivations |
+| Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
 
-Copying, discarding, convexity, causality, thermal structure, stochastic
-semantics, quantum channels, and univalent or higher-categorical structure are
-**not implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
+The finite stochastic model has explicit copy, discard, and a proved causal
+discard law. Generic convex structure, measure-theoretic stochastic semantics,
+thermal structure, quantum channels, and univalent or higher-categorical
+structure are **not implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
 statements. There are currently no registered conjectures.
 
@@ -227,6 +245,8 @@ flowchart LR
   T --> CO["Relative completeness"]
   I --> U["Universal resource-nonincreasing lift"]
   T --> U
+  F["Exact finite stochastic matrices"] --> CK["Chapman–Kolmogorov category"]
+  CK --> EX["Executable typed interpretation"]
 ```
 
 | Layer | Main modules | Responsibility |
@@ -235,8 +255,8 @@ flowchart LR
 | Process capabilities | `Ript.Core.*` | Sequential, tensor, and structural cost laws |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Finite zero-cost and explicitly metered functions |
-| Executable examples | `Ript.Examples.*` | Computed behavior and budget checks |
+| Concrete models | `Ript.Models.*` | Deterministic functions and exact finite stochastic channels |
+| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, and rational probabilities |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
 The sequential core remains independently usable. The symmetric monoidal layer
@@ -259,11 +279,13 @@ Ript is designed so that proof trust is inspectable rather than implicit.
 - Unproved research claims belong in `CONJECTURES.md`, never in the theorem
   namespace disguised as completed results.
 
-The current flagship audit reports only Lean's standard `propext` and
-`Quot.sound` principles where required. It reports no `Classical.choice`, no
-compiler-trust escape, and no placeholder-proof axiom. Quotient dependencies
-are confined to the proof-semantic term models; executable syntax and finite
-evaluation do not depend on them.
+The stage-1 and stage-2 flagship audit reports only Lean's standard `propext`
+and `Quot.sound` principles where required. Finite-stochastic theorem proofs
+also report `Classical.choice` through Mathlib's generic `Fintype` and finite-sum
+proof infrastructure. Runtime channel data is nevertheless supplied by
+explicit computational `Fintype` and `DecidableEq` values: no finite-model
+definition is `noncomputable`, and CI executes exact `ℚ≥0` examples. The audit
+reports no compiler-trust escape or placeholder-proof axiom.
 
 For exact per-theorem output, read [AXIOMS.md](AXIOMS.md) or run:
 
@@ -351,6 +373,11 @@ true
 CI compares this output exactly, so an unintended change in executable behavior
 fails the quality gate.
 
+`Ript/Examples/StochasticBits.lean` additionally executes a fair coin, a noisy
+Boolean channel, independent tensor composition, copying, and the generic typed
+interpreter. Its five checks use exact nonnegative rationals and all print
+`true`.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -380,7 +407,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Concrete finite deterministic models |
+| [`Ript/Models/`](Ript/Models/) | Deterministic finite models and exact finite stochastic channels |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -441,13 +468,13 @@ updated assumption audit.
 - [x] Monoidal soundness and term-model relative completeness
 - [x] Strong symmetric monoidal, resource-nonincreasing free lift and strict uniqueness
 - [x] Zero-cost and explicitly metered finite deterministic examples
+- [x] Exact finite stochastic category, tensor bifunctor, Dirac embedding, copy, discard, and typed example
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
 
-- [ ] Executable finite stochastic semantics
 - [ ] Finite-distribution Kleisli representation and comparison results
-- [ ] Explicit copy/discard capabilities where semantically justified
+- [ ] Generic copy/discard capability interfaces beyond the finite stochastic model
 - [ ] Convex and causal structure
 - [ ] Thermal/resource-theoretic models
 - [ ] Quantum-channel models
@@ -493,13 +520,16 @@ monoidal term models.
 
 ### Does Ript already support probability or quantum channels?
 
-No. Finite stochastic, Kleisli, thermal, causal, and quantum models are roadmap
-items. The current executable models are deterministic finite functions.
+Ript supports exact executable finite stochastic channels over `ℚ≥0`, including
+composition, tensor, Dirac channels, copy, and discard. The Kleisli
+representation, general measure-theoretic probability, thermal models, and
+quantum channels remain roadmap items.
 
 ### Does the monoidal layer imply copying or discarding?
 
-No. Tensor and symmetry alone do not provide diagonal or terminal maps. Copy and
-discard must be introduced as explicit capabilities with their own laws.
+No. Tensor and symmetry alone do not provide diagonal or terminal maps. The
+finite stochastic model introduces copy and discard explicitly; other semantic
+models must supply and justify their own operations and laws.
 
 ### Why maintain a separate sequential syntax?
 
