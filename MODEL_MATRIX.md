@@ -12,4 +12,6 @@ Only implemented and compiled capabilities are marked as supported.
 | Finite-distribution Kleisli | Yes | No | No | No | No | No | No | No | Yes |
 | Mathlib `Stoch` bridge (finite discrete image) | Yes | Yes | Via `Stoch` | Via `Stoch` | No | Via `Stoch` | Via Mathlib Bayes risk | No | Semantic layer |
 | Exact finite decision layer | Via `FinStoch` | No | No | No | No | Via `FinStoch` | Yes | No | Yes |
+| Total computation (`Fin 4 → Nat` resources) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
+| Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | QuantumChannel | Planned | No | No | No | No | No | No | No | No |

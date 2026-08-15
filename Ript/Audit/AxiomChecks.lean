@@ -1,4 +1,5 @@
 import Ript.Examples.BitProcesses
+import Ript.Examples.SimpleComputation
 import Ript.Examples.StochasticBits
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
@@ -11,7 +12,7 @@ import Ript.Semantics.MonoidalInitiality
 /-!
 # Kernel assumption checks
 
-This module prints the assumptions used by the stage-1 through stage-3 flagship theorems.
+This module prints the assumptions used by the current flagship theorems.
 Its output is mirrored in `AXIOMS.md` after every audit run.
 -/
 
@@ -63,3 +64,9 @@ set_option autoImplicit false
 #print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction
 #print axioms Ript.Models.Decision.SemanticValue.semanticValue_mono
 #print axioms Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction
+#print axioms Ript.Models.Computation.ComputationResource.within_sound
+#print axioms Ript.Models.Computation.Total.tensor_comp
+#print axioms Ript.Models.Computation.Partial.tensor_comp
+#print axioms Ript.Models.Computation.Partial.ofTotal_resource
+#print axioms Ript.Examples.SimpleComputation.total_interpreter_cost_sound
+#print axioms Ript.Examples.SimpleComputation.partial_budget_checker_sound

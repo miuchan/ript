@@ -7,9 +7,13 @@ import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
 import Ript.Examples.KleisliBits
+import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleDecision
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
+import Ript.Models.Computation.Partial
+import Ript.Models.Computation.Resource
+import Ript.Models.Computation.Total
 import Ript.Models.Decision.Blackwell
 import Ript.Models.Decision.FiniteRisk
 import Ript.Models.Decision.ResourceBounded

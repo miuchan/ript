@@ -41,4 +41,13 @@ if [[ "$decision_output" != "$expected_decision_output" ]]; then
   exit 1
 fi
 
+computation_output="$(lake env lean Ript/Examples/SimpleComputation.lean)"
+expected_computation_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue'
+
+if [[ "$computation_output" != "$expected_computation_output" ]]; then
+  printf 'Computation example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_computation_output" "$computation_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'

@@ -20,14 +20,16 @@ ekzaktan, plenumeblan finian stokastan modelon, ĝian Kleisli-prezenton per
 finiaj distribuoj, kaj fidelan semantikan ponton al la mezurteoria kategorio
 `Stoch` de Mathlib. Sur tiu ponto Ript nun formaligas Blackwell-komparon,
 ekzaktan plenumeblan finian Bayes-riskon, rimed-limigitan decidriskon kaj
-task-rilatan semantikan valoron. Ĝeneralaj modeloj sur mezureblaj spacoj, la
-inversa Blackwell-prezenta teoremo, termodinamiko, kvantuma teorio kaj pli altaj
-kategorioj restas esplorvojoj.
+task-rilatan semantikan valoron. Ĝi ankaŭ enhavas kategoriojn de totalaj kaj
+eble malsukcesaj komputoj kun eksplicitaj paŝaj, demandaj, memoraj kaj pordegaj
+rimedoj. Finiaj kaŭzaj intervenoj, ĝeneralaj mezureblaj modeloj, la inversa
+Blackwell-teoremo, termodinamiko, kvantuma teorio kaj pli altaj kategorioj
+restas esplorvojoj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–6 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–6 kaj la komputa parto de Etapo 7 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -255,6 +257,26 @@ monotonecon sub malprecigo, invariadon sub informa ekvivalenteco, nulon ĉe la
 bazlinio, taskan sensignifecon por nula perdo kaj buĝetan monotonecon. Ĝi
 **ne** identigas ĉi tiun task-rilatan kvanton kun Shannon-informo.
 
+### 9. Totalaj kaj partaj komputoj kun eksplicitaj rimedoj
+
+La unua komputrimedo estas `ComputationResource := Fin 4 → Nat`, kun koordinatoj
+por formalaj paŝoj, oracle-demandoj, memorlimo kaj cirkvitaj pordegoj. Tiuj estas
+matematikaj kalkulunuoj, ne murhorloĝa tempo. Adicio kaj komparo estas
+komponantaj, kaj la plenumebla kontrolilo `ComputationResource.within` havas
+pruvnivelan ĝustecon.
+
+En `Computation.Total`, morfioj estas totalaj funkcioj kun rimedvektoro. En
+`Computation.Partial`, ili estas `X → Option Y`; sinsekvo estas vera `Option`-
+Kleisli-kunmeto, do malsukceso propagas. Ambaŭ kategorioj ekzakte adicias
+sinsekvajn rimedojn, donas produktan bifunktoron, pruvas interchange, kaj ekzakte
+adicias paralelajn rimedojn. Ni ne antaŭtempe nomas tion denaska
+`MonoidalCategory`-instanco.
+
+La funktoro `Partial.ofTotal` enigas totalajn komputojn kiel ĉiam sukcesajn
+partajn komputojn kaj konservas ĉiujn rimedkoordinatojn. Komuna tiphava
+demando/nego/gardilo-programo ruliĝas en ambaŭ modeloj kun `eval_cost_le` kaj
+plenumeblaj buĝetkontroloj.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -305,6 +327,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Atestita redukto transportas riskon kun eksplicita adicia kroma kosto. |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Malprecigo ne povas pligrandigi task-rilatan semantikan valoron. |
 | `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | Rimeda valoro respektas atestitajn reduktojn kaj ilian kroman koston. |
+| `Ript.Models.Computation.ComputationResource.within_sound` | Sukcesa plenumebla vektorkontrolo pruvas la rimedlimon. |
+| `Ript.Models.Computation.Total.tensor_comp` | Paralela totala plenumo respektas interchange. |
+| `Ript.Models.Computation.Partial.tensor_comp` | Paralela `Option`-plenumo respektas Kleisli-interchange. |
+| `Ript.Models.Computation.Partial.ofTotal_resource` | La total-al-parta funktoro konservas ĉiujn rimedojn. |
+| `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | Ĝenerala sintakskosta ĝusteco validas por la totala plenumilo. |
+| `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | La parta kontrolilo atestas la ekzaktan sintaksan buĝeton. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -326,7 +354,9 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
 | 5 | Fidela finia-kanala ponto al Mathlib `Stoch` | **PROVED** |
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
-| 7–11 | Kaŭzaj, komputaj, termikaj, kvantumaj kaj pli altaj tavoloj | **OPEN RESEARCH** |
+| 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
+| 7, kaŭzeco | Finiaj DAG-mekanismoj kaj intervenoj | **OPEN RESEARCH** |
+| 8–11 | Termikaj, kvantumaj, dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -340,6 +370,8 @@ La realigita modelsubteno estas intence mallarĝa:
 | Fini-distribua Kleisli-kategorio | Jes | Ne | Plenumebla | Ekzaktaj `pure`/`bind`; kategorie ekvivalenta al `FinStoch` |
 | Finia diskreta bildo de la Mathlib-`Stoch`-ponto | Jes | Jes, ĝis kanona izomorfio | Semantika tavolo | Fidela Markov-kerna interpreto; la fontaj matricoj restas plenumeblaj |
 | Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | La Blackwell-ordo respektas `FinStoch`-produktojn; finiaj minimumoj, buĝetoj kaj task-rilata valoro |
+| Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
+| `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -387,6 +419,10 @@ flowchart LR
   FR --> RR["Rimed-limigita decidrisko"]
   RR --> SV["Task-rilata semantika valoro"]
   BW --> SB
+  CR["Paŝaj/demandaj/memoraj/pordegaj rimedoj"] --> TC["Totala komputkategorio"]
+  TC --> PC["Option Kleisli parta kategorio"]
+  TC --> CE["Komuna tiphava komputekzemplo"]
+  PC --> CE
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -425,7 +461,9 @@ stokastaj, Kleisli-prezentaj, decidaj kaj `Stoch`-teoremoj ankaŭ raportas
 finiaj funkciospacoj, mezuroj kaj kategorioj. Rultempaj datumoj uzas eksplicitajn
 enumeradon kaj decideblan egalecon: finiaj kanaloj, riskoj, buĝetitaj riskoj kaj
 semantikaj valoroj estas plenumeblaj ekzaktaj `ℚ≥0`-datumoj. Nekomputebleco
-aperas nur ĉe la mezurteoria `Stoch`/semantika-Bayes-riska limo. `AXIOMS.md` fiksas
+aperas nur ĉe la mezurteoria `Stoch`/semantika-Bayes-riska limo. Totalaj funkcioj,
+`Option`-malsukceso, rimedvektoroj kaj komputaj buĝetkontroloj estas plenumeblaj.
+`AXIOMS.md` fiksas
 la efektivan rezulton por ĉiu teoremo per ekzakta komparo.
 
 Por la preciza rezulto de ĉiu teoremo, rulu:
@@ -537,6 +575,11 @@ taskvaloro estas ekzakte `1/2` por divenado kaj `0` por sensignifa nul-perda
 tasko. Ses ekzaktaj kontraktoj `#eval decide` ĉiuj eligas `true` kaj estas
 kontrolataj de CI.
 
+`Ript/Examples/SimpleComputation.lean` rulas la saman tiphavan programon en la
+totala kaj `Option`-parta kategorioj, kalkulas la ekzaktan rimedvektoron
+`(paŝoj, demandoj, memoro, pordegoj) = (3, 1, 0, 1)`, ekzercas sukceson kaj
+malsukceson, kaj kontrolas ambaŭ buĝetojn. Sep `#eval decide` eligas `true`.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -557,6 +600,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- aŭ, por la Blackwell-ordo kaj task-rilata decidvaloro:
 import Ript.Models.Decision.SemanticValue
+-- aŭ, por rimed-konscia totala kaj parta komputado:
+import Ript.Models.Computation.Partial
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -571,7 +616,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Determinismaj modeloj, ekzakta finia probablo, la Mathlib-`Stoch`-ponto kaj finia decidteorio |
+| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj kaj totalaj/partaj komputmodeloj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -619,6 +664,8 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    silente fariĝas task-sendependa entropia aserto.
 9. **Eksplicite kostigi komputadon.** Posttraktado fariĝas rimedkomparo nur kiam
    redukto liveras kaj decidkvalitan limon kaj adician kostan supran limon.
+10. **Ne konfuzi formalan koston kun pasinta tempo.** Komputrimedoj estas
+    semantikaj markoj kun pruvitaj kunmetleĝoj, ne rendimentaj asertoj.
 
 ## Vojmapo
 
@@ -645,6 +692,9 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Rimed-limigita decidrisko, buĝeta monotoneco kaj reduktoj kun adicia kroma kosto
 - [x] Task-rilata semantika valoro: ekvivalenteco, malprecigo, buĝeto, bazlinio kaj taska sensignifeco
 - [x] Plenumebla Bulea decidekzemplo komparanta perfektan kaj neinformatan observon
+- [x] Kvar-koordinata komputrimedo kaj ĝusta plenumebla buĝetkontrolilo
+- [x] Totalaj kaj `Option`-partaj kategorioj kun ekzaktaj sinsekvaj kaj paralelaj kostoj
+- [x] Produktaj bifunktoroj, interchange, rimed-konserva totala enigo kaj tiphava ekzemplo
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
@@ -652,6 +702,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Semantike pravigitaj kopi- kaj forĵet-kapabloj ekster la finia stokasta modelo
 - [ ] Ĝenerala stokasta semantiko sur mezureblaj spacoj preter la finia diskreta bildo
 - [ ] Konveksa kaj kaŭza strukturo
+- [ ] Finiaj DAG-kaŭzaj mekanismoj, normaligita kuna distribuo kaj intervenoj
+- [ ] Denaska monoida pakado por la totala kaj parta komputkategorioj
 - [ ] Inversa finia Blackwell--Sherman--Stein-prezenta teoremo
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
@@ -716,6 +768,13 @@ Ne. La nuna `semanticValue` estas pliboniĝo de decida risko rilate al specifita
 bazlinio. Ŝanĝo de la antaŭdistribuo, agospaco, perdo aŭ buĝeto povas ŝanĝi la
 valoron de la sama eksperimento. Neniu egaleco kun Shannon-a reciproka informo
 estas asertita.
+
+### Ĉu Ript modeligas veran programan rultempon?
+
+Ne. Ĝi modeligas deklaritajn formalajn limojn por paŝoj, demandoj, memoro kaj
+pordegoj. Ekzakta kalkulado por sinsekvaj kaj paralelaj operacioj estas pruvita,
+sed neniu teoremo identigas tiujn unuojn kun murhorloĝa tempo, maŝina memoro aŭ
+aparta aparataro.
 
 ### Ĉu la monoida tavolo implicas kopiadon aŭ forĵetadon?
 
