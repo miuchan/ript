@@ -12,6 +12,7 @@ fi
 
 audit_targets="$(sed -n 's/^#print axioms //p' Ript/Audit/AxiomChecks.lean)"
 documented_targets="$(sed -n 's/^| `\([^`]*\)` |.*/\1/p' AXIOMS.md)"
+documented_axioms="$(sed -n 's/^| `\([^`]*\)` | `\([^`]*\)` |.*/\1|\2/p' AXIOMS.md)"
 
 if [[ -z "$audit_targets" ]]; then
   printf 'Axiom audit has no theorem targets.\n' >&2
@@ -32,8 +33,29 @@ while IFS= read -r target; do
   if [[ "$matches" != "'$target' does not depend on any axioms" && \
         "$matches" != "'$target' depends on axioms: [propext]" && \
         "$matches" != "'$target' depends on axioms: [Quot.sound]" && \
-        "$matches" != "'$target' depends on axioms: [propext, Quot.sound]" ]]; then
+        "$matches" != "'$target' depends on axioms: [propext, Quot.sound]" && \
+        "$matches" != "'$target' depends on axioms: [propext, Classical.choice, Quot.sound]" ]]; then
     printf 'Axiom allowlist violation for %s:\n%s\n' "$target" "$matches" >&2
+    exit 1
+  fi
+
+  documented="$(printf '%s\n' "$documented_axioms" | awk -F'|' -v target="$target" \
+    '$1 == target { print $2 }')"
+
+  if [[ -z "$documented" ]]; then
+    printf 'AXIOMS.md is missing the audited theorem %s.\n' "$target" >&2
+    exit 1
+  fi
+
+  if [[ "$matches" == "'$target' does not depend on any axioms" ]]; then
+    actual='none'
+  else
+    actual="${matches#\'$target\' depends on axioms: }"
+  fi
+
+  if [[ "$actual" != "$documented" ]]; then
+    printf 'Documented axioms differ for %s.\nExpected: %s\nActual: %s\n' \
+      "$target" "$documented" "$actual" >&2
     exit 1
   fi
 

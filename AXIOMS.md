@@ -7,10 +7,10 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | --- | --- | --- |
 | `Ript.Resource.budgeted_id` | `[propext]` | `Ript/Resource/Budget.lean` |
 | `Ript.Resource.budgeted_comp` | `[propext, Quot.sound]` | `Ript/Resource/Budget.lean` |
-| `Ript.Syntax.Expr.syntaxCost_id` | none | `Ript/Syntax/Cost.lean` |
-| `Ript.Syntax.Expr.syntaxCost_comp` | none | `Ript/Syntax/Cost.lean` |
-| `Ript.Semantics.eval_id` | none | `Ript/Semantics/Eval.lean` |
-| `Ript.Semantics.eval_comp` | none | `Ript/Semantics/Eval.lean` |
+| `Ript.Syntax.Expr.syntaxCost_id` | `none` | `Ript/Syntax/Cost.lean` |
+| `Ript.Syntax.Expr.syntaxCost_comp` | `none` | `Ript/Syntax/Cost.lean` |
+| `Ript.Semantics.eval_id` | `none` | `Ript/Semantics/Eval.lean` |
+| `Ript.Semantics.eval_comp` | `none` | `Ript/Semantics/Eval.lean` |
 | `Ript.Semantics.eval_cost_le` | `[propext, Quot.sound]` | `Ript/Semantics/Eval.lean` |
 | `Ript.Semantics.soundness` | `[propext]` | `Ript/Semantics/Soundness.lean` |
 | `Ript.Semantics.complete_via_term_model` | `[propext, Quot.sound]` | `Ript/Semantics/Completeness.lean` |
@@ -23,13 +23,26 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Semantics.Free.lift_on_generator` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
 | `Ript.Semantics.Free.lift_preserves_cost` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
 | `Ript.Semantics.Free.lift_unique` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.id_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.comp_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.tensor_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
-to proof semantics. No flagship theorem depends on classical choice or compiler
-trust, and the audit reports no placeholder proof assumption. In particular,
+to proof semantics. The stage-1 and stage-2 flagship theorems do not depend on
+classical choice. The finite stochastic theorems report `Classical.choice`
+through Mathlib's generic
+`Fintype` and finite-sum proof infrastructure. Runtime channel data instead
+uses explicitly supplied `Fintype` and `DecidableEq` values; no definition is
+`noncomputable`, and the checked `#eval` examples execute exact rational
+probabilities. In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
-hexagon laws directly, so the stage-2 flagship results do not acquire a
-`Classical.choice` dependency from derived coherence lemmas.
+hexagon laws directly, so the stage-2 flagship results do not acquire that
+dependency from derived coherence lemmas.
+
+No audited theorem uses compiler trust or a placeholder-proof assumption.
 
 The `Ript/Univalent/` boundary does not yet exist and is not imported by the core.

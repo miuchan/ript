@@ -5,12 +5,21 @@ set -euo pipefail
 repository_root="$(git rev-parse --show-toplevel)"
 cd "$repository_root"
 
-actual_output="$(lake env lean Ript/Examples/BitProcesses.lean)"
-expected_output=$'true\ntrue\ntrue'
+bit_output="$(lake env lean Ript/Examples/BitProcesses.lean)"
+expected_bit_output=$'true\ntrue\ntrue'
 
-if [[ "$actual_output" != "$expected_output" ]]; then
-  printf 'Executable example output changed.\nExpected:\n%s\nActual:\n%s\n' \
-    "$expected_output" "$actual_output" >&2
+if [[ "$bit_output" != "$expected_bit_output" ]]; then
+  printf 'Bit-process example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_bit_output" "$bit_output" >&2
+  exit 1
+fi
+
+stochastic_output="$(lake env lean Ript/Examples/StochasticBits.lean)"
+expected_stochastic_output=$'true\ntrue\ntrue\ntrue\ntrue'
+
+if [[ "$stochastic_output" != "$expected_stochastic_output" ]]; then
+  printf 'Finite-stochastic example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_stochastic_output" "$stochastic_output" >&2
   exit 1
 fi
 

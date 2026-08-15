@@ -15,14 +15,14 @@ Process Theory**, esperante **Teorio de Rimed-Indeksitaj Informaj Procezoj**:
 tiphavajn procezojn, kunmeteblajn rimedlimojn, plenumeblajn interpretojn,
 eksplicitajn egalecderivojn, kaj relativan kompletecon per kanonaj termmodeloj.
 
-La projekto intence komenciĝas je nivelo pli baza ol probablo, kaŭzeco,
-termodinamiko, kvantuma teorio aŭ pli altaj kategorioj. Tiuj estas esplorvojoj,
-ne nunaj kapabloj. Hodiaŭ Ript disponigas kontrolitan fundamenton, sur kiu oni
-povas aldoni tiajn tavolojn sen silente ŝanĝi la signifon de procezkunmeto aŭ
-rimedkalkulado.
+La projekto konstruas siajn tavolojn laŭ rigora sinsekvo. Ĝi nun inkluzivas
+ekzaktan, plenumeblan finian stokastan modelon. Mezurteoria probablo,
+decidteorio, termodinamiko, kvantuma teorio kaj pli altaj kategorioj restas
+esplorvojoj. Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
+tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1 kaj 2 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–3 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -146,6 +146,20 @@ koherleĝoj de simetriaj monoidaj kategorioj.
 La vorto *relativa* gravas: la teoremo temas pri egaleco en la kanona kvocienta
 termmodelo, ne pri senkondiĉa aserto super ĉiu imagebla semantika universo.
 
+### 5. Ekzaktaj finiaj stokastaj kanaloj
+
+La finia stokasta modelo prezentas kanalon kiel normaligitan matricon
+`X → Y → ℚ≥0`. Identoj estas Dirac-matricoj, kunmeto estas finia
+Chapman–Kolmogorov-sumo, kaj tensoro estas la produkta distribuo. Ĉiu objekto
+eksplicite portas plenumeblajn enumeradon kaj decideblan egalecon, do kanaloj,
+la Dirac-enigo, kopiado, forĵetado kaj interpretado kalkuliĝas sen uzi
+nekomputeblan elekton por produkti rultempajn datumojn.
+
+Determinismaj finiaj funkcioj eniĝas kiel fidela Dirac-funktoro, kiu konservas
+kunmeton kaj tensoron. Kopiado estas la diagonala mapo, forĵetado celas la unikan
+unuan valoron, kaj ĉiu finia stokasta kanalo plenumas la kaŭzan leĝon
+`f ≫ discard = discard`.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -168,6 +182,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Semantics.Free.lift_on_generator` | La universala levo kongruas kun la interpreto je generiloj. |
 | `Ript.Semantics.Free.lift_preserves_cost` | La universala levo neniam pligrandigas procezan koston. |
 | `Ript.Semantics.Free.lift_unique` | Ĉiu strikte struktur-konserva etendaĵo havas la saman agon kiel la universala levo. |
+| `Ript.Models.FiniteStochastic.FinStoch.id_apply` | La stokasta idento estas la punkta Dirac-matrico. |
+| `Ript.Models.FiniteStochastic.FinStoch.comp_apply` | Kunmeto estas la finia Chapman–Kolmogorov-sumo. |
+| `Ript.Models.FiniteStochastic.FinStoch.tensor_apply` | La tensora kanalo multiplikas komponantajn probablojn. |
+| `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | La Dirac-enigo konservas determinisman funkci-kunmeton. |
+| `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | La Dirac-enigo estas fidela je finiaj funkcioj. |
+| `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | Ĉiu finia stokasta kanalo konservas forĵetadon. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -185,7 +205,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 0 | Reproduktebla projekto, dokumentaro, CI kaj revizia bazlinio | **PROVED** |
 | 1 | Sinsekva rimed-proceza kerno | **PROVED** |
 | 2 | Tensoro, simetrio, paralelaj rimedoj kaj la strikta libera universala levo | **PROVED** |
-| 3 | Plenumebla finia stokasta modelo | **OPEN RESEARCH** |
+| 3 | Plenumebla finia stokasta modelo | **PROVED** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **OPEN RESEARCH** |
 | 5–11 | Pliaj semantikaj modeloj kaj pli altaj tavoloj | **OPEN RESEARCH** |
 
@@ -197,12 +217,14 @@ La realigita modelsubteno estas intence mallarĝa:
 | `FiniteFunction.Metered` | Jes | Ne | Plenumebla | Funkcioj portas eksplicitajn natur-nombrajn kostojn |
 | Sinsekva termmodelo | Jes | Ne | Pruva tavolo | Kvociento laŭ eksplicitaj kategoriaj derivoj |
 | Simetria monoida termmodelo | Jes | Jes | Pruva tavolo | Kvociento laŭ eksplicitaj monoidaj derivoj |
+| Ekzaktaj finiaj stokastaj kanaloj | Jes | Jes | Plenumebla | Normaligitaj `ℚ≥0`-matricoj, Dirac, kopiado, forĵetado |
 
-Kopiado, forĵetado, konvekseco, kaŭzeco, termika strukturo, stokasta semantiko,
-kvantumaj kanaloj, univalenteco kaj pli altkategoria strukturo estas **ne
-realigitaj**. Vidu [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata
-kapablomatrico kaj [CONJECTURES.md](../CONJECTURES.md) por formale registritaj
-malfermitaj asertoj. Nuntempe neniu konjekto estas registrita.
+Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo.
+Ĝenerala konvekseco, mezurteoria probablo, termika strukturo, kvantumaj kanaloj,
+univalenteco kaj pli altkategoria strukturo estas **ne realigitaj**. Vidu
+[MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
+[CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
+Nuntempe neniu konjekto estas registrita.
 
 ## Arkitekturo
 
@@ -225,6 +247,8 @@ flowchart LR
   T --> CO["Relativa kompleteco"]
   I --> U["Universala rimed-nepligrandiga levo"]
   T --> U
+  F["Ekzaktaj finiaj stokastaj matricoj"] --> CK["Chapman–Kolmogorov-kategorio"]
+  CK --> EX["Plenumebla tiphava interpreto"]
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -233,7 +257,7 @@ flowchart LR
 | Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj |
 | Plenumebla sintakso | `Ript.Syntax.*` | Tiphavaj esprimoj, rekursia kosto, derivoj |
 | Semantiko | `Ript.Semantics.*` | Interpretoj, interpretado, ĝusteco, kompleteco |
-| Konkretaj modeloj | `Ript.Models.*` | Finiaj senkostaj kaj eksplicite mezuritaj funkcioj |
+| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, mezuritaj funkcioj kaj ekzaktaj stokastaj kanaloj |
 | Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj kaj buĝetkontroloj |
 | Revizia surfaco | `Ript.Audit.*` | Deklar-lintado kaj raportado de kernaj aksiomoj |
 
@@ -256,11 +280,14 @@ Ript estas projektita tiel, ke pruva fido estas inspektebla, ne implicita.
 - Nepruvitaj esploraj asertoj apartenas al `CONJECTURES.md`, neniam al la
   teorema nomspaco alivestitaj kiel finitaj rezultoj.
 
-La nuna ĉefteorema revizio raportas nur la normajn Lean-principojn `propext` kaj
-`Quot.sound` kie necesas. Ĝi raportas nek `Classical.choice`, nek eskapon al
-kompilila fido, nek aksiomon de lokokupa pruvo. Kvocientaj dependoj restas en la
-pruvsemantikaj termmodeloj; la plenumebla sintakso kaj finia interpretado ne
-dependas de ili.
+La revizio de la ĉefaj teoremoj de Etapoj 1 kaj 2 raportas nur la normajn
+Lean-principojn `propext` kaj `Quot.sound` kie necesas. La pruvoj pri finiaj
+stokastaj teoremoj ankaŭ raportas `Classical.choice` tra la ĝenerala pruva
+infrastrukturo de Mathlib por `Fintype` kaj finiaj sumoj. Tio ne produktas
+rultempajn datumojn: stokastaj objektoj eksplicite portas enumeradon kaj
+decideblan egalecon, la difinoj uzas nek `noncomputable` nek `classical`, kaj CI
+plenumas ekzaktajn kalkulojn en `ℚ≥0`. `AXIOMS.md` fiksas la efektivan rezulton
+por ĉiu teoremo per ekzakta komparo.
 
 Por la preciza rezulto de ĉiu teoremo, rulu:
 
@@ -336,7 +363,7 @@ Rulu la kontrolitan ekzemplon rekte:
 lake env lean Ript/Examples/BitProcesses.lean
 ```
 
-Ĝiaj tri plenumeblaj kontroloj eligas:
+La tri plenumeblaj kontroloj de tiu ekzemplo eligas:
 
 ```text
 true
@@ -346,6 +373,11 @@ true
 
 CI komparas tiun eligon ekzakte, do neintencita ŝanĝo de plenumebla konduto
 malsukcesigas la kvalitan kontrolpordon.
+
+`Ript/Examples/StochasticBits.lean` plenumas justan moneron, bruan neon,
+tensoraĵon, kopiadon kaj la ĝeneralan tiphavan interpretilon per ekzaktaj finiaj
+stokastaj kanaloj. Kvin pliaj kontroloj ĉiuj eligas `true`; interalie ili
+konfirmas ekzakte la probablon `1/4` por paro da justaj bitoj.
 
 ## Uzi Ript kiel Lean-dependaĵon
 
@@ -377,7 +409,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Konkretaj finiaj determinismaj modeloj |
+| [`Ript/Models/`](../Ript/Models/) | Finiaj determinismaj modeloj kaj ekzaktaj stokastaj kanaloj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -417,8 +449,8 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    kanonan modelon kaj pruvan limon.
 6. **Trakti aksiomojn kiel versionitan API-surfacon.** Nova aksiomo en teoremo
    estas tuj kontroleraro, ne posta piednoto.
-7. **Distingi realigon disde aspiro.** Stokastaj, kaŭzaj, termikaj, kvantumaj kaj
-   pli altaj tavoloj restas videble markitaj kiel malfermita esploro.
+7. **Distingi realigon disde aspiro.** La finia stokasta modelo restas klare
+   apartigita de ĝeneralaj probablaj, termikaj, kvantumaj kaj pli altaj tavoloj.
 
 ## Vojmapo
 
@@ -437,13 +469,13 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Tiphava simetria monoida sintakso kaj struktura rekonekto
 - [x] Monoida ĝusteco kaj termmodela relativa kompleteco
 - [x] Senkostaj kaj eksplicite mezuritaj finiaj determinismaj ekzemploj
+- [x] Ekzaktaj plenumeblaj finiaj stokastaj kanaloj, Dirac, tensoro, kopiado kaj forĵetado
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
 
-- [ ] Plenumebla finia stokasta semantiko
 - [ ] Kleisli-prezento de finiaj distribuoj kaj komparaj rezultoj
-- [ ] Eksplicitaj kopi- kaj forĵet-kapabloj kie semantike pravigitaj
+- [ ] Semantike pravigitaj kopi- kaj forĵet-kapabloj ekster la finia stokasta modelo
 - [ ] Konveksa kaj kaŭza strukturo
 - [ ] Termikaj kaj rimedteoriaj modeloj
 - [ ] Kvantum-kanalaj modeloj
@@ -488,13 +520,15 @@ sinsekva kaj monoida termmodeloj.
 
 ### Ĉu Ript jam subtenas probablon aŭ kvantumajn kanalojn?
 
-Ne. Finiaj stokastaj, Kleisli-aj, termikaj, kaŭzaj kaj kvantumaj modeloj estas
-vojmapaj eroj. La nunaj plenumeblaj modeloj estas determinismaj finiaj funkcioj.
+Ekzaktaj finiaj stokastaj kanaloj jam estas subtenataj. Probabloj estas valoroj
+en `ℚ≥0`, kaj ĉiuj sumoj estas finiaj kaj plenumeblaj. Kleisli-prezentoj,
+mezurteoria probablo, termikaj modeloj kaj kvantumaj kanaloj restas vojmapaj eroj.
 
 ### Ĉu la monoida tavolo implicas kopiadon aŭ forĵetadon?
 
-Ne. Tensoro kaj simetrio solaj ne donas diagonalajn aŭ terminalajn morfiojn.
-Kopiado kaj forĵetado devas esti eksplicitaj kapabloj kun propraj leĝoj.
+Ne ĝenerale. Tensoro kaj simetrio solaj ne donas diagonalajn aŭ terminalajn
+morfiojn. La finia stokasta modelo eksplicite realigas kopiadon kaj forĵetadon
+kiel konkretajn operaciojn kun propraj leĝoj.
 
 ### Kial konservi apartan sinsekvan sintakson?
 
