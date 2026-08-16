@@ -1,3 +1,5 @@
+import Mathlib.Algebra.Order.BigOperators.Group.Finset
+import Mathlib.Data.NNRat.BigOperators
 import Ript.Models.FiniteStochastic
 
 /-!
@@ -115,6 +117,13 @@ theorem bind_assoc (p : FinDist W) (f : W → FinDist X) (g : X → FinDist Y) :
 def map (f : X → Y) (p : FinDist X) : FinDist Y :=
   bind p (fun x ↦ pure (f x))
 
+/-- Entrywise formula for deterministic pushforward. -/
+@[simp]
+theorem map_apply (f : X → Y) (p : FinDist X) (y : Y) :
+    (map f p).prob y =
+      ∑ x, p.prob x * (if f x = y then 1 else 0) :=
+  rfl
+
 /-- Mapping by the identity function does not change a distribution. -/
 @[simp]
 theorem map_id (p : FinDist X) : map (fun x ↦ x) p = p :=
@@ -174,6 +183,100 @@ def tensor (p : FinDist X) (q : FinDist Y) :
 theorem tensor_apply (p : FinDist X) (q : FinDist Y) (outcome : X × Y) :
     (p.tensor q).prob outcome = p.prob outcome.1 * q.prob outcome.2 :=
   rfl
+
+/-- Left marginal of an exact joint distribution. -/
+def leftMarginal (joint : FinDist (Object.tensor X Y)) : FinDist X :=
+  map Prod.fst joint
+
+/-- Right marginal of an exact joint distribution. -/
+def rightMarginal (joint : FinDist (Object.tensor X Y)) : FinDist Y :=
+  map Prod.snd joint
+
+/-- The left marginal sums over the right coordinate. -/
+@[simp]
+theorem leftMarginal_apply (joint : FinDist (Object.tensor X Y)) (x : X) :
+    joint.leftMarginal.prob x = ∑ y : Y, joint.prob (x, y) := by
+  change (∑ outcome : X × Y,
+    joint.prob outcome * (if outcome.1 = x then 1 else 0)) =
+      ∑ y : Y, joint.prob (x, y)
+  rw [Fintype.sum_prod_type]
+  simp
+
+/-- The right marginal sums over the left coordinate. -/
+@[simp]
+theorem rightMarginal_apply (joint : FinDist (Object.tensor X Y)) (y : Y) :
+    joint.rightMarginal.prob y = ∑ x : X, joint.prob (x, y) := by
+  change (∑ outcome : X × Y,
+    joint.prob outcome * (if outcome.2 = y then 1 else 0)) =
+      ∑ x : X, joint.prob (x, y)
+  rw [Fintype.sum_prod_type]
+  simp
+
+/-- The left marginal of an independent product is its left factor. -/
+@[simp]
+theorem leftMarginal_tensor (p : FinDist X) (q : FinDist Y) :
+    (p.tensor q).leftMarginal = p := by
+  apply ext
+  intro x
+  rw [leftMarginal_apply]
+  simp_rw [tensor_apply]
+  rw [← Finset.mul_sum, q.normalized, mul_one]
+
+/-- The right marginal of an independent product is its right factor. -/
+@[simp]
+theorem rightMarginal_tensor (p : FinDist X) (q : FinDist Y) :
+    (p.tensor q).rightMarginal = q := by
+  apply ext
+  intro y
+  rw [rightMarginal_apply]
+  simp_rw [tensor_apply]
+  rw [← Finset.sum_mul, p.normalized, one_mul]
+
+/-- A zero left-marginal mass forces every joint mass above it to vanish. -/
+theorem joint_prob_eq_zero_of_leftMarginal_eq_zero
+    (joint : FinDist (Object.tensor X Y)) (x : X) (y : Y)
+    (hzero : joint.leftMarginal.prob x = 0) :
+    joint.prob (x, y) = 0 := by
+  rw [leftMarginal_apply] at hzero
+  apply NNRat.cast_injective (α := ℚ)
+  apply le_antisymm
+  · calc
+      (joint.prob (x, y) : ℚ) ≤
+          ∑ y' : Y, (joint.prob (x, y') : ℚ) :=
+        Finset.single_le_sum (fun y' _ ↦ (joint.prob (x, y')).coe_nonneg)
+          (Finset.mem_univ y)
+      _ = 0 := by
+        rw [← NNRat.cast_sum, hzero, NNRat.cast_zero]
+  · exact (joint.prob (x, y)).coe_nonneg
+
+/-- A zero right-marginal mass forces every joint mass above it to vanish. -/
+theorem joint_prob_eq_zero_of_rightMarginal_eq_zero
+    (joint : FinDist (Object.tensor X Y)) (x : X) (y : Y)
+    (hzero : joint.rightMarginal.prob y = 0) :
+    joint.prob (x, y) = 0 := by
+  rw [rightMarginal_apply] at hzero
+  apply NNRat.cast_injective (α := ℚ)
+  apply le_antisymm
+  · calc
+      (joint.prob (x, y) : ℚ) ≤
+          ∑ x' : X, (joint.prob (x', y) : ℚ) :=
+        Finset.single_le_sum (fun x' _ ↦ (joint.prob (x', y)).coe_nonneg)
+          (Finset.mem_univ x)
+      _ = 0 := by
+        rw [← NNRat.cast_sum, hzero, NNRat.cast_zero]
+  · exact (joint.prob (x, y)).coe_nonneg
+
+/-- Every exact joint distribution is supported inside the product of its
+marginals. -/
+theorem support_tensor_marginals (joint : FinDist (Object.tensor X Y)) :
+    ∀ outcome,
+      (joint.leftMarginal.tensor joint.rightMarginal).prob outcome = 0 →
+        joint.prob outcome = 0 := by
+  rintro ⟨x, y⟩ hzero
+  rw [tensor_apply] at hzero
+  rcases mul_eq_zero.mp hzero with hleft | hright
+  · exact joint_prob_eq_zero_of_leftMarginal_eq_zero joint x y hleft
+  · exact joint_prob_eq_zero_of_rightMarginal_eq_zero joint x y hright
 
 /-- Independent stochastic evolution commutes with product distributions. -/
 theorem push_tensor (p : FinDist W) (q : FinDist Y)

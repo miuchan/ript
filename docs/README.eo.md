@@ -31,9 +31,9 @@ tensora bifunktoron de Gibbs-konservaj ekzaktaj kanaloj, liberajn ekvilibrajn
 preparojn kaj ĝeneralan diverĝencan monotonecon. Aparta semantika tavolo nun
 difinas konkretan finian KL en `ℝ≥0∞`, pruvas ĝian nulvaloron kaj subtenliman
 konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
-konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo kaj
-rilataj aŭ proksimumaj viŝoj kaj eksplicitaj banaj/ciklaj protokoloj restas
-esplorvojoj. Nova realiga tavolo aldonas reelajn
+konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo,
+proksimumaj viŝoj kaj eksplicitaj banaj/ciklaj protokoloj restas esplorvojoj.
+Nova realiga tavolo aldonas reelajn
 energiojn kaj pozitivan inversan temperaturon al ne-vakaj finiaj sistemoj,
 konstruas strikt-pozitivajn normaligitajn Gibbs-probablojn kaj atestas kiam
 ekzakta racia ekvilibro realigas ilin. Ĝi difinas Shannon-entropion, averaĝan
@@ -46,7 +46,10 @@ energio, entropio kaj libera energio por sendependaj samtemperaturaj sistemoj.
 Eksplicita sistem-bateria tavolo ankaŭ pruvas ke Gibbs-konserva kuna procezo
 pagas ĉiun sisteman liberenergian kreskon per bateria liberenergia malkresko.
 Se la bateria entropio ne ŝanĝiĝas, tio estas laborlimo; ekzakta viŝo de
-nulenergia Bulea memoro bezonas almenaŭ `log 2 / β`.
+nulenergia Bulea memoro bezonas almenaŭ `log 2 / β`. Arbitraj ekzaktaj
+korelaciitaj finpunktoj nun ankaŭ estas kovritaj: kuna libera energio
+malkomponiĝas en du marĝenajn liberajn energiojn kaj reciprokan informon
+`I / β`, kaj korelaci-korektita Landauer-limo enkalkulas ambaŭ ŝanĝojn.
 Ript nun ankaŭ havas apartan fini-dimensian kompleksan kvantuman kernon:
 pozitivajn duondifinajn densmatricojn kun spuro unu, operaciajn mapojn
 atestitajn per finiaj kompletaj Kraus-familioj, pruvitan konservon de pozitiveco
@@ -478,9 +481,33 @@ komenca kaj fina bateriaj entropioj egalas, ĉi-lasta egalas la malkreskon de
 averaĝa bateria energio kaj estas interpretebla kiel liverita laboro. Je ĉiu
 `β > 0`, viŝi nulenergian Bulean memoron de la unuforma ekvilibro al
 `pure false` tial bezonas almenaŭ `log 2 / β`. Tio estas necesa limo por ĉiu
-atestita transiro; ĝi ne asertas ekziston aŭ saturon. Rilataj finaj statoj,
-proksimuma viŝo, eksplicitaj banaj/ciklaj protokoloj kaj klasifiko de raciaj
-Gibbs-pezoj por aparte donitaj reelaj energispektroj restas malfermaj.
+atestita transiro; ĝi ne asertas ekziston aŭ saturon.
+
+`CorrelatedWorkAssistedTransition` forigas la postulon pri produktaj
+finpunktoj. Por ĉiu ekzakta kuna stato Ript plenume kalkulas ambaŭ marĝenojn
+kaj pruvas
+
+```text
+kuna liberenergia diferenco
+  = maldekstra marĝena diferenco + dekstra marĝena diferenco
+    + reciproka informo / β.
+```
+
+La reciproka informo egalas la finian KL de la kuna stato rilate al la
+produkto de ĝiaj marĝenoj; do ĝi kaj la korelacia libera energio estas
+nenegativaj. Ĉiu korelaciita transiro sekve plenumas
+
+```text
+sistema liberenergia kresko + korelacia liberenergia kresko
+  <= bateria liberenergia malkresko.
+```
+
+La laborformo por entropie neŭtralaj bateriaj marĝenoj kaj la Bulea
+viŝspecialigo ankaŭ estas pruvitaj. Plenumebla perfekte korelaciita justa
+Bulea paro havas `I = log 2` kaj korelacian liberan energion `log 2 / β`.
+Proksimuma viŝo, eksplicitaj banaj/ciklaj protokoloj kaj klasifiko de raciaj
+Gibbs-pezoj por aparte donitaj reelaj energispektroj restas malfermaj; ekzisto
+aŭ saturiĝo de korelaciita transira atestilo ne estas asertata.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -854,8 +881,13 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finia KL-atermikeco egalas inversan temperaturon oble la troan Helmholtz-liberan energion. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Samtemperaturaj Gibbs-konservaj kanaloj ne pligrandigas troan liberan energion. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | Troa libera energio estas adicia sur sendependaj samtemperaturaj produktaj statoj. |
+| `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_eq_finiteKL_toReal` | Reciproka informo de ĉiu ekzakta kuna stato egalas finian KL al la produkto de ĝiaj marĝenoj. |
+| `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_nonneg` | Ekzakta finia reciproka informo estas nenegativa. |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_eq_marginals_add_correlation` | Arbitra kuna troa libera energio malkomponiĝas en marĝenajn diferencojn kaj korelacian liberan energion. |
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_freeEnergy_bound` | Libera kuna sistem-bateria procezo pagas sisteman liberenergian kreskon per bateria liberenergia malkresko. |
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound` | Kun entropie neŭtrala baterio, la sama rezulto estas averaĝenergia laborlimo. |
+| `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | Por arbitraj kunaj finpunktoj, bateria liberenergia perdo pagas sistemajn kaj korelaciajn gajnojn. |
+| `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | Entropie neŭtralaj bateriaj marĝenoj turnas la korelaciitan bilancon en averaĝenergian laborlimon. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Bulea KL-atermikeco estas eksplicita duterma logaritma sumo. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Inversigebla termika bitrenverso ekzakte konservas KL-atermikecon. |
@@ -863,6 +895,8 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | Inversigebla termika bitrenverso ekzakte konservas troan liberan energion. |
 | `Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap` | Pura viŝita nulenergia bito havas troan liberan energion `log 2 / β`. |
 | `Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound` | Ĉiu atestita bitviŝo kun entropie neŭtrala baterio liveras almenaŭ `log 2 / β` da laboro. |
+| `Ript.Examples.SimpleThermalModel.correlatedBits_freeEnergyGap` | Perfekte korelaciita justa Bulea paro stokas ekzakte `log 2 / β` da korelacia libera energio. |
+| `Ript.Examples.SimpleThermalModel.thermalBit_correlated_erasure_landauer_work_bound` | Korelaciita Bulea viŝo pagas `log 2 / β` plus la kreskon de korelacia libera energio. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Ĉiu finia Kraus-sumo konservas kompleksan operatoran pozitivecon. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus-kompleteco implicas ekzaktan spurokonservon. |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Ĉiu atestita kanalo konservas pozitivan duondifinitecon. |
@@ -964,7 +998,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8 | Finiaj ekvilibraj sistemoj, Gibbs-realigoj, KL/liberenergia identeco, tensora adicieco kaj labor-helpata Bulea Landauer-limo | **PROVED** |
+| 8 | Finiaj ekvilibraj sistemoj, Gibbs-realigoj, KL/liberenergia identeco, arbitra-kuna korelacia malkompono kaj produktaj/korelaci-korektitaj Buleaj Landauer-limoj | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
@@ -989,7 +1023,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
-| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Ekzaktaj statoj/kanaloj plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Atestita Gibbs-realigo, konkreta finia KL, tensora adicieco, produkt-finpunkta Landauer-kalkulo kaj Bulea `log 2 / β` limo |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Ekzaktaj statoj/kanaloj plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Atestita Gibbs-realigo, konkreta finia KL, plenumeblaj marĝenoj, arbitra-kuna korelacia malkompono kaj produktaj/korelaci-korektitaj Landauer-limoj |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
@@ -1008,7 +1042,7 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco,
-raci-peza klasifiko por aparte donitaj reelaj energispektroj, rilataj/proksimumaj viŝoj, eksplicitaj banaj aŭ ciklaj protokoloj kaj pli-altdimensia aŭ
+raci-peza klasifiko por aparte donitaj reelaj energispektroj, proksimumaj viŝoj, eksplicitaj banaj aŭ ciklaj protokoloj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
@@ -1082,7 +1116,9 @@ flowchart LR
   TE --> GD["Reela finia energio kaj Gibbs-realigo"]
   GD --> FE["KL/liberenergia identeco"]
   KTM --> FE
-  FE --> LW["Labor-helpataj Landauer-limoj"]
+  FE --> Corr["Kuna korelacia libera energio"]
+  FE --> LW["Produkt-finpunktaj Landauer-limoj"]
+  Corr --> CLW["Korelaci-finpunktaj Landauer-limoj"]
   QB["Kompleksaj PSD-spurunuaj matricoj"] --> QK["Finiaj kompletaj Kraus-atestiloj"]
   QK --> QC["Spurkonserva Kraus-kanalkategorio"]
   QC --> QT["Kanona tensoro kaj spura forĵeto"]
@@ -1268,11 +1304,13 @@ liberan ekvilibran preparon kaj produktan ekvilibron, kaj pruvas ke la ekvilibra
 KL-atermikeco estas nul kaj ke la inversigebla renverso konservas ĝin ekzakte.
 La sama ekvilibro estas atestita kiel la Gibbs-distribuo de du nulenergiaj
 niveloj je `β = 1`; Lean pruvas `Z = 2`, `F(γ) = -log 2`, la specialigitan
-KL/liberenergian identecon kaj invariadon de la liberenergia diferenco;
-sep `#eval decide`-
-kontraktoj kontrolas normaligon, kanal-elementojn, evoluitan mason, liberan
-preparon, produktan mason `1/4`, la identecon de du renversoj kaj la
-determinisman forviŝitan bitfinstaton.
+KL/liberenergian identecon kaj invariadon de la liberenergia diferenco. Ĝi
+ankaŭ konstruas perfekte korelaciitan justan paron subtenatan nur sur egalaj
+bitoj kaj pruvas justajn marĝenojn, reciprokan informon `log 2` kaj korelacian
+liberan energion `log 2 / β`. Naŭ `#eval decide`-kontraktoj kontrolas
+normaligon, kanal-elementojn, evoluitan mason, liberan preparon, produktan
+mason `1/4`, la identecon de du renversoj, la determinisman forviŝitan
+bitfinstaton, korelaciitajn kunajn masojn kaj marĝenajn masojn.
 
 `Ript/Examples/QubitChannel.lean` difinas Bule-bazan kvubiton, ĝian kompleksan
 Pauli-X-matricon kaj komputbazajn purajn densmatricojn. Lean pruvas `XᴴX = I`,
@@ -1307,8 +1345,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- aŭ, por finia KL-datumtraktado kaj konkreta termika monotoneco:
 import Ript.Models.Thermal.KLDivergence
--- aŭ, por Gibbs-libera energio kaj labor-helpataj Landauer-limoj:
-import Ript.Models.Thermal.Work
+-- aŭ, por Gibbs-libera energio kaj korelaci-korektitaj Landauer-limoj:
+import Ript.Models.Thermal.CorrelatedWork
 -- aŭ, por kompleksaj densmatricoj kaj spurkonservaj Kraus-kanaloj:
 import Ript.Models.Quantum.Kraus
 -- aŭ, por la senaksioma interne univalenta procezuniverso:
@@ -1477,7 +1515,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Ekzakta finia KL/liberenergia identeco kaj samtemperatura monotoneco de liberenergia diferenco
 - [x] Kanona Gibbs-realigo de ĉiu plen-subtena ekzakta ekvilibro kaj samtemperatura tenzora adicieco
 - [x] Produkt-finpunkta labor-helpata Landauer-kalkulo kaj Bulea `log 2 / β` viŝlimo
-- [ ] Rilataj finpunktoj, proksimuma viŝo, eksplicitaj banaj/ciklaj protokoloj kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
+- [x] Arbitraj korelaciitaj finpunktoj, reciprokinforma liberenergia malkompono kaj korelaci-korektitaj Landauer-limoj
+- [ ] Proksimuma viŝo, eksplicitaj banaj/ciklaj protokoloj kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
@@ -1557,9 +1596,12 @@ KL/liberenergian identecon kaj samtemperaturan monotonecon de la liberenergia
 diferenco. Ĝi ankaŭ kanone realigas ĉiun plen-subtenan ekzaktan ekvilibron kaj
 pruvas samtemperaturan tensoran adiciecon. La labor-helpata tavolo ankaŭ pruvas
 la produkt-finpunktan Landauer-liberenergian kalkulon, ĝian entropie neŭtralan
-baterian laborformon kaj la Bulean `log 2 / β` viŝlimon. Ĝi ankoraŭ ne kovras
-rilatajn finpunktojn, proksimuman viŝon, eksplicitajn banajn/ciklajn protokolojn
-aŭ raci-pezan klasifikon por aparte donitaj reelaj energispektroj.
+baterian laborformon kaj la Bulean `log 2 / β` viŝlimon. Ĝi ankaŭ pruvas
+nenegativecon de reciproka informo/KL, kunan liberenergian malkomponon,
+korelaci-korektitan laborlimon kaj la perfekte korelaciitan Bulean ekzemplon
+por arbitraj ekzaktaj korelaciitaj finpunktoj. Ĝi ankoraŭ ne kovras
+proksimuman viŝon, eksplicitajn banajn/ciklajn protokolojn aŭ raci-pezan
+klasifikon por aparte donitaj reelaj energispektroj.
 Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.

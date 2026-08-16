@@ -55,6 +55,8 @@ import Ript.Models.Quantum.CompletePositivity
 import Ript.Models.Quantum.Discard
 import Ript.Models.Quantum.Kraus
 import Ript.Models.Quantum.Tensor
+import Ript.Models.Thermal.CorrelatedWork
+import Ript.Models.Thermal.Correlation
 import Ript.Models.Thermal.Equilibrium
 import Ript.Models.Thermal.FreeEnergy
 import Ript.Models.Thermal.Gibbs

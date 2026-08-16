@@ -31,8 +31,10 @@ bifunctor、自由平衡状態の準備、一般 divergence の単調性も実�
 対する重み・確率の因数分解、分配関数の乗法性、エネルギー・エントロピー・自由エネルギーの
 加法性も証明済みです。明示的な系—電池層は、Gibbs-preserving な合同過程が系の自由エネルギー
 増加を電池の自由エネルギー減少で支払うことも証明します。電池のエントロピーが不変なら仕事境界と
-なり、ゼロエネルギー Boolean メモリの正確な消去には少なくとも `log 2 / β` が必要です。一般の
-可測因果モデル、Blackwell 逆表現定理、相関端点・近似消去・明示的な熱浴/循環プロトコルは研究課題です。
+なり、ゼロエネルギー Boolean メモリの正確な消去には少なくとも `log 2 / β` が必要です。任意の
+正確な相関端点も対象となり、同時自由エネルギーを二つの周辺自由エネルギーと相互情報量 `I / β` に
+分解し、相関補正 Landauer 境界を証明します。一般の可測因果モデル、Blackwell 逆表現定理、
+近似消去、明示的な熱浴/循環プロトコルは研究課題です。
 さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
 合成閉包、標準チャネルテンソル、interchange、基底 bra によるトレース/破棄チャネルと因果的一意性、
@@ -386,8 +388,26 @@ D(p ‖ γ) = β (F(p) - F(γ)).
 エントロピーが等しいという追加仮定の下でのみ、後者は電池平均エネルギー減少、すなわち供給仕事と
 同一視されます。任意の `β > 0` で、均一平衡から `pure false` へのゼロエネルギー Boolean メモリ
 消去には少なくとも `log 2 / β` が必要です。これは条件を満たす全証明書への必要境界であり、チャネル
-の存在や境界達成を主張しません。相関端点、近似消去、明示的熱浴/循環プロトコル、および別に指定
-した実スペクトルの有理 Gibbs 重み分類は未解決です。
+の存在や境界達成を主張しません。
+
+`CorrelatedWorkAssistedTransition` は積端点の制約を取り除きます。任意の正確な同時状態について、
+左右の周辺を実行可能に計算し、
+
+```text
+同時自由エネルギー差 = 左周辺差 + 右周辺差 + 相互情報量 / β
+```
+
+を証明します。相互情報量は同時状態から周辺積状態への有限 KL に等しく、したがって相互情報量と
+相関自由エネルギーは非負です。任意の相関端点遷移は
+
+```text
+系自由エネルギー増加 + 相関自由エネルギー増加 <= 電池自由エネルギー減少
+```
+
+を満たします。エントロピー中性電池の仕事形式と Boolean 消去の特殊化も証明済みです。実行可能な
+完全相関公平 Boolean 対では `I = log 2`、相関自由エネルギーは `log 2 / β` です。近似消去、
+明示的熱浴/循環プロトコル、別に指定した実スペクトルの有理 Gibbs 重み分類は未解決であり、
+相関遷移の存在や境界達成は主張しません。
 
 ### 12. 有限複素密度行列と Kraus チャネル
 
@@ -715,14 +735,21 @@ horn に制限されることも検証します。
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | 有限 KL athermality は逆温度と超過 Helmholtz 自由エネルギーの積です。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | 同一温度の Gibbs-preserving チャネルは超過自由エネルギーを増加させません。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | 同温の独立積状態では超過自由エネルギーが加法的です。 |
+| `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_eq_finiteKL_toReal` | 任意の正確な同時状態の相互情報量は周辺積状態への有限 KL です。 |
+| `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_nonneg` | 正確な有限相互情報量は非負です。 |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_eq_marginals_add_correlation` | 任意の同時超過自由エネルギーは周辺差と相関自由エネルギーに分解します。 |
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_freeEnergy_bound` | 自由な系—電池合同過程は系の自由エネルギー増加を電池の自由エネルギー減少で支払います。 |
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound` | 電池エントロピーが不変なら同じ結論が平均エネルギー供給仕事境界になります。 |
+| `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | 任意の同時端点で、電池自由エネルギー減少が系と相関の自由エネルギー増加を支払います。 |
+| `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | 電池周辺のエントロピーが不変なら相関収支は平均エネルギー仕事境界になります。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality は明示的な二項対数和です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆熱ビット反転は KL athermality を正確に保存します。 |
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | ゼロエネルギー Boolean Gibbs 模型は `β = 1` で KL/自由エネルギー恒等式を具体化します。 |
 | `Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap` | 純粋消去されたゼロエネルギービットの超過自由エネルギーは `log 2 / β` です。 |
 | `Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound` | エントロピー中性電池を持つ全認証済みビット消去は少なくとも `log 2 / β` の仕事を供給します。 |
+| `Ript.Examples.SimpleThermalModel.correlatedBits_freeEnergyGap` | 完全相関公平 Boolean 対は正確に `log 2 / β` の相関自由エネルギーを蓄えます。 |
+| `Ript.Examples.SimpleThermalModel.thermalBit_correlated_erasure_landauer_work_bound` | 相関 Boolean 消去は `log 2 / β` と相関自由エネルギー増分を支払います。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | 可逆熱ビット反転は超過自由エネルギーを正確に保存します。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 有限 Kraus 和は複素作用素の正値性を保存します。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完全性から正確なトレース保存が従います。 |
@@ -823,7 +850,7 @@ horn に制限されることも検証します。
 | 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
-| 8 | 有限平衡系、Gibbs 実現、KL/自由エネルギー恒等式、テンソル加法性、仕事補助 Boolean Landauer 境界 | **PROVED** |
+| 8 | 有限平衡系、Gibbs 実現、KL/自由エネルギー恒等式、任意同時相関分解、積/相関補正 Boolean Landauer 境界 | **PROVED** |
 | 9、有限量子チャネル | 複素密度行列、TP Kraus チャネル、テンソル/interchange、トレース破棄、因果的一意性、有限完全正値性 | **PROVED** |
 | 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
@@ -848,7 +875,7 @@ horn に制限されることも検証します。
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
-| 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 正確な状態/チャネルは実行可能；Gibbs/KL/自由エネルギー/仕事意味論は非計算的 | 認証済み Gibbs 実現、具体的有限 KL、テンソル加法性、積端点 Landauer 収支、Boolean `log 2 / β` 境界 |
+| 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 正確な状態/チャネルは実行可能；Gibbs/KL/自由エネルギー/仕事意味論は非計算的 | 認証済み Gibbs 実現、具体的有限 KL、実行可能周辺、任意同時相関分解、積/相関補正 Landauer 境界 |
 | 有限量子 Kraus チャネル | Kraus 圏 | 可 | 行列証明層；基底ラベルは実行可能 | 複素 PSD トレース 1 状態、標準テンソル、トレース破棄、任意の有限恒等増幅に対する CP；コピーなし |
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
@@ -864,7 +891,7 @@ horn に制限されることも検証します。
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、
-別に指定した実エネルギースペクトルに対する有理 Gibbs 重みの分類、相関/近似消去、明示的熱浴・
+別に指定した実エネルギースペクトルに対する有理 Gibbs 重みの分類、近似消去、明示的熱浴・
 循環プロトコル、complete-Segal/Rezk-complete な
 ユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
@@ -934,7 +961,9 @@ flowchart LR
   TE --> GD["実有限エネルギーと Gibbs 実現"]
   GD --> FE["KL/自由エネルギー恒等式"]
   KTM --> FE
-  FE --> LW["仕事補助 Landauer 境界"]
+  FE --> Corr["同時状態の相関自由エネルギー"]
+  FE --> LW["積端点 Landauer 境界"]
+  Corr --> CLW["相関端点 Landauer 境界"]
   QB["複素 PSD トレース 1 行列"] --> QK["有限完全 Kraus 証明書"]
   QK --> QC["トレース保存 Kraus チャネル圏"]
   QC --> QT["標準テンソルとトレース破棄"]
@@ -1101,8 +1130,10 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 積平衡も実行します。さらに平衡の KL athermality がゼロであり、可逆反転がそれを正確に保存
 することを証明します。同じ平衡は `β = 1` の二つのゼロエネルギー準位の Gibbs 分布として認証され、
 Lean は `Z = 2`、`F(γ) = -log 2`、KL/自由エネルギー恒等式、反転による自由エネルギー差不変性を
-証明します。7 個の `#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、
-積質量 `1/4`、二重反転恒等、決定論的な消去ビット終状態を検査します。
+証明します。さらに、等しい二ビットだけに質量を持つ完全相関公平対を構成し、両周辺が公平、
+相互情報量が `log 2`、相関自由エネルギーが `log 2 / β` であることを証明します。9 個の
+`#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、積質量 `1/4`、
+二重反転恒等、決定論的消去終状態、相関同時質量、周辺質量を検査します。
 
 `Ript/Examples/QubitChannel.lean` は Boolean 基底量子ビット、複素 Pauli-X 行列、計算基底純粋
 密度行列を定義します。Lean は `XᴴX = I` を証明し、Pauli-X を単一作用素のトレース保存 Kraus
@@ -1136,8 +1167,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- または有限 KL データ処理と具体的熱単調性：
 import Ript.Models.Thermal.KLDivergence
--- または Gibbs 自由エネルギーと仕事補助 Landauer 境界：
-import Ript.Models.Thermal.Work
+-- または Gibbs 自由エネルギーと相関補正された仕事補助 Landauer 境界：
+import Ript.Models.Thermal.CorrelatedWork
 -- または複素密度行列とトレース保存 Kraus チャネル：
 import Ript.Models.Quantum.Kraus
 -- または公理不要の内部ユニバレントなプロセス universe：
@@ -1283,7 +1314,8 @@ import Ript.Univalent.Simplicial
 - [x] 正確な有限 KL/自由エネルギー恒等式と同温度の自由エネルギー差単調性
 - [x] 全台を持つ正確な平衡の標準的 Gibbs 実現と同温テンソル加法性
 - [x] 積端点の仕事補助 Landauer 収支と Boolean `log 2 / β` 消去境界
-- [ ] 相関端点、近似消去、明示的熱浴/循環プロトコル、別に指定した実エネルギースペクトルの有理 Gibbs 重み分類
+- [x] 任意の相関端点、相互情報量自由エネルギー分解、相関補正 Landauer 境界
+- [ ] 近似消去、明示的熱浴/循環プロトコル、別に指定した実エネルギースペクトルの有理 Gibbs 重み分類
 - [x] 量子テンソル、破棄/トレースチャネル、恒等/interchange、因果的破棄則
 - [x] 有限古典確率チャネルの脱位相化冪等量子部分圏への忠実な埋め込み
 - [x] 資源添字付きモデル 0-射と資源非増加な強 braided monoidal 1-射
@@ -1351,8 +1383,9 @@ Ript は指定された正確な
 逆温度から有限 Gibbs 確率を構成し、確率が一致する正確な有理平衡を認証し、KL/自由エネルギー
 恒等式と同温度自由エネルギー差単調性を証明します。さらに全台を持つ正確な平衡を標準的に
 実現し、同温テンソル加法性を証明します。仕事補助層は積端点 Landauer 自由エネルギー収支、
-エントロピー中性電池の仕事形式、Boolean `log 2 / β` 消去境界も証明します。相関端点、近似消去、
-明示的熱浴/循環プロトコル、別に指定した実スペクトルの有理 Gibbs 重み分類はまだありません。正確な有限
+エントロピー中性電池の仕事形式、Boolean `log 2 / β` 消去境界も証明します。任意の相関端点についても、
+相互情報量/KL の非負性、同時自由エネルギー分解、相関補正仕事境界、完全相関 Boolean 対を証明済みです。
+近似消去、明示的熱浴/循環プロトコル、別に指定した実スペクトルの有理 Gibbs 重み分類はまだありません。正確な有限
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
 一般可測意思決定理論はまだ証明していません。

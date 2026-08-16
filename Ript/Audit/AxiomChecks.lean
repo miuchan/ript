@@ -141,8 +141,14 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_equilibrium
 #print axioms Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone
 #print axioms Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor
+#print axioms Ript.Models.Thermal.joint_absolutelyContinuous_tensor_marginals
+#print axioms Ript.Models.Thermal.GibbsThermalObject.mutualInformation_eq_finiteKL_toReal
+#print axioms Ript.Models.Thermal.GibbsThermalObject.mutualInformation_nonneg
+#print axioms Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_eq_marginals_add_correlation
 #print axioms Ript.Models.Thermal.WorkAssistedTransition.landauer_freeEnergy_bound
 #print axioms Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound
+#print axioms Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound
+#print axioms Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
 #print axioms Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant
@@ -152,6 +158,8 @@ set_option autoImplicit false
 #print axioms Ript.Examples.SimpleThermalModel.thermalPair_freeEnergyGap_additive
 #print axioms Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap
 #print axioms Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound
+#print axioms Ript.Examples.SimpleThermalModel.correlatedBits_freeEnergyGap
+#print axioms Ript.Examples.SimpleThermalModel.thermalBit_correlated_erasure_landauer_work_bound
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_posSemidef
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_trace
 #print axioms Ript.Models.Quantum.KrausChannel.map_posSemidef
