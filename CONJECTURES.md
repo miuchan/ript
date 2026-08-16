@@ -15,9 +15,16 @@ The exact proposition is now checked by Lean as
 universe u
 
 def FiniteBlackwellShermanStein : Prop :=
-  ∀ (Θ X Y : Object.{u}) (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+  ∀ (Θ X Y : Object.{u}) (_ : Nonempty Θ.carrier)
+    (P : FinStoch Θ X) (Q : FinStoch Θ Y),
     FiniteDecisionOrder P Q → BlackwellDominates P Q
 ```
+
+The nonempty-hidden-state hypothesis is necessary, not cosmetic. The compiled
+`EmptyParameterBoundary` example proves that when `Θ` is empty the universal
+decision order is vacuous (there is no normalized prior), while a garbling
+from a nonempty observation carrier to an empty one need not exist. Thus the
+unrestricted statement is false.
 
 Here `FiniteDecisionOrder P Q` quantifies over every finite action carrier,
 exact prior, and exact nonnegative-rational loss. The compiled theorem
@@ -27,11 +34,24 @@ decision-separation certificate. Certificates are already proved sound, and a
 genuinely stochastic Boolean pair has an executable certificate with risks
 `1/4 < 1/2`.
 
-The missing implication is geometric: derive an exact rational certificate
-from failure of an exact rational stochastic garbling. Mathlib supplies real
-locally convex Hahn--Banach/Farkas separation, but the project still needs a
-finite garbling-polytope construction and a proof that the resulting strict
-separator can be represented by exact nonnegative-rational decision data.
+The finite garbling polytope is now compiled exactly over `ℚ≥0`. Every
+stochastic garbling is reconstructed as a distribution over deterministic
+post-processings, using the product of its row probabilities, and
+`deterministicMixtureDominates_iff` identifies Blackwell dominance with exact
+rational-simplex feasibility. A `RationalGarblingSeparator` is a signed
+rational matrix score strictly separating `Q` from every deterministic vertex.
+On nonempty hidden-state carriers, row shifts and the exact uniform prior turn
+such a score into nonnegative-rational decision data; conversely, every
+decision certificate yields a rational separator. The compiled theorem
+`finiteBlackwellShermanStein_iff_rationalSeparationComplete` therefore reduces
+the conjecture exactly to rational strict-separation completeness.
+
+The remaining implication is geometric: prove that every rational point
+outside this rational simplex admits such a rational strict separator. Mathlib
+supplies real locally convex Hahn--Banach/Farkas separation, but the project
+still needs the exact bridge: reflect real simplex feasibility back to rational
+weights and rationalize a real strict separator while preserving the finitely
+many strict inequalities. No linear-programming duality theorem is assumed.
 
 The deterministic finite Blackwell converse is proved, not conjectural: under
 any exact full-support prior, target-reconstruction risk recovers an exact

@@ -62,10 +62,13 @@ def BlackwellShermanSteinConverse
   FiniteDecisionOrder P Q → BlackwellDominates P Q
 
 /-- The full universe-polymorphic exact finite
-Blackwell--Sherman--Stein converse.  This is a proposition, not a theorem or an
-assumed axiom. -/
+Blackwell--Sherman--Stein converse for a nonempty hidden-state carrier.  The
+nonemptiness hypothesis is necessary: with no hidden states, the decision
+order is vacuous while a garbling between arbitrary observation carriers need
+not exist.  This is a proposition, not a theorem or an assumed axiom. -/
 def FiniteBlackwellShermanStein : Prop :=
-  ∀ (Θ X Y : Object.{u}) (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+  ∀ (Θ X Y : Object.{u}) (_ : Nonempty Θ.carrier)
+    (P : FinStoch Θ X) (Q : FinStoch Θ Y),
     BlackwellShermanSteinConverse P Q
 
 /-- Completeness of concrete decision-separation certificates for a given
@@ -157,16 +160,17 @@ theorem dominates_iff_finiteDecisionOrder_of_separationComplete
 completeness of concrete decision-separation certificates. -/
 theorem finiteBlackwellShermanStein_iff_certificateComplete :
     FiniteBlackwellShermanStein.{u} ↔
-      ∀ (Θ X Y : Object.{u}) (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+      ∀ (Θ X Y : Object.{u}) (_ : Nonempty Θ.carrier)
+        (P : FinStoch Θ X) (Q : FinStoch Θ Y),
         DecisionSeparationComplete P Q := by
   constructor
-  · intro hconverse Θ X Y P Q
+  · intro hconverse Θ X Y hΘ P Q
     exact
       (blackwellShermanSteinConverse_iff_separationComplete P Q).mp
-        (hconverse Θ X Y P Q)
-  · intro hcomplete Θ X Y P Q
+        (hconverse Θ X Y hΘ P Q)
+  · intro hcomplete Θ X Y hΘ P Q
     exact
       (blackwellShermanSteinConverse_iff_separationComplete P Q).mpr
-        (hcomplete Θ X Y P Q)
+        (hcomplete Θ X Y hΘ P Q)
 
 end Ript.Models.Decision.Separation

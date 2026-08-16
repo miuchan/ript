@@ -45,9 +45,11 @@ bifunctor、自由平衡状態の準備、一般 divergence の単調性も実�
 `binEntropy ε`、正確な超過自由エネルギー費用は
 `(log 2 - binEntropy ε) / β` です。この費用は非負で許容誤りに対して単調非増加であり、
 積端点および相関補正 Landauer 仕事境界に組み込まれます。決定論的有限実験の Blackwell
-逆表現は全台再構成定理で証明済みです。任意の確率的実験に対する逆定理は正確な Lean 命題として
-定式化され、健全な有限意思決定分離証明書の完全性へ帰着されましたが、その証明と一般の可測因果
-モデルは研究課題です。一方、明示的な有限熱浴補助プロトコルは実装済みです。
+逆表現は全台再構成定理で証明済みです。非空の隠れ状態を持つ任意の確率的実験に対する逆定理は
+正確な Lean 命題として定式化されています。すべての正確な garbling は決定論的後処理の有理
+simplex で表現され、有理厳密分離子と健全な有限意思決定分離証明書の同値も証明済みです。
+カーネル検証済みの空状態反例は非空仮定が必要であることを示します。有理厳密分離完全性と一般の
+可測因果モデルは研究課題です。一方、明示的な有限熱浴補助プロトコルは実装済みです。
 `((系, 熱浴), 電池) -> ((電池, 熱浴), 系)` という 3 ビット置換は系を正確に消去し、熱浴を完全に戻し、情報電池で `log 2 / β` を支払います。電池エントロピーの変化も証明されているため、これは機械的仕事循環ではありません。別の熱浴なし有限証人は機械的仕事形式そのものを実現します。非縮退二準位電池を純粋高エネルギー状態から純粋低エネルギー状態へ放電し、エントロピーをゼロのまま保ち、公平なビットを正確に消去して `log 2 / β` を供給するため、Landauer 仕事境界を等号で達成します。対応する充電チャネルは消去済みメモリを平衡へ戻して `log 2 / β` を解放し、純粋低電池を純粋高電池へ戻します。二段階の正確な閉軌跡は `公平/高 → 消去済み/低 → 公平/高` で、符号付き収支はゼロです。
 さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
@@ -291,13 +293,20 @@ Ript は二つの意思決定層を意図的に分離します。
 仮定せず、正確な後処理証人を抽出します。実行可能な 4 状態例では、整合する目標のリスクは `0`、
 交差する目標の正確なリスクは `1/2` です。
 
-任意の有限確率的実験について、残る定理は `FiniteBlackwellShermanStein` として正確に定式化
-されています。すべての有限行動台、正確な事前分布、正確な損失に対する普遍的リスク順序から、
-正確な garbling が従うという命題です。`DecisionSeparationCertificate` は、`Q` の具体的規則が
-`P` の最適リスクを厳密に下回るタスクを格納します。各証明書が支配を否定すること、普遍的リスク
-順序の失敗と証明書の存在が同値であること、完全な確率的逆定理と証明書完全性が同値であることを
-証明済みです。真に確率的な Boolean 例は `1/4 < 1/2` を実行します。残る仕事は有限凸分離または
-線形計画双対により、すべての非 garbling 対から正確な有理証明書を導くことです。
+隠れ状態台が**非空**である任意の有限確率的実験について、残る定理は
+`FiniteBlackwellShermanStein` として正確に定式化されています。すべての有限行動台、正確な
+事前分布、正確な損失に対する普遍的リスク順序から、正確な garbling が従うという命題です。
+非空条件は必要です。コンパイル済みの反例では隠れ状態が空なので正規化事前分布が存在せず、
+意思決定順序は空虚に成立しますが、単位観測を空観測へ garble することはできません。
+
+有限幾何は現在、明示的です。`independentGarblingLaw` は任意の確率的 garbling を決定論的
+後処理上の正確な `ℚ≥0` 分布として表し、`deterministicMixtureDominates_iff` は支配を有理
+simplex 実行可能性と同一視します。`RationalGarblingSeparator` は `Q` をすべての決定論的
+頂点より厳密に下へ置く符号付き有理スコアです。隠れ状態ごとの行シフトと正確な一様事前分布により、
+これを非負有理 `DecisionSeparationCertificate` へ変換でき、逆に各意思決定証明書から有理分離子が
+得られます。したがって完全な確率的逆定理は有理厳密分離完全性と同値です。真に確率的な Boolean
+例は `1/4 < 1/2` を実行します。唯一残る仕事は、有理 garbling simplex の外側にあるすべての
+有理点が有理厳密分離子を持つことの証明です。線形計画双対定理は仮定していません。
 
 計算制約には `DecisionResourceModel` を使います。各決定論的ルールへ自然数コストを割り当て、
 コスト 0 のフォールバックを備えます。`resourceBayesRisk` は有限に列挙された実行可能ルール上で
@@ -761,6 +770,10 @@ horn に制限されることも検証します。
 | `Ript.Models.Decision.Separation.DecisionSeparationCertificate.not_dominates` | 任意の厳密な有限意思決定証明書が全確率的 garbling を排除します。 |
 | `Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate` | 普遍的有限リスク順序の失敗は具体的証明書と同値です。 |
 | `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | 完全な確率的逆定理は有限意思決定分離証明書の完全性と正確に同値です。 |
+| `Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty` | 空の隠れ状態ではリスク順序が空虚に成立しても garbling は保証されず、非空仮定が必要です。 |
+| `Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff` | Blackwell 支配は決定論的後処理頂点の有理 simplex 実行可能性と正確に同値です。 |
+| `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate` | 非空の隠れ状態では、有理厳密分離子の存在と有限意思決定分離証明書の存在が同値です。 |
+| `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete` | 完全な確率的逆定理は有理厳密分離完全性と正確に同値です。 |
 | `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | 正確なリスク `1/4 < 1/2` が二つの真に確率的な Boolean 実験を分離します。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | 意思決定予算を増やしても最適リスクは悪化しません。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 認証付き reduction は明示的な加法 overhead とともにリスクを移送します。 |
@@ -941,7 +954,7 @@ horn に制限されることも検証します。
 | 3 | 実行可能な有限確率モデル | **PROVED** |
 | 4 | 有限分布の Kleisli 表現 | **PROVED** |
 | 5 | Mathlib `Stoch` への忠実な有限チャネル橋 | **PROVED** |
-| 6 | Blackwell 順序、有限意思決定リスク、決定論的逆定理、確率的逆定理の正確な定式化と証明書帰着、資源予算、タスク相対価値 | **PROVED** |
+| 6 | Blackwell 順序、有限意思決定リスク、決定論的逆定理、必要な非空状態境界、正確な有理 garbling simplex、有理分離子/証明書帰着、資源予算、タスク相対価値 | **PROVED**；一般の確率的分離完全性は `FORMALIZED_BUT_UNPROVED` |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
 | 8 | 有限平衡系、有限実スペクトルの正確な有理 Gibbs 分類、閉プロトコルの消去不可能性、Gibbs/KL/自由エネルギー理論、相関分解、正確/有理誤り Landauer 境界、情報電池証人、エントロピー中性な非縮退仕事電池の等号証人、正確な閉消去–充電循環 | **PROVED** |
@@ -965,7 +978,7 @@ horn に制限されることも検証します。
 | 正確な有限確率チャネル | 可 | 可 | 実行可能 | 正規化された `ℚ≥0` 行列、Dirac、コピー、破棄 |
 | 有限分布 Kleisli 圏 | 可 | 不可 | 実行可能 | 正確な `pure`/`bind`、`FinStoch` と圏同値 |
 | Mathlib `Stoch` 橋の有限離散像 | 可 | 可（標準同型を介して） | 意味論層 | 忠実な Markov-kernel 解釈；元の行列は実行可能 |
-| 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | 順方向リスク順序；決定論的逆定理；健全な確率的分離証明書；一般逆命題と証明書帰着；決定論的・真に確率的な証人 |
+| 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | 順方向リスク順序；決定論的逆定理；必要な非空状態境界；正確な有理 garbling simplex；有理分離子/意思決定証明書同値；一般の厳密分離完全性は未証明 |
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
@@ -982,8 +995,10 @@ horn に制限されることも検証します。
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
-Bayes リスク、資源、意味価値、決定論的逆定理、証明書健全性があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
-一般の確率的 Blackwell--Sherman--Stein 命題と同値な証明書完全性境界は正確に定式化済みですが、決定論的実験を越える幾何学的証明書構成、一般可測意思決定問題、異種または可測な因果モデル、
+Bayes リスク、資源、意味価値、決定論的逆定理、証明書健全性があります。正確な有理 garbling
+simplex、有理分離子/意思決定証明書同値、空状態境界もコンパイル済みで、同種有限 DAG 層にも
+証明済みの観測・介入意味論があります。一般の確率的 Blackwell--Sherman--Stein 命題は非空の
+隠れ状態に対して正確に定式化済みですが、有理厳密分離完全性、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、任意の実 Boltzmann 因子等式を判定する
 一般手続き、
 complete-Segal/Rezk-complete な
@@ -999,7 +1014,8 @@ Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
 チャネルコアは実装済みでカーネル検証されています。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
-[CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
+[CONJECTURES.md](../CONJECTURES.md) を参照してください。現在の登録項目は、非空の有限隠れ状態に
+対する一般の確率的 Blackwell--Sherman--Stein 逆定理です。
 
 ## アーキテクチャ
 
@@ -1035,6 +1051,9 @@ flowchart LR
   FR --> DB["決定論的有限逆定理"]
   DB --> DX["4 状態の整合/交差証人"]
   FR --> DS["確率的分離証明書"]
+  DS --> GP["正確な有理 garbling simplex"]
+  GP --> RS["有理厳密分離子"]
+  DS --> EB["必要な非空状態境界"]
   DS --> SX["ノイズ 1/4 対独立 1/2 証人"]
   FR --> RR["資源制約付き意思決定リスク"]
   RR --> SV["タスク相対的意味価値"]
@@ -1280,8 +1299,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- または決定論的有限 Blackwell 逆定理：
 import Ript.Models.Decision.DeterministicBlackwell
--- または確率的逆定理の正確な定式化と証明書帰着：
-import Ript.Models.Decision.Separation
+-- または正確な garbling simplex と有理分離帰着：
+import Ript.Models.Decision.RationalSeparation
 -- または資源付き全域・部分計算：
 import Ript.Models.Computation.Partial
 -- または有限 DAG、ハード介入、正確な確率状態：
@@ -1407,7 +1426,8 @@ import Ript.Univalent.Simplicial
 - [x] Blackwell garbling 順序、同値、テンソル互換性、Mathlib Bayes リスクのデータ処理
 - [x] 実行可能な正確有限 Bayes リスク、有限最適決定、ランダム化ルールの下界
 - [x] 決定論的有限 Blackwell 逆定理、ファイバー特徴付け、実行可能な 4 状態の正負証人
-- [x] 確率的 Blackwell 逆定理の正確な命題、健全な意思決定分離証明書、証明書完全性への同値帰着
+- [x] 確率的 Blackwell 逆定理の非空境界、空状態反例、健全な意思決定分離証明書、証明書完全性への帰着
+- [x] 正確な有理 garbling simplex と、有理厳密分離子/意思決定証明書の双方向変換
 - [x] 正確なリスク `1/4 < 1/2` を持つ真に確率的な Boolean 分離証人
 - [x] 資源制約付き意思決定リスク、予算単調性、加法 overhead 付き reduction
 - [x] タスク相対的意味価値の同値・garbling・予算・基準・タスク無関連性の法則
@@ -1439,7 +1459,7 @@ import Ript.Univalent.Simplicial
 - [ ] 一般的な凸・因果能力インターフェース
 - [ ] 異種ノード値域、一般可測因果モデル、条件付け、do-calculus 拡張
 - [ ] 全域・部分計算圏の native モノイダル構造
-- [ ] 一般確率的有限 Blackwell--Sherman--Stein 逆定理の証明書完全性を証明
+- [ ] 有理 garbling simplex 外の各有理点に対する有理厳密分離完全性を証明し、一般確率的有限 Blackwell--Sherman--Stein 逆定理を完成
 - [ ] 正確な有限データを越える一般可測空間の意思決定問題
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
 - [x] 有限エネルギー、正の逆温度、Gibbs 実現、エントロピー、Helmholtz 自由エネルギー
@@ -1529,8 +1549,9 @@ Ript は指定された正確な
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。全台の目標再構成と源ファイバーの
 細分化により、決定論的有限実験の逆定理も証明済みです。一般の確率的意思決定については、正確な
-有限逆命題を定式化し、健全な有限意思決定分離証明書の完全性へ帰着しました。ノイズ付き Boolean
-証明書は実行可能です。一般証明書構成と一般可測意思決定理論はまだ未証明です。
+有限逆命題を必要な非空隠れ状態仮定付きで定式化しました。正確な garbling は決定論的後処理の
+有理混合として表され、有理厳密分離子は健全な意思決定証明書と同値です。ノイズ付き Boolean
+証明書は実行可能です。有理分離完全性と一般可測意思決定理論はまだ未証明です。
 また、共通有限値域を持つトポロジカル番号付き DAG、親局所正確機構、正規化観測同時分布、
 ハード介入、正確な `FinStoch` 状態をサポートします。異種値域、一般可測因果モデル、条件付け API、
 do-calculus の完全性は未実装です。

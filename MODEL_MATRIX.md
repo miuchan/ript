@@ -25,7 +25,7 @@ Only implemented and compiled capabilities are marked as supported.
     <tr><td>FiniteStochastic (exact <code>ℚ≥0</code>)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Finite-distribution Kleisli</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Mathlib <code>Stoch</code> bridge (finite discrete image)</td><td>Yes</td><td>Yes</td><td>Via <code>Stoch</code></td><td>Via <code>Stoch</code></td><td>No</td><td>Via <code>Stoch</code></td><td>Via Mathlib Bayes risk</td><td>No</td><td>Semantic layer</td></tr>
-    <tr><td>Exact finite decision layer</td><td>Via <code>FinStoch</code></td><td>No</td><td>No</td><td>No</td><td>No</td><td>Via <code>FinStoch</code></td><td>Yes: forward data processing, deterministic finite converse, and sound stochastic separation certificates; general stochastic converse formally stated but unproved</td><td>No</td><td>Exact finite minima, deterministic fiber witnesses, and genuinely stochastic <code>1/4 &lt; 1/2</code> separation certificate executable</td></tr>
+    <tr><td>Exact finite decision layer</td><td>Via <code>FinStoch</code></td><td>No</td><td>No</td><td>No</td><td>No</td><td>Via <code>FinStoch</code></td><td>Yes: forward data processing, deterministic finite converse, exact rational garbling-simplex representation, and rational-separator/decision-certificate equivalence; general stochastic separation completeness unproved</td><td>No</td><td>Exact finite minima, deterministic mixtures, fiber witnesses, the empty-parameter boundary, and a genuinely stochastic <code>1/4 &lt; 1/2</code> certificate are compiled</td></tr>
     <tr><td>Total computation (<code>Fin 4 → Nat</code> resources)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Partial computation (<code>Option</code> Kleisli)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Finite causal DAG (exact <code>ℚ≥0</code>)</td><td>Topological generation</td><td>Via <code>FinStoch</code> states</td><td>No</td><td>No</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
@@ -68,11 +68,17 @@ equivalently, the target is constant on every source fiber. The executable
 four-state example has risk `0` for an aligned partition and exactly `1/2` for
 a crossing partition, ruling out every post-processing in the latter case.
 The general stochastic Blackwell--Sherman--Stein converse remains unsupported.
-Its exact Lean proposition now quantifies over every finite action carrier and
-decision problem. A compiled reduction proves that proposition equivalent to
-completeness of concrete decision-separation certificates, and every supplied
-certificate is proved to rule out a garbling. The remaining unsupported step
-is constructing such a rational certificate for every non-garbling pair.
+Its corrected Lean proposition quantifies over every **nonempty** finite hidden
+carrier, finite action carrier, and decision problem. The nonempty hypothesis
+is forced by a compiled counterexample: for an empty hidden carrier the risk
+order is vacuous, but no channel can garble a unit observation into an empty
+one. Every stochastic garbling is now represented exactly as a rational
+simplex mixture of deterministic post-processings. A signed rational strict
+separator exists exactly when a concrete decision-separation certificate
+exists; row shifts and the uniform prior make the separator losses
+nonnegative without changing comparisons. The remaining unsupported step is
+the rational strict-separation theorem itself: every rational target outside
+the rational garbling simplex must be shown to admit such a separator.
 
 The thermal row separates executable operational data from analytic
 thermodynamics. `ThermalObject` stores an exact rational equilibrium and

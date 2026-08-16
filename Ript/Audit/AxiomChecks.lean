@@ -5,6 +5,7 @@ import Ript.Examples.ClassicalCopy
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
 import Ript.Examples.DeterministicBlackwell
+import Ript.Examples.EmptyParameterBoundary
 import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
@@ -21,6 +22,7 @@ import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
 import Ript.Models.Decision.SemanticValue
+import Ript.Models.Decision.RationalSeparation
 import Ript.Models.Probability.FiniteKL
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
@@ -126,6 +128,15 @@ set_option autoImplicit false
 #print axioms Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate
 #print axioms Ript.Models.Decision.Separation.blackwellShermanSteinConverse_iff_separationComplete
 #print axioms Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete
+#print axioms Ript.Models.Decision.GarblingPolytope.mixedGarbling_independentGarblingLaw
+#print axioms Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff
+#print axioms Ript.Examples.EmptyParameterBoundary.unit_not_dominates_empty
+#print axioms Ript.Examples.EmptyParameterBoundary.vacuous_finiteDecisionOrder
+#print axioms Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty
+#print axioms Ript.Models.Decision.RationalSeparation.RationalGarblingSeparator.toDecisionSeparationCertificate
+#print axioms Ript.Models.Decision.RationalSeparation.DecisionSeparationCertificate.toRationalGarblingSeparator
+#print axioms Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate
+#print axioms Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete
 #print axioms Ript.Examples.StochasticSeparation.noisy_information_quarter_risk
 #print axioms Ript.Examples.StochasticSeparation.uninformative_information_half_risk
 #print axioms Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy
