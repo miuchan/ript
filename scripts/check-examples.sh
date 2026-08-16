@@ -41,6 +41,15 @@ if [[ "$stochastic_output" != "$expected_stochastic_output" ]]; then
   exit 1
 fi
 
+convex_output="$(lake env lean Ript/Examples/ConvexChannels.lean)"
+expected_convex_output=$'true\ntrue\ntrue\ntrue'
+
+if [[ "$convex_output" != "$expected_convex_output" ]]; then
+  printf 'Convex-channel example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_convex_output" "$convex_output" >&2
+  exit 1
+fi
+
 kleisli_output="$(lake env lean Ript/Examples/KleisliBits.lean)"
 expected_kleisli_output=$'true\ntrue\ntrue\ntrue'
 

@@ -550,6 +550,11 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | Dirac 嵌入保持确定性复合。 |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | 不同确定性函数产生不同 Dirac 信道。 |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | 每个归一化有限信道都满足因果丢弃律。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_idem` | 一个信道与自身的凸混合仍等于该信道。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_postcomp` | 后复合对精确凸混合满足分配律。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_precomp` | 前复合对精确凸混合满足分配律。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left` | 凸混合对独立 tensor 的左因子满足分配律。 |
+| `Ript.Examples.ConvexChannels.fairIdentityOrNot_apply` | 在 Boolean 恒等与否定间公平选择会产生精确公平输出。 |
 | `Ript.Models.FiniteDistribution.FinDist.pure_bind` | 点分布是有限分布 bind 的左单位元。 |
 | `Ript.Models.FiniteDistribution.FinDist.bind_pure` | 点分布是有限分布 bind 的右单位元。 |
 | `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | 精确有限分布 bind 满足结合律。 |
@@ -919,6 +924,11 @@ CI 会精确比较这段输出，因此任何非预期的可执行行为变化�
 `Ript/Examples/StochasticBits.lean` 另外执行公平硬币、带噪否定、独立 tensor、复制和通用带类型
 解释器，五个精确检查全部输出 `true`。`Ript/Examples/KleisliBits.lean` 继续执行点分布、Kleisli
 bind、双向矩阵转换和范畴等价中的函子，四个检查也全部输出 `true`。
+
+`Ript/Examples/ConvexChannels.lean` 执行独立的 `ConvexProcess` 能力。权重显式保存两个非负
+`ℚ≥0` 系数及其和精确等于一的证明，不使用浮点数，也不依赖可能截断的 `1-p` 减法。在 Boolean
+恒等与否定之间各取一半权重，会让每个输入/输出对的概率都精确等于 `1/2`。四个可执行检查均
+输出 `true`，并且配套定理证明了它与复合及 tensor 的兼容性，而不只是检验若干样例。
 
 `Ript/Examples/StochBits.lean` 进一步在 Mathlib `Stoch` 内证明：解释后的公平硬币具有预期
 singleton 质量；带噪否定保持公平分布；确定性否定确实成为确定性 kernel；两枚独立公平
