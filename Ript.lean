@@ -34,6 +34,7 @@ import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
 import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
+import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.ForMathlib.RationalConvexHull
 import Ript.Higher.Coherence
 import Ript.Higher.Equivalence

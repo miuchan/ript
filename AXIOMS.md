@@ -290,6 +290,15 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | `[propext]` | `Ript/Examples/UnivalentSimplicial.lean` |
+| `SSet.Path.mapIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/StrictSegalIso.lean` |
+| `SSet.Path.mapIso_spine` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/StrictSegalIso.lean` |
+| `SSet.StrictSegal.ofIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/StrictSegalIso.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalSimplexEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowIsStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
@@ -567,10 +576,18 @@ vertical edges decode exactly to invertible natural transformations with
 explicit inverse and cancellation laws. All audited declarations in this
 layer report `[propext, Classical.choice, Quot.sound]`, inherited from the
 quotient interface semantics and generic Mathlib nerve/category machinery.
+The project-local transport API `SSet.Path.mapIso` and
+`SSet.StrictSegal.ofIso` has that same exact footprint. Flipping the two
+finite indexing categories gives a natural isomorphism from every horizontal
+row to the ordinary nerve of `ComposableArrows M.Object k`; transporting
+strict-Segal reconstruction along it proves that the actual outer spine map
+is an equivalence in every bidegree. The row isomorphism, transported
+strict-Segal structure, outer equivalence, and theorem identifying its forward
+map with the spine all audit as `[propext, Classical.choice, Quot.sound]`.
 The construction is downstream of all executable models. It introduces no
-project axiom and no choice-derived runtime data. The outer Segal comparison
-equivalences and Rezk completeness map remain unproved, so the diagram is not
-yet claimed to be a complete Segal space or a localization.
+project axiom and no choice-derived runtime data. The Rezk completeness map
+remains unproved, so the diagram is not yet claimed to be a complete Segal
+space or a localization.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that

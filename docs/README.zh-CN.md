@@ -81,8 +81,9 @@ nerve 已证明为 strict Segal、quasicategory 和 2-coskeletal；顶点、边�
 Segal、localization 或 Rezk completion。Rezk 路线的下一层基础也已经编译：真正的
 classifying diagram 在外层 simplicial 方向保留可复合箭头串及其自然变换，再逐层取 nerve。
 每个纵向层级都是群胚 nerve，因而是 Kan；取纵向顶点会自然恢复严格 interface nerve，纵向边
-则精确对应可逆自然变换。外层 Segal 等价与 Rezk 完备性映射仍未证明，因此没有 complete-Segal
-或 localization 宣称。
+则精确对应可逆自然变换。交换两个有限索引范畴后，每条横向行都自然同构于普通范畴的 nerve，
+因此每个双次数上的实际外层 spine/Segal 比较都是等价。Rezk 完备性映射仍未证明，因此没有
+complete-Segal 或 localization 宣称。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–12 已实现的基础层均通过 Lean 内核检验；公共 API 尚未
@@ -687,9 +688,26 @@ interfaceClassifyingDiagramVerticalVerticesIso M :
 纵向边精确对应普通 `n`-单形之间的自然变换；其每个分量均为可逆内部恒等。代码还显式构造
 逆变换和逆边，证明两个消去律，并证明逆边解码后恰好是逆自然变换。
 
+外层比较也已对所有次数统一形式化。固定纵向次数 `k` 后，交换 `Fin (n + 1)` 与
+`Fin (k + 1)` 会把整条横向 simplicial set 自然识别为
+`ComposableArrows M.Object k` 的普通 nerve：
+
+```lean
+interfaceClassifyingDiagramHorizontalRowIso M k :
+  InterfaceClassifyingDiagramHorizontalRow M k ≅
+    CategoryTheory.nerve (ComposableArrows M.Object k)
+
+interfaceClassifyingDiagramOuterSegalEquiv M k n :
+  (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌ ≃
+    (InterfaceClassifyingDiagramHorizontalRow M k).Path n
+```
+
+第二个等价的正向映射已证明就是实际的 spine 映射；因此外层 Segal 条件是逐双次数严格成立的，
+而不是任意选取的底层类型等价。
+
 这是内部群胚上的标准 Rezk classifying-diagram 构造，也是超出严格 nerve 的真实进展。但外层
-Segal 比较等价和 Rezk completeness map 尚待定义并证明，因此当前对象还不会被宣称为 complete
-Segal space，也没有声称它给出完整资源过程双范畴的 localization。相关声明的精确公理足迹为
+Segal 比较已经证明；Rezk completeness map 尚待定义并证明，因此当前对象还不会被宣称为
+complete Segal space，也没有声称它给出完整资源过程双范畴的 localization。相关声明的精确公理足迹为
 `[propext, Classical.choice, Quot.sound]`；没有新增项目公理，也没有把选择产生的数据送入可执行层。
 
 ## 已经证明的结果
@@ -929,6 +947,10 @@ Segal space，也没有声称它给出完整资源过程双范畴的 localizatio
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strict Segal 重建精确返回 Boolean 2-单形。 |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | 一条边连接原始 code 语法仍不相等的 tensor 表示。 |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | simplicial 连通的两个表示具有相同精确基数。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowIso` | 每条横向行都自然同构于普通范畴 nerve。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal` | 每条横向行都有显式 strict-Segal 重建数据。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv` | 每个横、纵次数上的外层 spine 比较都是等价。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | 外层 Segal 等价的正向映射精确等于 spine 映射。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Classifying diagram 的每个纵向层级都有显式 strict-Segal 重建数据。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Classifying diagram 的每个纵向层级都是 Kan complex。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | 取纵向顶点会自然恢复普通 interface nerve。 |
@@ -968,8 +990,8 @@ Segal space，也没有声称它给出完整资源过程双范畴的 localizatio
 | 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
 | 12，presheaf 基础 | Fully faithful Yoneda 语义、representable 身份/等价对应与本质像 envelope | **PROVED** |
 | 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
-| 12，classifying-diagram 基础 | Rezk classifying diagram、逐层群胚/Kan/strict-Segal 结构、普通 nerve 的自然恢复与可逆纵向变换 | **PROVED** |
-| 12，高阶扩展 | 外层 Segal 等价、Rezk 完备性与超出逐层 classifying diagram 的高阶 localization | **OPEN RESEARCH** |
+| 12，classifying-diagram 基础 | Rezk classifying diagram、逐层群胚/Kan/strict-Segal 结构、所有双次数上的严格外层 Segal 等价、普通 nerve 的自然恢复与可逆纵向变换 | **PROVED** |
+| 12，高阶扩展 | Rezk 完备性与超出 outer-Segal classifying diagram 的高阶 localization | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -996,7 +1018,7 @@ Segal space，也没有声称它给出完整资源过程双范畴的 localizatio
 | 内部 presheaf universe | 类型值 presheaf 之间的自然变换 | Representable 作用 | 语义证明层 | Yoneda fully faithful；恒等/等价对应 representable 变换/同构 |
 | Yoneda envelope | 从 representable 本质像出发的函子 | 通过范畴等价继承结构 | 不可计算本质像语义 | 与源群胚等价；无外部 univalence；不是 Rezk completion |
 | Simplicial 接口 nerve | Simplicial 面与退化映射；同伦范畴 | Strict Segal spine 复合 | 语义证明层 | Kan、quasicategory 且 2-coskeletal；具有显式内外 horn filler；没有 complete-Segal 或 Rezk 宣称 |
-| Rezk classifying diagram | 可复合箭头串的外层 simplicial 范畴与逐层 nerve | 箭头串之间的自然变换；逐层 strict Segal 与 Kan | 语义证明层 | 真正的双单纯构造；纵向顶点恢复严格 nerve；外层 Segal 与 Rezk 完备性仍开放 |
+| Rezk classifying diagram | 可复合箭头串的外层 simplicial 范畴与逐层 nerve | 箭头串之间的自然变换；逐层 strict Segal 与 Kan；所有双次数上的严格外层 Segal 等价 | 语义证明层 | 真正的双单纯构造；横向行是普通 nerve，纵向顶点恢复严格 nerve；Rezk 完备性仍开放 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
@@ -1010,8 +1032,8 @@ complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部�
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
 高阶 localization 的普通 1-范畴构造。它们的严格范畴 nerve 与逐层群胚化的 Rezk classifying
 diagram 已作为真正的 simplicial 对象实现，并具有完整 Kan horn filling、strict Segal、
-quasicategory、2-coskeletal 与同伦范畴恢复定理。Classifying diagram 还具有自然的纵向顶点比较和
-可逆纵向变换，但尚无外层 Segal、Rezk 完备性或 localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
+quasicategory、2-coskeletal 与同伦范畴恢复定理。Classifying diagram 还具有自然的纵向顶点比较、
+可逆纵向变换以及所有双次数上的外层 Segal 等价，但尚无 Rezk 完备性或 localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放命题见
@@ -1476,8 +1498,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 无选择对象补全、不变量下降与骨架群胚补全
 - [x] Fully faithful Yoneda 语义与 representable 本质像 envelope
 - [x] 严格 simplicial nerve、完整 Kan horn filling、精确 Segal 重建、quasicategory、2-coskeletality 与同伦范畴恢复
-- [x] Rezk classifying diagram、逐层群胚/Kan 结构、自然纵向顶点比较与可逆纵向变换
-- [ ] 外层 Segal 等价、Rezk 完备性与带显式高阶 coherence 的 localization
+- [x] Rezk classifying diagram、逐层群胚/Kan 结构、严格外层 Segal 等价、自然纵向顶点比较与可逆纵向变换
+- [ ] Rezk 完备性与带显式高阶 coherence 的 localization
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。
