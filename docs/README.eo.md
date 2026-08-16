@@ -73,8 +73,10 @@ unike rekonstruebla el sia kunmetebla spino, do la nervo estas pruvite strikta
 Segal, kvazaŭkategorio kaj 2-koskeleta; verticoj, eĝoj kaj kunmetaj
 2-simplaĵoj precize reakiras interfacojn, internajn identojn kaj vojkunmeton.
 Ĝia homotopikategorio estas izomorfa al la fonta grupoido. Tio restas la
-strikta kategoria nervo de 1-grupoido: neniu aserto pri Kan-kornplenigo,
-kompleta Segal-strukturo, lokalizo aŭ Rezk-kompletigo estas farata.
+strikta kategoria nervo de 1-grupoido. Dimensio-post-dimensia formaligo nun
+pruvas kompletan Kan-kornplenigon, inkluzive invers-bazitajn plenigilojn de
+eksteraj kornoj; neniu aserto pri kompleta Segal-strukturo, lokalizo aŭ
+Rezk-kompletigo estas farata.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -575,7 +577,7 @@ sintakson aŭ finiajn modelojn. La envolvaĵo ne egaligas ekstere izomorfajn
 antaŭfaskojn kaj per si mem ne liveras kompletan Segal-kondiĉon, pli-altan
 lokalizon aŭ eksteran univalentecon.
 
-### 16. La strikta simplicia nervo
+### 16. La Kan-a simplicia nervo
 
 La interna grupoido nun havas efektivan prezenton kiel simplicia aro:
 
@@ -587,6 +589,12 @@ interfaceNerveStrictSegal :
 
 interfaceNerveSegalEquiv (n) :
   M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
+
+interfaceNerveKanComplex :
+  SSet.KanComplex M.InterfaceNerve
+
+interfaceNerveHornFiller (hornMap) :
+  Δ[n + 1] ⟶ M.InterfaceNerve
 ```
 
 Do ĉiu `n`-simplaĵo estas unike rekonstruita el sia longo-`n` spino de
@@ -626,13 +634,22 @@ vojo kaj kiel ĝia struktura ekvivalento. La antaŭa eĝo kaj ĝia inverso forma
 nuligan 2-simplaĵon, strikta Segal-rekonstruo redonas tiun simplaĵon ekzakte,
 kaj la ekstere malegalaj tensoraj kodarboj restas ligitaj per eĝo.
 
+La kompleta pruvo pri kornplenigo troviĝas en
+`Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean`. Unudimensiaj kornoj
+uzas degeneritajn identajn eĝojn; dudimensiaj eksteraj kornoj uzas inversojn;
+tridimensiaj eksteraj kornoj uzas nuligon per izomorfio; internaj kornoj uzas
+la strikt-Segal-an kvazaŭkategorian teoremon; kaj dimensioj almenaŭ kvar estas
+rekonstruitaj el kornaj spinoj kaj sinsekvaj trianguloj. La Bulea ekzemplo
+montras nulan eksteran kornon, kies mankanta eĝo estas la inversa tensora
+simetrio, kaj kontrolas ke la elektita Kan-plenigilo restriktiĝas al tiu korno.
+
 La fidlimo estas eksplicita. La fiksitaj Mathlib-deklaroj pri strikta Segal,
 kvazaŭkategorio, koskeleteco kaj nerva adjunkcio reviziiĝas kiel
 `[propext, Classical.choice, Quot.sound]`; tiu posta semantika spuro ne eniras
-plenumeblan sintakson. Oni atendas, ke la kategoria nervo de grupoido estas
-Kan, sed ĉi tiu dosiero ne pruvas tiun teoremon per la nuna Mathlib-API. Ĝi
-ankaŭ ne pruvas kompletan Segal-kondiĉon, antaŭfaskan lokalizon, eksteran
-univalentecon aŭ Rezk-kompletigon.
+plenumeblan sintakson. La nova teoremo pri la Kan-a nervo de grupoido kaj ĝia
+elektita plenigilo havas la saman ekzaktan aksioman spuron. Ĝi ne pruvas
+kompletan Segal-kondiĉon, antaŭfaskan lokalizon, eksteran univalentecon aŭ
+Rezk-kompletigon.
 
 ## Kio estas pruvita
 
@@ -767,6 +784,9 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensora simetrio konservas la ekzaktan interfacan kardinalon. |
 | `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | La interna grupoidnervo havas eksplicitajn datumojn por strikta Segal-rekonstruo. |
 | `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | Ĉiu simplaĵo ekvivalentas al sia kunmetebla spino de eĝoj. |
+| `CategoryTheory.Nerve.kanComplex` | La nervo de ĉiu grupoido plenumas la kompletan Kan-kornplenigan kondiĉon. |
+| `Ript.Univalent.UniverseModel.interfaceNerveKanComplex` | La interna interfaca nervo estas Kan-komplekso. |
+| `Ript.Univalent.UniverseModel.interfaceNerveHornFiller_restricts` | Ĉiu elektita plenigilo restriktiĝas al sia donita korno. |
 | `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | La strikta kategoria nervo estas kvazaŭkategorio. |
 | `Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal` | La interna nervo estas determinita de sia 2-tranĉo. |
 | `Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv` | Nervaj eĝoj inter kodverticoj estas precize internaj strukturaj ekvivalentoj. |
@@ -774,6 +794,7 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite` | Eĝo sekvata de sia inverso havas refleksivan kunmetitan facon. |
 | `Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso` | La homotopikategorio de la nervo reakiras la fontan grupoidon. |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv` | La Bulea simetria eĝo malkodiĝas al la origina tensora ekvivalento. |
+| `Ript.Examples.UnivalentSimplicial.swapCancellationKanFiller_restricts` | La elektita plenigilo de la Bulea ekstera korno restriktiĝas al la origina korno. |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_faces` | La Bulea nuliga 2-simplaĵo havas antaŭan, inversan kaj refleksivan facojn. |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strikta Segal-rekonstruo redonas la Bulean 2-simplaĵon ekzakte. |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | Eĝo ligas tensorajn prezentojn kies kruda kodsintakso restas malegala. |
@@ -808,8 +829,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
-| 12, simplicia fundamento | Kategoria nervo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
-| 12, pli-alta etendaĵo | Kan-kornplenigo, kompleta Segal/Rezk-kompletigo kaj pli-alta lokalizo preter la strikta kategoria nervo | **OPEN RESEARCH** |
+| 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
+| 12, pli-alta etendaĵo | Kompleta Segal/Rezk-kompletigo kaj pli-alta lokalizo preter la strikta kategoria nervo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -835,7 +856,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; ne Rezk-kompletigo |
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
 | Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
-| Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kvazaŭkategorio kaj 2-koskeleta; eĝoj kodas internajn identojn/ekvivalentojn; sen Kan- aŭ Rezk-aserto |
+| Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kan-a, kvazaŭkategoria kaj 2-koskeleta; eksplicitaj internaj kaj eksteraj kornplenigiloj; sen kompleta-Segal- aŭ Rezk-aserto |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -854,8 +875,9 @@ nekomputebla skeletokompletigo establas nur la eksplicite reviziitan
 Yoneda-esenc-bilda envolvaĵo ankaŭ estas realigitaj, sed restas ordinaraj
 1-kategoriaj konstruoj sen pli-alta lokalizo. Ilia strikta kategoria nervo estas
 realigita kiel vera simplicia aro kun teoremoj pri strikta Segal,
-kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio, sed neniu
-rezulto pri Kan, kompleta Segal aŭ lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
+kompleta Kan-kornplenigo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la
+homotopikategorio, sed neniu rezulto pri kompleta Segal, Rezk-kompletigo aŭ
+lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -1197,8 +1219,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    0/1-tranĉitaj kompletigoj estas realigitaj kun eksplicitaj ampleksolimoj.
    La reprezentebla antaŭfaska envolvaĵo same estas realigita kun sia ordinara
    1-kategoria limo klare deklarita. La strikta kategoria nervo ankaŭ estas
-   realigita kun pruvitaj strikta-Segal, kvazaŭkategoria kaj 2-koskeleta
-   strukturoj, sen prezenti ilin kiel Kan- aŭ Rezk-kompletecon.
+   realigita kun kompleta Kan-pruvo kaj pruvitaj strikta-Segal,
+   kvazaŭkategoria kaj 2-koskeleta strukturoj, sen prezenti ilin kiel
+   kompleta-Segal- aŭ Rezk-kompletecon.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -1288,8 +1311,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
 - [x] Senelekta objektokompletigo, invarianta malsuprenigo kaj skeleta grupoidokompletigo
 - [x] Plene fidela Yoneda-semantiko kaj la esenc-bilda reprezentebla envolvaĵo
-- [x] Strikta simplicia nervo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
-- [ ] Kan-kornplenigo kaj kompleta-Segal/Rezk-lokalizo kun eksplicita pli-alta kohero
+- [x] Strikta simplicia nervo, kompleta Kan-kornplenigo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
+- [ ] Kompleta-Segal/Rezk-lokalizo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

@@ -45,7 +45,8 @@ presheaf；内部恒等与结构等价精确对应 representable 之间的自然
 内部群胚现在还拥有真正的 simplicial nerve。每个单形都能从可复合 spine 唯一重建，因此该
 nerve 已证明为 strict Segal、quasicategory 和 2-coskeletal；顶点、边与复合 2-单形分别精确
 恢复接口、内部恒等与 path 复合，其同伦范畴同构于源群胚。这仍只是 1-群胚的严格范畴 nerve：
-没有宣称 Kan、complete Segal、localization 或 Rezk completion。
+现已逐维证明完整 Kan horn filling，包括基于逆元的外 horn filler；但仍没有宣称 complete
+Segal、localization 或 Rezk completion。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–12 已实现的基础层均通过 Lean 内核检验；公共 API 尚未
@@ -434,7 +435,7 @@ envelope 同构，同时保留原始 code 不相等的证明。
 presheaf 在外部相等，它本身也没有提供 complete Segal 条件、高阶 localization 或外部
 univalence。
 
-### 16. 严格 simplicial nerve
+### 16. Kan simplicial nerve
 
 内部群胚现已具有实际的 simplicial-set 表示：
 
@@ -446,6 +447,12 @@ interfaceNerveStrictSegal :
 
 interfaceNerveSegalEquiv (n) :
   M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
+
+interfaceNerveKanComplex :
+  SSet.KanComplex M.InterfaceNerve
+
+interfaceNerveHornFiller (hornMap) :
+  Δ[n + 1] ⟶ M.InterfaceNerve
 ```
 
 因此，每个 `n`-单形都由长度为 `n` 的可复合边 spine 唯一重建。Mathlib 中已经证明的推论
@@ -481,9 +488,15 @@ interfaceNerveHomotopyCategoryIso :
 逆边组成 cancellation 2-单形，strict Segal 重建精确返回该单形，而两个外部不相等的 tensor
 code 树仍由一条边连接。
 
+完整 horn-filling 证明位于
+`Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean`：一维 horn 使用退化恒等边；二维外
+horn 使用逆态射；三维外 horn 使用同构消去律；内 horn 使用 strict-Segal quasicategory
+定理；四维及以上则从 horn 的 spine 与连续三角形重建。Boolean 示例还给出了一个缺失逆向
+tensor 对称边的第零外 horn，并验证所选 Kan filler 限制回原 horn。
+
 信任边界是显式的。固定 Mathlib 的 strict-Segal、quasicategory、coskeletal 与 nerve-adjunction
 声明均审计为 `[propext, Classical.choice, Quot.sound]`；该下游语义依赖不会进入可执行语法。
-范畴群胚 nerve 按数学上应满足 Kan，但本文件没有在当前 Mathlib API 上证明该定理，也没有证明
+新增的群胚 nerve Kan 定理与所选 filler 具有完全相同的公理足迹。这里仍没有证明
 complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk completion。
 
 ## 已经证明的结果
@@ -618,6 +631,9 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | tensor 对称性保持精确接口基数。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | 内部群胚 nerve 具有显式 strict-Segal 重建数据。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | 每个单形都与其可复合边 spine 精确等价。 |
+| `CategoryTheory.Nerve.kanComplex` | 每个群胚的 nerve 都满足完整 Kan horn-filling 条件。 |
+| `Ript.Univalent.UniverseModel.interfaceNerveKanComplex` | 内部接口 nerve 是 Kan complex。 |
+| `Ript.Univalent.UniverseModel.interfaceNerveHornFiller_restricts` | 每个所选接口 nerve filler 都限制回给定 horn。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | 严格范畴 nerve 是 quasicategory。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal` | 内部 nerve 完全由其 2-truncation 决定。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv` | code 顶点间的 nerve 边精确对应内部结构等价。 |
@@ -625,6 +641,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite` | 边接其逆后的复合面是 reflexivity。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso` | nerve 的同伦范畴恢复源群胚。 |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv` | Boolean 对称边解码为原 tensor 结构等价。 |
+| `Ript.Examples.UnivalentSimplicial.swapCancellationKanFiller_restricts` | Boolean 外 horn 的所选 filler 限制回原 horn。 |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_faces` | Boolean cancellation 2-单形具有正向、逆向与 reflexive 三个面。 |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strict Segal 重建精确返回 Boolean 2-单形。 |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | 一条边连接原始 code 语法仍不相等的 tensor 表示。 |
@@ -656,8 +673,8 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 11 | 无公理的深嵌入接口/过程语法、商群胚、内部单值性、soundness 与 indiscernibility | **PROVED** |
 | 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
 | 12，presheaf 基础 | Fully faithful Yoneda 语义、representable 身份/等价对应与本质像 envelope | **PROVED** |
-| 12，simplicial 基础 | 范畴 nerve、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
-| 12，高阶扩展 | Kan horn filling、complete Segal/Rezk completion 与超出严格范畴 nerve 的高阶 localization | **OPEN RESEARCH** |
+| 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
+| 12，高阶扩展 | Complete Segal/Rezk completion 与超出严格范畴 nerve 的高阶 localization | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -683,19 +700,19 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；选择代表元；不是 Rezk completion |
 | 内部 presheaf universe | 类型值 presheaf 之间的自然变换 | Representable 作用 | 语义证明层 | Yoneda fully faithful；恒等/等价对应 representable 变换/同构 |
 | Yoneda envelope | 从 representable 本质像出发的函子 | 通过范畴等价继承结构 | 不可计算本质像语义 | 与源群胚等价；无外部 univalence；不是 Rezk completion |
-| Simplicial 接口 nerve | Simplicial 面与退化映射；同伦范畴 | Strict Segal spine 复合 | 语义证明层 | Quasicategory 且 2-coskeletal；边编码内部恒等/等价；没有 Kan 或 Rezk 宣称 |
+| Simplicial 接口 nerve | Simplicial 面与退化映射；同伦范畴 | Strict Segal spine 复合 | 语义证明层 | Kan、quasicategory 且 2-coskeletal；具有显式内外 horn filler；没有 complete-Segal 或 Rezk 宣称 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
-Kan/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
+complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
 高阶 localization 的普通 1-范畴构造。它们的严格范畴 nerve 已作为真正 simplicial set 实现，并具有
-strict Segal、quasicategory、2-coskeletal 与同伦范畴恢复定理，但没有宣称 Kan、complete-Segal 或
-localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
+完整 Kan horn filling、strict Segal、quasicategory、2-coskeletal 与同伦范畴恢复定理，但没有宣称
+complete-Segal、Rezk completion 或 localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
@@ -993,8 +1010,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
    平衡态的有限热层，以及带 tensor、丢弃和完整正性的有限 Kraus 核心已经实现；反向表示、
    一般随机与因果、解析热力学和高阶单值层仍必须清楚标记为开放研究。经典量子嵌入、模型
    双范畴、小型内部单值 universe、0/1-截断补全及 representable-presheaf envelope 已实现，
-   并保留各自明确的适用边界。严格范畴 nerve 也已有 strict-Segal、quasicategory 与
-   2-coskeletal 证明，但不会被描述成 Kan 或 Rezk 完备性。
+   并保留各自明确的适用边界。严格范畴 nerve 也已有完整 Kan、strict-Segal、quasicategory 与
+   2-coskeletal 证明，但不会被描述成 complete-Segal 或 Rezk 完备性。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -1075,8 +1092,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
 - [x] 无选择对象补全、不变量下降与骨架群胚补全
 - [x] Fully faithful Yoneda 语义与 representable 本质像 envelope
-- [x] 严格 simplicial nerve、精确 Segal 重建、quasicategory、2-coskeletality 与同伦范畴恢复
-- [ ] Kan horn filling 与带显式高阶 coherence 的 complete-Segal/Rezk localization
+- [x] 严格 simplicial nerve、完整 Kan horn filling、精确 Segal 重建、quasicategory、2-coskeletality 与同伦范畴恢复
+- [ ] 带显式高阶 coherence 的 complete-Segal/Rezk localization
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。

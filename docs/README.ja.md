@@ -51,7 +51,8 @@ presheaf への道筋にも、コンパイル済みの第一層が加わりま�
 一意に復元されるため、この nerve は strict Segal、quasicategory、2-coskeletal であると証明済みです。
 頂点・辺・合成 2-simplex は、インターフェース・内部同一性・path 合成を正確に復元し、その homotopy
 category は元の groupoid と同型です。これは依然として 1-groupoid の厳密な圏論的 nerve であり、
-Kan、complete Segal、localization、Rezk completion の主張ではありません。
+次元ごとの形式化により完全な Kan horn filling（逆射による outer-horn filler を含む）が証明済みです。
+ただし complete Segal、localization、Rezk completion の主張ではありません。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
@@ -470,7 +471,7 @@ path を復元します。また、元の code が不等なままで、対応す
 この包絡は同型な presheaf を外部 Lean 等式にせず、それ自体では complete Segal 条件、高次
 localization、外部 univalence のいずれも与えません。
 
-### 16. 厳密 simplicial nerve
+### 16. Kan simplicial nerve
 
 内部 groupoid は、実際の simplicial set として表現されます。
 
@@ -482,6 +483,12 @@ interfaceNerveStrictSegal :
 
 interfaceNerveSegalEquiv (n) :
   M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
+
+interfaceNerveKanComplex :
+  SSet.KanComplex M.InterfaceNerve
+
+interfaceNerveHornFiller (hornMap) :
+  Δ[n + 1] ⟶ M.InterfaceNerve
 ```
 
 したがって各 `n`-simplex は、長さ `n` の合成可能な辺の spine から一意に復元されます。Mathlib の
@@ -518,11 +525,17 @@ Boolean 例では、tensor 対称辺を元の内部 path と構造同値の双�
 cancellation 2-simplex を作り、strict Segal 再構成はその simplex を正確に返します。一方、外部で
 不等な tensor code 木は依然として一つの辺で結ばれます。
 
+完全な horn-filling 証明は
+`Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` にあります。1 次元 horn は退化恒等辺、
+2 次元 outer horn は逆射、3 次元 outer horn は同型による消去、inner horn は strict-Segal
+quasicategory 定理、4 次元以上は horn の spine と連続する三角形による再構成を用います。
+Boolean 例では逆 tensor 対称辺を欠く第 0 outer horn を明示し、選択された Kan filler が元の
+horn に制限されることも検証します。
+
 信頼境界も明示的です。固定 Mathlib の strict-Segal、quasicategory、coskeletal、nerve-adjunction
 宣言はすべて `[propext, Classical.choice, Quot.sound]` と監査され、この下流意味論依存は実行可能
-構文へ流入しません。圏論的 groupoid nerve は数学的には Kan であるはずですが、現在の Mathlib API
-上で本ファイルはその定理を証明していません。complete-Segal 条件、presheaf localization、外部
-univalence、Rezk completion も未証明です。
+構文へ流入しません。新しい groupoid-nerve Kan 定理と選択 filler も同じ正確な公理 footprint を
+持ちます。complete-Segal 条件、presheaf localization、外部 univalence、Rezk completion は未証明です。
 
 ## 証明済みの内容
 
@@ -657,6 +670,9 @@ univalence、Rezk completion も未証明です。
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | tensor 対称性はインターフェースの正確な濃度を保存します。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | 内部 groupoid nerve は明示的な strict-Segal 再構成データを持ちます。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | 各 simplex は合成可能な辺の spine と正確に同値です。 |
+| `CategoryTheory.Nerve.kanComplex` | 任意の groupoid の nerve は完全な Kan horn-filling 条件を満たします。 |
+| `Ript.Univalent.UniverseModel.interfaceNerveKanComplex` | 内部 interface nerve は Kan complex です。 |
+| `Ript.Univalent.UniverseModel.interfaceNerveHornFiller_restricts` | 選択した filler は与えられた horn へ制限されます。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | 厳密な圏論的 nerve は quasicategory です。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal` | 内部 nerve は 2-truncation によって決定されます。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv` | code 頂点間の nerve 辺は内部構造同値と正確に対応します。 |
@@ -664,6 +680,7 @@ univalence、Rezk completion も未証明です。
 | `Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite` | 辺とその逆の合成面は reflexivity です。 |
 | `Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso` | nerve の homotopy category は元の groupoid を復元します。 |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv` | Boolean 対称辺は元の tensor 構造同値へ復号されます。 |
+| `Ript.Examples.UnivalentSimplicial.swapCancellationKanFiller_restricts` | Boolean outer horn の選択 filler は元の horn へ制限されます。 |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_faces` | Boolean cancellation 2-simplex は正方向・逆方向・reflexive の三面を持ちます。 |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strict Segal 再構成は Boolean 2-simplex を正確に返します。 |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | 一つの辺で結ばれても、元の code 構文は不等のままです。 |
@@ -696,8 +713,8 @@ univalence、Rezk completion も未証明です。
 | 11 | 公理不要の深いインターフェース/プロセス構文、商 groupoid、内部 univalence、健全性、indiscernibility | **PROVED** |
 | 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
 | 12、presheaf 基礎 | 充満忠実な Yoneda 意味論、可表対象での同一性/同値対応、本質像包絡 | **PROVED** |
-| 12、simplicial 基礎 | 圏論的 nerve、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
-| 12、高次拡張 | Kan horn filling、complete Segal/Rezk completion、厳密 nerve を越える高次 localization | **OPEN RESEARCH** |
+| 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
+| 12、高次拡張 | Complete Segal/Rezk completion、厳密 nerve を越える高次 localization | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -723,20 +740,20 @@ univalence、Rezk completion も未証明です。
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；代表選択あり；Rezk completion ではない |
 | 内部 presheaf universe | 型値 presheaf 間の自然変換 | 可表対象の作用 | 意味論的証明層 | Yoneda は充満忠実；同一性/同値は可表自然変換/自然同型に対応 |
 | Yoneda 包絡 | 可表対象の本質像から出る関手 | 圏同値を通して構造を継承 | 非計算的な本質像意味論 | 元の groupoid と圏同値；外部 univalence も Rezk 完備性もない |
-| Simplicial interface nerve | Simplicial 面・退化写像；homotopy category | Strict Segal spine 合成 | 意味論的証明層 | Quasicategory かつ 2-coskeletal；辺は内部同一性/同値を符号化；Kan/Rezk の主張なし |
+| Simplicial interface nerve | Simplicial 面・退化写像；homotopy category | Strict Segal spine 合成 | 意味論的証明層 | Kan、quasicategory、2-coskeletal；inner/outer horn filler を明示；complete-Segal/Rezk の主張なし |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、具体的有限 KL のデータ処理、
-エネルギー由来 Gibbs 状態、Kan/Rezk-complete なユニバレント意味論は**未実装**です。
+エネルギー由来 Gibbs 状態、complete-Segal/Rezk-complete なユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
 選択不要の対象 completion と非計算的 skeleton completion は、明示的に監査された 0/1-truncated 基礎だけを
 確立します。可表 presheaf 意味論と Yoneda 本質像包絡も実装済みですが、高次 localization を持たない
 通常の 1-圏論的構成にとどまります。それらの厳密な圏論的 nerve は真正な simplicial set として実装され、
-strict Segal、quasicategory、2-coskeletal、homotopy-category 復元が証明済みですが、Kan、
-complete-Segal、localization は主張しません。モデル双圏は固定資源型と統一 universe の範囲で実装され、
+完全な Kan horn filling、strict Segal、quasicategory、2-coskeletal、homotopy-category 復元が証明済みですが、
+complete-Segal、Rezk completion、localization は主張しません。モデル双圏は固定資源型と統一 universe の範囲で実装され、
 これらの層は `(∞,1)`-圏や
 Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
@@ -1046,8 +1063,8 @@ import Ript.Univalent.Simplicial
    実装済みです。逆表現、一般確率・因果、解析的熱力学、高次ユニバレント層とは明確に分けます。
    古典量子埋め込み、モデル双圏、小さな内部ユニバレント universe とその 0/1-truncated completion は、
    それぞれの適用範囲を明示して実装済みです。0/1-truncated completion と可表 presheaf 包絡も、
-   通常の 1-圏論的限界を明示して実装されています。厳密な圏論的 nerve も strict-Segal、
-   quasicategory、2-coskeletal の証明を伴いますが、Kan/Rezk 完備性とは表現しません。
+   通常の 1-圏論的限界を明示して実装されています。厳密な圏論的 nerve も完全な Kan、strict-Segal、
+   quasicategory、2-coskeletal の証明を伴いますが、complete-Segal/Rezk 完備性とは表現しません。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
@@ -1130,8 +1147,8 @@ import Ript.Univalent.Simplicial
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
 - [x] 選択不要の対象 completion、不変量の降下、skeletal groupoid completion
 - [x] 充満忠実な Yoneda 意味論と可表対象の本質像包絡
-- [x] 厳密 simplicial nerve、正確な Segal 再構成、quasicategory、2-coskeletality、homotopy-category 復元
-- [ ] Kan horn filling と、明示的高次 coherence を持つ complete-Segal/Rezk localization
+- [x] 厳密 simplicial nerve、完全な Kan horn filling、正確な Segal 再構成、quasicategory、2-coskeletality、homotopy-category 復元
+- [ ] 明示的高次 coherence を持つ complete-Segal/Rezk localization
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
 破壊的変更を明記する必要があります。
