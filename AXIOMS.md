@@ -85,10 +85,18 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Quantum.KrausChannel.basisBra_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Discard.lean` |
 | `Ript.Models.Quantum.KrausChannel.eq_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Discard.lean` |
 | `Ript.Models.Quantum.KrausChannel.comp_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Discard.lean` |
+| `Ript.Models.Quantum.KrausChannel.identity_toLinearMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.amplification_kronecker` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/CompletePositivity.lean` |
+| `Ript.Models.Quantum.KrausChannel.amplification_eq_tensor_identity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/CompletePositivity.lean` |
+| `Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/CompletePositivity.lean` |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 | `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 | `Ript.Examples.QubitChannel.discard_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.bellProjector_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.bellDensity_trace_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.bellDensity_cross_term` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.bitFlip_amplification_bell_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -140,13 +148,20 @@ an explicit finite Kraus family with completeness equation
 `∑ i, Kᵢᴴ Kᵢ = I`. Operational actions are proved complex-linear; their
 canonical tensor is certified by pairwise Kronecker Kraus operators on all
 matrices. Basis bras define the trace channel, whose uniqueness proves the
-causal discard law without introducing copying. The audited positivity,
-trace-preservation, identity, composition, tensor, discard, and Pauli-X results
+causal discard law without introducing copying. Identity amplification is
+defined on every finite auxiliary system, and every Kraus channel is proved
+completely positive by identifying that amplification with tensoring by the
+auxiliary identity. The normalized Bell-density example checks positivity,
+trace one, an off-diagonal coherence entry, and preservation of positivity
+under amplified Pauli-X. The audited positivity, trace-preservation, identity,
+composition, tensor, discard, complete-positivity, Bell-density, and Pauli-X results
 inherit `Classical.choice` and `Quot.sound`
 from Mathlib's finite-sum, matrix-order, complex-number, and category proof
 infrastructure. No choice-derived data is used in the channel action: the
 operational map is stored directly, while its Kraus certificate is proof-only.
-The two `#eval decide` contracts execute the discrete computational-basis
+The Bell density is noncomputable only at Mathlib's complex operator-order
+proof boundary; its matrix entries are explicit. The two `#eval decide`
+contracts execute the discrete computational-basis
 action; arbitrary complex-matrix equality remains in the kernel proof layer.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`

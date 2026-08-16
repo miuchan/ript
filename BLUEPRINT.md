@@ -91,7 +91,9 @@ flowchart LR
   SimpleThermal --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
+  QuantumTensor --> QuantumCP["Models.Quantum.CompletePositivity"]
   QuantumTensor --> QuantumDiscard["Models.Quantum.Discard"]
+  QuantumCP --> QubitChannel["Examples.QubitChannel"]
   QuantumDiscard --> QubitChannel["Examples.QubitChannel"]
   QubitChannel --> Audit
 ```
@@ -112,8 +114,8 @@ Every node in this graph is an existing compiled module.
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
-| 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, and causal uniqueness | PROVED |
-| 9 (extensions) | Complete-positivity amplification theorem and classical stochastic embedding | OPEN_RESEARCH |
+| 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
+| 9 (extension) | Classical finite-stochastic measurement-preparation embedding | OPEN_RESEARCH |
 | 10-11 | Bicategorical and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
@@ -1482,9 +1484,12 @@ families, and to package a category. The operational action is proved
 complex-linear and tensor is transported through Mathlib's matrix/tensor-product
 linear equivalence; pairwise Kronecker Kraus families certify it on arbitrary
 matrices. Basis bras construct the trace channel, which is proved unique into
-the unit system and therefore satisfies the causal discard law. Complete-
-positivity amplification and the classical stochastic embedding remain
-explicitly deferred.
+the unit system and therefore satisfies the causal discard law. Complete
+positivity is stated directly for ordinary finite matrices: every auxiliary
+finite system's identity amplification must preserve positivity of every joint
+matrix. The amplification is proved equal to tensoring with the auxiliary
+identity channel, so all Kraus channels satisfy it. The remaining Stage-9
+extension is the classical finite-stochastic measurement-preparation embedding.
 
 ### `Ript.Models.Quantum.KrausRepresentation.map_posSemidef`
 
@@ -1699,6 +1704,88 @@ explicitly deferred.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Quantum/Discard.lean`.
 
+### `Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive`
+
+- Natural-language statement: for every finite auxiliary quantum system and
+  every positive-semidefinite joint input—not only separable or Kronecker
+  inputs—the identity amplification of a finite Kraus channel's canonical
+  complex-linear map remains positive semidefinite.
+- Lean type:
+
+  ```lean
+  theorem KrausChannel.toLinearMap_isCompletelyPositive
+      (channel : KrausChannel X Y) :
+      IsCompletelyPositive channel.toLinearMap
+  ```
+
+  where the predicate unfolds to
+
+  ```lean
+  ∀ (A : Object) (τ : Matrix (A × X) (A × X) ℂ),
+    τ.PosSemidef →
+      (amplification A channel.toLinearMap τ).PosSemidef
+  ```
+
+- Prerequisite definitions: the canonical channel `toLinearMap`, the canonical
+  product-basis `tensorLinearMap`, `amplification`, and
+  `IsCompletelyPositive` over arbitrary finite auxiliary objects.
+- Prerequisite lemmas: `identity_toLinearMap`,
+  `amplification_kronecker`,
+  `amplification_eq_tensor_identity`, tensor-channel Kraus certification, and
+  `KrausChannel.map_posSemidef`.
+- Status: `PROVED` for arbitrary finite source, target, auxiliary systems, and
+  arbitrary joint positive-semidefinite matrices.
+- Classical choice: reported through Mathlib's finite-matrix, tensor-product,
+  and complex operator-order proof infrastructure; no Kraus witness is chosen
+  into operational data.
+- Computable: the amplified matrix action is explicit and complex-linear;
+  positivity is kernel proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/CompletePositivity.lean`.
+
+This theorem uses Ript's ordinary finite-matrix formulation. Mathlib also has
+an analytic `CompletelyPositiveMap` interface for C\*-algebras via
+`CStarMatrix`; no bridge to that separate interface is claimed here.
+
+### Bell-density complete-positivity example
+
+- Natural-language statement: the explicit two-qubit Bell projector is
+  positive semidefinite; scaling it by one half gives trace one and the
+  expected `|00⟩`/`|11⟩` off-diagonal coherence; amplifying Pauli-X on the
+  second qubit preserves this joint state's positivity.
+- Lean types:
+
+  ```lean
+  theorem bellProjector_posSemidef : bellProjector.PosSemidef
+
+  theorem bellDensity_trace_one :
+      Matrix.trace (((2 : ℝ)⁻¹) • bellProjector) = 1
+
+  theorem bellDensity_cross_term :
+      bellDensity.matrix (false, false) (true, true) = (2 : ℂ)⁻¹
+
+  theorem bitFlip_amplification_bell_posSemidef :
+      (amplification qubit bitFlip.toLinearMap
+        bellDensity.matrix).PosSemidef
+  ```
+
+- Prerequisite definitions: the Boolean qubit, `bellVector`, rank-one
+  `bellProjector`, normalized `bellDensity`, Pauli-X `bitFlip`, and finite
+  identity amplification.
+- Prerequisite lemmas: positivity of `vecMulVec v (star v)`, exact finite trace
+  summation, positivity under nonnegative scaling, the nonzero cross-entry
+  calculation, and `toLinearMap_isCompletelyPositive`.
+- Status: `PROVED`. The coherence entry is formalized; no formal theorem of
+  nonseparability or entanglement classification is claimed.
+- Classical choice: yes in the audited Mathlib matrix-order and finite-sum
+  proof infrastructure; no choice determines a matrix entry.
+- Computable: matrix entries are explicit. `bellDensity` is marked
+  `noncomputable` only because the imported complex operator-order proof
+  instance is noncomputable; its operational data are not obtained by choice.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]` for each of the
+  four audited theorems.
+- Source: `Ript/Examples/QubitChannel.lean`.
+
 ### `Ript.Examples.QubitChannel.bitFlipOperator_complete`
 
 - Natural-language statement: the Pauli-X permutation matrix on the Boolean
@@ -1843,3 +1930,11 @@ explicitly deferred.
     stochastic data-processing proof. This keeps the generic theorem fully
     proved while leaving finite KL divergence and its nontrivial DPI as future
     work rather than an axiom or hidden premise.
+27. Finite complete positivity quantifies over every finite auxiliary system
+    and every joint positive-semidefinite matrix. It is not weakened to tests
+    on Kronecker-product inputs, and it is not presented as a bridge to
+    Mathlib's separate analytic C\*-algebra interface.
+28. The Bell-density example proves normalization, positivity, and a coherence
+    entry, then exercises the general amplification theorem. It does not call
+    this a formal entanglement proof; nonseparability would require its own
+    definition and theorem.
