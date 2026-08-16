@@ -95,5 +95,13 @@ set_option autoImplicit false
 #print axioms Ript.Models.Quantum.KrausChannel.map_trace
 #print axioms Ript.Models.Quantum.KrausChannel.identity_applyDensity
 #print axioms Ript.Models.Quantum.KrausChannel.comp_applyDensity
+#print axioms Ript.Models.Quantum.KrausChannel.tensor_applyDensity
+#print axioms Ript.Models.Quantum.KrausChannel.tensor_identity
+#print axioms Ript.Models.Quantum.KrausChannel.tensor_comp
+#print axioms Ript.Models.Quantum.KrausChannel.basisBra_complete
+#print axioms Ript.Models.Quantum.KrausChannel.eq_discard
+#print axioms Ript.Models.Quantum.KrausChannel.comp_discard
 #print axioms Ript.Examples.QubitChannel.bitFlipOperator_complete
 #print axioms Ript.Examples.QubitChannel.bitFlip_basisDensity
+#print axioms Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity
+#print axioms Ript.Examples.QubitChannel.discard_basisDensity

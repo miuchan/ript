@@ -90,7 +90,9 @@ flowchart LR
   ThermalMonotone --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
-  QuantumKraus --> QubitChannel["Examples.QubitChannel"]
+  QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
+  QuantumTensor --> QuantumDiscard["Models.Quantum.Discard"]
+  QuantumDiscard --> QubitChannel["Examples.QubitChannel"]
   QubitChannel --> Audit
 ```
 
@@ -110,8 +112,8 @@ Every node in this graph is an existing compiled module.
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
-| 9 (Kraus core) | Complex density matrices, trace-preserving finite Kraus channels, state preservation, and sequential category | PROVED |
-| 9 (extensions) | Quantum tensor/discard, complete-positivity amplification theorem, and classical stochastic embedding | OPEN_RESEARCH |
+| 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, and causal uniqueness | PROVED |
+| 9 (extensions) | Complete-positivity amplification theorem and classical stochastic embedding | OPEN_RESEARCH |
 | 10-11 | Bicategorical and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
@@ -1476,8 +1478,12 @@ finite Kraus representation satisfying `∑ i, Kᵢᴴ Kᵢ = I`. Truncating the
 certificate makes equality extensional in the operational action, since Kraus
 representations are non-unique. The certificate still suffices to prove
 positivity and trace preservation, to construct identity and composite Kraus
-families, and to package a category. Tensor, discard/trace as a channel,
-complete-positivity amplification, and the classical stochastic embedding are
+families, and to package a category. The operational action is proved
+complex-linear and tensor is transported through Mathlib's matrix/tensor-product
+linear equivalence; pairwise Kronecker Kraus families certify it on arbitrary
+matrices. Basis bras construct the trace channel, which is proved unique into
+the unit system and therefore satisfies the causal discard law. Complete-
+positivity amplification and the classical stochastic embedding remain
 explicitly deferred.
 
 ### `Ript.Models.Quantum.KrausRepresentation.map_posSemidef`
@@ -1607,6 +1613,91 @@ explicitly deferred.
 - Computable: operational composition is function composition.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Quantum/Kraus.lean`.
+
+### `Ript.Models.Quantum.KrausChannel.tensor_applyDensity`
+
+- Natural-language statement: the canonical tensor product of two Kraus
+  channels evolves a tensor-product density matrix componentwise.
+- Lean type:
+
+  ```lean
+  theorem KrausChannel.tensor_applyDensity
+      (f : KrausChannel V W) (g : KrausChannel X Y)
+      (ρ : DensityMatrix V) (σ : DensityMatrix X) :
+      (KrausChannel.tensor f g).applyDensity (ρ.tensor σ) =
+        (f.applyDensity ρ).tensor (g.applyDensity σ)
+  ```
+
+- Prerequisite definitions: product-basis quantum objects,
+  `DensityMatrix.tensor`, channel `toLinearMap`, and `tensorLinearMap`
+  transported through `kroneckerLinearEquiv`.
+- Prerequisite lemmas: tensor-product induction, Kronecker multiplication and
+  conjugate-transpose laws, distribution over finite sums, pairwise Kraus
+  completeness, positivity of Kronecker products, and trace multiplicativity.
+- Status: `PROVED` for arbitrary finite quantum objects and density matrices.
+- Classical choice: reported through generic finite-matrix and tensor-product
+  proof infrastructure; the operational tensor map is canonical and does not
+  choose a Kraus representation.
+- Computable: the matrix action is explicit; arbitrary complex equality and
+  positivity remain in the proof layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Tensor.lean`.
+
+### `Ript.Models.Quantum.KrausChannel.tensor_identity` and `tensor_comp`
+
+- Natural-language statement: tensoring identity channels yields identity on
+  the product system, and tensor satisfies interchange with serial
+  composition.
+- Lean types:
+
+  ```lean
+  theorem KrausChannel.tensor_identity (V X : Object) :
+      tensor (identity V) (identity X) = identity (Object.tensor V X)
+
+  theorem KrausChannel.tensor_comp
+      (f : KrausChannel V W) (f' : KrausChannel W Z)
+      (g : KrausChannel X Y) (g' : KrausChannel Y T) :
+      tensor (comp f f') (comp g g') =
+        comp (tensor f g) (tensor f' g')
+  ```
+
+- Prerequisite definitions: extensional channel equality and the canonical
+  tensor linear map.
+- Prerequisite lemmas: linear maps on product matrices are determined by
+  Kronecker products, identity action, and componentwise tensor action.
+- Status: `PROVED`.
+- Classical choice: only the audited generic Mathlib finite-matrix dependency;
+  no certificate witness determines channel equality.
+- Computable: operational laws are exact matrix equalities.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Tensor.lean`.
+
+### `Ript.Models.Quantum.KrausChannel.eq_discard` and `comp_discard`
+
+- Natural-language statement: the basis-bra trace map is the unique Kraus
+  channel into the one-dimensional system; consequently every channel
+  followed by discard equals source discard.
+- Lean types:
+
+  ```lean
+  theorem KrausChannel.eq_discard
+      (f : KrausChannel X Object.unit) : f = discard X
+
+  theorem KrausChannel.comp_discard (f : KrausChannel X Y) :
+      comp f (discard Y) = discard X
+  ```
+
+- Prerequisite definitions: basis bras, their finite completeness equation,
+  the trace-preserving discard channel, and extensional channel equality.
+- Prerequisite lemmas: the trace of a one-by-one matrix is its unique entry and
+  every certified Kraus channel preserves trace.
+- Status: `PROVED`; this is the implemented finite-quantum causal discard
+  structure, not a copying structure.
+- Classical choice: reported only through finite matrix/sum proofs.
+- Computable: basis enumeration is explicit; arbitrary complex trace equality
+  remains in the proof layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Discard.lean`.
 
 ### `Ript.Examples.QubitChannel.bitFlipOperator_complete`
 

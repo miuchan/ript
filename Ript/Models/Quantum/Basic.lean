@@ -41,8 +41,13 @@ def of (α : Type u) [Fintype α] [DecidableEq α] : Object :=
   ⟨α, inferInstance, inferInstance⟩
 
 /-- The one-dimensional quantum system. -/
-def unit : Object :=
-  of PUnit
+abbrev unit : Object :=
+  ⟨PUnit, inferInstance, inferInstance⟩
+
+/-- The tensor product of finite quantum systems, represented in the product
+basis. -/
+abbrev tensor (X Y : Object.{u}) : Object :=
+  ⟨X × Y, inferInstance, inferInstance⟩
 
 end Object
 

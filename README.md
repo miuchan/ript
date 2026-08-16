@@ -31,10 +31,11 @@ Gibbs-preserving exact channels, free equilibrium preparations, and generic
 divergence monotonicity. Ript now also has a separate finite-dimensional
 quantum core over `ℂ`: positive-semidefinite trace-one density matrices,
 operational maps certified by finite complete Kraus families, proved positivity
-and trace preservation, identity and composition closure, a channel category,
-and an exact Pauli-X qubit proof. The converse Blackwell representation theorem,
-finite KL data processing, energy-derived Gibbs states, quantum tensor/discard
-structure and classical embedding, and higher categories remain research
+and trace preservation, identity and composition closure, canonical tensor
+products, a basis-bra trace/discard channel with causal uniqueness, a channel
+category, and exact Pauli-X single- and two-qubit proofs. The converse Blackwell
+representation theorem, finite KL data processing, energy-derived Gibbs states,
+the classical-to-quantum embedding, and higher categories remain research
 directions.
 
 > [!IMPORTANT]
@@ -381,10 +382,15 @@ resulting channels form a category. The qubit example proves `XᴴX = I` for
 Pauli-X and proves that it exchanges the two computational-basis density
 matrices exactly.
 
-This slice does not yet provide quantum tensor, discard/trace as a channel, a
-formal amplification theorem for complete positivity, or an embedding of
-classical stochastic channels. Those are explicit Stage 9 extension
-obligations, not implicit consequences of the sequential core.
+The tensor construction is extensional in channel action: every Kraus action is
+first promoted to its canonical complex-linear map, tensor maps are transported
+through Mathlib's matrix/tensor-product linear equivalence, and pairwise
+Kronecker Kraus operators certify the result on every matrix. Ript proves
+componentwise state evolution, tensor identity, and interchange. Discard is the
+trace channel built from basis bras; it is the unique channel into the
+one-dimensional system, so every channel obeys the causal discard law. A formal
+amplification theorem for complete positivity and an embedding of classical
+stochastic channels remain explicit Stage 9 obligations.
 
 ## What is proved
 
@@ -464,8 +470,14 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Quantum.KrausChannel.map_trace` | Every certified channel preserves trace on arbitrary matrices. |
 | `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | The singleton identity Kraus family fixes every density matrix. |
 | `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | Composite channel evolution equals successive density-matrix evolution. |
+| `Ript.Models.Quantum.KrausChannel.tensor_applyDensity` | Tensor channels evolve tensor-product density matrices componentwise. |
+| `Ript.Models.Quantum.KrausChannel.tensor_identity` | Tensoring identity channels is identity on the product system. |
+| `Ript.Models.Quantum.KrausChannel.tensor_comp` | Quantum channel tensor satisfies interchange with serial composition. |
+| `Ript.Models.Quantum.KrausChannel.eq_discard` | The trace channel is the unique Kraus channel into the unit system. |
+| `Ript.Models.Quantum.KrausChannel.comp_discard` | Every finite Kraus channel satisfies the causal discard law. |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X satisfies the Kraus completeness equation `XᴴX = I`. |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X exchanges the two computational-basis density matrices. |
+| `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | Two independent Pauli-X channels flip both computational-basis states exactly. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -490,8 +502,8 @@ finished physical theory.
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | **PROVED** |
-| 9, finite Kraus core | Complex density matrices, TP Kraus channels, state preservation, and sequential category | **PROVED** |
-| 9, quantum extensions | Tensor/discard, CP amplification theorem, and classical stochastic embedding | **OPEN RESEARCH** |
+| 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, and causal uniqueness | **PROVED** |
+| 9, quantum extensions | CP amplification theorem and classical stochastic embedding | **OPEN RESEARCH** |
 | 10–11 | Bicategorical and univalent layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -510,7 +522,7 @@ Implemented model support is intentionally narrow:
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
 | Finite thermal systems | Gibbs-preserving category | Product bifunctor | Executable | Specified exact equilibrium; free equilibrium states and generic DPI lifting |
-| Finite quantum Kraus core | Kraus category | No | Matrix proof layer; basis labels executable | Complex PSD trace-one states; complete finite Kraus certificates; no quantum tensor/discard yet |
+| Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, no copying |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -520,7 +532,7 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
-quantum tensor/discard and classical embedding, and univalent or
+the classical-to-quantum embedding, and univalent or
 higher-categorical structure are **not implemented**. The sequential finite
 Kraus channel core itself is implemented and kernel checked.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
@@ -841,9 +853,9 @@ force-pushes and branch deletion are disabled.
    axiom is a gate failure, not a footnote discovered later.
 7. **Distinguish implementation from aspiration.** The finite discrete `Stoch`
    image, exact finite decision layer, homogeneous finite DAG causal layer, and
-   specified-equilibrium finite thermal layer, and sequential finite Kraus core
+   specified-equilibrium finite thermal layer, and tensor/discard finite Kraus core
    are implemented; converse representation, general stochastic and causal,
-   analytic thermodynamic, quantum tensor/classical-embedding, and higher
+   analytic thermodynamic, quantum classical-embedding, and higher
    layers remain visibly marked as open research.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
@@ -862,8 +874,9 @@ force-pushes and branch deletion are disabled.
     energy remain named obligations rather than hidden assumptions.
 13. **Do not smuggle classical structure into quantum systems.** The quantum
     basis object is separate from `FinStoch`; Kraus form and completeness are
-    explicit certificates, while copying, tensor, discard, and a classical
-    embedding require their own proofs.
+    explicit certificates. Tensor and discard have their own compiled proofs;
+    copying remains deliberately absent, and a classical embedding requires a
+    separate proof.
 
 ## Roadmap
 
@@ -919,7 +932,7 @@ updated assumption audit.
 - [ ] Rich computational cost models and operationally validated reduction costs
 - [ ] Concrete finite KL divergence and a proved data-processing inequality
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
-- [ ] Quantum tensor, discard/trace channel, and monoidal laws
+- [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [ ] Explicit complete-positivity amplification theorem for Kraus maps
 - [ ] Embedding of finite classical stochastic channels into the quantum layer
 - [ ] Carefully isolated univalent or higher-categorical layers
@@ -973,10 +986,10 @@ tensor up to a canonical comparison isomorphism. Arbitrary measurable-space
 stochastic models remain a roadmap item. Ript now also has a finite complex
 quantum core: density matrices are positive semidefinite with trace one;
 channels carry complete finite Kraus certificates; positivity, trace
-preservation, identity, composition, category laws, density-state evolution,
-and a Pauli-X qubit example are proved. Quantum tensor/discard, an explicit CP
-amplification theorem, and the classical stochastic embedding remain roadmap
-items. Ript also
+preservation, identity, composition, category laws, canonical tensor and
+interchange, density-state evolution, trace discard with causal uniqueness,
+and Pauli-X one- and two-qubit examples are proved. An explicit CP amplification
+theorem and the classical stochastic embedding remain roadmap items. Ript also
 supports finite systems with a specified exact equilibrium distribution,
 Gibbs-preserving channel composition and tensor, free equilibrium states, and
 generic divergence monotonicity whenever a divergence supplies a proved DPI.

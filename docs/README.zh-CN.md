@@ -24,7 +24,8 @@ Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风
 Blackwell 反向表示定理、有限 KL 数据处理、由能量导出的 Gibbs 态仍是研究方向。Ript 现在还
 拥有一个与经典随机模型分离的有限维复数量子核心：正半定、迹为一的密度矩阵；由有限完备
 Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
-Pauli-X 量子比特证明。量子 tensor/丢弃、经典随机嵌入与高阶范畴仍是开放研究。
+Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、基 bra 构造的迹/丢弃信道、
+丢弃的唯一性与因果律，以及精确的双量子比特 Pauli-X 证明。经典随机嵌入与高阶范畴仍是开放研究。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–8 与 Stage 9 的有限 Kraus 核心已实现并通过 Lean 内核检验；公共 API 尚未
@@ -284,8 +285,11 @@ map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
 恒等和串行复合封闭，最终形成范畴。量子比特示例证明 Pauli-X 满足 `XᴴX = I`，并精确交换两个
 计算基密度矩阵。
 
-当前切片尚未提供量子 tensor、作为信道的丢弃/迹、显式完全正性放大定理或经典随机信道嵌入。
-这些是明确列出的 Stage 9 扩展义务，而不是串行核心的隐含性质。
+tensor 的定义只依赖信道的操作作用：Kraus 作用先提升为规范复线性映射，再经由 Mathlib 的
+矩阵—张量积线性等价运输；成对 Kronecker Kraus 算子证明该映射在任意矩阵上都具有合法证书。
+Ript 已证明 tensor 态逐分量演化、单位律和 interchange。丢弃由有限基 bra 构成，操作上就是迹；
+它是到一维系统的唯一信道，因此每个信道都满足因果丢弃律。显式完全正性放大定理与经典随机
+信道嵌入仍是 Stage 9 的明确义务。
 
 ## 已经证明的结果
 
@@ -364,8 +368,14 @@ map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
 | `Ript.Models.Quantum.KrausChannel.map_trace` | 每个已认证信道都在任意矩阵上保持迹。 |
 | `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | 单元素恒等 Kraus 族固定每个密度矩阵。 |
 | `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | 复合信道演化等于依次演化密度矩阵。 |
+| `Ript.Models.Quantum.KrausChannel.tensor_applyDensity` | tensor 信道逐分量演化 tensor 密度矩阵。 |
+| `Ript.Models.Quantum.KrausChannel.tensor_identity` | 两个恒等信道的 tensor 是积系统上的恒等信道。 |
+| `Ript.Models.Quantum.KrausChannel.tensor_comp` | 量子信道 tensor 与串行复合满足 interchange。 |
+| `Ript.Models.Quantum.KrausChannel.eq_discard` | 迹信道是到单位系统的唯一 Kraus 信道。 |
+| `Ript.Models.Quantum.KrausChannel.comp_discard` | 每个有限 Kraus 信道都满足因果丢弃律。 |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X 满足 Kraus 完备方程 `XᴴX = I`。 |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X 交换两个计算基密度矩阵。 |
+| `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | 两个独立 Pauli-X 信道精确翻转两个计算基态。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -387,8 +397,8 @@ map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
 | 8 | 有限平衡系统、Gibbs-preserving 过程与通用 divergence 单调性 | **PROVED** |
-| 9，有限 Kraus 核心 | 复密度矩阵、TP Kraus 信道、态保持与串行范畴 | **PROVED** |
-| 9，量子扩展 | tensor/丢弃、CP 放大定理与经典随机嵌入 | **OPEN RESEARCH** |
+| 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃与因果唯一性 | **PROVED** |
+| 9，量子扩展 | CP 放大定理与经典随机嵌入 | **OPEN RESEARCH** |
 | 10–11 | 双范畴与单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -407,15 +417,15 @@ map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
 | 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 可执行 | 指定精确平衡态；自由平衡态与通用 DPI 提升 |
-| 有限量子 Kraus 核心 | Kraus 范畴 | 否 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态与有限完备 Kraus 证书；尚无量子 tensor/丢弃 |
+| 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃；无复制 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
-量子 tensor/丢弃与经典嵌入，以及单值或高阶范畴结构都**尚未实现**。串行有限 Kraus 信道
-核心本身已经实现并通过内核检验。权威能力矩阵见
+经典到量子的嵌入，以及单值或高阶范畴结构都**尚未实现**。带 tensor 与丢弃的有限 Kraus 信道
+核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
 
@@ -697,7 +707,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
 7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
    平衡态的有限热层与串行有限 Kraus 核心已经实现；反向表示、一般随机与因果、解析热力学、
-   量子 tensor/经典嵌入和高阶层仍必须清楚标记为开放研究。
+   量子经典嵌入和高阶层仍必须清楚标记为开放研究。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -746,6 +756,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 复正半定、迹一密度矩阵
 - [x] 有限完备 Kraus 表示，以及正性和迹保持证明
 - [x] 外延 Kraus 信道的恒等、串行复合、范畴律与态演化
+- [x] 量子 tensor、丢弃/迹信道、单位/interchange 与因果丢弃律
 - [x] 精确 Pauli-X 完备性与计算基态变换
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
@@ -762,7 +773,6 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [ ] 具体有限 KL divergence 与经过证明的数据处理不等式
 - [ ] 能量函数、逆温度、Gibbs 构造、自由能与 Landauer 界
-- [ ] 量子 tensor、丢弃/迹信道与幺半群定律
 - [ ] Kraus 映射的显式完全正性放大定理
 - [ ] 有限经典随机信道到量子层的嵌入
 - [ ] 严格隔离的单价或高阶范畴层
@@ -804,8 +814,9 @@ Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复�
 并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。项目还给出了到 Mathlib 测度论
 范畴 `Stoch` 的 faithful 函子，在规范比较同构下保持确定性信道与 tensor。任意可测空间上的
 随机模型仍属于路线图。Ript 现在也有有限复数量子核心：密度矩阵正半定且迹为一，信道携带
-有限完备 Kraus 证书；正性保持、迹保持、恒等、复合、范畴律、密度态演化及 Pauli-X 量子比特
-例子都已证明。量子 tensor/丢弃、显式 CP 放大定理和经典随机嵌入仍属于路线图。Ript 也支持带指定精确平衡分布的有限系统、
+有限完备 Kraus 证书；正性保持、迹保持、恒等、复合、范畴律、规范 tensor 与 interchange、
+密度态演化、具有因果唯一性的迹丢弃，以及 Pauli-X 单/双量子比特例子都已证明。显式 CP 放大
+定理和经典随机嵌入仍属于路线图。Ript 也支持带指定精确平衡分布的有限系统、
 Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence 提供已证明 DPI 时的通用
 热单调性；但尚未从能量导出平衡态，也没有有限 KL 与自由能定理。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
