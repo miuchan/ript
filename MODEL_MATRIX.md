@@ -15,7 +15,7 @@ Only implemented and compiled capabilities are marked as supported.
 | Total computation (`Fin 4 → Nat` resources) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
-| Finite thermal systems (specified equilibrium) | Gibbs-preserving category | Bifunctor | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes | Yes |
+| Finite thermal systems (specified and realized Gibbs equilibrium) | Gibbs-preserving category | Bifunctor | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes: KL/free-energy | Exact states/channels executable; Gibbs/KL/free-energy analytic layer |
 | Finite quantum Kraus channels (`ℂ`) | Kraus category | Yes | Yes | No | No | Yes | No | No | Matrix proof layer; basis labels executable |
 | Classical quantum dephasing subcategory | Yes; identity is basis dephasing | Bifunctor | Via ambient trace discard, not separately packaged | No exported copy | No generic interface | Yes | No | No | Exact `FinStoch` source; noncomputable complex matrix semantics |
 
@@ -42,6 +42,16 @@ mixtures are normalized and satisfy endpoint, idempotence, branch-symmetry,
 precomposition, postcomposition, and left/right tensor distribution laws. No
 convex structure is inferred for another model unless that model exports its
 own compiled instance.
+
+The thermal row separates executable operational data from analytic
+thermodynamics. `ThermalObject` stores an exact rational equilibrium and
+`GibbsPreserving` stores exact stochastic channels. `FiniteGibbsData` constructs
+real Boltzmann weights from energy and positive inverse temperature;
+`GibbsThermalObject` explicitly certifies when those real probabilities agree
+with the rational equilibrium. On this certified intersection, Ript proves the
+finite KL/free-energy identity and common-temperature monotonicity of excess
+Helmholtz free energy. It neither assumes arbitrary exponentials are rational
+nor claims a Landauer bound.
 
 The classical quantum row is the proved faithful measurement--preparation
 image of `FiniteStochastic`. Its Kraus operators are

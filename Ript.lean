@@ -56,6 +56,8 @@ import Ript.Models.Quantum.Discard
 import Ript.Models.Quantum.Kraus
 import Ript.Models.Quantum.Tensor
 import Ript.Models.Thermal.Equilibrium
+import Ript.Models.Thermal.FreeEnergy
+import Ript.Models.Thermal.Gibbs
 import Ript.Models.Thermal.GibbsPreserving
 import Ript.Models.Thermal.KLDivergence
 import Ript.Models.Thermal.Monotone

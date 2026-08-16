@@ -32,7 +32,13 @@ preparojn kaj ĝeneralan diverĝencan monotonecon. Aparta semantika tavolo nun
 difinas konkretan finian KL en `ℝ≥0∞`, pruvas ĝian nulvaloron kaj subtenliman
 konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
 konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo kaj
-energio-derivitaj Gibbs-statoj restas esplorvojoj.
+Landauer-tipaj limoj restas esplorvojoj. Nova realiga tavolo aldonas reelajn
+energiojn kaj pozitivan inversan temperaturon al ne-vakaj finiaj sistemoj,
+konstruas strikt-pozitivajn normaligitajn Gibbs-probablojn kaj atestas kiam
+ekzakta racia ekvilibro realigas ilin. Ĝi difinas Shannon-entropion, averaĝan
+energion kaj neekvilibran/ekvilibran Helmholtz-liberan energion, pruvas
+`D(p ‖ γ) = β (F(p) - F(γ))`, kaj derivas monotonecon de la liberenergia diferenco
+por Gibbs-konservaj kanaloj je komuna inversa temperaturo.
 Ript nun ankaŭ havas apartan fini-dimensian kompleksan kvantuman kernon:
 pozitivajn duondifinajn densmatricojn kun spuro unu, operaciajn mapojn
 atestitajn per finiaj kompletaj Kraus-familioj, pruvitan konservon de pozitiveco
@@ -423,9 +429,29 @@ KL(Tp ‖ Tq) ≤ KL(p ‖ q)
 Tiu pruvita DPI konstruas `finiteKLDivergence`, `klAthermality` kaj
 `klThermalMonotone`, tiel konkretigante la ĝeneralan termikan teoremon. La
 ekzaktaj raciaj statoj kaj kanaloj restas plenumeblaj; logaritmoj, integraloj kaj
-nekomputebleco restas nur en la analiza semantika tavolo. Energioj,
-temperaturoj, Gibbs-formuloj, libera energio kaj Landauer-tipaj neegalaĵoj
-restas apartaj esploraj devoj.
+nekomputebleco restas nur en la analiza semantika tavolo.
+
+`FiniteGibbsData` aldonas reelajn energinivelojn `E`, pozitivan inversan
+temperaturon `β`, Boltzmann-pezojn kaj la finian particifunkcion. Ript pruvas ke
+ĉiu pezo kaj la particifunkcio estas pozitivaj, normaligas la rezultan
+Gibbs-probablon kaj pruvas ĝian logaritman formulon. `GibbsThermalObject` estas
+realiga atestilo inter tiu analiza distribuo kaj la ekzistanta ekzakta racia
+ekvilibro; ĝi ne supozas ke arbitraj eksponentaj pezoj estas raciaj aŭ
+plenumeblaj.
+
+Por ĉiu realigita sistemo la liberenergia tavolo difinas averaĝan energion
+`U(p)`, Shannon-entropion `S(p)`, `F(p) = U(p) - S(p) / β`, kaj
+`F(γ) = -log Z / β`. Lean tiam pruvas
+
+```text
+D(p ‖ γ) = β (F(p) - F(γ)).
+```
+
+Gibbs-ekvilibroj havas plenan subtenon, do la KL-valoro ĉi tie estas finia.
+Kun la pruvita DPI sekvas ke Gibbs-konserva kanalo inter sistemoj je la sama
+inversa temperaturo ne povas pligrandigi `F(p) - F(γ)`. Landauer-tipaj
+neegalaĵoj kaj ĝenerala klasifiko de ekzakte raciaj Gibbs-realigoj restas
+malfermaj.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -792,9 +818,15 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | Senfina KL estas ekvivalenta al pozitiva maso kontraŭ nula referenca maso. |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Ĉiu ekzakta finia stokasta kanalo plenumas KL-datumtraktadon. |
 | `Ript.Models.Thermal.klAthermality_monotone` | Konkreta finia KL de ekvilibro estas Gibbs-konserva monotono. |
+| `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | La normaligitaj finiaj Boltzmann-pezoj sumiĝas al unu. |
+| `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | Ĉiu ekzakte realigita Gibbs-ekvilibro havas plenan subtenon. |
+| `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finia KL-atermikeco egalas inversan temperaturon oble la troan Helmholtz-liberan energion. |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Samtemperaturaj Gibbs-konservaj kanaloj ne pligrandigas troan liberan energion. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Bulea KL-atermikeco estas eksplicita duterma logaritma sumo. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Inversigebla termika bitrenverso ekzakte konservas KL-atermikecon. |
+| `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | La nulenergia Bulea Gibbs-modelo realigas la KL/liberenergia identecon je `β = 1`. |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | Inversigebla termika bitrenverso ekzakte konservas troan liberan energion. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Ĉiu finia Kraus-sumo konservas kompleksan operatoran pozitivecon. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus-kompleteco implicas ekzaktan spurokonservon. |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Ĉiu atestita kanalo konservas pozitivan duondifinitecon. |
@@ -896,7 +928,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj, ĝenerala diverĝenca monotoneco kaj konkreta finia KL-datumtraktado | **PROVED** |
+| 8 | Finiaj ekvilibraj sistemoj, Gibbs-realigoj, KL/liberenergia identeco, Gibbs-konserva monotoneco kaj konkreta finia KL-datumtraktado | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
@@ -921,7 +953,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
-| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Ekzaktaj statoj/kanaloj plenumeblaj; KL-semantiko nekomputebla | Specifita ekvilibro, ĝenerala DPI-levo, konkreta finia KL kaj atermikeca monotoneco |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Ekzaktaj statoj/kanaloj plenumeblaj; Gibbs/KL/liberenergia semantiko nekomputebla | Specifita ekvilibro, atestita reela Gibbs-realigo, KL/liberenergia identeco kaj monotoneco de liberenergia diferenco |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
@@ -940,7 +972,7 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco,
-energio-derivitaj Gibbs-statoj kaj pli-altdimensia aŭ
+ĝeneralaj kriterioj por ekzakte raciaj Gibbs-realigoj, Landauer-limoj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
@@ -1011,6 +1043,9 @@ flowchart LR
   ST --> FKL
   FKL --> KTM["Konkreta monotono de KL-atermikeco"]
   TM --> KTM
+  TE --> GD["Reela finia energio kaj Gibbs-realigo"]
+  GD --> FE["KL/liberenergia identeco"]
+  KTM --> FE
   QB["Kompleksaj PSD-spurunuaj matricoj"] --> QK["Finiaj kompletaj Kraus-atestiloj"]
   QK --> QC["Spurkonserva Kraus-kanalkategorio"]
   QC --> QT["Kanona tensoro kaj spura forĵeto"]
@@ -1193,7 +1228,10 @@ ekskludon de kontraŭaj valoroj kaj supran invariadon.
 distribuon por Bulea sistemo. Determinisma bitrenverso konservas la ekvilibron
 kaj estas involucio sub Gibbs-konserva kunmeto. La ekzemplo ankaŭ plenumas la
 liberan ekvilibran preparon kaj produktan ekvilibron, kaj pruvas ke la ekvilibra
-KL-atermikeco estas nul kaj ke la inversigebla renverso konservas ĝin ekzakte;
+KL-atermikeco estas nul kaj ke la inversigebla renverso konservas ĝin ekzakte.
+La sama ekvilibro estas atestita kiel la Gibbs-distribuo de du nulenergiaj
+niveloj je `β = 1`; Lean pruvas `Z = 2`, `F(γ) = -log 2`, la specialigitan
+KL/liberenergian identecon kaj invariadon de la liberenergia diferenco;
 ses `#eval decide`-
 kontraktoj kontrolas normaligon, kanal-elementojn, evoluitan mason, liberan
 preparon, produktan mason `1/4` kaj la identecon de du renversoj.
@@ -1231,6 +1269,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- aŭ, por finia KL-datumtraktado kaj konkreta termika monotoneco:
 import Ript.Models.Thermal.KLDivergence
+-- aŭ, por energio-derivitaj Gibbs-distribuoj kaj finia libera energio:
+import Ript.Models.Thermal.FreeEnergy
 -- aŭ, por kompleksaj densmatricoj kaj spurkonservaj Kraus-kanaloj:
 import Ript.Models.Quantum.Kraus
 -- aŭ, por la senaksioma interne univalenta procezuniverso:
@@ -1320,11 +1360,12 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
 11. **Ne konfuzi intervenon kun kondiĉigo.** Malmola interveno anstataŭigas
     lokan mekanismon antaŭ regeneri la kunan distribuon; observa kondiĉigo estas
     aparta operacio kaj ne estas uzata kiel surogato.
-12. **Ne kaŝe enporti termodinamikan analizon.** Specifita ekvilibro estas
-    operacia datumo, kaj ĝenerala diverĝenca teoremo postulas eksplicitan DPI-
-    pruvon. La konkreta finia KL pruvas tiun premison per la Markov-kerna teoremo
-    de Mathlib kaj restas en nekomputebla semantika tavolo. Energi-derivitaj
-    Gibbs-formuloj kaj libera energio restas nomitaj esploraj devoj.
+12. **Teni la termodinamikajn limojn eksplicitaj.** Specifita ekvilibro estas
+    ekzakta plenumebla operacia datumo; reelaj energioj, eksponentoj, logaritmoj
+    kaj libera energio loĝas en nekomputebla analiza tavolo.
+    `GibbsThermalObject` eksplicite atestas egalecon inter la du tavoloj. La
+    KL/liberenergia teoremo uzas la pruvitan Markov-kernan DPI kaj neniam
+    supozas ke ĝeneralaj eksponentaj pezoj estas raciaj.
 13. **Ne kaŝe enporti klasikan strukturon en kvantumajn sistemojn.** La
     kvantuma bazobjekto estas aparta de `FinStoch`; Kraus-formo kaj kompleteco
     estas eksplicitaj atestiloj. Tensoro, forĵeto kaj kompleta pozitiveco de
@@ -1394,7 +1435,9 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Inversa finia Blackwell--Sherman--Stein-prezenta teoremo
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
-- [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
+- [x] Finiaj energioj, pozitiva inversa temperaturo, Gibbs-realigo, entropio kaj Helmholtz-libera energio
+- [x] Ekzakta finia KL/liberenergia identeco kaj samtemperatura monotoneco de liberenergia diferenco
+- [ ] Landauer-limoj kaj ĝeneralaj kriterioj por ekzakte raciaj Gibbs-realigoj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
@@ -1467,8 +1510,12 @@ Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
 ekvilibro, Gibbs-konservan kunmeton kaj tensoron, liberajn ekvilibrajn statojn
 kaj ĝeneralan termikan monotonecon kiam diverĝenco liveras pruvitan DPI. Ĝi
 ankaŭ liveras konkretan finian KL en `ℝ≥0∞`, plenan stokastan datumtraktadon kaj
-monotonecon de KL-atermikeco. Ĝi ankoraŭ ne derivas ekvilibrojn el energioj kaj
-ne havas liberenergi-teoremojn. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
+monotonecon de KL-atermikeco. Ĝia analiza realiga tavolo konstruas finiajn
+Gibbs-probablojn el reelaj energioj kaj pozitiva inversa temperaturo, atestas
+ekzaktajn raciajn ekvilibrojn kiam la probabloj egalas, kaj pruvas la
+KL/liberenergian identecon kaj samtemperaturan monotonecon de la liberenergia
+diferenco. Ĝi ankoraŭ ne havas Landauer-neegalaĵojn aŭ kompletan klasifikon de
+ekzakte raciaj Gibbs-familioj. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 La inversa finia Blackwell-prezenta teoremo kaj ĝenerala mezurebla decidteorio

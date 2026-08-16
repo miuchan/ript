@@ -23,8 +23,11 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 次の層として、指定平衡分布を持つ有限熱系、Gibbs-preserving な正確チャネルの圏とテンソル
 bifunctor、自由平衡状態の準備、一般 divergence の単調性も実装しました。独立した意味論層では
 `ℝ≥0∞` 値の具体的有限 KL、ゼロ値・台境界、任意の有限確率チャネルに対する完全なデータ処理
-不等式、具体的 KL athermality 単調性も証明済みです。一般の可測因果モデル、Blackwell
-逆表現定理、エネルギーから導く Gibbs 状態は研究課題です。
+不等式、具体的 KL athermality 単調性も証明済みです。さらに非空有限系へ実エネルギーと正の
+逆温度を与え、正で正規化された Gibbs 確率を構成し、正確な有理平衡がそれを実現する条件を
+証明書として保持します。Shannon エントロピー、平均エネルギー、非平衡・平衡 Helmholtz
+自由エネルギーを定義し、`D(p ‖ γ) = β (F(p) - F(γ))` と同一逆温度での自由エネルギー差単調性を
+証明しました。一般の可測因果モデル、Blackwell 逆表現定理、Landauer 型境界は研究課題です。
 さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
 合成閉包、標準チャネルテンソル、interchange、基底 bra によるトレース/破棄チャネルと因果的一意性、
@@ -348,8 +351,23 @@ KL(Tp ‖ Tq) ≤ KL(p ‖ q)
 
 が従います。この証明済み DPI から `finiteKLDivergence`、`klAthermality`、
 `klThermalMonotone` を構成し、一般熱定理を具体化します。正確な有理状態とチャネルは実行可能な
-ままで、対数・積分・非計算性は解析的意味論層だけに留まります。エネルギー、温度、Gibbs 公式、
-自由エネルギー、Landauer 型不等式は独立した研究義務です。
+ままで、対数・積分・非計算性は解析的意味論層だけに留まります。
+
+`FiniteGibbsData` は実エネルギー `E`、正の逆温度 `β`、Boltzmann 重み、有限分配関数を追加します。
+各重みと分配関数の正値性、Gibbs 確率の正規化、その対数公式を証明済みです。
+`GibbsThermalObject` は解析分布と既存の正確な有理平衡を結ぶ実現証明書であり、一般の指数重みが
+有理または実行可能だとは仮定しません。
+
+実現済みの各系について平均エネルギー `U(p)`、Shannon エントロピー `S(p)`、
+`F(p) = U(p) - S(p) / β`、`F(γ) = -log Z / β` を定義し、Lean は
+
+```text
+D(p ‖ γ) = β (F(p) - F(γ)).
+```
+
+を証明します。Gibbs 平衡は全台を持つため、この KL は有限です。証明済み DPI と組み合わせると、
+同じ逆温度の Gibbs-preserving チャネルは `F(p) - F(γ)` を増加させません。Landauer 型不等式と
+正確な有理 Gibbs 実現可能性の一般判定は未解決です。
 
 ### 12. 有限複素密度行列と Kraus チャネル
 
@@ -670,9 +688,15 @@ horn に制限されることも検証します。
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | KL が無限であることは正の質量がゼロ参照質量に対応することと同値です。 |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | すべての正確な有限確率チャネルが KL データ処理を満たします。 |
 | `Ript.Models.Thermal.klAthermality_monotone` | 平衡からの具体的有限 KL は Gibbs-preserving 単調量です。 |
+| `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | 正規化された有限 Boltzmann 重みの和は 1 です。 |
+| `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | 正確に実現された Gibbs 平衡は全台を持ちます。 |
+| `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | 有限 KL athermality は逆温度と超過 Helmholtz 自由エネルギーの積です。 |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | 同一温度の Gibbs-preserving チャネルは超過自由エネルギーを増加させません。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality は明示的な二項対数和です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆熱ビット反転は KL athermality を正確に保存します。 |
+| `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | ゼロエネルギー Boolean Gibbs 模型は `β = 1` で KL/自由エネルギー恒等式を具体化します。 |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | 可逆熱ビット反転は超過自由エネルギーを正確に保存します。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 有限 Kraus 和は複素作用素の正値性を保存します。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完全性から正確なトレース保存が従います。 |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | 認証済みチャネルは正半定値性を保存します。 |
@@ -772,7 +796,7 @@ horn に制限されることも検証します。
 | 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
-| 8 | 有限平衡系、Gibbs-preserving プロセス、一般 divergence 単調性、具体的有限 KL データ処理 | **PROVED** |
+| 8 | 有限平衡系、Gibbs 実現、KL/自由エネルギー恒等式、Gibbs-preserving 単調性、具体的有限 KL データ処理 | **PROVED** |
 | 9、有限量子チャネル | 複素密度行列、TP Kraus チャネル、テンソル/interchange、トレース破棄、因果的一意性、有限完全正値性 | **PROVED** |
 | 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
@@ -797,7 +821,7 @@ horn に制限されることも検証します。
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
-| 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 正確な状態/チャネルは実行可能；KL 意味論層は非計算的 | 指定平衡、一般 DPI リフト、具体的有限 KL と athermality 単調性 |
+| 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 正確な状態/チャネルは実行可能；Gibbs/KL/自由エネルギー意味論は非計算的 | 指定平衡、認証済み実 Gibbs 実現、KL/自由エネルギー恒等式、自由エネルギー差単調性 |
 | 有限量子 Kraus チャネル | Kraus 圏 | 可 | 行列証明層；基底ラベルは実行可能 | 複素 PSD トレース 1 状態、標準テンソル、トレース破棄、任意の有限恒等増幅に対する CP；コピーなし |
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
@@ -813,7 +837,8 @@ horn に制限されることも検証します。
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、
-エネルギー由来 Gibbs 状態、complete-Segal/Rezk-complete なユニバレント意味論は**未実装**です。
+正確な有理 Gibbs 実現可能性の一般判定、Landauer 境界、complete-Segal/Rezk-complete な
+ユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
 選択不要の対象 completion と非計算的 skeleton completion は、明示的に監査された 0/1-truncated 基礎だけを
 確立します。可表 presheaf 意味論と Yoneda 本質像包絡も実装済みですが、高次 localization を持たない
@@ -878,6 +903,9 @@ flowchart LR
   ST --> FKL
   FKL --> KTM["具体的 KL athermality 単調量"]
   TM --> KTM
+  TE --> GD["実有限エネルギーと Gibbs 実現"]
+  GD --> FE["KL/自由エネルギー恒等式"]
+  KTM --> FE
   QB["複素 PSD トレース 1 行列"] --> QK["有限完全 Kraus 証明書"]
   QK --> QC["トレース保存 Kraus チャネル圏"]
   QC --> QT["標準テンソルとトレース破棄"]
@@ -1042,7 +1070,9 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 `Ript/Examples/SimpleThermalModel.lean` は Boolean 系に正確な一様平衡分布を指定します。
 決定論的ビット反転は平衡を保存し、Gibbs-preserving 合成の下で対合です。自由平衡状態の準備と
 積平衡も実行します。さらに平衡の KL athermality がゼロであり、可逆反転がそれを正確に保存
-することを証明します。6 個の `#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、
+することを証明します。同じ平衡は `β = 1` の二つのゼロエネルギー準位の Gibbs 分布として認証され、
+Lean は `Z = 2`、`F(γ) = -log 2`、KL/自由エネルギー恒等式、反転による自由エネルギー差不変性を
+証明します。6 個の `#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、
 積質量 `1/4`、二重反転恒等を検査します。
 
 `Ript/Examples/QubitChannel.lean` は Boolean 基底量子ビット、複素 Pauli-X 行列、計算基底純粋
@@ -1077,6 +1107,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- または有限 KL データ処理と具体的熱単調性：
 import Ript.Models.Thermal.KLDivergence
+-- またはエネルギー由来 Gibbs 分布と有限自由エネルギー：
+import Ript.Models.Thermal.FreeEnergy
 -- または複素密度行列とトレース保存 Kraus チャネル：
 import Ript.Models.Quantum.Kraus
 -- または公理不要の内部ユニバレントなプロセス universe：
@@ -1150,10 +1182,10 @@ import Ript.Univalent.Simplicial
     性能測定の主張ではありません。
 11. **介入を条件付けと混同しない。** ハード介入は局所機構を置換してから同時分布を再生成します。
     観測条件付けは別の操作であり、代替実装には使いません。
-12. **熱力学的解析を暗黙に持ち込まない。** 指定平衡は操作的データであり、一般 divergence 定理は
-    明示的な DPI 証明を要求します。具体的有限 KL は Mathlib の Markov-kernel 定理からその前提を
-    証明し、非計算的意味論層に隔離されます。エネルギー由来 Gibbs 公式と自由エネルギーは
-    名前付きの未解決義務です。
+12. **熱力学の境界を明示する。** 指定平衡は正確で実行可能な操作データですが、実エネルギー、
+    指数、対数、自由エネルギーは非計算的解析層にあります。`GibbsThermalObject` が両者の確率の
+    等しさを明示的に認証し、KL/自由エネルギー定理は証明済み Markov-kernel DPI を使います。
+    一般の指数重みが有理だとは仮定しません。
 13. **古典構造を量子系へ暗黙に持ち込まない。** 量子基底対象は `FinStoch` と分離し、Kraus 形式と
     完全性を明示的に認証します。テンソル、破棄、有限恒等増幅の完全正値性は個別に証明済みです。
     コピーは意図的に存在せず、古典埋め込みには別の証明が必要です。
@@ -1218,7 +1250,9 @@ import Ript.Univalent.Simplicial
 - [ ] 有限 Blackwell--Sherman--Stein 逆表現定理
 - [ ] 正確な有限データを越える一般可測空間の意思決定問題
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
-- [ ] エネルギー、逆温度、Gibbs 構成、自由エネルギー、Landauer 境界
+- [x] 有限エネルギー、正の逆温度、Gibbs 実現、エントロピー、Helmholtz 自由エネルギー
+- [x] 正確な有限 KL/自由エネルギー恒等式と同温度の自由エネルギー差単調性
+- [ ] Landauer 境界と正確な有理 Gibbs 実現可能性の一般判定
 - [x] 量子テンソル、破棄/トレースチャネル、恒等/interchange、因果的破棄則
 - [x] 有限古典確率チャネルの脱位相化冪等量子部分圏への忠実な埋め込み
 - [x] 資源添字付きモデル 0-射と資源非増加な強 braided monoidal 1-射
@@ -1282,8 +1316,10 @@ Pauli-X 一量子ビット・二量子ビット例を証明済みです。さら
 Ript は指定された正確な
 平衡分布を持つ有限系、Gibbs-preserving 合成とテンソル、自由平衡状態、および divergence が
 証明済み DPI を持つ場合の一般熱単調性もサポートします。さらに `ℝ≥0∞` 値の具体的有限 KL、
-完全な確率データ処理、KL athermality 単調性も提供します。ただしエネルギーからの平衡導出と
-自由エネルギー定理はまだありません。正確な有限
+完全な確率データ処理、KL athermality 単調性も提供します。解析的実現層は実エネルギーと正の
+逆温度から有限 Gibbs 確率を構成し、確率が一致する正確な有理平衡を認証し、KL/自由エネルギー
+恒等式と同温度自由エネルギー差単調性を証明します。Landauer 不等式と全有理 Gibbs 族の分類は
+まだありません。正確な有限
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
 一般可測意思決定理論はまだ証明していません。

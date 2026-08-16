@@ -31,7 +31,13 @@ Gibbs-preserving exact channels, free equilibrium preparations, and generic
 divergence monotonicity. A separate semantic layer now defines finite KL in
 `ℝ≥0∞`, proves its exact zero/support-boundary behavior and full data-processing
 inequality for every finite stochastic channel, and instantiates concrete KL
-athermality monotonicity. Ript now also has a separate finite-dimensional
+athermality monotonicity. A realization layer now equips nonempty finite
+systems with real energies and positive inverse temperature, constructs
+strictly positive normalized Gibbs probabilities, and certifies when an exact
+rational equilibrium realizes them. It defines Shannon entropy, mean energy,
+nonequilibrium and equilibrium Helmholtz free energies, proves
+`D(p ‖ γ) = β (F(p) - F(γ))`, and derives free-energy-gap monotonicity for
+Gibbs-preserving channels at common inverse temperature. Ript now also has a separate finite-dimensional
 quantum core over `ℂ`: positive-semidefinite trace-one density matrices,
 operational maps certified by finite complete Kraus families, proved positivity
 and trace preservation, identity and composition closure, canonical tensor
@@ -43,7 +49,7 @@ measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
 stochastic entry are proved. The converse Blackwell representation theorem and
-energy-derived Gibbs states remain research directions. The higher-categorical
+Landauer-type bounds remain research directions. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
 monoidal functors, and monoidal natural transformations form a bicategory with
@@ -433,9 +439,29 @@ for every exact finite stochastic channel `T`. This proved DPI packages
 `finiteKLDivergence`, `klAthermality`, and `klThermalMonotone`; hence the generic
 thermal result becomes a concrete theorem. Exact rational states and channels
 remain executable, while logarithms, integration, and noncomputability stay in
-the analytic semantic layer. Energy functions, temperatures, Gibbs formulas,
-free energy, and Landauer-type inequalities remain separate research
-obligations.
+the analytic semantic layer.
+
+`FiniteGibbsData` adds real energy levels `E`, a positive inverse temperature
+`β`, Boltzmann weights, and the finite partition function. Ript proves every
+weight and the partition function positive, normalizes the resulting Gibbs
+probability, and proves its logarithmic form. `GibbsThermalObject` is a
+realization certificate connecting that analytic distribution to the existing
+exact rational equilibrium; it does not claim that arbitrary exponential
+weights are rational or executable.
+
+For each realized system the free-energy layer defines mean energy `U(p)`,
+Shannon entropy `S(p)`, nonequilibrium Helmholtz free energy
+`F(p) = U(p) - S(p) / β`, and `F(γ) = -log Z / β`. Lean then proves
+
+```text
+D(p ‖ γ) = β (F(p) - F(γ)).
+```
+
+Because Gibbs equilibria have full support, the extended-real KL value is
+finite here. Combining this identity with the proved KL data-processing law
+shows that a Gibbs-preserving channel between realized systems at the same
+inverse temperature cannot increase `F(p) - F(γ)`. Landauer-type inequalities
+and a general rational-realizability classification remain open research.
 
 ### 12. Finite complex density matrices and Kraus channels
 
@@ -811,9 +837,15 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | Infinite KL is equivalent to a positive mass against zero reference mass. |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Every exact finite stochastic channel satisfies KL data processing. |
 | `Ript.Models.Thermal.klAthermality_monotone` | Concrete finite KL from equilibrium is Gibbs-preserving monotone. |
+| `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | Normalized finite Boltzmann weights sum to one. |
+| `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | Every exactly realized Gibbs equilibrium has full support. |
+| `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finite KL athermality equals inverse temperature times excess Helmholtz free energy. |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Common-temperature Gibbs-preserving channels cannot increase excess free energy. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality is the explicit two-term logarithmic sum. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Reversible thermal bit flip preserves KL athermality exactly. |
+| `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | The zero-energy Boolean Gibbs model realizes the KL/free-energy identity at `β = 1`. |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | Reversible thermal bit flip preserves excess free energy exactly. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Every finite Kraus sum preserves complex operator positivity. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus completeness implies exact trace preservation. |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Every certified channel preserves positive semidefiniteness. |
@@ -915,7 +947,7 @@ finished physical theory.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
-| 8 | Finite equilibrium systems, Gibbs-preserving processes, generic divergence monotonicity, and concrete finite KL data processing | **PROVED** |
+| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, Gibbs-preserving monotonicity, and concrete finite KL data processing | **PROVED** |
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
@@ -940,7 +972,7 @@ Implemented model support is intentionally narrow:
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
-| Finite thermal systems | Gibbs-preserving category | Product bifunctor | Exact states/channels executable; KL semantic layer noncomputable | Specified equilibrium, generic DPI lifting, concrete finite KL and athermality monotonicity |
+| Finite thermal systems | Gibbs-preserving category | Product bifunctor | Exact states/channels executable; Gibbs/KL/free-energy semantics noncomputable | Specified equilibrium, certified real Gibbs realization, concrete finite KL, KL/free-energy identity, and free-energy-gap monotonicity |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
@@ -958,7 +990,7 @@ Bayes-risk, resource, and semantic-value theorems. The converse finite
 Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
-interfaces, energy-derived Gibbs states,
+interfaces, general Gibbs rational-realizability criteria and Landauer bounds,
 and a complete-Segal/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
@@ -1030,6 +1062,9 @@ flowchart LR
   ST --> FKL
   FKL --> KTM["Concrete KL athermality monotone"]
   TM --> KTM
+  TE --> GD["Real finite energy and Gibbs realization"]
+  GD --> FE["KL/free-energy identity"]
+  KTM --> FE
   QB["Complex PSD trace-one matrices"] --> QK["Complete finite Kraus certificates"]
   QK --> QC["Trace-preserving Kraus channel category"]
   QC --> QT["Canonical tensor and trace discard"]
@@ -1218,7 +1253,10 @@ forced-value exclusion, and upstream invariance.
 uniform equilibrium distribution. Deterministic bit flip preserves that
 equilibrium and is involutive under Gibbs-preserving composition. The example
 also proves zero KL athermality at equilibrium and exact KL-athermality
-invariance under the reversible flip. It executes the free equilibrium
+invariance under the reversible flip. The same exact equilibrium is certified
+as the Gibbs distribution of two zero-energy levels at `β = 1`; Lean computes
+`Z = 2`, proves `F(γ) = -log 2`, specializes the KL/free-energy identity, and
+proves free-energy-gap invariance under the reversible flip. It executes the free equilibrium
 preparation and product equilibrium; six
 `#eval decide` contracts check exact normalization, channel entries, evolved
 mass, free-state preparation, product mass `1/4`, and double-flip identity.
@@ -1257,6 +1295,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- or, for finite KL data processing and concrete thermal monotonicity:
 import Ript.Models.Thermal.KLDivergence
+-- or, for energy-derived Gibbs distributions and finite free energy:
+import Ript.Models.Thermal.FreeEnergy
 -- or, for complex density matrices and trace-preserving Kraus channels:
 import Ript.Models.Quantum.Kraus
 -- or, for the axiom-free internally univalent process universe:
@@ -1345,12 +1385,12 @@ force-pushes and branch deletion are disabled.
 11. **Do not confuse intervention with conditioning.** A hard intervention
     replaces a local mechanism before the joint is regenerated; observational
     conditioning is a distinct operation and is not used as a surrogate.
-12. **Do not smuggle in thermodynamic analysis.** A specified equilibrium is
-    operational data, and a generic divergence theorem consumes an explicit
-    DPI proof. The concrete finite-KL instance discharges that premise through
-    Mathlib's Markov-kernel theorem and stays in a noncomputable semantic layer.
-    Energy-derived Gibbs formulas and free energy remain named obligations
-    rather than hidden assumptions.
+12. **Keep thermodynamic boundaries explicit.** A specified equilibrium is
+    operational exact data, while real energies, exponentials, logarithms, and
+    free energy live in a noncomputable analytic layer. `GibbsThermalObject`
+    supplies an explicit equality certificate between them; the KL/free-energy
+    theorem uses the proved Markov-kernel DPI and never assumes generic
+    exponential weights are rational.
 13. **Do not smuggle classical structure into quantum systems.** The quantum
     basis object is separate from `FinStoch`; Kraus form and completeness are
     explicit certificates. Tensor, discard, and finite identity-amplification
@@ -1428,7 +1468,9 @@ updated assumption audit.
 - [ ] Converse finite Blackwell--Sherman--Stein representation theorem
 - [ ] General measurable-space decision problems beyond exact finite data
 - [ ] Rich computational cost models and operationally validated reduction costs
-- [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
+- [x] Finite energies, positive inverse temperature, Gibbs realization, entropy, and Helmholtz free energy
+- [x] Exact finite KL/free-energy identity and common-temperature free-energy-gap monotonicity
+- [ ] Landauer bounds and general criteria for exact rational Gibbs realizability
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
@@ -1498,8 +1540,12 @@ supports finite systems with a specified exact equilibrium distribution,
 Gibbs-preserving channel composition and tensor, free equilibrium states, and
 generic divergence monotonicity whenever a divergence supplies a proved DPI.
 It also supplies concrete finite KL in `ℝ≥0∞`, full stochastic data processing,
-and KL athermality monotonicity. It does not yet derive equilibria from energies
-or provide free-energy theorems.
+and KL athermality monotonicity. Its analytic realization layer constructs
+finite Gibbs probabilities from real energies and positive inverse temperature,
+certifies exact rational equilibria when the probabilities agree, and proves
+the KL/free-energy identity plus common-temperature free-energy-gap
+monotonicity. It does not yet provide Landauer inequalities or a complete
+classification of exactly rational Gibbs families.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite
