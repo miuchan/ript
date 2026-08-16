@@ -205,8 +205,8 @@ Every node in this graph is an existing compiled module.
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
-| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, categorical Rezk completeness comparison, and natural recovery of the ordinary nerve from vertical vertices | PROVED |
-| 12 (higher extension) | Reedy fibrancy, complete-Segal packaging, and localization beyond the categorical completeness comparison | OPEN_RESEARCH |
+| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences, categorical Rezk completeness, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
+| 12 (higher extension) | Mathlib-native Reedy/complete-Segal packaging and localization beyond the categorical completeness comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4711,12 +4711,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   direct checks in `Ript/Audit/AxiomChecks.lean`.
 - Source: `Ript/Univalent/ClassifyingDiagram.lean`.
 
-### Mapping-space presentation and boundary matching fibrations
+### Natural mapping-space presentation and boundary Reedy fibrancy
 
-- Natural-language statement: outer degree `n` is isomorphic to the internal
-  simplicial mapping space `Map(Δ[n], N(M.Object))`. Under this presentation,
-  the concrete boundary matching map is restriction along
-  `∂Δ[n] ↪ Δ[n]`, and it is a fibration because `N(M.Object)` is Kan.
+- Natural-language statement: the whole outer simplicial object is naturally
+  isomorphic to `n ↦ Map(Δ[n], N(M.Object))`. Under this presentation,
+  `Map(∂Δ[n], N(M.Object))` is the genuine categorical matching limit,
+  restriction along `∂Δ[n] ↪ Δ[n]` is its universal lift, and that matching
+  map is a fibration because `N(M.Object)` is Kan.
 - Lean interfaces:
 
   ```lean
@@ -4726,9 +4727,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       (X : SSet) [X.KanComplex] (n : ℕ) :
       Fibration (SSet.boundaryMatchingMap X n)
 
-  def UniverseModel.interfaceClassifyingDiagramMappingSpaceIso (n : ℕ) :
-      (M.InterfaceClassifyingDiagram).obj (op ⦋n⦌) ≅
-        (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+  def UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso :
+      M.InterfaceClassifyingDiagram ≅
+        SSet.simplexMappingDiagram M.InterfaceNerve
+
+  def UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit
+      (n : ℕ) :
+      Limits.IsLimit (M.interfaceClassifyingDiagramBoundaryMatchingCone n)
+
+  theorem UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift
+      (n : ℕ) :
+      (M.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit n).lift
+          (M.interfaceClassifyingDiagramBoundaryRestrictionCone n) =
+        M.interfaceClassifyingDiagramBoundaryMatchingMap n
 
   theorem UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration
       (n : ℕ) :
@@ -4737,17 +4748,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 
 - Construction: Mathlib's closed-nerve comparison identifies the nerve of a
   functor category with an internal Hom. `stdSimplex.isoNerve` uses
-  `ULift (Fin (n + 1))`, so the project proves an explicit strict `Cat`
-  isomorphism between the lifted and unlifted functor categories before
-  composing the comparison. The fibration is then Mathlib's
-  pushout-product theorem for a monomorphism into a Kan complex.
-- Status: `PROVED` for the degreewise mapping-space isomorphism and every
-  transported boundary restriction. This is not yet a complete proof of
-  Reedy fibrancy: the isomorphisms must still be assembled naturally in the
-  outer simplex and the boundary object must be identified by a universal
-  property with the abstract Reedy matching limit. The pinned Mathlib release
-  defines Reedy indexing structures but does not yet construct the Reedy model
-  structure or matching-object API for functor categories.
+  `ULift (Fin (n + 1))`, so the project proves a natural strict `Cat`
+  isomorphism between the lifted and unlifted functor diagrams. Naturality of
+  precomposition then yields an isomorphism of whole simplicial objects.
+  Presheaf density writes the boundary as a colimit of representables, while
+  braided closed internal Hom converts that colimit into the required limit.
+  The fibration is Mathlib's pushout-product theorem for a monomorphism into a
+  Kan complex.
+- Status: `PROVED`. `SSet.BoundaryReedyFibrant` bundles the represented
+  presentation, genuine matching-limit cones, universal matching maps, and
+  their fibrations, and the interface classifying diagram instantiates it.
+  The pinned Mathlib release still has no Reedy model structure or
+  functor-category matching-object API, so this is an exact project-local
+  boundary-Reedy witness rather than a claimed Mathlib-native instance.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`; no project
   axiom is added.
 - Sources: `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` and
@@ -4831,8 +4844,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   installed for its underlying category functor.
 - Status: `PROVED`. This discharges the completeness comparison for this
   groupoidal classifying diagram at nerve-of-category-equivalence strength.
-  Reedy fibrancy, a bundled complete-Segal-space structure, and the
-  localization universal property are separate open obligations.
+  Project-local boundary Reedy fibrancy is proved separately; a Mathlib-native
+  bundled complete-Segal-space structure and the localization universal
+  property are open obligations.
 - Computable: semantic proof layer. The outer degeneracy is explicit; the
   displayed categorical equivalence is noncomputable and remains downstream
   of all executable models.
@@ -4887,9 +4901,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - The Rezk classifying diagram is now constructed as a genuine bisimplicial
   object, its vertical levels are controlled, and its actual outer Segal maps
   are equivalences in every bidegree. Its actual completeness map is the nerve
-  of a category equivalence. Reedy fibrancy and complete-Segal packaging have
-  not yet been proved, so the object is not yet advertised as a complete Segal
-  space or as a localization of the resource-process bicategory.
+  of a category equivalence. Its natural simplex-mapping presentation,
+  genuine boundary matching limits, and matching fibrations provide a
+  project-local Reedy-fibrancy witness. Mathlib-native complete-Segal
+  packaging has not been proved, so the object is not yet advertised as a
+  complete Segal space or as a localization of the resource-process
+  bicategory.
 - None of the completion, envelope, nerve, or classifying-diagram layers is a
   full presheaf model or proved localization of the resource-process
   bicategory.
@@ -4908,8 +4925,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - Representable presheaf semantics, a strict Kan simplicial nerve, and the
   levelwise groupoidal Rezk classifying diagram now have proved foundations,
   including outer Segal equivalences and the categorical completeness
-  comparison, but Reedy fibrancy, presheaf localization, and genuinely higher
-  identity remain Stage-12 research targets; the proved
+  comparison, natural boundary matching limits, and matching fibrations, but
+  Mathlib-native complete-Segal packaging, presheaf localization, and
+  genuinely higher identity remain Stage-12 research targets; the proved
   foundations above do not discharge them.
 
 ## Design decisions
@@ -5114,9 +5132,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 42. The phrase “truncated completion” is used literally. The Rezk route now
     includes a classifying diagram with a second simplicial direction and a
     new audit whose outer Segal comparisons are strict equivalences and whose
-    actual completeness map is the nerve of a category equivalence. It still
-    requires Reedy fibrancy and complete-Segal packaging before it can be
-    called a complete Segal space or localization. The object
+    actual completeness map is the nerve of a category equivalence. Its
+    boundary matching limits and fibrations are also proved, but it still
+    requires Mathlib-native complete-Segal packaging before it can be called a
+    complete Segal space or localization. The object
     and skeletal completions remain only the compiled 0/1-truncated
     foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
@@ -5147,9 +5166,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     covering low-dimensional outer horns rather than being inferred from the
     inner-horn result. The classifying diagram's completeness comparison is a
     separate theorem. The mapping-space presentation and every concrete
-    boundary matching fibration are now proved; natural identification with
-    the abstract matching limit, full Reedy packaging, and localization remain
-    distinct open proof obligations.
+    boundary matching fibration are now proved, as are naturality and the
+    matching-limit universal property. Mathlib-native complete-Segal packaging
+    and localization remain distinct open proof obligations.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
     edges, and composition simplices are still constructible explicitly, and
@@ -5163,6 +5182,7 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     so the actual outer spine maps are equivalences. The Rezk completeness map
     is then defined as the actual outer zero-degeneracy and proved to be the
     nerve of a category equivalence. Separately, each outer degree is
-    identified with `Map(Δ[n], N(M.Object))`, and restriction to
-    `Map(∂Δ[n], N(M.Object))` is proved fibrant; this is not inferred
-    implicitly from levelwise Kan filling or outer Segal structure.
+    naturally identified with `Map(Δ[n], N(M.Object))`; presheaf density proves
+    `Map(∂Δ[n], N(M.Object))` is the genuine matching limit, and its universal
+    restriction map is proved fibrant. None of this is inferred implicitly
+    from levelwise Kan filling or outer Segal structure.

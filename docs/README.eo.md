@@ -142,8 +142,10 @@ indekskategoriojn nature identigas ĉiun horizontalan vicon kun ordinara
 kategoria nervo, do ĉiu efektiva ekstera spina/Segal-komparo estas ekvivalento
 en ĉiu dugrado. La efektiva Rezk-kompleteca mapo nun estas difinita kiel la
 ekstera nula degenero kaj pruvita esti la nervo de eksplicita kategoria
-ekvivalento. Reedy-fibreco, kompleta-Segal-a pakado kaj universala eco de
-lokalizo restas malfermitaj.
+ekvivalento. La tuta ekstera objekto ankaŭ estas nature prezentita per
+simplaĵaj mapospacoj; la randaj kongruaj konusoj estas veraj limesoj kaj ĉiu
+kongrua mapo estas fibreco. Mathlib-denaska kompleta-Segal-a pakado en Reedy-a
+modelstrukturo kaj universala eco de lokalizo restas malfermitaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -944,14 +946,24 @@ diagramon, ne alian nomon por la ordinara nervo.
 
 Ĉiu komponanto de ĉiu natura transformo kuŝas en la interna interfaca grupoido,
 do la transformo estas inversigebla. Sekve ĉiu vertikala nivelo estas pruvite
-Kan-a, strikta Segal, kvazaŭkategoria kaj 2-koskeleta. Ĉiu ekstera grado nun
-ankaŭ havas kerne kontrolitan prezenton kiel mapospaco, kaj restrikto al la
-rando de la norma simplaĵo estas fibreco:
+Kan-a, strikta Segal, kvazaŭkategoria kaj 2-koskeleta. La tuta ekstera
+simplicia objekto nun havas kerne kontrolitan mapospacan prezenton, naturan
+laŭ ĉiu faco kaj degenero. Ĝia randa kongrua konuso estas vera kategoria
+limeso, la kongrua mapo estas ĝuste la universala levo al tiu limeso, kaj ĉiu
+kongrua mapo estas fibreco:
 
 ```lean
-interfaceClassifyingDiagramMappingSpaceIso M n :
-  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
-    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+interfaceClassifyingDiagramMappingSpaceNaturalIso M :
+  InterfaceClassifyingDiagram M ≅
+    SSet.simplexMappingDiagram M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n :
+  Limits.IsLimit (interfaceClassifyingDiagramBoundaryMatchingCone M n)
+
+interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift M n :
+  (interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n).lift
+      (interfaceClassifyingDiagramBoundaryRestrictionCone M n) =
+    interfaceClassifyingDiagramBoundaryMatchingMap M n
 
 interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
   Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
@@ -959,13 +971,14 @@ interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
 
 La pruvo identigas `nerve (Fin (n + 1) ⥤ M.Object)` kun
 `Map(Δ[n], N(M.Object))`, eksplicite traktas la universan levon de la finia
-orda kategorio, kaj poste aplikas la simplician puŝproduktan teoremon al
-`∂Δ[n] ↪ Δ[n]`. Tio estas pli forta ol nura nivela Kan-eco kaj liveras la
-modelkategorian levopropon bezonatan de la konkretaj randaj kongruaj mapoj.
-Tamen ĝi ankoraŭ ne estas plena Reedy-fibreco: restas pruvi naturecon laŭ la
-ekstera simplaĵo kaj identigi `Map(∂Δ[n], N(M.Object))` kun la abstrakta Reedy-a
-kongrua limeso. Mathlib nun havas la Reedy-an indeksan strukturon sed ne tiun
-API por kongruaj objektoj en funktorkategorioj.
+orda kategorio kaj pruvas naturecon laŭ ĉiu simplaĵa morfio. Antaŭfaska denseco
+prezentas `∂Δ[n]` kiel kolimeson de reprezenteblaj objektoj; plektita fermita
+interna Hom sendas ĝin al la bezonata limeso kaj tiel pruvas la universalan
+econ de `Map(∂Δ[n], N(M.Object))`. Fine la simplicia puŝprodukta teoremo por
+`∂Δ[n] ↪ Δ[n]` pruvas fibrecon. `SSet.BoundaryReedyFibrant` precize kunigas
+tiujn tri faktojn kaj estas instancigita por la interfaca klasifika diagramo.
+La fiksita Mathlib ne ofertas Reedy-an modelstrukturon aŭ API por kongruaj
+objektoj en funktorkategorioj, do Ript ne asertas Mathlib-denaskan `Reedy`-instancon.
 
 La komparo kun la ordinara nervo estas natura izomorfio de tutaj simpliciaj
 aroj, ne nur familio de sendependaj bijekcioj:
@@ -1015,9 +1028,11 @@ la ekvivalentospaco estas la tuta ekstera unua grado. La efektiva ekstera nula
 degenero estas laŭdifine la nervo de la antaŭena funktoro en la eksplicita
 ekvivalento `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`.
 Tio pruvas la Rezk-kompletecan komparon je la forto de nervo de kategoria
-ekvivalento. Restas la natura identigo kun la kongrua limeso kaj la plena Reedy-fibreca
-pakado; neniu universala lokaliza eco por la tuta rimed-proceza dukategorio
-estas asertata. La ekzakte reviziita aksioma spuro estas
+ekvivalento. La natura mapospaca prezento, la universala eco de la kongrua
+limeso kaj la kongru-mapaj fibrecoj formas kompletan projekt-lokan randan
+Reedy-fibrecan atestilon. Mathlib-denaska kompleta-Segal-a pakado kaj universala
+lokaliza eco por la tuta rimed-proceza dukategorio ne estas asertataj. La
+ekzakte reviziita aksioma spuro estas
 `[propext, Classical.choice, Quot.sound]`; neniu projekta aksiomo aŭ
 elekto-derivita plenumebla valoro estas aldonita.
 
@@ -1267,8 +1282,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | La Rezk-kompleteca mapo estas precize la nervo de la antaŭena funktoro de tiu ekvivalento. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Ĉiu vertikala nivelo de la klasifika diagramo havas eksplicitajn strikt-Segal-ajn rekonstruajn datumojn. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Ĉiu vertikala nivelo de la klasifika diagramo estas Kan-komplekso. |
-| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | Ekstera grado `n` estas izomorfa al `Map(Δ[n], N(M.Object))`, kun eksplicita universa ponto por la finia ordo. |
-| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | Restrikto de la transportita grada `n` mapospaco al `Map(∂Δ[n], N(M.Object))` estas fibreco. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso` | La tuta ekstera diagramo estas nature izomorfa al `n ↦ Map(Δ[n], N(M.Object))`, inkluzive de ĉiuj facoj kaj degeneroj. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit` | Antaŭfaska denseco pruvas ke `Map(∂Δ[n], N(M.Object))` estas la vera kongrua limeso. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift` | Randa restrikto estas ĝuste la universala levo al la kongrua limeso. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | Ĉiu vera randa kongrua mapo estas fibreco. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Preni vertikalajn verticojn nature reakiras la ordinaran interfacan nervon. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | Vertikalaj eĝoj estas precize naturaj transformoj inter eksteraj simplaĵoj. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | Ĉiu vertikala natura transformo estas inversigebla. |
@@ -1309,8 +1326,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
-| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, nivelaj grupoidaj/Kan-aj/strikt-Segal-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj en ĉiuj dugradoj, kategoria Rezk-kompleteca komparo, natura reakiro de la ordinara nervo kaj inversigeblaj vertikalaj transformoj | **PROVED** |
-| 12, pli-alta etendaĵo | Reedy-fibreco, kompleta-Segal-a pakado kaj pli-alta lokalizo preter la kompleteca komparo | **OPEN RESEARCH** |
+| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, nivelaj grupoidaj/Kan-aj/strikt-Segal-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, kategoria Rezk-kompleteco, natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj | **PROVED** |
+| 12, pli-alta etendaĵo | Mathlib-denaska Reedy/kompleta-Segal-a pakado kaj pli-alta lokalizo preter la kompleteca komparo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -1337,7 +1354,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
 | Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
 | Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kan-a, kvazaŭkategoria kaj 2-koskeleta; eksplicitaj internaj kaj eksteraj kornplenigiloj; sen kompleta-Segal- aŭ Rezk-aserto |
-| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; nivele strikta Segal kaj Kan; striktaj eksteraj Segal-ekvivalentoj en ĉiuj dugradoj | Semantika pruva tavolo | Vera dusimplicia konstruo; la efektiva kompleteca mapo estas nervo de kategoria ekvivalento; Reedy-fibreco, kompleta-Segal-a pakado kaj lokalizo restas malfermitaj |
+| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; nivele strikta Segal kaj Kan; striktaj eksteraj Segal-ekvivalentoj; veraj randaj kongruaj limesoj kaj fibrecoj | Semantika pruva tavolo | Projekt-loka randa Reedy-fibreca atestilo kaj kategoria kompleteco estas pruvitaj; Mathlib-denaska kompleta-Segal-a pakado kaj lokalizo restas malfermitaj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -1363,9 +1380,10 @@ simpliciaj objektoj kun teoremoj pri strikta Segal, kompleta Kan-kornplenigo,
 kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio. La
 klasifika diagramo aldone havas naturan vertikal-vertican komparon,
 inversigeblajn vertikalajn transformojn kaj eksterajn Segal-ekvivalentojn en
-ĉiuj dugradoj; la efektiva Rezk-kompleteca komparo estas ankaŭ pruvita kiel la
-nervo de kategoria ekvivalento. Neniu rezulto pri Reedy-fibreco,
-kompleta-Segal-a pakado aŭ lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
+ĉiuj dugradoj, naturan simplaĵ-mapospacan prezenton, verajn randajn kongruajn
+limesojn kaj fibrantajn kongruajn mapojn; la efektiva Rezk-kompleteca komparo
+estas ankaŭ pruvita kiel la nervo de kategoria ekvivalento. Neniu Mathlib-denaska
+kompleta-Segal-a pakado aŭ lokaliza rezulto estas asertata. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -1902,7 +1920,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Strikta simplicia nervo, kompleta Kan-kornplenigo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
 - [x] Rezk-klasifika diagramo kun nivelaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, natura vertikal-vertica komparo kaj inversigeblaj vertikalaj transformoj
 - [x] La efektiva Rezk-kompleteca komparo estas nervo de kategoria ekvivalento
-- [ ] Reedy-fibreco, kompleta-Segal-a pakado kaj lokalizo kun eksplicita pli-alta kohero
+- [x] Natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj
+- [ ] Mathlib-denaska Reedy/kompleta-Segal-a pakado kaj lokalizo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

@@ -148,8 +148,11 @@ finite indexing categories naturally identifies every horizontal row with an
 ordinary categorical nerve, so every actual outer spine/Segal comparison is
 an equivalence in every bidegree. The actual Rezk completeness map is now
 defined as the outer zero-degeneracy and proved to be the nerve of an
-equivalence of categories. Reedy fibrancy, complete-Segal packaging, and a
-localization universal property remain open.
+equivalence of categories. The outer diagram is now naturally presented by
+simplex mapping spaces; its
+boundary mapping cones are genuine limits and every matching map is a
+fibration. Complete-Segal packaging in a Mathlib-native Reedy model structure
+and a localization universal property remain open.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -1011,13 +1014,23 @@ interfaceClassifyingDiagramLevelKan M Δ :
   SSet.KanComplex ((InterfaceClassifyingDiagram M).obj Δ)
 ```
 
-Each outer level now also has a kernel-checked mapping-space presentation, and
-the associated restriction to the simplex boundary is a fibration:
+The entire outer simplicial object now has a kernel-checked mapping-space
+presentation, natural in every face and degeneracy. Its boundary mapping cone
+is a genuine categorical limit, the matching map is exactly the universal
+lift into that limit, and every matching map is a fibration:
 
 ```lean
-interfaceClassifyingDiagramMappingSpaceIso M n :
-  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
-    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+interfaceClassifyingDiagramMappingSpaceNaturalIso M :
+  InterfaceClassifyingDiagram M ≅
+    SSet.simplexMappingDiagram M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n :
+  Limits.IsLimit (interfaceClassifyingDiagramBoundaryMatchingCone M n)
+
+interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift M n :
+  (interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n).lift
+      (interfaceClassifyingDiagramBoundaryRestrictionCone M n) =
+    interfaceClassifyingDiagramBoundaryMatchingMap M n
 
 interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
   Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
@@ -1025,14 +1038,16 @@ interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
 
 The proof identifies `nerve (Fin (n + 1) ⥤ M.Object)` with
 `Map(Δ[n], N(M.Object))`, including the necessary universe-lift isomorphism,
-then applies the simplicial pushout-product theorem to
-`∂Δ[n] ↪ Δ[n]`. This is the model-categorical lifting theorem required of the
-concrete boundary matching maps. It is stronger than levelwise Kan fibrancy,
-but it is not yet packaged as full Reedy fibrancy: the remaining step is to
-make the degreewise presentation natural in the outer simplex and identify
-`Map(∂Δ[n], N(M.Object))` with Mathlib's abstract Reedy matching limit. Mathlib
-currently provides the Reedy indexing structure but not that functor-category
-matching-object API.
+and proves compatibility with arbitrary simplex morphisms. Presheaf density
+presents `∂Δ[n]` as a colimit of representables; the braided closed internal
+Hom sends that colimit to a limit, proving that
+`Map(∂Δ[n], N(M.Object))` has the required matching-object universal property.
+Finally, the simplicial pushout-product theorem applied to
+`∂Δ[n] ↪ Δ[n]` proves the matching map is a fibration. The bundled
+`SSet.BoundaryReedyFibrant` structure records exactly these three facts and is
+instantiated for the interface classifying diagram. The pinned Mathlib release
+does not expose a Reedy model structure or functor-category matching-object
+API, so Ript does not claim a Mathlib-native `Reedy` instance.
 
 The comparison to the earlier construction is natural, not only degreewise:
 
@@ -1083,10 +1098,11 @@ The actual outer zero-degeneracy is definitionally the nerve of the forward
 functor in an explicit equivalence
 `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`. This proves the
 Rezk completeness comparison at nerve-of-category-equivalence strength. The
-remaining complete-Segal boundary is the natural matching-limit
-identification and full Reedy-fibrancy packaging; no
-localization universal property for the full resource-process bicategory is
-claimed. The audited declarations use exactly
+natural matching-space presentation, matching-limit universal property, and
+matching-map fibrations provide a complete project-local boundary
+Reedy-fibrancy witness. A Mathlib-native complete-Segal-space structure and a
+localization universal property for the full resource-process bicategory are
+not claimed. The audited declarations use exactly
 `[propext, Classical.choice, Quot.sound]`, inherited from quotient semantics
 and generic category/nerve infrastructure; no project axiom or executable
 choice-derived value is introduced.
@@ -1342,8 +1358,10 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | The Rezk completeness map is exactly the nerve of that equivalence's forward functor. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Every vertical level of the classifying diagram has explicit strict-Segal reconstruction data. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Every vertical level of the classifying diagram is a Kan complex. |
-| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | Outer degree `n` is isomorphic to `Map(Δ[n], N(M.Object))`, with the finite-ordinal universe bridge made explicit. |
-| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | Restriction from the transported degree-`n` mapping space to `Map(∂Δ[n], N(M.Object))` is a fibration. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso` | The entire outer diagram is naturally isomorphic to `n ↦ Map(Δ[n], N(M.Object))`, including every face and degeneracy. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit` | `Map(∂Δ[n], N(M.Object))` is the genuine matching limit, proved from presheaf density. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift` | Boundary restriction is exactly the universal lift into the matching limit. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | Every genuine boundary matching map is a fibration. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Taking vertical vertices naturally recovers the ordinary interface nerve. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | Vertical edges are exactly natural transformations between outer simplices. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | Every such natural transformation is invertible. |
@@ -1384,8 +1402,8 @@ finished physical theory.
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
-| 12, classifying-diagram foundation | Rezk classifying diagram, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, categorical Rezk completeness comparison, natural recovery of the ordinary nerve, and invertible vertical transformations | **PROVED** |
-| 12, higher extension | Reedy fibrancy, complete-Segal packaging, and higher localization beyond the complete comparison | **OPEN RESEARCH** |
+| 12, classifying-diagram foundation | Rezk classifying diagram, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences, categorical Rezk completeness, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
+| 12, higher extension | Mathlib-native Reedy/complete-Segal packaging and higher localization beyond the complete comparison | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -1412,7 +1430,7 @@ Implemented model support is intentionally narrow:
 | Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
 | Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
 | Simplicial interface nerve | Simplicial faces and degeneracies; homotopy category | Strict Segal spine composition | Semantic proof layer | Kan, quasicategory, and 2-coskeletal; explicit inner and outer horn fillers; no complete-Segal or Rezk claim |
-| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; levelwise strict Segal and Kan; strict outer Segal equivalences in every bidegree | Semantic proof layer | Genuine bisimplicial construction; the actual completeness map is the nerve of a category equivalence; Reedy fibrancy, complete-Segal packaging, and localization remain open |
+| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; levelwise strict Segal and Kan; strict outer Segal equivalences; genuine boundary matching limits and fibrations | Semantic proof layer | Project-local boundary Reedy-fibrancy witness and categorical completeness are proved; Mathlib-native complete-Segal packaging and localization remain open |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -1438,10 +1456,11 @@ are implemented as genuine simplicial objects with
 strict Segal, complete Kan horn filling, quasicategory, 2-coskeletal, and
 homotopy-category recovery theorems. The classifying diagram additionally has
 a natural vertical-vertex comparison, invertible vertical transformations,
-and actual outer Segal equivalences in every bidegree, but no
-Reedy-fibrancy, complete-Segal packaging, or localization result is claimed.
+actual outer Segal equivalences in every bidegree, a natural simplex-mapping
+presentation, genuine boundary matching limits, and fibrant matching maps.
 Its actual Rezk completeness comparison is proved as the nerve of a category
-equivalence. The model
+equivalence. No Mathlib-native complete-Segal packaging or localization result
+is claimed. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -1995,7 +2014,8 @@ updated assumption audit.
 - [x] Strict simplicial nerve, complete Kan horn filling, exact Segal reconstruction, quasicategory, 2-coskeletality, and homotopy-category recovery
 - [x] Rezk classifying diagram with levelwise groupoid/Kan structure, strict outer Segal equivalences, natural vertical-vertex comparison, and invertible vertical transformations
 - [x] Actual Rezk completeness comparison as the nerve of a category equivalence
-- [ ] Reedy fibrancy, complete-Segal packaging, and localization with explicit higher coherence
+- [x] Natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations
+- [ ] Mathlib-native Reedy/complete-Segal packaging and localization with explicit higher coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

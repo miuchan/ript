@@ -83,8 +83,9 @@ classifying diagram 在外层 simplicial 方向保留可复合箭头串及其自
 每个纵向层级都是群胚 nerve，因而是 Kan；取纵向顶点会自然恢复严格 interface nerve，纵向边
 则精确对应可逆自然变换。交换两个有限索引范畴后，每条横向行都自然同构于普通范畴的 nerve，
 因此每个双次数上的实际外层 spine/Segal 比较都是等价。实际 Rezk 完备性映射现已定义为外层
-零退化，并证明为一个明确范畴等价的 nerve。Reedy fibrancy、complete-Segal 封装与
-localization 普遍性质仍然开放。
+零退化，并证明为一个明确范畴等价的 nerve。整个外层对象还自然表示为单形映射空间；边界
+matching 锥已证明为真实极限，所有 matching map 都是 fibration。Mathlib 原生 Reedy
+模型结构中的 complete-Segal 封装与 localization 普遍性质仍然开放。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–12 已实现的基础层均通过 Lean 内核检验；公共 API 尚未
@@ -678,24 +679,35 @@ InterfaceClassifyingDiagram M : SimplicialObject SSet
 `CategoryTheory.nerveFunctor`，得到真正的双单纯 classifying diagram，而不是普通 nerve 的别名。
 
 由于所有自然变换分量都位于内部接口群胚中，每个自然变换都可逆。因此每个纵向层级都已证明
-为 Kan、strict Segal、quasicategory 与 2-coskeletal。每个外层次数现在还有经内核检验的
-映射空间表示，并且限制到标准单形边界的映射是 fibration：
+为 Kan、strict Segal、quasicategory 与 2-coskeletal。整个外层 simplicial 对象现在具有
+对所有面与退化映射自然的映射空间表示。其边界 matching 锥是范畴意义下的真实极限，matching
+map 恰好是该极限的普遍 lift，并且每个 matching map 都是 fibration：
 
 ```lean
-interfaceClassifyingDiagramMappingSpaceIso M n :
-  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
-    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+interfaceClassifyingDiagramMappingSpaceNaturalIso M :
+  InterfaceClassifyingDiagram M ≅
+    SSet.simplexMappingDiagram M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n :
+  Limits.IsLimit (interfaceClassifyingDiagramBoundaryMatchingCone M n)
+
+interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift M n :
+  (interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n).lift
+      (interfaceClassifyingDiagramBoundaryRestrictionCone M n) =
+    interfaceClassifyingDiagramBoundaryMatchingMap M n
 
 interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
   Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
 ```
 
 证明把 `nerve (Fin (n + 1) ⥤ M.Object)` 识别为
-`Map(Δ[n], N(M.Object))`，显式处理有限序数所需的 universe lift，然后把 simplicial
-pushout-product 定理应用到 `∂Δ[n] ↪ Δ[n]`。这已经比逐层 Kan 更强，并给出了具体边界匹配
-映射所需的模型范畴提升性质；但还不能称为完整 Reedy fibrancy。剩余工作是证明该逐层表示对
-外层单形自然，并把 `Map(∂Δ[n], N(M.Object))` 与抽象 Reedy matching limit 识别。当前 Mathlib
-提供 Reedy 索引结构，但尚无这个函子范畴 matching-object API。
+`Map(Δ[n], N(M.Object))`，显式处理有限序数所需的 universe lift，并证明它对任意单形态射自然。
+Presheaf 密度定理把 `∂Δ[n]` 写成 representable 的余极限；编织闭内部 Hom 将该余极限送到
+极限，从而证明 `Map(∂Δ[n], N(M.Object))` 的 matching-object 普遍性质。最后把 simplicial
+pushout-product 定理应用到 `∂Δ[n] ↪ Δ[n]`，得到 fibration。`SSet.BoundaryReedyFibrant`
+把这三项精确事实封装在一起，并已为 interface classifying diagram 构造实例。固定版本的
+Mathlib 尚未提供 Reedy 模型结构或函子范畴 matching-object API，因此这里不冒充 Mathlib
+原生 `Reedy` 实例。
 
 与普通 nerve 的比较定理是整个 simplicial set 的自然同构，而非互不相关的逐维双射：
 
@@ -737,7 +749,9 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
 横向箭头都可逆，所以等价子空间就是整个外层一次空间。实际外层零退化在定义上是明确范畴等价
 `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1` 的正向函子之 nerve；这以
 nerve-of-category-equivalence 强度证明了 Rezk 完备性比较。剩余 complete-Segal 边界是
-自然 matching-limit 识别与完整 Reedy-fibrancy 封装；也没有声称它给出完整资源过程双范畴的 localization。相关声明的精确公理足迹为
+Mathlib 原生 complete-Segal-space 封装；自然 mapping-space 表示、matching-limit 普遍性质与
+matching-map fibration 已构成完整的项目内边界 Reedy-fibrancy 见证。这里仍未声称它给出完整
+资源过程双范畴的 localization。相关声明的精确公理足迹为
 `[propext, Classical.choice, Quot.sound]`；没有新增项目公理，也没有把选择产生的数据送入可执行层。
 
 ## 已经证明的结果
@@ -985,8 +999,10 @@ nerve-of-category-equivalence 强度证明了 Rezk 完备性比较。剩余 comp
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | Rezk 完备性映射精确等于该等价正向函子的 nerve。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Classifying diagram 的每个纵向层级都有显式 strict-Segal 重建数据。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Classifying diagram 的每个纵向层级都是 Kan complex。 |
-| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | 外层次数 `n` 同构于 `Map(Δ[n], N(M.Object))`，并显式处理有限序数的 universe bridge。 |
-| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | 从所传输的次数 `n` 映射空间限制到 `Map(∂Δ[n], N(M.Object))` 是 fibration。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso` | 整个外层图自然同构于 `n ↦ Map(Δ[n], N(M.Object))`，包括所有面与退化映射。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit` | 由 presheaf 密度定理证明 `Map(∂Δ[n], N(M.Object))` 是真实 matching limit。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift` | 边界限制恰好是进入 matching limit 的普遍 lift。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | 每个真实边界 matching map 都是 fibration。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | 取纵向顶点会自然恢复普通 interface nerve。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | 纵向边精确对应外层单形之间的自然变换。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | 每个纵向自然变换都可逆。 |
@@ -1024,8 +1040,8 @@ nerve-of-category-equivalence 强度证明了 Rezk 完备性比较。剩余 comp
 | 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
 | 12，presheaf 基础 | Fully faithful Yoneda 语义、representable 身份/等价对应与本质像 envelope | **PROVED** |
 | 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
-| 12，classifying-diagram 基础 | Rezk classifying diagram、逐层群胚/Kan/strict-Segal 结构、所有双次数上的严格外层 Segal 等价、范畴化 Rezk 完备性比较、普通 nerve 的自然恢复与可逆纵向变换 | **PROVED** |
-| 12，高阶扩展 | Reedy fibrancy、complete-Segal 封装与超出完备性比较的高阶 localization | **OPEN RESEARCH** |
+| 12，classifying-diagram 基础 | Rezk classifying diagram、逐层群胚/Kan/strict-Segal 结构、严格外层 Segal 等价、范畴化 Rezk 完备性、自然单形映射表示、真实边界 matching limit 与 matching-map fibration | **PROVED** |
+| 12，高阶扩展 | Mathlib 原生 Reedy/complete-Segal 封装与超出完备性比较的高阶 localization | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -1052,7 +1068,7 @@ nerve-of-category-equivalence 强度证明了 Rezk 完备性比较。剩余 comp
 | 内部 presheaf universe | 类型值 presheaf 之间的自然变换 | Representable 作用 | 语义证明层 | Yoneda fully faithful；恒等/等价对应 representable 变换/同构 |
 | Yoneda envelope | 从 representable 本质像出发的函子 | 通过范畴等价继承结构 | 不可计算本质像语义 | 与源群胚等价；无外部 univalence；不是 Rezk completion |
 | Simplicial 接口 nerve | Simplicial 面与退化映射；同伦范畴 | Strict Segal spine 复合 | 语义证明层 | Kan、quasicategory 且 2-coskeletal；具有显式内外 horn filler；没有 complete-Segal 或 Rezk 宣称 |
-| Rezk classifying diagram | 可复合箭头串的外层 simplicial 范畴与逐层 nerve | 箭头串之间的自然变换；逐层 strict Segal 与 Kan；所有双次数上的严格外层 Segal 等价 | 语义证明层 | 真正的双单纯构造；实际完备性映射是范畴等价的 nerve；Reedy fibrancy、complete-Segal 封装与 localization 仍开放 |
+| Rezk classifying diagram | 可复合箭头串的外层 simplicial 范畴与逐层 nerve | 箭头串之间的自然变换；逐层 strict Segal 与 Kan；严格外层 Segal 等价；真实边界 matching limit 与 fibration | 语义证明层 | 项目内边界 Reedy-fibrancy 见证与范畴化完备性已证明；Mathlib 原生 complete-Segal 封装与 localization 仍开放 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
@@ -1067,8 +1083,9 @@ complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部�
 高阶 localization 的普通 1-范畴构造。它们的严格范畴 nerve 与逐层群胚化的 Rezk classifying
 diagram 已作为真正的 simplicial 对象实现，并具有完整 Kan horn filling、strict Segal、
 quasicategory、2-coskeletal 与同伦范畴恢复定理。Classifying diagram 还具有自然的纵向顶点比较、
-可逆纵向变换以及所有双次数上的外层 Segal 等价；实际 Rezk 完备性比较也已证明为范畴等价的
-nerve，但尚无 Reedy-fibrancy、complete-Segal 封装或 localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
+可逆纵向变换、所有双次数上的外层 Segal 等价、自然单形映射表示、真实边界 matching limit
+以及 fibrant matching map；实际 Rezk 完备性比较也已证明为范畴等价的 nerve，但尚无 Mathlib
+原生 complete-Segal 封装或 localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放命题见
@@ -1535,7 +1552,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 严格 simplicial nerve、完整 Kan horn filling、精确 Segal 重建、quasicategory、2-coskeletality 与同伦范畴恢复
 - [x] Rezk classifying diagram、逐层群胚/Kan 结构、严格外层 Segal 等价、自然纵向顶点比较与可逆纵向变换
 - [x] 实际 Rezk 完备性比较是范畴等价的 nerve
-- [ ] Reedy fibrancy、complete-Segal 封装与带显式高阶 coherence 的 localization
+- [x] 自然单形映射表示、真实边界 matching limit 与 matching-map fibration
+- [ ] Mathlib 原生 Reedy/complete-Segal 封装与带显式高阶 coherence 的 localization
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。
