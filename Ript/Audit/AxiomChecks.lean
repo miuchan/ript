@@ -1,5 +1,6 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
+import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
@@ -123,3 +124,10 @@ set_option autoImplicit false
 #print axioms Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor
 #print axioms Ript.Examples.ClassicalQuantum.quantumNoisyNot_false_to_true
 #print axioms Ript.Examples.ClassicalQuantum.dephase_bool_offDiagonal
+#print axioms Ript.Higher.ModelTransformation.horizontalComp_interchange
+#print axioms Ript.Higher.model_pentagon
+#print axioms Ript.Higher.model_triangle
+#print axioms Ript.Higher.ModelHom.map_cost_eq
+#print axioms Ript.Higher.ModelHom.map_comp_cost_le
+#print axioms Ript.Higher.ModelHom.map_tensor_cost_le
+#print axioms Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq

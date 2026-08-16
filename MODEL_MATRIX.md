@@ -33,3 +33,23 @@ image of `FiniteStochastic`. Its Kraus operators are
 `sqrt(P(y | x)) |y><x|`, and its morphisms are invariant under source and
 target dephasing. The target categorical identity is therefore dephasing,
 which is why this row is listed separately from the full Kraus category.
+
+## Higher categorical organization
+
+The following table records structure relating complete process models. It is
+kept separate from the per-model capability matrix because these are cells in
+a bicategory, not additional operations inside any one semantic model.
+
+| Dimension | Implemented carrier | Resource contract | Proved structure |
+| --- | --- | --- | --- |
+| 0-cells | Symmetric monoidal categories with serial, parallel, and free structural cost laws over one fixed resource type `R` | Every process cost is valued in the same ordered additive commutative monoid | `ProcessModel R` packages all required instances with uniform universes |
+| 1-cells | Strong braided monoidal functors, represented as lax braided functors with invertible unit and tensor comparison maps | Mapping a process cannot increase its cost | Identities and composition; associator and left/right unitor isomorphisms |
+| 2-cells | Monoidal natural transformations | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, whiskering, and interchange |
+| Coherence | Mathlib bicategory coherence specialized to model functors | Structural 2-cells do not silently alter the model-cost contract | Pentagon and triangle laws |
+| Equivalence | Bicategorical equivalence plus explicit cost reflection in both directions | Forward and inverse functors preserve every process cost exactly | Budget preservation/reflection and transport of serial and parallel core bounds |
+
+This layer is a bicategory of models for a fixed resource type and uniform
+universes. It is not an `(∞,1)`-category, does not provide univalence, and does
+not turn a Lean equivalence `Equiv α β` into an equality `α = β`. Ordinary
+bicategorical equivalence alone also does not imply numerical cost equality:
+`CostExactModelEquivalence` requires cost reflection explicitly.

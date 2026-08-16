@@ -40,13 +40,21 @@ Bell-densmatricon, kaj ekzaktajn unu- kaj du-kvubitajn Pauli-X-pruvojn. La
 klasika-al-kvantuma tavolo nun estas realigita: ĝi uzas
 `sqrt(P(y | x)) |y><x|` kiel Kraus-operatorojn kaj konstruas fidelan
 mezur-preparan funktoron al la malfaziga idempotenta subkategorio, kun pruvitaj
-idento, kunmeto, tensoro, diagonala statevoluo kaj probabloreakiro. Pli altaj
-kategorioj restas malfermaj.
+idento, kunmeto, tensoro, diagonala statevoluo kaj probabloreakiro. La
+pli-altkategoria tavolo nun ankaŭ estas realigita kaj kompilita: por fiksa
+rimedtipo, rimed-indeksitaj simetriaj monoidaj procezmodeloj, rimed-nepligrandigaj
+fortaj plektitaj monoidaj funktoroj kaj monoidaj naturaj transformoj formas
+dukategorion. Vertikala kaj horizontala kunmetoj, interchange, asociantoj,
+maldekstraj kaj dekstraj unuigiloj, la kvinangula leĝo kaj la triangula leĝo
+estas pruvitaj. Kost-ekzaktaj modelekvivalentoj konservas procezkostojn kaj la
+kernajn sinsekvajn kaj paralelajn limojn sub eksplicita kost-reflekta hipotezo.
+Interne interpretita univalenta tavolo restas malferma; Ript ne pretendas
+realigi `(∞,1)`-kategorion nek identigi Lean-tipekvivalenton kun tipegaleco.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–8 kaj la finia Kraus-kerno de etapo 9 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–10 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -499,6 +507,13 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.QubitChannel.bellDensity_trace_one` | La eksplicite normaligita Bell-densmatrico havas spuron unu. |
 | `Ript.Examples.QubitChannel.bellDensity_cross_term` | Ĝia `|00⟩`/`|11⟩`-kohera elemento estas ekzakte `1/2`. |
 | `Ript.Examples.QubitChannel.bitFlip_amplification_bell_posSemidef` | Kompleta pozitiveco konservas la pozitivecon de la Bell-denseco sub amplifita Pauli-X. |
+| `Ript.Higher.ModelTransformation.horizontalComp_interchange` | Horizontala kaj vertikala kunmetoj de monoidaj modelaj 2-ĉeloj plenumas interchange. |
+| `Ript.Higher.model_pentagon` | Asociantoj de modelfunktoroj plenumas la dukategorian kvinangulan leĝon. |
+| `Ript.Higher.model_triangle` | Asociantoj kaj unuigiloj de modelfunktoroj plenumas la dukategorian triangulan leĝon. |
+| `Ript.Higher.ModelHom.map_cost_eq` | Rimed-nepligrandiga modelmorfismo kun eksplicita kostreflekto ekzakte konservas ĉiun koston. |
+| `Ript.Higher.ModelHom.map_comp_cost_le` | Kost-ekzakta modelmorfismo transportas la sinsekvan kernan limon per la fontaj kostoj. |
+| `Ript.Higher.ModelHom.map_tensor_cost_le` | Kost-ekzakta modelmorfismo transportas la paralelan kernan limon per la fontaj kostoj. |
+| `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | La antaŭa morfismo de kost-ekzakta dukategoria ekvivalento konservas procezkostojn. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -525,7 +540,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj kaj ĝenerala diverĝenca monotoneco | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
-| 10–11 | Dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
+| 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
+| 11 | Interne interpretita univalenta tavolo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -544,6 +560,8 @@ La realigita modelsubteno estas intence mallarĝa:
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
 | Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Plenumebla | Specifita ekzakta ekvilibro; liberaj ekvilibraj statoj kaj ĝenerala DPI-levo |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
+| Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
+| Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -553,8 +571,10 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
-KL-datumtraktado, energio-derivitaj Gibbs-statoj, univalenteco kaj pli
-altkategoria strukturo estas **ne realigitaj**. La finia
+KL-datumtraktado, energio-derivitaj Gibbs-statoj kaj interne interpretita
+univalenta tavolo estas **ne realigitaj**. La modeldukategorio estas realigita
+por fiksa rimedtipo kaj unuformaj universoj; ĝi ne pretendas `(∞,1)`-kategorion
+nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
 realigita kaj kernel-kontrolita. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
@@ -878,9 +898,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    ekzakta finia decidtavolo, la homogena finia DAG-kaŭza tavolo, la
    specif-ekvilibra finia termika tavolo kaj la finia Kraus-kerno kun tensoro,
    forĵeto kaj kompleta pozitiveco estas realigitaj; inversa prezento,
-   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko kaj pli altaj
-   tavoloj restas malfermaj. La fidela klasika kvantuma enigo en la malfazigan
-   idempotentan subkategorion estas realigita.
+   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko kaj la
+   univalenta tavolo restas malfermaj. La fidela klasika-kvantuma enigo kaj la
+   modeldukategorio estas realigitaj kun eksplicitaj ampleksolimoj.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -958,7 +978,10 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Konkreta finia KL-diverĝenco kaj pruvita datumtrakta neegalaĵo
 - [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
-- [ ] Zorge izolitaj univalentaj aŭ pli altkategoriaj tavoloj
+- [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
+- [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
+- [x] Modelaj asociantoj, unuigiloj, kvinangulo, triangulo kaj transporto per kost-ekzakta ekvivalento
+- [ ] Zorge izolita interne interpretita univalenta tavolo; neniu ekstera univalenta aksiomo
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

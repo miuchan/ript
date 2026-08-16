@@ -28,10 +28,14 @@ Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、
 丢弃的唯一性与因果律、任意有限辅助系统上的完整正性，以及规范化 Bell 密度矩阵示例。
 经典到量子的层现已实现：它以 `sqrt(P(y | x)) |y><x|` 构造 Kraus 算子，并给出到
 退相干幂等子范畴的忠实测量—制备函子；恒等、复合、tensor、对角态演化与概率恢复均已证明。
-高阶范畴仍是开放研究。
+高阶范畴层现已实现并通过编译：固定资源类型后，资源索引的对称幺半群过程模型、资源非增的
+强编织幺半群函子和幺半群自然变换构成一个双范畴。纵向与横向复合、interchange、结合子、
+左右单位子、五边形与三角 coherence 均已证明。带显式成本反射的成本精确模型等价还会保持
+每个过程的成本，并传递串行与并行的核心资源界。内部解释的单值层仍是开放研究；Ript 不把
+`(∞,1)`-范畴冒充为已实现结构，也不把 Lean 类型等价冒充类型相等。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–8 与 Stage 9 的有限 Kraus 核心已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–10 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -401,6 +405,13 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | `Ript.Examples.QubitChannel.bellDensity_trace_one` | 显式规范化的 Bell 密度矩阵迹为一。 |
 | `Ript.Examples.QubitChannel.bellDensity_cross_term` | 其 `|00⟩`/`|11⟩` 相干项精确等于 `1/2`。 |
 | `Ript.Examples.QubitChannel.bitFlip_amplification_bell_posSemidef` | 完整正性保证放大的 Pauli-X 作用保持 Bell 密度矩阵的正性。 |
+| `Ript.Higher.ModelTransformation.horizontalComp_interchange` | 模型的幺半群 2-胞在横向与纵向复合下满足 interchange。 |
+| `Ript.Higher.model_pentagon` | 模型函子结合子满足双范畴五边形律。 |
+| `Ript.Higher.model_triangle` | 模型函子结合子与单位子满足双范畴三角律。 |
+| `Ript.Higher.ModelHom.map_cost_eq` | 资源非增且显式反射成本的模型态射精确保持每个过程的成本。 |
+| `Ript.Higher.ModelHom.map_comp_cost_le` | 成本精确模型态射用源模型成本传递串行核心资源界。 |
+| `Ript.Higher.ModelHom.map_tensor_cost_le` | 成本精确模型态射用源模型成本传递并行核心资源界。 |
+| `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | 成本精确双范畴等价的正向态射保持过程成本。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -424,7 +435,8 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | 8 | 有限平衡系统、Gibbs-preserving 过程与通用 divergence 单调性 | **PROVED** |
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
-| 10–11 | 双范畴与单值层 | **OPEN RESEARCH** |
+| 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
+| 11 | 内部解释的单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -443,13 +455,16 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
 | 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 可执行 | 指定精确平衡态；自由平衡态与通用 DPI 提升 |
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
+| 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
+| 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
-单值或高阶范畴结构仍**尚未实现**。带 tensor、丢弃和有限完整正性的
+内部解释的单值层仍**尚未实现**。模型双范畴已针对固定资源类型和统一 universe 实现；它不
+宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
@@ -734,7 +749,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
 7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
    平衡态的有限热层，以及带 tensor、丢弃和完整正性的有限 Kraus 核心已经实现；反向表示、
-   一般随机与因果、解析热力学、量子经典嵌入和高阶层仍必须清楚标记为开放研究。
+   一般随机与因果、解析热力学和单值层仍必须清楚标记为开放研究。经典量子嵌入和模型双范畴
+   已实现，并保留各自明确的适用边界。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -804,7 +820,10 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 具体有限 KL divergence 与经过证明的数据处理不等式
 - [ ] 能量函数、逆温度、Gibbs 构造、自由能与 Landauer 界
 - [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
-- [ ] 严格隔离的单价或高阶范畴层
+- [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
+- [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
+- [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
+- [ ] 严格隔离的内部解释单值层；不引入外部单值公理
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。
