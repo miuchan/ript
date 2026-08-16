@@ -1,6 +1,7 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ClassicalCopy
+import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
@@ -72,6 +73,11 @@ set_option autoImplicit false
 #print axioms Ript.Models.FiniteStochastic.FinStoch.dirac_comp
 #print axioms Ript.Models.FiniteStochastic.FinStoch.dirac_faithful
 #print axioms Ript.Models.FiniteStochastic.FinStoch.comp_discard
+#print axioms Ript.Models.FiniteStochastic.FinStoch.mix_idem
+#print axioms Ript.Models.FiniteStochastic.FinStoch.mix_postcomp
+#print axioms Ript.Models.FiniteStochastic.FinStoch.mix_precomp
+#print axioms Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left
+#print axioms Ript.Examples.ConvexChannels.fairIdentityOrNot_apply
 #print axioms Ript.Models.FiniteDistribution.FinDist.pure_bind
 #print axioms Ript.Models.FiniteDistribution.FinDist.bind_pure
 #print axioms Ript.Models.FiniteDistribution.FinDist.bind_assoc

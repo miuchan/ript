@@ -592,6 +592,11 @@ horn に制限されることも検証します。
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | Dirac 埋め込みは決定論的関数合成を保存します。 |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | Dirac 埋め込みは有限関数に対して忠実です。 |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | すべての有限確率チャネルは破棄を保存します。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_idem` | 同じチャネル同士の凸混合は元のチャネルです。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_postcomp` | 後合成は正確な凸混合に分配します。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_precomp` | 前合成は正確な凸混合に分配します。 |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left` | 凸混合は独立テンソルの左因子に分配します。 |
+| `Ript.Examples.ConvexChannels.fairIdentityOrNot_apply` | Boolean 恒等と否定の公平な選択は正確に公平な出力を生成します。 |
 | `Ript.Models.FiniteDistribution.FinDist.pure_bind` | 点分布は有限分布 bind の左単位です。 |
 | `Ript.Models.FiniteDistribution.FinDist.bind_pure` | 点分布は有限分布 bind の右単位です。 |
 | `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | 正確な有限分布 bind は結合的です。 |
@@ -966,6 +971,12 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 `Ript/Examples/StochasticBits.lean` は、公平なコイン、ノイズ付き否定、テンソル積、コピー、一般の
 型付き評価を、正確な有限確率チャネルで実行します。追加の 5 つの検査はすべて `true` を出力し、
 たとえば公平なビット対の確率が正確に `1/4` であることを確認します。
+
+`Ript/Examples/ConvexChannels.lean` は独立な `ConvexProcess` capability を実行します。重みは二つの
+非負 `ℚ≥0` 係数と、その和が正確に 1 である証明を明示的に保持するため、浮動小数点値も切り捨てを
+伴いうる `1-p` 減算も使いません。Boolean 恒等と否定を半分ずつ選ぶと、すべての入出力対が正確に
+`1/2` になります。4 個の実行検査はすべて `true` を出力し、付随する定理は合成および tensor との
+互換性も証明します。
 
 `Ript/Examples/KleisliBits.lean` は点分布、Kleisli bind、双方向の行列変換、圏同値に含まれる
 関手を実行します。4 つの正確な検査もすべて `true` を出力します。

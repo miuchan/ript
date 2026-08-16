@@ -710,6 +710,11 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | La Dirac-enigo konservas determinisman funkci-kunmeton. |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | La Dirac-enigo estas fidela je finiaj funkcioj. |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | Ĉiu finia stokasta kanalo konservas forĵetadon. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_idem` | Konveksa mikso de kanalo kun si mem restas la sama kanalo. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_postcomp` | Postkunmeto distribuiĝas super ĝusta konveksa miksado. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_precomp` | Antaŭkunmeto distribuiĝas super ĝusta konveksa miksado. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left` | Konveksa miksado distribuiĝas tra la maldekstra faktoro de sendependa tensoro. |
+| `Ript.Examples.ConvexChannels.fairIdentityOrNot_apply` | Justa elekto inter la Bulea idento kaj neo donas ĝuste justan eligon. |
 | `Ript.Models.FiniteDistribution.FinDist.pure_bind` | Punktaj distribuoj estas maldekstraj unuoj por `bind`. |
 | `Ript.Models.FiniteDistribution.FinDist.bind_pure` | Punktaj distribuoj estas dekstraj unuoj por `bind`. |
 | `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | Ekzakta fini-distribua `bind` estas asocieca. |
@@ -1104,6 +1109,14 @@ malsukcesigas la kvalitan kontrolpordon.
 tensoraĵon, kopiadon kaj la ĝeneralan tiphavan interpretilon per ekzaktaj finiaj
 stokastaj kanaloj. Kvin pliaj kontroloj ĉiuj eligas `true`; interalie ili
 konfirmas ekzakte la probablon `1/4` por paro da justaj bitoj.
+
+`Ript/Examples/ConvexChannels.lean` plenumas la sendependan kapablon
+`ConvexProcess`. Pezo eksplicite konservas du nenegativajn `ℚ≥0`-koeficientojn
+kaj pruvon, ke ilia sumo estas ekzakte unu; nek glitkoma valoro nek eventuale
+stumpigita subtraho `1-p` estas uzata. Duonpeza elekto inter la Bulea idento kaj
+neo donas `1/2` por ĉiu eniga/eliga paro. Ĝiaj kvar kontroloj eligas `true`, kaj
+la akompanaj teoremoj pruvas kongruecon kun kunmeto kaj tensoro anstataŭ nur
+testi specimenajn elementojn.
 
 `Ript/Examples/KleisliBits.lean` plenumas punktajn distribuojn, Kleisli-`bind`,
 ambaŭ matricajn konvertojn kaj la funktorojn de la kategoria ekvivalenteco.

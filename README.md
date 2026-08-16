@@ -729,6 +729,11 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | The Dirac embedding preserves deterministic composition. |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | Distinct deterministic functions have distinct Dirac channels. |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | Every normalized finite channel is causal under discard. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_idem` | Mixing a channel with itself leaves it unchanged. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_postcomp` | Postcomposition distributes over exact convex mixing. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_precomp` | Precomposition distributes over exact convex mixing. |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left` | Convex mixing distributes through the left factor of independent tensor. |
+| `Ript.Examples.ConvexChannels.fairIdentityOrNot_apply` | A fair choice between Boolean identity and negation produces an exact fair output. |
 | `Ript.Models.FiniteDistribution.FinDist.pure_bind` | Point distributions are left units for finite-distribution bind. |
 | `Ript.Models.FiniteDistribution.FinDist.bind_pure` | Point distributions are right units for finite-distribution bind. |
 | `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | Exact finite-distribution bind is associative. |
@@ -1130,6 +1135,14 @@ fails the quality gate.
 Boolean channel, independent tensor composition, copying, and the generic typed
 interpreter. Its five checks use exact nonnegative rationals and all print
 `true`.
+
+`Ript/Examples/ConvexChannels.lean` exercises the independent
+`ConvexProcess` capability. A weight records two nonnegative `ℚ≥0`
+coefficients and a proof that they sum exactly to one; no floating-point value
+or truncated `1-p` subtraction is involved. A half-weight choice between
+Boolean identity and negation yields `1/2` for every input/output pair. Its four
+checks print `true`, and the accompanying theorems prove compatibility with
+composition and tensor rather than merely testing sample entries.
 
 `Ript/Examples/KleisliBits.lean` executes point distributions, Kleisli bind,
 both matrix conversions, and the functors contained in the categorical

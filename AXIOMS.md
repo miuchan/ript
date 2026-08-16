@@ -48,6 +48,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.dirac_faithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_idem` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Convex.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_postcomp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Convex.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_precomp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Convex.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Convex.lean` |
+| `Ript.Examples.ConvexChannels.fairIdentityOrNot_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ConvexChannels.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.pure_bind` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.bind_pure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |

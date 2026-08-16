@@ -8,7 +8,7 @@ Only implemented and compiled capabilities are marked as supported.
 | FiniteFunction.Metered | Yes | No | No | No | No | No | No | No | Yes |
 | Sequential term model | Yes | No | No | No | No | No | No | No | Proof layer |
 | Symmetric monoidal term model | Yes | Yes | No | No | No | No | No | No | Proof layer |
-| FiniteStochastic (exact `ℚ≥0`) | Yes | Yes | Yes | Yes | No | Yes | No | No | Yes |
+| FiniteStochastic (exact `ℚ≥0`) | Yes | Yes | Yes | Yes | Yes | Yes | No | No | Yes |
 | Finite-distribution Kleisli | Yes | No | No | No | No | No | No | No | Yes |
 | Mathlib `Stoch` bridge (finite discrete image) | Yes | Yes | Via `Stoch` | Via `Stoch` | No | Via `Stoch` | Via Mathlib Bayes risk | No | Semantic layer |
 | Exact finite decision layer | Via `FinStoch` | No | No | No | No | Via `FinStoch` | Yes | No | Yes |
@@ -35,6 +35,13 @@ the coherent commutative-comonoid laws, and every function is proved
 deterministic and causal. The separate `Metered` row remains only sequential:
 proof-relevant costs make morphisms with the same function but different units
 distinct, so its category is not cartesian and no copy capability is inferred.
+
+The finite-stochastic convex capability uses an explicit pair of nonnegative
+`ℚ≥0` coefficients with a proof that their sum is exactly one. Pointwise
+mixtures are normalized and satisfy endpoint, idempotence, branch-symmetry,
+precomposition, postcomposition, and left/right tensor distribution laws. No
+convex structure is inferred for another model unless that model exports its
+own compiled instance.
 
 The classical quantum row is the proved faithful measurement--preparation
 image of `FiniteStochastic`. Its Kraus operators are
