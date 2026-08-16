@@ -104,6 +104,10 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.GibbsPreserving.tensor_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.FiniteClosedProtocol.runSteps_eq_push_composeSteps` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Protocol.lean` |
+| `Ript.Models.Thermal.FiniteClosedProtocol.composeSteps_append` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Protocol.lean` |
+| `Ript.Models.Thermal.FiniteClosedProtocol.run_equilibrium` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Protocol.lean` |
+| `Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Protocol.lean` |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monotone.lean` |
 | `Ript.Models.Thermal.klAthermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/KLDivergence.lean` |
 | `Ript.Models.Thermal.FiniteGibbsData.partitionFunction_pos` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Gibbs.lean` |
@@ -124,6 +128,10 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/CorrelatedWork.lean` |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/CorrelatedWork.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_process` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.SimpleThermalModel.no_finiteClosedProtocol_exact_erasure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
@@ -273,7 +281,15 @@ two-node example reduces to exact rational results under ordinary `#eval`.
 The finite thermal slice likewise contains executable finite carriers, exact
 rational equilibrium states, and exact stochastic channels. Its
 Gibbs-preserving category and tensor bifunctor use proof fields only to certify
-that channels preserve the distinguished distributions. The generic
+that channels preserve the distinguished distributions. Its finite closed
+protocol layer is an executable list of endomorphisms: stepwise execution,
+full traces, and composite-channel semantics are exact rational data. The
+audited proofs show that list concatenation agrees with channel composition,
+that every such protocol fixes equilibrium, and that the uniform Boolean
+equilibrium therefore cannot be exactly erased in the closed model. The
+explicit two-flip cycle has the trace `pure false`, `pure true`, `pure false`.
+These results use the same standard footprint and introduce no project axiom;
+they do not model an external bath or battery. The generic
 divergence theorem still requires data processing as an explicit structure
 field. The separate finite-KL semantic layer now discharges that field rather
 than assuming it: it embeds exact distributions as discrete probability
@@ -309,8 +325,8 @@ the finite KL divergence to the product of the exact marginals, proves its
 nonnegativity, decomposes joint excess free energy, and derives the corrected
 Landauer bounds with the same audited footprint. The executable correlated
 Boolean pair stores exactly `log 2 / β` of correlation free energy.
-The Boolean thermal example still evaluates its rational channel
-facts by ordinary kernel reduction, while its KL and free-energy invariance
+The Boolean thermal example still evaluates its rational channel and protocol
+trace facts by ordinary kernel reduction, while its no-go, KL, and free-energy
 theorems are kernel-checked proof data.
 The finite quantum slice is intentionally separate from the classical
 stochastic object type. Density matrices are complex positive-semidefinite

@@ -22,6 +22,9 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 親だけを読む正確な機構、正規化観測同時分布、ハード介入、正確な `FinStoch` 意味論も含みます。
 次の層として、指定平衡分布を持つ有限熱系、Gibbs-preserving な正確チャネルの圏とテンソル
 bifunctor、自由平衡状態の準備、一般 divergence の単調性も実装しました。独立した意味論層では
+さらに、Gibbs-preserving 自己射の順序付きリストとして有限閉プロトコルを実行でき、逐次実行、
+完全な状態トレース、リスト連結と合成チャネルの一致を証明しました。Boolean の二反転は非定数の
+正確な循環を与え、一般定理はこの閉モデルで平衡から異なる目標へ移れないことを示します。
 `ℝ≥0∞` 値の具体的有限 KL、ゼロ値・台境界、任意の有限確率チャネルに対する完全なデータ処理
 不等式、具体的 KL athermality 単調性も証明済みです。さらに非空有限系へ実エネルギーと正の
 逆温度を与え、正で正規化された Gibbs 確率を構成し、正確な有理平衡がそれを実現する条件を
@@ -38,7 +41,7 @@ bifunctor、自由平衡状態の準備、一般 divergence の単調性も実�
 `binEntropy ε`、正確な超過自由エネルギー費用は
 `(log 2 - binEntropy ε) / β` です。この費用は非負で許容誤りに対して単調非増加であり、
 積端点および相関補正 Landauer 仕事境界に組み込まれます。一般の可測因果モデル、Blackwell
-逆表現定理、明示的な熱浴/循環プロトコルは研究課題です。
+逆表現定理、熱浴補助消去プロトコル、仕事を伴う循環は研究課題です。
 さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
 合成閉包、標準チャネルテンソル、interchange、基底 bra によるトレース/破棄チャネルと因果的一意性、
@@ -339,6 +342,14 @@ Gibbs 公式から導出済みだとは主張しません。`FinDist.push` は�
 証明し、テンソルが積平衡を保存して恒等律と interchange を満たすことから明示的 bifunctor を構成
 しました。各対象の指定平衡分布は熱テンソル単位からの自由状態としても構成されます。
 
+`FiniteClosedProtocol X` は明示的な有限操作プロトコル層です。Gibbs-preserving 自己射を順に
+実行し、両端点を含む完全な状態トレースを返し、全ステップを一つの Gibbs-preserving 過程へ
+合成します。Lean は逐次実行が合成チャネルによる pushforward と一致し、プロトコル連結が
+過程の直列合成と一致することを証明します。したがって全有限閉プロトコルは平衡を固定します。
+Boolean 例は `pure false -> pure true -> pure false` という非定数の正確な循環を与え、公平な
+平衡を純粋消去状態へ送る有限閉プロトコルが存在しないことも証明します。これは閉系の境界であり、
+熱浴や電池を明示した場合の消去を否定するものではありません。
+
 divergence 層は仮定を隠しません。`Divergence Value` は状態比較と証明済み確率的データ処理則を
 同時に持ちます。任意のそのような divergence と Gibbs-preserving `T` に対して
 `D(Tp ‖ γY) ≤ D(p ‖ γX)` を証明し、`ThermalMonotone` としてパッケージ化します。これは KL の
@@ -423,7 +434,8 @@ F(目標 ε) - F(平衡) = (log 2 - binEntropy ε) / β
 を証明します。費用は非負で、許容誤りが増えると単調非増加です。誤りゼロでは
 `log 2 / β`、誤り `1/2` ではゼロになります。積端点と相関補正の仕事境界を証明済みですが、
 いずれも与えられた遷移証明書に対する必要境界であり、プロトコルの存在や境界達成を主張しません。
-明示的熱浴/循環プロトコルと、別に指定した実スペクトルの有理 Gibbs 重み分類は未解決です。
+熱浴補助消去プロトコル、仕事を伴う循環、境界の達成可能性、別に指定した実スペクトルの有理
+Gibbs 重み分類は未解決です。
 
 ### 12. 有限複素密度行列と Kraus チャネル
 
@@ -735,6 +747,10 @@ horn に制限されることも検証します。
 | `Ript.Models.Thermal.GibbsPreserving.tensor_id` | テンソルは熱的恒等プロセスを保存します。 |
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | 熱的テンソルは合成との interchange を満たします。 |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | 各指定平衡状態は自由に準備できます。 |
+| `Ript.Models.Thermal.FiniteClosedProtocol.runSteps_eq_push_composeSteps` | プロトコルの逐次実行は合成 Gibbs-preserving チャネルによる発展と一致します。 |
+| `Ript.Models.Thermal.FiniteClosedProtocol.composeSteps_append` | プロトコルリストの連結はチャネルの直列合成と一致します。 |
+| `Ript.Models.Thermal.FiniteClosedProtocol.run_equilibrium` | 全有限閉 Gibbs-preserving プロトコルは平衡を固定します。 |
+| `Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium` | 閉プロトコルは平衡から異なる目標へ到達できません。 |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | DPI を持つ divergence は Gibbs-preserving 熱単調量を与えます。 |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | 実行可能な分布 pushforward は測度–kernel 合成と一致します。 |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | 有限絶対連続性は非零台の包含と正確に同値です。 |
@@ -759,6 +775,9 @@ horn に制限されることも検証します。
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | 任意の同時端点で、電池自由エネルギー減少が系と相関の自由エネルギー増加を支払います。 |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | 電池周辺のエントロピーが不変なら相関収支は平均エネルギー仕事境界になります。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | 明示的二段循環は `pure false -> pure true -> pure false` をたどります。 |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns` | 二反転閉循環は全ての正確な Boolean 状態を元に戻します。 |
+| `Ript.Examples.SimpleThermalModel.no_finiteClosedProtocol_exact_erasure` | 有限閉 Gibbs-preserving Boolean プロトコルは公平平衡を正確に消去できません。 |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality は明示的な二項対数和です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆熱ビット反転は KL athermality を正確に保存します。 |
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | ゼロエネルギー Boolean Gibbs 模型は `β = 1` で KL/自由エネルギー恒等式を具体化します。 |
@@ -870,7 +889,7 @@ horn に制限されることも検証します。
 | 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
-| 8 | 有限平衡系、Gibbs 実現、KL/自由エネルギー恒等式、任意同時相関分解、正確/有理誤りの積・相関補正 Boolean Landauer 境界 | **PROVED** |
+| 8 | 有限平衡系、合成可能な閉プロトコルと正確消去不可能性、Gibbs 実現、KL/自由エネルギー恒等式、任意同時相関分解、正確/有理誤りの積・相関補正 Boolean Landauer 境界 | **PROVED** |
 | 9、有限量子チャネル | 複素密度行列、TP Kraus チャネル、テンソル/interchange、トレース破棄、因果的一意性、有限完全正値性 | **PROVED** |
 | 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
@@ -895,7 +914,7 @@ horn に制限されることも検証します。
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
-| 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 正確な状態/チャネルは実行可能；Gibbs/KL/自由エネルギー/仕事意味論は非計算的 | 認証済み Gibbs 実現、具体的有限 KL、実行可能周辺、任意同時相関分解、正確な有理誤りの積/相関補正 Landauer 境界 |
+| 有限熱系 | Gibbs-preserving 圏；有限閉プロトコル | 積 bifunctor | 正確な状態/チャネル/プロトコルトレース/周辺は実行可能；Gibbs/KL/自由エネルギー/仕事意味論は非計算的 | 閉プロトコル合成と消去不可能性、認証済み Gibbs 実現、具体的有限 KL、任意同時相関分解、正確な有理誤りの積/相関補正 Landauer 境界 |
 | 有限量子 Kraus チャネル | Kraus 圏 | 可 | 行列証明層；基底ラベルは実行可能 | 複素 PSD トレース 1 状態、標準テンソル、トレース破棄、任意の有限恒等増幅に対する CP；コピーなし |
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
@@ -911,7 +930,7 @@ horn に制限されることも検証します。
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、
-別に指定した実エネルギースペクトルに対する有理 Gibbs 重みの分類、明示的熱浴・循環プロトコル、
+別に指定した実エネルギースペクトルに対する有理 Gibbs 重みの分類、熱浴補助消去プロトコル、仕事を伴う循環、
 complete-Segal/Rezk-complete な
 ユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
@@ -1149,13 +1168,15 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 
 `Ript/Examples/SimpleThermalModel.lean` は Boolean 系に正確な一様平衡分布を指定します。
 決定論的ビット反転は平衡を保存し、Gibbs-preserving 合成の下で対合です。自由平衡状態の準備と
-積平衡も実行します。さらに平衡の KL athermality がゼロであり、可逆反転がそれを正確に保存
+積平衡も実行します。さらに `pure false -> pure true -> pure false` の正確な二段閉循環を実行し、
+全状態が戻ることと、公平平衡を正確に消去する有限閉プロトコルが存在しないことを証明します。
+平衡の KL athermality がゼロであり、可逆反転がそれを正確に保存
 することを証明します。同じ平衡は `β = 1` の二つのゼロエネルギー準位の Gibbs 分布として認証され、
 Lean は `Z = 2`、`F(γ) = -log 2`、KL/自由エネルギー恒等式、反転による自由エネルギー差不変性を
 証明します。さらに、等しい二ビットだけに質量を持つ完全相関公平対を構成し、両周辺が公平、
-相互情報量が `log 2`、相関自由エネルギーが `log 2 / β` であることを証明します。9 個の
+相互情報量が `log 2`、相関自由エネルギーが `log 2 / β` であることを証明します。11 個の
 `#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、積質量 `1/4`、
-二重反転恒等、決定論的消去終状態、相関同時質量、周辺質量を検査します。
+二重反転恒等、プロトコル長、三状態トレース、決定論的消去終状態、相関同時質量、周辺質量を検査します。
 
 `Ript/Examples/ApproximateErasure.lean` は誤りゼロ、四分の一、二分の一の正確な Boolean
 目標を構成し、二項エントロピー自由エネルギー恒等式、費用の単調性、積端点および相関補正
@@ -1345,7 +1366,8 @@ import Ript.Univalent.Simplicial
 - [x] 積端点の仕事補助 Landauer 収支と Boolean `log 2 / β` 消去境界
 - [x] 任意の相関端点、相互情報量自由エネルギー分解、相関補正 Landauer 境界
 - [x] 正確な有理誤り近似消去、二項エントロピー費用、積/相関補正 Landauer 境界
-- [ ] 明示的熱浴/循環プロトコル、別に指定した実エネルギースペクトルの有理 Gibbs 重み分類
+- [x] 実行可能な有限閉プロトコル、正確なトレース/合成意味論、二反転循環、閉系での正確消去不可能性
+- [ ] 熱浴補助消去プロトコル、仕事を伴う循環、境界達成、別に指定した実エネルギースペクトルの有理 Gibbs 重み分類
 - [x] 量子テンソル、破棄/トレースチャネル、恒等/interchange、因果的破棄則
 - [x] 有限古典確率チャネルの脱位相化冪等量子部分圏への忠実な埋め込み
 - [x] 資源添字付きモデル 0-射と資源非増加な強 braided monoidal 1-射
@@ -1416,7 +1438,8 @@ Ript は指定された正確な
 エントロピー中性電池の仕事形式、Boolean `log 2 / β` 消去境界も証明します。任意の相関端点についても、
 相互情報量/KL の非負性、同時自由エネルギー分解、相関補正仕事境界、完全相関 Boolean 対を証明済みです。
 正確な有理誤り近似消去の二項エントロピー費用、単調性、積端点・相関補正仕事境界も証明済みです。
-明示的熱浴/循環プロトコルと別に指定した実スペクトルの有理 Gibbs 重み分類はまだありません。正確な有限
+実行可能な有限閉プロトコル、非定数の二反転循環、閉系での正確消去不可能性も証明済みです。
+熱浴補助消去プロトコル、仕事を伴う循環、別に指定した実スペクトルの有理 Gibbs 重み分類はまだありません。正確な有限
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
 一般可測意思決定理論はまだ証明していません。

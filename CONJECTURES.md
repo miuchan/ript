@@ -15,6 +15,8 @@ correlation-corrected Landauer bounds, and correlated Boolean example are
 proved as well. Exact rational-error Boolean approximate erasure, its binary-
 entropy free-energy identity and monotonicity law, and its product-endpoint and
 correlation-corrected Landauer bounds are proved declarations too. Explicit
-bath/cyclic protocols and rational-weight classification for independently
-specified real spectra remain roadmap items rather than formalized-but-unproved
-propositions.
+finite closed protocols, their composite semantics, the two-flip Boolean
+cycle, and the closed exact-erasure no-go are now proved declarations too.
+Bath-assisted erasure protocols, work-bearing cycles, transition saturation,
+and rational-weight classification for independently specified real spectra
+remain roadmap items rather than formalized-but-unproved propositions.
