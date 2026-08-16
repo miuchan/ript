@@ -29,13 +29,18 @@ mezureblaj kaŭzaj modeloj restas malfermaj. La sekva kompilita tavolo aldonas
 finiajn termikajn sistemojn kun specifitaj ekvilibraj distribuoj, kategorion kaj
 tensora bifunktoron de Gibbs-konservaj ekzaktaj kanaloj, liberajn ekvilibrajn
 preparojn kaj ĝeneralan diverĝencan monotonecon. La inversa Blackwell-teoremo,
-finia KL-datumtraktado, energio-derivitaj Gibbs-statoj, kvantuma teorio kaj pli
-altaj kategorioj restas esplorvojoj.
+finia KL-datumtraktado kaj energio-derivitaj Gibbs-statoj restas esplorvojoj.
+Ript nun ankaŭ havas apartan fini-dimensian kompleksan kvantuman kernon:
+pozitivajn duondifinajn densmatricojn kun spuro unu, operaciajn mapojn
+atestitajn per finiaj kompletaj Kraus-familioj, pruvitan konservon de pozitiveco
+kaj spuro, fermitecon sub idento kaj sinsekva kunmeto, kanalkategorion kaj
+ekzaktan Pauli-X-kvubitan pruvon. Kvantuma tensoro/forĵeto, la klasika stokasta
+enigo kaj pli altaj kategorioj restas malfermaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–8 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–8 kaj la finia Kraus-kerno de etapo 9 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -335,6 +340,38 @@ senpruva aserto pri KL. Konkreta finia KL kaj ĝia DPI, energioj, temperaturoj,
 Gibbs-formuloj, libera energio kaj Landauer-tipaj neegalaĵoj restas apartaj
 esploraj devoj.
 
+### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
+
+Kvantumaj sistemoj uzas propran finian bazobjekton; ili ne estas alinomo de la
+klasikaj finiaj stokastaj objektoj kaj ne aŭtomate heredas klasikan kopiadon.
+`DensityMatrix X` estas kompleksa matrico `ρ : Matrix X X ℂ` kun la operacia
+pozitiva-duondifina pruvo `ρ.PosSemidef` de Mathlib kaj ekzakta normaligo
+`trace ρ = 1`. Tio estas kvadratforma pozitiveco, ne elementa nenegativeco.
+
+`KrausRepresentation X Y map` liveras finie multajn rektangulajn operatorojn
+`Kᵢ : Matrix Y X ℂ`, pruvas
+
+```text
+map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
+```
+
+kaj atestas `∑ i, Kᵢᴴ Kᵢ = I`. Ript derivas konservon de pozitiveco el
+fermiteco de pozitivaj duondifinaj matricoj sub `KρKᴴ` kaj finiaj sumoj. Ĝi
+derivas spurokonservon per cikleco de la spuro kaj la kompleteca ekvacio. Tial
+`KrausChannel.applyDensity` konstruas veran celan densmatricon el ĉiu fonta
+densmatrico.
+
+`KrausChannel` konservas la operacian mapon rekte kaj nur propozicie trunkas la
+ekziston de Kraus-atestilo. Ĉar Kraus-prezentoj ne estas unikaj, kanala egaleco
+komparas agojn, ne arbitrajn prezent-elektojn. Unuelementa identfamilio kaj ĉiuj
+produktoj `LⱼKᵢ` pruvas fermitecon sub idento kaj sinsekva kunmeto, kaj donas
+kategorion. La kvubita ekzemplo pruvas `XᴴX = I` por Pauli-X kaj ke ĝi ekzakte
+interŝanĝas la du komputbazajn densmatricojn.
+
+Kvantuma tensoro, forĵeto/spuro kiel kanalo, eksplicita amplifa teoremo pri
+kompleta pozitiveco kaj enigo de klasikaj stokastaj kanaloj ankoraŭ mankas.
+Tiuj estas eksplicitaj etapo-9-etendaj devoj.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -407,6 +444,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Ĉiu specifita ekvilibro estas libera preparo. |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Ĉiu diverĝenco kun DPI donas Gibbs-konservan termikan monotonon. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
+| `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Ĉiu finia Kraus-sumo konservas kompleksan operatoran pozitivecon. |
+| `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus-kompleteco implicas ekzaktan spurokonservon. |
+| `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Ĉiu atestita kanalo konservas pozitivan duondifinitecon. |
+| `Ript.Models.Quantum.KrausChannel.map_trace` | Ĉiu atestita kanalo konservas spuron por arbitraj matricoj. |
+| `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | La unuelementa identa Kraus-familio fiksas ĉiun densmatricon. |
+| `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | Kunmetita kanalevoluo egalas sinsekvan densmatrican evoluon. |
+| `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X plenumas la Kraus-kompletecon `XᴴX = I`. |
+| `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X interŝanĝas la du komputbazajn densmatricojn. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -431,7 +476,9 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
 | 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj kaj ĝenerala diverĝenca monotoneco | **PROVED** |
-| 9–11 | Kvantumaj, dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
+| 9, finia Kraus-kerno | Kompleksaj densmatricoj, TP Kraus-kanaloj, statkonservo kaj sinsekva kategorio | **PROVED** |
+| 9, kvantumaj etendaĵoj | Tensoro/forĵeto, CP-amplifa teoremo kaj klasika stokasta enigo | **OPEN RESEARCH** |
+| 10–11 | Dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -449,6 +496,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
 | Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Plenumebla | Specifita ekzakta ekvilibro; liberaj ekvilibraj statoj kaj ĝenerala DPI-levo |
+| Finia kvantuma Kraus-kerno | Kraus-kategorio | Ne | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj kaj finiaj kompletaj Kraus-atestiloj; ankoraŭ sen kvantuma tensoro/forĵeto |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -458,9 +506,10 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
-KL-datumtraktado, energio-derivitaj Gibbs-statoj, kvantumaj kanaloj,
-univalenteco kaj pli altkategoria strukturo estas **ne
-realigitaj**. Vidu
+KL-datumtraktado, energio-derivitaj Gibbs-statoj, kvantuma tensoro/forĵeto kaj
+klasika enigo, univalenteco kaj pli altkategoria strukturo estas **ne
+realigitaj**. La sinsekva finia Kraus-kanala kerno mem estas realigita kaj
+kernel-kontrolita. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
 [CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
 Nuntempe neniu konjekto estas registrita.
@@ -512,6 +561,9 @@ flowchart LR
   CK --> GP["Gibbs-konserva kanalkategorio"]
   TE --> GP
   GP --> TM["Ĝenerala diverĝenca termika monotono"]
+  QB["Kompleksaj PSD-spurunuaj matricoj"] --> QK["Finiaj kompletaj Kraus-atestiloj"]
+  QK --> QC["Spurkonserva Kraus-kanalkategorio"]
+  QC --> QX["Ekzakta Pauli-X-kvubita pruvo"]
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
@@ -520,8 +572,8 @@ flowchart LR
 | Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj kaj posttrakta simulado |
 | Plenumebla sintakso | `Ript.Syntax.*` | Tiphavaj esprimoj, rekursia kosto, derivoj |
 | Semantiko | `Ript.Semantics.*` | Interpretoj, interpretado, ĝusteco, kompleteco |
-| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, probablo, Blackwell-decidoj, komputado, finiaj kaŭzaj mekanismoj kaj finiaj termikaj sistemoj |
-| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj, decidvaloroj, intervenoj kaj ekvilibro-konservaj procezoj |
+| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, probablo, Blackwell-decidoj, komputado, finia kaŭzeco, finiaj termikaj sistemoj kaj finiaj kompleksaj Kraus-kanaloj |
+| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj, decidvaloroj, intervenoj, ekvilibro-konservaj procezoj kaj kvantumbazaj agoj |
 | Revizia surfaco | `Ript.Audit.*` | Deklar-lintado kaj raportado de kernaj aksiomoj |
 
 La sinsekva kerno restas memstare uzebla. La simetria monoida tavolo etendas ĝin
@@ -684,6 +736,13 @@ liberan ekvilibran preparon kaj produktan ekvilibron; ses `#eval decide`-
 kontraktoj kontrolas normaligon, kanal-elementojn, evoluitan mason, liberan
 preparon, produktan mason `1/4` kaj la identecon de du renversoj.
 
+`Ript/Examples/QubitChannel.lean` difinas Bule-bazan kvubiton, ĝian kompleksan
+Pauli-X-matricon kaj komputbazajn purajn densmatricojn. Lean pruvas `XᴴX = I`,
+pakas Pauli-X kiel unuoperatoran spurkonservan Kraus-kanalon kaj pruvas
+`X |b⟩⟨b| Xᴴ = |¬b⟩⟨¬b|`. Du kontraktoj `#eval decide` plenumas la diskretan
+bazetikedan agon. Egaleco de arbitraj kompleksaj matricoj restas en la kerna
+pruva tavolo, ĉar egaleco de reelaj nombroj ne estas kompute decidebla.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -710,6 +769,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- aŭ, por finiaj Gibbs-konservaj procezoj kaj ĝeneralaj termikaj monotonoj:
 import Ript.Models.Thermal.Monotone
+-- aŭ, por kompleksaj densmatricoj kaj spurkonservaj Kraus-kanaloj:
+import Ript.Models.Quantum.Kraus
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -724,7 +785,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj kaj finiaj termikaj modeloj |
+| [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -766,9 +827,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    estas tuj kontroleraro, ne posta piednoto.
 7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo, la
    ekzakta finia decidtavolo, la homogena finia DAG-kaŭza tavolo kaj la
-   specif-ekvilibra finia termika tavolo estas realigitaj; inversa prezento,
-   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko, kvantumaj kaj
-   pli altaj tavoloj restas malfermaj.
+   specif-ekvilibra finia termika tavolo kaj sinsekva finia Kraus-kerno estas
+   realigitaj; inversa prezento, ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza
+   termodinamiko, kvantuma tensoro/klasika enigo kaj pli altaj tavoloj restas
+   malfermaj.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -783,6 +845,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
     operacia datumo, kaj ĝenerala diverĝenca teoremo postulas eksplicitan DPI-
     pruvon. Energi-derivitaj Gibbs-formuloj, KL-datumtraktado kaj libera energio
     restas nomitaj esploraj devoj.
+13. **Ne kaŝe enporti klasikan strukturon en kvantumajn sistemojn.** La
+    kvantuma bazobjekto estas aparta de `FinStoch`; Kraus-formo kaj kompleteco
+    estas eksplicitaj atestiloj, dum kopiado, tensoro, forĵeto kaj klasika enigo
+    bezonas proprajn pruvojn.
 
 ## Vojmapo
 
@@ -819,6 +885,10 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Gibbs-konserva kategorio, tensora bifunktoro kaj liberaj ekvilibraj statoj
 - [x] Ĝenerala diverĝenco-al-termika-monotono kun eksplicita DPI-premiso
 - [x] Plenumebla unuforma termika bito kun ekvilibro-konserva renverso
+- [x] Kompleksaj pozitivaj duondifinaj densmatricoj kun spuro unu
+- [x] Finiaj kompletaj Kraus-prezentoj kun pruvita pozitiveco kaj spurokonservo
+- [x] Ekstensionalaj Kraus-kanalaj idento, sinsekva kunmeto, kategoriaj leĝoj kaj statevoluo
+- [x] Ekzaktaj Pauli-X-kompleteco kaj komputbaza stattransformo
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
@@ -833,7 +903,9 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [ ] Konkreta finia KL-diverĝenco kaj pruvita datumtrakta neegalaĵo
 - [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
-- [ ] Kvantum-kanalaj modeloj
+- [ ] Kvantuma tensoro, forĵeta/spura kanalo kaj monoidaj leĝoj
+- [ ] Eksplicita kompleta-pozitiveca amplifa teoremo por Kraus-mapoj
+- [ ] Enigo de finiaj klasikaj stokastaj kanaloj en la kvantuman tavolon
 - [ ] Zorge izolitaj univalentaj aŭ pli altkategoriaj tavoloj
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
@@ -880,8 +952,13 @@ en `ℚ≥0`, ĉiuj sumoj estas finiaj kaj plenumeblaj, kaj la ekvivalenteco kun
 fini-portanta Kleisli-kategorio de ekzaktaj distribuoj estas pruvita. Fidela
 funktoro ankaŭ sendas ilin al la mezurteoria kategorio `Stoch` de Mathlib kaj
 konservas determinismajn kanalojn kaj tensoron ĝis kanona kompara izomorfio.
-Stokastaj modeloj sur arbitraj mezureblaj spacoj kaj kvantumaj kanaloj restas
-vojmapaj eroj. Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
+Stokastaj modeloj sur arbitraj mezureblaj spacoj restas vojmapaj eroj. Ript
+nun ankaŭ havas finian kompleksan kvantuman kernon: densmatricoj estas pozitivaj
+duondifinaj kun spuro unu; kanaloj portas finiajn kompletajn Kraus-atestilojn;
+pozitiveco, spurokonservo, idento, kunmeto, kategoriaj leĝoj, denseca statevoluo
+kaj Pauli-X-kvubita ekzemplo estas pruvitaj. Kvantuma tensoro/forĵeto,
+eksplicita CP-amplifa teoremo kaj la klasika stokasta enigo restas vojmapaj.
+Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
 ekvilibro, Gibbs-konservan kunmeton kaj tensoron, liberajn ekvilibrajn statojn
 kaj ĝeneralan termikan monotonecon kiam diverĝenco liveras pruvitan DPI. Ĝi
 ankoraŭ ne derivas ekvilibrojn el energioj kaj ne havas finiajn KL- aŭ

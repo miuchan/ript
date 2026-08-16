@@ -89,6 +89,9 @@ flowchart LR
   GibbsPreserving --> ThermalMonotone["Models.Thermal.Monotone"]
   ThermalMonotone --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> Audit
+  QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
+  QuantumKraus --> QubitChannel["Examples.QubitChannel"]
+  QubitChannel --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -107,7 +110,9 @@ Every node in this graph is an existing compiled module.
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
-| 9-11 | Quantum, bicategorical, and univalent layers | OPEN_RESEARCH |
+| 9 (Kraus core) | Complex density matrices, trace-preserving finite Kraus channels, state preservation, and sequential category | PROVED |
+| 9 (extensions) | Quantum tensor/discard, complete-positivity amplification theorem, and classical stochastic embedding | OPEN_RESEARCH |
+| 10-11 | Bicategorical and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -1459,6 +1464,198 @@ formula, or analytic limit is assumed at this layer.
 - Computable: yes.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleThermalModel.lean`.
+
+## Stage-9 finite Kraus flagship theorem records
+
+The first quantum slice is finite-dimensional, complex, and intentionally
+separate from the classical stochastic carrier. A `DensityMatrix X` stores a
+matrix `ρ : Matrix X X ℂ`, a Mathlib operator-positivity proof
+`ρ.PosSemidef`, and `trace ρ = 1`. A `KrausChannel X Y` stores its operational
+matrix action together with the propositionally truncated existence of a
+finite Kraus representation satisfying `∑ i, Kᵢᴴ Kᵢ = I`. Truncating the
+certificate makes equality extensional in the operational action, since Kraus
+representations are non-unique. The certificate still suffices to prove
+positivity and trace preservation, to construct identity and composite Kraus
+families, and to package a category. Tensor, discard/trace as a channel,
+complete-positivity amplification, and the classical stochastic embedding are
+explicitly deferred.
+
+### `Ript.Models.Quantum.KrausRepresentation.map_posSemidef`
+
+- Natural-language statement: an explicit Kraus sum sends every
+  positive-semidefinite source matrix to a positive-semidefinite target
+  matrix.
+- Lean type:
+
+  ```lean
+  theorem KrausRepresentation.map_posSemidef
+      (rep : KrausRepresentation X Y map)
+      (hρ : ρ.PosSemidef) : (map ρ).PosSemidef
+  ```
+
+- Prerequisite definitions: finite Kraus family and its exact operational-map
+  equation.
+- Prerequisite lemmas: `Matrix.PosSemidef.mul_mul_conjTranspose_same` and
+  `Matrix.posSemidef_sum` under Mathlib's scoped complex order.
+- Status: `PROVED`.
+- Classical choice: reported through Mathlib's finite-matrix and finite-sum
+  proof infrastructure; no Kraus operator is chosen by this theorem.
+- Computable: proof layer for arbitrary complex entries.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Kraus.lean`.
+
+### `Ript.Models.Quantum.KrausRepresentation.map_trace`
+
+- Natural-language statement: the Kraus completeness equation makes the
+  operational map trace preserving on every source matrix.
+- Lean type:
+
+  ```lean
+  theorem KrausRepresentation.map_trace
+      (rep : KrausRepresentation X Y map) (ρ : Matrix X X ℂ) :
+      (map ρ).trace = ρ.trace
+  ```
+
+- Prerequisite definitions: the Kraus sum and completeness equation
+  `∑ i, Kᵢᴴ Kᵢ = I`.
+- Prerequisite lemmas: trace of a finite sum, cyclicity of matrix trace,
+  distributivity of matrix multiplication over finite sums, and the
+  completeness equation.
+- Status: `PROVED`.
+- Classical choice: reported through generic finite matrix proofs only.
+- Computable: proof layer for arbitrary complex matrices; the equation is
+  exact, not numerical or approximate.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Kraus.lean`.
+
+### `Ript.Models.Quantum.KrausChannel.map_posSemidef` and `map_trace`
+
+- Natural-language statement: every channel certified by the mere existence
+  of a finite complete Kraus representation preserves both operator positivity
+  and trace.
+- Lean types:
+
+  ```lean
+  theorem KrausChannel.map_posSemidef
+      (channel : KrausChannel X Y) (hρ : ρ.PosSemidef) :
+      (channel.map ρ).PosSemidef
+
+  theorem KrausChannel.map_trace
+      (channel : KrausChannel X Y) (ρ : Matrix X X ℂ) :
+      (channel.map ρ).trace = ρ.trace
+  ```
+
+- Prerequisite definitions: extensional operational channels with a
+  `Nonempty` Kraus certificate.
+- Prerequisite lemmas: the two representation-level theorems above and
+  elimination of `Nonempty` into propositions.
+- Status: `PROVED`; together they justify `KrausChannel.applyDensity`, which
+  returns a genuine `DensityMatrix Y` for every `DensityMatrix X`.
+- Classical choice: the audited dependency comes from imported Mathlib proof
+  infrastructure; `Nonempty` is eliminated only into proof fields, and the
+  operational map is stored directly.
+- Computable: the matrix action is explicit; arbitrary complex proofs remain
+  at the proof layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Kraus.lean`.
+
+### `Ript.Models.Quantum.KrausChannel.identity_applyDensity`
+
+- Natural-language statement: the singleton Kraus family containing the
+  identity matrix acts as identity on every density matrix.
+- Lean type:
+
+  ```lean
+  theorem KrausChannel.identity_applyDensity (ρ : DensityMatrix X) :
+      (KrausChannel.identity X).applyDensity ρ = ρ
+  ```
+
+- Prerequisite definitions: `KrausChannel.ofOperators`, the singleton
+  identity family, and density-matrix extensionality.
+- Prerequisite lemmas: the singleton completeness calculation and identity
+  matrix multiplication.
+- Status: `PROVED`.
+- Classical choice: reported through finite sums and matrix/category proof
+  infrastructure.
+- Computable: operational matrix identity is direct.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Kraus.lean`.
+
+### `Ript.Models.Quantum.KrausChannel.comp_applyDensity`
+
+- Natural-language statement: applying the composite Kraus channel to a state
+  is exactly successive application of the two component channels.
+- Lean type:
+
+  ```lean
+  theorem KrausChannel.comp_applyDensity
+      (f : KrausChannel X Y) (g : KrausChannel Y Z)
+      (ρ : DensityMatrix X) :
+      (KrausChannel.comp f g).applyDensity ρ =
+        g.applyDensity (f.applyDensity ρ)
+  ```
+
+- Prerequisite definitions: serial operational composition and the product
+  Kraus family with operators `Lⱼ Kᵢ`.
+- Prerequisite lemmas: conjugate transpose of a product, finite-sum
+  distributivity, both input completeness equations, and density-matrix
+  extensionality.
+- Status: `PROVED`; identity, composition, extensional equality, and
+  associativity are packaged as `KrausChannel.category`.
+- Classical choice: reported through generic Mathlib proof infrastructure;
+  no witness is extracted into operational data.
+- Computable: operational composition is function composition.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/Kraus.lean`.
+
+### `Ript.Examples.QubitChannel.bitFlipOperator_complete`
+
+- Natural-language statement: the Pauli-X permutation matrix on the Boolean
+  computational basis satisfies `XᴴX = I` and therefore defines a
+  one-operator trace-preserving Kraus channel.
+- Lean type:
+
+  ```lean
+  theorem bitFlipOperator_complete :
+      bitFlipOperatorᴴ * bitFlipOperator = 1
+  ```
+
+- Prerequisite definitions: the Boolean quantum object and exact Pauli-X
+  matrix entries.
+- Prerequisite lemmas: matrix extensionality and exact enumeration of the two
+  Boolean basis values.
+- Status: `PROVED`.
+- Classical choice: reported through Mathlib's matrix and complex-number proof
+  infrastructure; every closed entry calculation is exact.
+- Computable: the discrete basis permutation executes; arbitrary complex
+  equality stays in the proof layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/QubitChannel.lean`.
+
+### `Ript.Examples.QubitChannel.bitFlip_basisDensity`
+
+- Natural-language statement: the Pauli-X Kraus channel exchanges the two
+  computational-basis pure density matrices.
+- Lean type:
+
+  ```lean
+  theorem bitFlip_basisDensity (value : Bool) :
+      bitFlip.applyDensity (basisDensity value) = basisDensity (!value)
+  ```
+
+- Prerequisite definitions: diagonal basis density matrices and the
+  one-operator Pauli-X channel.
+- Prerequisite lemmas: positivity of nonnegative diagonal matrices, trace of a
+  diagonal matrix, the Pauli-X completeness theorem, and exact Boolean matrix
+  multiplication.
+- Status: `PROVED`.
+- Classical choice: reported through generic finite-matrix proof dependencies;
+  two accompanying `#eval decide` assertions execute the discrete basis-label
+  action.
+- Computable: basis-label action yes; arbitrary complex matrix equality is
+  kernel proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/QubitChannel.lean`.
 
 ## Design decisions
 

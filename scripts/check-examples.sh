@@ -68,4 +68,13 @@ if [[ "$thermal_output" != "$expected_thermal_output" ]]; then
   exit 1
 fi
 
+qubit_output="$(lake env lean Ript/Examples/QubitChannel.lean)"
+expected_qubit_output=$'true\ntrue'
+
+if [[ "$qubit_output" != "$expected_qubit_output" ]]; then
+  printf 'Qubit-channel example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_qubit_output" "$qubit_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'

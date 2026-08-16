@@ -22,13 +22,16 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 親だけを読む正確な機構、正規化観測同時分布、ハード介入、正確な `FinStoch` 意味論も含みます。
 次の層として、指定平衡分布を持つ有限熱系、Gibbs-preserving な正確チャネルの圏とテンソル
 bifunctor、自由平衡状態の準備、一般 divergence の単調性も実装しました。一般の可測因果モデル、
-Blackwell 逆表現定理、有限 KL のデータ処理、エネルギーから導く Gibbs 状態、量子理論、高次圏は
-研究課題です。
+Blackwell 逆表現定理、有限 KL のデータ処理、エネルギーから導く Gibbs 状態は研究課題です。
+さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
+トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
+合成閉包、チャネル圏、正確な Pauli-X 量子ビット証明を実装しました。量子テンソル・破棄、古典
+確率埋め込み、高次圏は未解決です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 8 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 8、および Stage 9 の有限 Kraus コアは実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -284,6 +287,31 @@ divergence 層は仮定を隠しません。`Divergence Value` は状態比較�
 DPI を未証明のまま仮定するものではありません。具体的有限 KL とその DPI、エネルギー、温度、
 Gibbs 公式、自由エネルギー、Landauer 型不等式は独立した研究義務です。
 
+### 12. 有限複素密度行列と Kraus チャネル
+
+量子系は独自の有限基底対象を使います。古典有限確率対象の別名ではなく、古典的コピーを自動的に
+継承しません。`DensityMatrix X` は複素行列 `ρ : Matrix X X ℂ` に Mathlib の作用素レベルの
+正半定値証明 `ρ.PosSemidef` と正確な正規化 `trace ρ = 1` を持たせたものです。これは二次形式の
+正値性であり、成分ごとの非負性ではありません。
+
+`KrausRepresentation X Y map` は有限個の矩形作用素 `Kᵢ : Matrix Y X ℂ` を与え、
+
+```text
+map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
+```
+
+と `∑ i, Kᵢᴴ Kᵢ = I` を証明します。Ript は `KρKᴴ` と有限和に対する正半定値性の閉包から
+正値性保存を、トレースの巡回性と完全性方程式からトレース保存を導きます。したがって
+`KrausChannel.applyDensity` は任意の入力密度行列から真正な出力密度行列を構成します。
+
+`KrausChannel` は作用そのものを格納し、Kraus 証明書の存在だけを命題的に切り詰めます。Kraus
+表現は一意でないため、チャネル等式は任意の表現選択ではなく実際の作用を比較します。単元恒等族と
+全積 `LⱼKᵢ` により恒等・直列合成閉包を証明し、圏を構成します。量子ビット例では Pauli-X の
+`XᴴX = I` と、二つの計算基底密度行列を交換することを正確に証明します。
+
+量子テンソル、チャネルとしての破棄/トレース、明示的な完全正値性増幅定理、古典確率チャネルの
+埋め込みは未実装です。これらは Stage 9 の明示的な拡張義務です。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -356,6 +384,14 @@ Gibbs 公式、自由エネルギー、Landauer 型不等式は独立した研�
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | 各指定平衡状態は自由に準備できます。 |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | DPI を持つ divergence は Gibbs-preserving 熱単調量を与えます。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
+| `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 有限 Kraus 和は複素作用素の正値性を保存します。 |
+| `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完全性から正確なトレース保存が従います。 |
+| `Ript.Models.Quantum.KrausChannel.map_posSemidef` | 認証済みチャネルは正半定値性を保存します。 |
+| `Ript.Models.Quantum.KrausChannel.map_trace` | 認証済みチャネルは任意の行列のトレースを保存します。 |
+| `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | 単元恒等 Kraus 族は全密度行列を固定します。 |
+| `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | 合成チャネルの発展は逐次的な密度行列発展と一致します。 |
+| `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X は Kraus 完全性 `XᴴX = I` を満たします。 |
+| `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X は二つの計算基底密度行列を交換します。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -378,7 +414,9 @@ Gibbs 公式、自由エネルギー、Landauer 型不等式は独立した研�
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
 | 8 | 有限平衡系、Gibbs-preserving プロセス、一般 divergence 単調性 | **PROVED** |
-| 9–11 | 量子・双圏・ユニバレント層 | **OPEN RESEARCH** |
+| 9、有限 Kraus コア | 複素密度行列、TP Kraus チャネル、状態保存、直列圏 | **PROVED** |
+| 9、量子拡張 | テンソル/破棄、CP 増幅定理、古典確率埋め込み | **OPEN RESEARCH** |
+| 10–11 | 双圏・ユニバレント層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -396,14 +434,16 @@ Gibbs 公式、自由エネルギー、Landauer 型不等式は独立した研�
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
 | 有限熱系 | Gibbs-preserving 圏 | 積 bifunctor | 実行可能 | 指定された正確な平衡；自由平衡状態と一般 DPI リフト |
+| 有限量子 Kraus コア | Kraus 圏 | 不可 | 行列証明層；基底ラベルは実行可能 | 複素 PSD トレース 1 状態と有限完全 Kraus 証明書；量子テンソル/破棄は未実装 |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、具体的有限 KL のデータ処理、
-エネルギー由来 Gibbs 状態、量子チャネル、
-ユニバレント構造、高次圏構造は**未実装**です。正式な能力表は
+エネルギー由来 Gibbs 状態、量子テンソル/破棄と古典埋め込み、
+ユニバレント構造、高次圏構造は**未実装**です。直列有限 Kraus チャネルコア自体は実装済みで
+カーネル検証されています。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
 [CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
 
@@ -454,6 +494,9 @@ flowchart LR
   CK --> GP["Gibbs-preserving チャネル圏"]
   TE --> GP
   GP --> TM["一般 divergence 熱単調量"]
+  QB["複素 PSD トレース 1 行列"] --> QK["有限完全 Kraus 証明書"]
+  QK --> QC["トレース保存 Kraus チャネル圏"]
+  QC --> QX["正確な Pauli-X 量子ビット証明"]
 ```
 
 | 層 | 主なモジュール | 責務 |
@@ -462,8 +505,8 @@ flowchart LR
 | プロセス能力 | `Ript.Core.*` | 直列・テンソル・構造コスト則と後処理シミュレーション |
 | 実行可能構文 | `Ript.Syntax.*` | 型付き式、再帰的コスト、導出 |
 | 意味論 | `Ript.Semantics.*` | 解釈、評価、健全性、完全性 |
-| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 意思決定、計算、有限因果機構、有限熱系 |
-| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値、介入、平衡保存過程 |
+| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 意思決定、計算、有限因果、有限熱系、有限複素 Kraus チャネル |
+| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値、介入、平衡保存過程、量子基底作用 |
 | 監査面 | `Ript.Audit.*` | 宣言 lint とカーネル仮定の報告 |
 
 直列の核は単独で利用できます。対称モノイダル層は別のインターフェースとして拡張され、すべての
@@ -609,6 +652,12 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 積平衡も実行し、6 個の `#eval decide` が正規化、チャネル要素、発展後の質量、自由状態準備、
 積質量 `1/4`、二重反転恒等を検査します。
 
+`Ript/Examples/QubitChannel.lean` は Boolean 基底量子ビット、複素 Pauli-X 行列、計算基底純粋
+密度行列を定義します。Lean は `XᴴX = I` を証明し、Pauli-X を単一作用素のトレース保存 Kraus
+チャネルとして構成し、`X |b⟩⟨b| Xᴴ = |¬b⟩⟨¬b|` を証明します。二つの `#eval decide` 契約は
+離散基底ラベル作用を実行します。実数等式は決定可能でないため、一般の複素行列等式はカーネル
+証明層に留めます。
+
 ## Lean 依存パッケージとして使う
 
 Ript はルートモジュール `Ript` を公開します。プレリリース期間中は、変化するブランチではなく、
@@ -635,6 +684,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- または有限 Gibbs-preserving 過程と一般熱単調量：
 import Ript.Models.Thermal.Monotone
+-- または複素密度行列とトレース保存 Kraus チャネル：
+import Ript.Models.Quantum.Kraus
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -648,7 +699,7 @@ import Ript.Models.Thermal.Monotone
 | [`Ript/Resource/`](../Ript/Resource/) | 資源代数と検証済み予算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
-| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果・有限熱モデル |
+| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果・有限熱・有限量子モデル |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -682,8 +733,8 @@ import Ript.Models.Thermal.Monotone
 5. **完全性の範囲を明記する。** すべての完全性主張が標準モデルと証明境界を指定します。
 6. **仮定をバージョン付き API として扱う。** 新しい公理は後日の注釈ではなく即時のゲート失敗です。
 7. **実装と構想を区別する。** 有限離散 `Stoch` 像、正確な有限意思決定層、同種有限 DAG
-   因果層、指定平衡を持つ有限熱層は実装済みです。逆表現、一般確率・因果、解析的熱力学、
-   量子、高次の未解決層とは明確に分けます。
+   因果層、指定平衡を持つ有限熱層、直列有限 Kraus コアは実装済みです。逆表現、一般確率・因果、
+   解析的熱力学、量子テンソル/古典埋め込み、高次の未解決層とは明確に分けます。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
@@ -695,6 +746,8 @@ import Ript.Models.Thermal.Monotone
 12. **熱力学的解析を暗黙に持ち込まない。** 指定平衡は操作的データであり、一般 divergence 定理は
     明示的な DPI 証明を要求します。エネルギー由来 Gibbs 公式、KL データ処理、自由エネルギーは
     名前付きの未解決義務です。
+13. **古典構造を量子系へ暗黙に持ち込まない。** 量子基底対象は `FinStoch` と分離し、Kraus 形式と
+    完全性を明示的に認証します。コピー、テンソル、破棄、古典埋め込みには個別の証明が必要です。
 
 ## ロードマップ
 
@@ -730,6 +783,10 @@ import Ript.Models.Thermal.Monotone
 - [x] Gibbs-preserving 圏、テンソル bifunctor、自由平衡状態
 - [x] 明示的 DPI 前提を持つ一般 divergence-to-thermal-monotone 定理
 - [x] 平衡保存反転を持つ実行可能な一様熱ビット例
+- [x] 複素正半定値・トレース 1 密度行列
+- [x] 有限完全 Kraus 表現と正値性・トレース保存の証明
+- [x] 外延的 Kraus チャネルの恒等、直列合成、圏則、状態発展
+- [x] 正確な Pauli-X 完全性と計算基底状態変換
 - [x] 再現可能な CI、宣言 lint、仮定許可リスト
 
 ### 未解決の研究トラック
@@ -744,7 +801,9 @@ import Ript.Models.Thermal.Monotone
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
 - [ ] 具体的有限 KL divergence と証明済みデータ処理不等式
 - [ ] エネルギー、逆温度、Gibbs 構成、自由エネルギー、Landauer 境界
-- [ ] 量子チャネルモデル
+- [ ] 量子テンソル、破棄/トレースチャネル、モノイダル則
+- [ ] Kraus 写像の明示的な完全正値性増幅定理
+- [ ] 有限古典確率チャネルの量子層への埋め込み
 - [ ] 厳密に分離されたユニバレント層または高次圏層
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
@@ -786,7 +845,10 @@ import Ript.Models.Thermal.Monotone
 正確な有限確率チャネルはサポートされています。確率は `ℚ≥0` で表され、有限和として実行され、
 正確な有限分布の有限台 Kleisli 圏との同値も証明済みです。さらに Mathlib の測度論的圏
 `Stoch` への忠実な関手があり、決定論的チャネルとテンソルを標準比較同型を介して保存します。
-任意の可測空間上の確率モデルと量子チャネルはロードマップ項目です。Ript は指定された正確な
+任意の可測空間上の確率モデルはロードマップ項目です。Ript には有限複数量子コアもあります。
+密度行列は正半定値かつトレース 1、チャネルは有限完全 Kraus 証明書を持ち、正値性・トレース保存、
+恒等、合成、圏則、密度状態発展、Pauli-X 量子ビット例を証明済みです。量子テンソル/破棄、明示的
+CP 増幅定理、古典確率埋め込みはロードマップです。Ript は指定された正確な
 平衡分布を持つ有限系、Gibbs-preserving 合成とテンソル、自由平衡状態、および divergence が
 証明済み DPI を持つ場合の一般熱単調性もサポートします。ただしエネルギーからの平衡導出、有限
 KL、自由エネルギー定理はまだありません。正確な有限

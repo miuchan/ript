@@ -28,12 +28,18 @@ interventions, and exact `FinStoch` semantics. General measurable-space causal
 models remain open. The next compiled layer adds finite thermal systems with
 specified equilibrium distributions, a category and tensor bifunctor of
 Gibbs-preserving exact channels, free equilibrium preparations, and generic
-divergence monotonicity. The converse Blackwell representation theorem, finite
-KL data processing, energy-derived Gibbs states, quantum theory, and higher
-categories remain research directions.
+divergence monotonicity. Ript now also has a separate finite-dimensional
+quantum core over `ℂ`: positive-semidefinite trace-one density matrices,
+operational maps certified by finite complete Kraus families, proved positivity
+and trace preservation, identity and composition closure, a channel category,
+and an exact Pauli-X qubit proof. The converse Blackwell representation theorem,
+finite KL data processing, energy-derived Gibbs states, quantum tensor/discard
+structure and classical embedding, and higher categories remain research
+directions.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–8 are implemented and
+> Ript is early-stage research software. The Stage 1–8 layers and the Stage 9
+> finite Kraus core are implemented and
 > checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
@@ -345,6 +351,41 @@ divergence satisfies data processing. A concrete finite KL definition and its
 DPI, energy functions, temperatures, Gibbs formulas, free energy, and
 Landauer-type inequalities remain separate research obligations.
 
+### 12. Finite complex density matrices and Kraus channels
+
+Quantum systems use their own finite basis object; they are not aliases for
+classical finite stochastic objects and do not inherit classical copying. A
+`DensityMatrix X` is a complex matrix `ρ : Matrix X X ℂ` with Mathlib's
+operator-level `ρ.PosSemidef` proof and exact normalization `trace ρ = 1`.
+This is quadratic-form positivity, not entrywise nonnegativity.
+
+A `KrausRepresentation X Y map` supplies finitely many rectangular operators
+`Kᵢ : Matrix Y X ℂ`, proves the exact operational equation
+
+```text
+map(ρ) = ∑ i, Kᵢ ρ Kᵢᴴ
+```
+
+and certifies `∑ i, Kᵢᴴ Kᵢ = I`. Ript derives positivity preservation from
+closure of positive-semidefinite matrices under `KρKᴴ` and finite sums. It
+derives trace preservation by cyclicity of trace and the completeness
+equation. Therefore `KrausChannel.applyDensity` returns a genuine target
+density matrix for every input density matrix.
+
+`KrausChannel` stores the operational map directly and only the propositionally
+truncated existence of a Kraus certificate. This matters because Kraus
+representations are not unique: channel equality compares physical actions,
+not arbitrary representation choices. A singleton identity family and all
+pairwise products `LⱼKᵢ` prove identity and serial-composition closure; the
+resulting channels form a category. The qubit example proves `XᴴX = I` for
+Pauli-X and proves that it exchanges the two computational-basis density
+matrices exactly.
+
+This slice does not yet provide quantum tensor, discard/trace as a channel, a
+formal amplification theorem for complete positivity, or an embedding of
+classical stochastic channels. Those are explicit Stage 9 extension
+obligations, not implicit consequences of the sequential core.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -417,6 +458,14 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Every distinguished equilibrium is a free preparation. |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Every divergence with DPI yields a Gibbs-preserving thermal monotone. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
+| `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Every finite Kraus sum preserves complex operator positivity. |
+| `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus completeness implies exact trace preservation. |
+| `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Every certified channel preserves positive semidefiniteness. |
+| `Ript.Models.Quantum.KrausChannel.map_trace` | Every certified channel preserves trace on arbitrary matrices. |
+| `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | The singleton identity Kraus family fixes every density matrix. |
+| `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | Composite channel evolution equals successive density-matrix evolution. |
+| `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X satisfies the Kraus completeness equation `XᴴX = I`. |
+| `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X exchanges the two computational-basis density matrices. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -441,7 +490,9 @@ finished physical theory.
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | **PROVED** |
-| 9–11 | Quantum, bicategorical, and univalent layers | **OPEN RESEARCH** |
+| 9, finite Kraus core | Complex density matrices, TP Kraus channels, state preservation, and sequential category | **PROVED** |
+| 9, quantum extensions | Tensor/discard, CP amplification theorem, and classical stochastic embedding | **OPEN RESEARCH** |
+| 10–11 | Bicategorical and univalent layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -459,6 +510,7 @@ Implemented model support is intentionally narrow:
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
 | Finite thermal systems | Gibbs-preserving category | Product bifunctor | Executable | Specified exact equilibrium; free equilibrium states and generic DPI lifting |
+| Finite quantum Kraus core | Kraus category | No | Matrix proof layer; basis labels executable | Complex PSD trace-one states; complete finite Kraus certificates; no quantum tensor/discard yet |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -468,8 +520,9 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
-quantum
-channels, and univalent or higher-categorical structure are **not implemented**.
+quantum tensor/discard and classical embedding, and univalent or
+higher-categorical structure are **not implemented**. The sequential finite
+Kraus channel core itself is implemented and kernel checked.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
 statements. There are currently no registered conjectures.
@@ -521,6 +574,9 @@ flowchart LR
   CK --> GP["Gibbs-preserving channel category"]
   TE --> GP
   GP --> TM["Generic divergence thermal monotone"]
+  QB["Complex PSD trace-one matrices"] --> QK["Complete finite Kraus certificates"]
+  QK --> QC["Trace-preserving Kraus channel category"]
+  QC --> QX["Exact Pauli-X qubit proof"]
 ```
 
 | Layer | Main modules | Responsibility |
@@ -529,8 +585,8 @@ flowchart LR
 | Process capabilities | `Ript.Core.*` | Sequential, tensor, structural cost laws, and post-processing simulation |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, decisions, total/partial computation, finite causal mechanisms, and finite thermal systems |
-| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, exact decision values, interventions, and equilibrium-preserving processes |
+| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, decisions, total/partial computation, finite causal mechanisms, finite thermal systems, and finite complex Kraus channels |
+| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, exact decision values, interventions, equilibrium-preserving processes, and quantum basis actions |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
 The sequential core remains independently usable. The symmetric monoidal layer
@@ -694,6 +750,14 @@ also executes the free equilibrium preparation and product equilibrium; six
 `#eval decide` contracts check exact normalization, channel entries, evolved
 mass, free-state preparation, product mass `1/4`, and double-flip identity.
 
+`Ript/Examples/QubitChannel.lean` defines a Boolean-basis qubit, its complex
+Pauli-X matrix, and computational-basis pure density matrices. Lean proves
+`XᴴX = I`, packages Pauli-X as a one-operator trace-preserving Kraus channel,
+and proves `X |b⟩⟨b| Xᴴ = |¬b⟩⟨¬b|`. Two `#eval decide` contracts exercise the
+discrete basis-label action. General complex-matrix equality remains in the
+kernel proof layer because real-number equality is not computationally
+decidable.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -720,6 +784,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- or, for finite Gibbs-preserving processes and generic thermal monotones:
 import Ript.Models.Thermal.Monotone
+-- or, for complex density matrices and trace-preserving Kraus channels:
+import Ript.Models.Quantum.Kraus
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -733,7 +799,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, and finite thermal models |
+| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, finite thermal, and finite quantum models |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -775,9 +841,10 @@ force-pushes and branch deletion are disabled.
    axiom is a gate failure, not a footnote discovered later.
 7. **Distinguish implementation from aspiration.** The finite discrete `Stoch`
    image, exact finite decision layer, homogeneous finite DAG causal layer, and
-   specified-equilibrium finite thermal layer are implemented; converse
-   representation, general stochastic and causal, analytic thermodynamic,
-   quantum, and higher layers remain visibly marked as open research.
+   specified-equilibrium finite thermal layer, and sequential finite Kraus core
+   are implemented; converse representation, general stochastic and causal,
+   analytic thermodynamic, quantum tensor/classical-embedding, and higher
+   layers remain visibly marked as open research.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -793,6 +860,10 @@ force-pushes and branch deletion are disabled.
     operational data, and a generic divergence theorem consumes an explicit
     DPI proof. Energy-derived Gibbs formulas, KL data processing, and free
     energy remain named obligations rather than hidden assumptions.
+13. **Do not smuggle classical structure into quantum systems.** The quantum
+    basis object is separate from `FinStoch`; Kraus form and completeness are
+    explicit certificates, while copying, tensor, discard, and a classical
+    embedding require their own proofs.
 
 ## Roadmap
 
@@ -830,6 +901,10 @@ updated assumption audit.
 - [x] Gibbs-preserving category, tensor bifunctor, and free equilibrium states
 - [x] Generic divergence-to-thermal-monotone theorem with explicit DPI premise
 - [x] Executable uniform thermal-bit example with equilibrium-preserving flip
+- [x] Complex positive-semidefinite trace-one density matrices
+- [x] Finite complete Kraus representations with proved positivity and trace preservation
+- [x] Extensional Kraus channel identity, serial composition, category laws, and state evolution
+- [x] Exact Pauli-X completeness and computational-basis state transformation
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -844,7 +919,9 @@ updated assumption audit.
 - [ ] Rich computational cost models and operationally validated reduction costs
 - [ ] Concrete finite KL divergence and a proved data-processing inequality
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
-- [ ] Quantum-channel models
+- [ ] Quantum tensor, discard/trace channel, and monoidal laws
+- [ ] Explicit complete-positivity amplification theorem for Kraus maps
+- [ ] Embedding of finite classical stochastic channels into the quantum layer
 - [ ] Carefully isolated univalent or higher-categorical layers
 
 These checkboxes are not promises of a particular release order. Each addition
@@ -893,7 +970,13 @@ equivalence with the finite-carrier Kleisli category of exact finite
 distributions and gives a faithful functor from them into Mathlib's
 measure-theoretic category `Stoch`, preserving deterministic channels and
 tensor up to a canonical comparison isomorphism. Arbitrary measurable-space
-stochastic models and quantum channels remain roadmap items. Ript now also
+stochastic models remain a roadmap item. Ript now also has a finite complex
+quantum core: density matrices are positive semidefinite with trace one;
+channels carry complete finite Kraus certificates; positivity, trace
+preservation, identity, composition, category laws, density-state evolution,
+and a Pauli-X qubit example are proved. Quantum tensor/discard, an explicit CP
+amplification theorem, and the classical stochastic embedding remain roadmap
+items. Ript also
 supports finite systems with a specified exact equilibrium distribution,
 Gibbs-preserving channel composition and tensor, free equilibrium states, and
 generic divergence monotonicity whenever a divergence supplies a proved DPI.

@@ -7,6 +7,7 @@ import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
 import Ript.Examples.KleisliBits
+import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleDecision
@@ -29,6 +30,8 @@ import Ript.Models.FiniteFunction
 import Ript.Models.FiniteStochastic
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Models.Probability.StochFunctor
+import Ript.Models.Quantum.Basic
+import Ript.Models.Quantum.Kraus
 import Ript.Models.Thermal.Equilibrium
 import Ript.Models.Thermal.GibbsPreserving
 import Ript.Models.Thermal.Monotone

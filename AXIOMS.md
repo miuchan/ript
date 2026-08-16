@@ -73,6 +73,14 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monotone.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.KrausRepresentation.map_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.KrausChannel.map_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.KrausChannel.map_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.KrausChannel.identity_applyDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Models.Quantum.KrausChannel.comp_applyDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
+| `Ript.Examples.QubitChannel.bitFlipOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
+| `Ript.Examples.QubitChannel.bitFlip_basisDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitChannel.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -117,6 +125,17 @@ audited thermal theorems inherit `Classical.choice` and `Quot.sound` from the
 same Mathlib finite-sum, category, and nonnegative-rational proof
 infrastructure, while the Boolean thermal example evaluates using ordinary
 kernel reduction and exact arithmetic.
+The finite quantum slice is intentionally separate from the classical
+stochastic object type. Density matrices are complex positive-semidefinite
+matrices of trace one, and every operational map carries the mere existence of
+an explicit finite Kraus family with completeness equation
+`∑ i, Kᵢᴴ Kᵢ = I`. The audited positivity, trace-preservation, identity,
+composition, and Pauli-X results inherit `Classical.choice` and `Quot.sound`
+from Mathlib's finite-sum, matrix-order, complex-number, and category proof
+infrastructure. No choice-derived data is used in the channel action: the
+operational map is stored directly, while its Kraus certificate is proof-only.
+The two `#eval decide` contracts execute the discrete computational-basis
+action; arbitrary complex-matrix equality remains in the kernel proof layer.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that
