@@ -137,17 +137,17 @@ action, or quantale structure until a concrete model needs it.
 For a costed category `C` and resource type `R`, the basic laws are
 
 ```math
-\operatorname{cost}(\mathrm{id}_X)=0,
+c(\mathrm{id}_X)=0,
 \qquad
-\operatorname{cost}(f \mathbin{\gg} g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g).
+c(f \mathbin{\gg} g)
+\leq c(f)+c(g).
 ```
 
 The optional monoidal capability adds
 
 ```math
-\operatorname{cost}(f \otimes g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g),
+c(f \otimes g)
+\leq c(f)+c(g),
 ```
 
 and the optional structural-cost capability declares associators, unitors, and
@@ -183,8 +183,8 @@ structural maps, and symmetric braiding.
 Both languages have a structurally recursive `syntaxCost`. For example,
 
 ```math
-\operatorname{syntaxCost}(f \mathbin{\gg} g)
-=\operatorname{syntaxCost}(f)+\operatorname{syntaxCost}(g).
+c_{\mathrm{syntax}}(f \mathbin{\gg} g)
+=c_{\mathrm{syntax}}(f)+c_{\mathrm{syntax}}(g).
 ```
 
 Keeping syntax unquotiented makes construction, evaluation, inspection, and
@@ -199,8 +199,8 @@ declared budget. Evaluation is ordinary structural recursion.
 The central resource theorem is
 
 ```math
-\operatorname{cost}(\operatorname{eval}(e))
-\leq \operatorname{syntaxCost}(e).
+c(\mathrm{eval}(e))
+\leq c_{\mathrm{syntax}}(e).
 ```
 
 Thus a proof that `syntaxCost e ≤ r` yields a checked semantic statement that
@@ -318,8 +318,8 @@ free post-processing cannot create resource-bounded value.
 Finally,
 
 ```math
-\operatorname{value}(P;\text{task},\text{baseline})
-= \operatorname{risk}(\text{baseline})-\operatorname{risk}(P)
+V(P;\text{task},\text{baseline})
+= R(\text{baseline})-R(P)
 ```
 
 defines semantic value relative to an explicit prior, action space, loss,
