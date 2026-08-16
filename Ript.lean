@@ -16,6 +16,7 @@ import Ript.Examples.SimpleDecision
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
+import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Higher.Coherence
 import Ript.Higher.Equivalence
@@ -70,6 +71,7 @@ import Ript.Syntax.MonoidalSignature
 import Ript.Syntax.Sequential
 import Ript.Syntax.Signature
 import Ript.Univalent.Boundary
+import Ript.Univalent.Completion
 import Ript.Univalent.Model
 import Ript.Univalent.Process
 import Ript.Univalent.Soundness

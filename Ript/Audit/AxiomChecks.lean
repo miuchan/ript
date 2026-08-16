@@ -6,6 +6,7 @@ import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
+import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
@@ -141,3 +142,11 @@ set_option autoImplicit false
 #print axioms Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit
 #print axioms Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply
 #print axioms Ript.Examples.UnivalentProcessUniverse.reindex_not_sound
+#print axioms Ript.Univalent.UniverseModel.ObjectCompletion.ofCode_eq_iff_identity
+#print axioms Ript.Univalent.UniverseModel.ObjectCompletion.tensor_assoc
+#print axioms Ript.Univalent.UniverseModel.objectCompletionUniversal
+#print axioms Ript.Univalent.UniverseModel.internalPredicateCompletionEquiv
+#print axioms Ript.Univalent.UniverseModel.objectCompletionToSkeletal_bijective
+#print axioms Ript.Univalent.UniverseModel.skeletalCompletionUniversal
+#print axioms Ript.Examples.UnivalentCompletion.codeCardinality_equiv
+#print axioms Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality

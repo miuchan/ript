@@ -55,9 +55,15 @@ equivalent to internal structural equivalence, and a typed process language
 with equivalence reindexing has a proved soundness theorem. This is a
 1-truncated set-level model: it neither assumes external univalence nor turns
 an arbitrary Lean equivalence into Lean equality.
+Stage 12 now supplies its first rigorously bounded completion step. A
+choice-free object quotient identifies codes exactly when internal identity is
+merely inhabited and proves universal descent for invariant maps and internal
+predicates. A separate noncomputable Mathlib skeleton retains every
+automorphism and is categorically equivalent to the original groupoid. These
+are 0/1-truncated foundations, not a claimed Rezk completion.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. The Stage 1–11 layers, including the
+> Ript is early-stage research software. The Stage 1–12 truncated layers, including the
 > finite Kraus core, model bicategory, and internally univalent deep universe, are implemented and
 > checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
@@ -474,6 +480,49 @@ presheaf or simplicial model, Rezk completion, external structure identity, or
 a theorem `Equiv α β → α = β`. Those remain separate research
 obligations rather than hidden assumptions.
 
+### 14. Truncated completion and universal descent
+
+Stage 12 begins with two constructions whose different trust and
+computability boundaries are explicit. `ObjectCompletion` is the quotient of
+raw interface codes by `Nonempty (M.Identity A B)`. It requires no chosen
+representative: equality of completed objects is equivalent to mere internal
+identity and, by `internalUnivalence`, to mere internal structural
+equivalence. Sum and tensor descend to the quotient, where symmetry,
+associativity, and unit laws become literal equalities.
+
+This quotient has a compiled universal property:
+
+```lean
+objectCompletionUniversal (β) :
+  (M.ObjectCompletion → β) ≃ M.InvariantMap β
+
+internalPredicateCompletionEquiv :
+  (M.ObjectCompletion → Prop) ≃ M.InternalPredicate
+```
+
+Thus executable data leaves the quotient only after its raw-code map supplies
+an identity-invariance proof; no representative is selected. The Boolean
+example descends exact code cardinality and evaluates
+`bit + (bit tensor bit)` to `6`. It also proves that tensor-symmetric
+presentations are equal after completion while remaining unequal raw Lean
+syntax.
+
+`SkeletalCompletion` is deliberately separate. It reuses Mathlib's skeleton
+of the internal groupoid, is itself a skeletal groupoid, retains all
+automorphisms, and is equivalent to the original groupoid. Restriction along
+that equivalence yields
+
+```lean
+skeletalCompletionUniversal (E) :
+  (M.SkeletalCompletion ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+Mathlib chooses skeleton representatives, so this categorical layer is marked
+`noncomputable` and its audited theorems include `Classical.choice`. The
+choice-free object universal properties do not. Neither construction supplies
+higher paths, complete Segal coherence, presheaf localization, external
+univalence, or a Rezk completion of the resource-process bicategory.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -586,6 +635,14 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | The example endpoints remain unequal as external code syntax. |
 | `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | Their internal identity interprets as the expected tensor swap. |
 | `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Successive reindexings of Boolean negation agree with composite reindexing. |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.ofCode_eq_iff_identity` | Completed-code equality is exactly mere internal identity. |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.tensor_assoc` | Tensor is literally associative on completed objects. |
+| `Ript.Univalent.UniverseModel.objectCompletionUniversal` | Maps from object completion are exactly identity-invariant maps on raw codes. |
+| `Ript.Univalent.UniverseModel.internalPredicateCompletionEquiv` | Predicates on completed objects are exactly internal invariant predicates. |
+| `Ript.Univalent.UniverseModel.objectCompletionToSkeletal_bijective` | Choice-free completed objects and skeletal objects correspond bijectively. |
+| `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | Functor categories out of the skeleton and original groupoid are equivalent. |
+| `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | Every generated structural equivalence preserves exact interface cardinality. |
+| `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | Completion equality coexists with inequality of the original syntax trees. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -614,7 +671,8 @@ finished physical theory.
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
 | 11 | Axiom-free deep interface/process syntax, quotient groupoid, internal univalence, soundness, and indiscernibility | **PROVED** |
-| 12 | Rezk completion or a higher-dimensional univalent semantic extension | **OPEN RESEARCH** |
+| 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
+| 12, higher extension | Rezk completion or a higher-dimensional univalent semantic extension | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -636,6 +694,8 @@ Implemented model support is intentionally narrow:
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
+| Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
+| Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; chosen representatives; not a Rezk completion |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -647,7 +707,9 @@ native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
 and a higher-dimensional/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
-identity and equivalence quotients are interpreted in sets. The model
+identity and equivalence quotients are interpreted in sets. Its choice-free
+object completion and noncomputable skeletal completion establish only the
+explicitly audited 0/1-truncated foundation. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -925,6 +987,8 @@ import Ript.Models.Thermal.Monotone
 import Ript.Models.Quantum.Kraus
 -- or, for the axiom-free internally univalent process universe:
 import Ript.Univalent.Process
+-- or, for object and skeletal truncated completions:
+import Ript.Univalent.Completion
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -940,7 +1004,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
 | [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, finite thermal, and finite quantum models |
 | [`Ript/Higher/`](Ript/Higher/) | Resource-indexed model bicategory and coherence |
-| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, transport, and soundness |
+| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, transport, soundness, and truncated completions |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -986,8 +1050,9 @@ force-pushes and branch deletion are disabled.
    positivity finite Kraus core are implemented; converse representation,
    general stochastic and causal, analytic thermodynamic, and higher univalent
    layers remain visibly marked as open research. The classical quantum
-   embedding, model bicategory, and small internally univalent universe are
-   implemented with their scope boundaries explicit.
+   embedding, model bicategory, small internally univalent universe, and its
+   0/1-truncated completions are implemented with their scope boundaries
+   explicit.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -1078,6 +1143,7 @@ updated assumption audit.
 - [ ] Concrete finite KL divergence and a proved data-processing inequality
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
+- [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [ ] Rezk completion or a presheaf/simplicial higher-dimensional univalent model with explicit coherence
 
 These checkboxes are not promises of a particular release order. Each addition

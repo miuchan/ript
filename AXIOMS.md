@@ -122,6 +122,14 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | `none` | `Ript/Examples/UnivalentProcessUniverse.lean` |
 | `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | `[propext, Quot.sound]` | `Ript/Examples/UnivalentProcessUniverse.lean` |
 | `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | `[propext, Quot.sound]` | `Ript/Examples/UnivalentProcessUniverse.lean` |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.ofCode_eq_iff_identity` | `[propext, Quot.sound]` | `Ript/Univalent/Completion.lean` |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.tensor_assoc` | `[propext, Quot.sound]` | `Ript/Univalent/Completion.lean` |
+| `Ript.Univalent.UniverseModel.objectCompletionUniversal` | `[propext, Quot.sound]` | `Ript/Univalent/Completion.lean` |
+| `Ript.Univalent.UniverseModel.internalPredicateCompletionEquiv` | `[propext, Quot.sound]` | `Ript/Univalent/Completion.lean` |
+| `Ript.Univalent.UniverseModel.objectCompletionToSkeletal_bijective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Completion.lean` |
+| `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Completion.lean` |
+| `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | `[propext]` | `Ript/Examples/UnivalentCompletion.lean` |
+| `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | `[propext, Quot.sound]` | `Ript/Examples/UnivalentCompletion.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -219,6 +227,21 @@ only `[propext, Quot.sound]`; there is no project axiom, no `Classical.choice`,
 no external univalence assumption, and no map `Equiv α β → α = β`. The
 quotient is confined to proof semantics, while the raw syntax and concrete
 Boolean interpretation remain executable.
+Stage 12 now adds two deliberately distinct truncated completion layers. The
+choice-free `ObjectCompletion` quotients codes by mere internal identity. Its
+identity/equivalence characterization, structural algebra, invariant-map
+universal property, and internal-predicate descent use only `[propext,
+Quot.sound]`; executable invariants are supplied before quotient elimination,
+so no chosen representative becomes runtime data. The categorical
+`SkeletalCompletion` instead reuses Mathlib's skeleton of the internal
+groupoid. It preserves every automorphism, is equivalent to the original
+groupoid, and induces an equivalence of functor categories. Mathlib's chosen
+skeleton representatives explain the additional `Classical.choice` in the
+skeletal bijection and categorical universal-property audits. That layer is
+explicitly `noncomputable` and cannot flow back into the executable core.
+Neither construction is advertised as a Rezk completion: they provide only
+0-truncated object identification and a 1-truncated skeletal groupoid, without
+presheaf/simplicial localization or higher coherence.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that

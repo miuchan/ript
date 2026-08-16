@@ -39,11 +39,15 @@ empty・unit・sum・tensor・原子的インターフェースの深い code �
 構文を別々に持ちます。その意味論的商は実際の Mathlib groupoid をなし、内部同一性と内部構造同値は
 同値であり、同値による再添字付けを持つ深いプロセス言語には健全性定理があります。これは集合レベルの
 1-truncated モデルであり、外部 univalence を仮定せず、任意の Lean 型同値を型等式へ変換しません。
+Stage 12 は、厳密に範囲を限定した最初の completion を実装しました。選択不要の対象商は、内部同一性が
+単に存在するときに限り code を同一視し、不変写像と内部述語の普遍的降下を与えます。別の非計算的な
+Mathlib skeleton は全自己同型を保持し、元の groupoid と圏同値です。これは 0/1-truncated な基礎であり、
+Rezk completion の主張ではありません。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 11 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 12 の truncated 層は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -374,6 +378,40 @@ tensor 対称性は内部同一性を与え、Boolean 否定を移送し、期�
 presheaf/simplicial モデル、Rezk completion、外部の structure identity、あるいは
 `Equiv α β → α = β` を提供しません。これらは隠れた仮定ではなく、独立した研究義務です。
 
+### 14. Truncated completion と普遍的降下
+
+Stage 12 は、信頼境界と計算可能性の異なる二つの構成から始まります。`ObjectCompletion` は
+`Nonempty (M.Identity A B)` による生インターフェース code の商で、代表元を選びません。completion
+後の対象が等しいことは内部同一性の単なる存在と同値であり、`internalUnivalence` により内部構造同値の
+単なる存在とも同値です。sum と tensor は商へ降下し、対称・結合・単位則が文字どおり Lean 等式になります。
+
+この対象商にはコンパイル済みの普遍性があります。
+
+```lean
+objectCompletionUniversal (β) :
+  (M.ObjectCompletion → β) ≃ M.InvariantMap β
+
+internalPredicateCompletionEquiv :
+  (M.ObjectCompletion → Prop) ≃ M.InternalPredicate
+```
+
+したがって実行可能データを商から取り出すには、生 code 上の写像が内部同一性不変である証明を先に与える
+必要があり、代表元は選択されません。Boolean 例は正確な code 濃度を降下させ、
+`bit + (bit tensor bit)` を `6` と評価します。また、tensor 対称な表示は completion 後に等しくても、
+元の Lean 構文は不等のままであることを証明します。
+
+`SkeletalCompletion` は意図的に別層です。内部 groupoid の Mathlib skeleton を再利用し、それ自身が
+skeletal groupoid で、全自己同型を保持し、元の groupoid と同値です。その同値に沿う制限から次を得ます。
+
+```lean
+skeletalCompletionUniversal (E) :
+  (M.SkeletalCompletion ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+Mathlib は skeleton の代表を選ぶため、この圏論層は `noncomputable` と明記され、監査結果に
+`Classical.choice` を含みます。選択不要の対象商の普遍性には含まれません。どちらも高次 path、complete
+Segal coherence、presheaf localization、外部 univalence、資源プロセス双圏の Rezk completion を与えません。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -486,6 +524,14 @@ presheaf/simplicial モデル、Rezk completion、外部の structure identity�
 | `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | 例の二つの端点 code は外部構文として不等のままです。 |
 | `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | その内部同一性は期待される tensor swap として解釈されます。 |
 | `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Boolean 否定の連続再添字付けは合成再添字付けと意味論的に一致します。 |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.ofCode_eq_iff_identity` | completion 後の code 等式は内部同一性の単なる存在と同値です。 |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.tensor_assoc` | completion 対象上の tensor は文字どおり結合的です。 |
+| `Ript.Univalent.UniverseModel.objectCompletionUniversal` | 対象 completion からの写像は、生 code 上の内部同一性不変写像とちょうど一致します。 |
+| `Ript.Univalent.UniverseModel.internalPredicateCompletionEquiv` | completion 対象上の述語は内部不変述語とちょうど一致します。 |
+| `Ript.Univalent.UniverseModel.objectCompletionToSkeletal_bijective` | 選択不要の completion 対象と skeleton 対象は全単射で対応します。 |
+| `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | skeleton と元の groupoid から出る関手圏は同値です。 |
+| `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | 生成された全構造同値が正確なインターフェース濃度を保存します。 |
+| `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | completion 等式と元構文木の不等式が同時に成立します。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -512,7 +558,8 @@ presheaf/simplicial モデル、Rezk completion、外部の structure identity�
 | 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
 | 11 | 公理不要の深いインターフェース/プロセス構文、商 groupoid、内部 univalence、健全性、indiscernibility | **PROVED** |
-| 12 | Rezk completion または高次元のユニバレント意味論拡張 | **OPEN RESEARCH** |
+| 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
+| 12、高次拡張 | Rezk completion または高次元のユニバレント意味論拡張 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -534,6 +581,8 @@ presheaf/simplicial モデル、Rezk completion、外部の structure identity�
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
+| Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
+| Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；代表選択あり；Rezk completion ではない |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
@@ -542,7 +591,8 @@ Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層に
 完全な do-calculus、一般的なコピー・破棄および凸構造、具体的有限 KL のデータ処理、
 エネルギー由来 Gibbs 状態、高次元または Rezk-complete なユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
-モデル双圏は固定資源型と統一 universe の範囲で実装され、どちらの層も `(∞,1)`-圏や
+選択不要の対象 completion と非計算的 skeleton completion は、明示的に監査された 0/1-truncated 基礎だけを
+確立します。モデル双圏は固定資源型と統一 universe の範囲で実装され、これらの層は `(∞,1)`-圏や
 Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
 チャネルコアは実装済みでカーネル検証されています。正式な能力表は
@@ -792,6 +842,8 @@ import Ript.Models.Thermal.Monotone
 import Ript.Models.Quantum.Kraus
 -- または公理不要の内部ユニバレントなプロセス universe：
 import Ript.Univalent.Process
+-- または対象と skeleton の truncated completion：
+import Ript.Univalent.Completion
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -807,7 +859,7 @@ import Ript.Univalent.Process
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
 | [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果・有限熱・有限量子モデル |
 | [`Ript/Higher/`](../Ript/Higher/) | 資源添字付きモデル双圏と coherence |
-| [`Ript/Univalent/`](../Ript/Univalent/) | 深いインターフェース/プロセス構文、商 groupoid、内部 univalence、移送、健全性 |
+| [`Ript/Univalent/`](../Ript/Univalent/) | 深いインターフェース/プロセス構文、商 groupoid、内部 univalence、移送、健全性、truncated completion |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -843,8 +895,8 @@ import Ript.Univalent.Process
 7. **実装と構想を区別する。** 有限離散 `Stoch` 像、正確な有限意思決定層、同種有限 DAG
    因果層、指定平衡を持つ有限熱層、テンソル・破棄・完全正値性を持つ有限 Kraus コアは
    実装済みです。逆表現、一般確率・因果、解析的熱力学、高次ユニバレント層とは明確に分けます。
-   古典量子埋め込み、モデル双圏、小さな内部ユニバレント universe は、それぞれの適用範囲を
-   明示して実装済みです。
+   古典量子埋め込み、モデル双圏、小さな内部ユニバレント universe とその 0/1-truncated completion は、
+   それぞれの適用範囲を明示して実装済みです。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
@@ -925,6 +977,7 @@ import Ript.Univalent.Process
 - [x] 構造同値構文と内部同一性構文を分離した深いインターフェース code
 - [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
+- [x] 選択不要の対象 completion、不変量の降下、skeletal groupoid completion
 - [ ] Rezk completion、または明示的高次 coherence を持つ presheaf/simplicial ユニバレントモデル
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
