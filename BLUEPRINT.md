@@ -78,6 +78,11 @@ flowchart LR
   DeterministicBlackwell --> DeterministicBlackwellExample["Examples.DeterministicBlackwell"]
   DeterministicBlackwellExample --> Audit
   FiniteRisk --> DecisionSeparation["Models.Decision.Separation"]
+  DecisionSeparation --> GarblingPolytope["Models.Decision.GarblingPolytope"]
+  GarblingPolytope --> RationalSeparation["Models.Decision.RationalSeparation"]
+  RationalSeparation --> Audit
+  DecisionSeparation --> EmptyParameterBoundary["Examples.EmptyParameterBoundary"]
+  EmptyParameterBoundary --> Audit
   DecisionSeparation --> StochasticSeparation["Examples.StochasticSeparation"]
   StochasticSeparation --> Audit
   FiniteRisk --> ResourceDecision["Models.Decision.ResourceBounded"]
@@ -186,7 +191,7 @@ Every node in this graph is an existing compiled module.
 | 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | PROVED |
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
-| 6 | Blackwell order, finite decision risk, deterministic finite converse, exact stochastic-converse statement and certificate reduction, resource bounds, and task-relative value | PROVED |
+| 6 | Blackwell order, finite decision risk, deterministic finite converse, necessary nonempty-state boundary, exact rational garbling simplex, rational-separator/certificate reduction, resource bounds, and task-relative value | PROVED; general stochastic separation completeness remains `FORMALIZED_BUT_UNPROVED` |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, exact rational-Gibbs classification of finite real spectra, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
@@ -1204,7 +1209,8 @@ completeness remains open.
   ```lean
   theorem finiteBlackwellShermanStein_iff_certificateComplete :
       FiniteBlackwellShermanStein ↔
-        ∀ (Θ X Y : Object) (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+        ∀ (Θ X Y : Object) (_ : Nonempty Θ.carrier)
+          (P : FinStoch Θ X) (Q : FinStoch Θ Y),
           DecisionSeparationComplete P Q
   ```
 
@@ -1217,6 +1223,105 @@ completeness remains open.
   noisy Boolean `1/4 < 1/2` witness execute exactly.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Decision/Separation.lean`.
+
+### `Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty`
+
+- Natural-language statement: if the hidden-state carrier is empty, universal
+  finite decision comparison can hold vacuously even though the target is not
+  a stochastic post-processing of the source.
+- Lean type:
+
+  ```lean
+  theorem converse_fails_without_nonempty :
+      ¬BlackwellShermanSteinConverse
+        unitObservationExperiment emptyObservationExperiment
+  ```
+
+- Prerequisites: the absence of a normalized distribution on `Empty` and the
+  fact that a normalized channel row has nonempty support.
+- Status: `PROVED`; this is why the global conjecture explicitly requires
+  `Nonempty Θ.carrier`.
+- Classical choice: inherited only from generic finite/category proof
+  infrastructure; no state is chosen from the empty carrier.
+- Computable: the source and target experiments are explicit empty-domain
+  channels; the contradiction is proposition-level.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/EmptyParameterBoundary.lean`.
+
+### `Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff`
+
+- Natural-language statement: an exact finite stochastic garbling exists
+  exactly when the target is an exact `ℚ≥0` simplex mixture of deterministic
+  post-processings of the source.
+- Lean type:
+
+  ```lean
+  theorem deterministicMixtureDominates_iff
+      (P : FinStoch Θ X) (Q : FinStoch Θ Y) :
+      DeterministicMixtureDominates P Q ↔ BlackwellDominates P Q
+  ```
+
+- Prerequisites: `independentGarblingLaw`, whose weight on a deterministic
+  function is the product of its selected channel-row probabilities, and
+  `mixedGarbling_independentGarblingLaw`, which proves exact marginal recovery.
+- Status: `PROVED`.
+- Classical choice: only the standard finite-sum/category infrastructure; the
+  mixture weights are defined explicitly and contain no chosen decomposition.
+- Computable: yes, all weights, marginals, and channel equalities use exact
+  `ℚ≥0` arithmetic over finite carriers.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/GarblingPolytope.lean`.
+
+### `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate`
+
+- Natural-language statement: over a nonempty hidden-state carrier, a signed
+  rational score strictly separating the target from every deterministic
+  garbling vertex exists exactly when a concrete nonnegative-rational decision
+  certificate exists.
+- Lean type:
+
+  ```lean
+  theorem rationalGarblingSeparator_nonempty_iff_certificate
+      [Nonempty Θ.carrier] (P : FinStoch Θ X) (Q : FinStoch Θ Y) :
+      Nonempty (RationalGarblingSeparator P Q) ↔
+        Nonempty (DecisionSeparationCertificate P Q)
+  ```
+
+- Prerequisites: exact uniform prior, per-hidden-state row shifts making every
+  signed score nonnegative, finite optimal-decision existence, and the direct
+  score extracted from any supplied decision certificate.
+- Status: `PROVED`.
+- Classical choice: proof-only selection of a target default action and an
+  optimal finite source decision in the separator-to-certificate direction.
+- Computable: each supplied score, shifted loss, and certificate is exact
+  rational data; the proposition-level existence conversion is not a global
+  separation solver.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/RationalSeparation.lean`.
+
+### `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete`
+
+- Natural-language statement: the corrected finite stochastic Blackwell
+  converse is equivalent to rational strict-separation completeness for every
+  pair with nonempty hidden-state carrier.
+- Lean type:
+
+  ```lean
+  theorem finiteBlackwellShermanStein_iff_rationalSeparationComplete :
+      FiniteBlackwellShermanStein ↔
+        ∀ (Θ X Y : Object) (_ : Nonempty Θ.carrier)
+          (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+          RationalSeparationComplete P Q
+  ```
+
+- Prerequisites: exact garbling-simplex representation, decision-certificate
+  completeness reduction, and separator/certificate equivalence.
+- Status: `PROVED`; `FiniteBlackwellShermanStein` and uniform rational
+  separation completeness remain `FORMALIZED_BUT_UNPROVED`.
+- Classical choice: inherited from the finite certificate conversion.
+- Computable: no global separator constructor is claimed.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/RationalSeparation.lean`.
 
 ### `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone`
 
@@ -4485,12 +4590,16 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     experiments. In the deterministic fragment, full-support zero-one target
     reconstruction recovers an exact garbling witness, equivalently target
     constancy on source fibers. The general stochastic
-    Blackwell--Sherman--Stein converse is now an exact Lean proposition and is
-    proved equivalent to completeness of finite decision-separation
-    certificates. Certificate soundness and a genuinely stochastic Boolean
-    certificate are compiled. The remaining open step is a finite
-    convex-separation or linear-programming duality construction that produces
-    exact rational decision data for every non-garbling pair.
+    Blackwell--Sherman--Stein converse is now an exact Lean proposition for
+    nonempty hidden-state carriers. The hypothesis is necessary: a compiled
+    empty-state example makes the universal risk order vacuous while a unit-to-
+    empty garbling is impossible. Every exact stochastic garbling is now an
+    explicit rational simplex mixture of deterministic post-processings, and
+    signed rational strict separators exist exactly when finite decision-
+    separation certificates do. Certificate soundness and a genuinely
+    stochastic Boolean certificate are compiled. The remaining open step is
+    rational strict-separation completeness for points outside that simplex;
+    no linear-programming duality theorem is assumed.
 18. Computation resources are explicit formal bounds on steps, oracle queries,
     storage, and gates. They are not identified with observed wall-clock time,
     and their pointwise function representation reuses Mathlib's ordered
