@@ -68,6 +68,13 @@ struktura ekvivalento respondas precize al naturaj transformoj kaj naturaj
 izomorfioj de reprezenteblaj antaŭfaskoj; kaj la esenca bildo formas grupoidon
 kategorie ekvivalentan al la fonto. Tiu `YonedaEnvelope` restas ordinara
 1-kategoria envolvaĵo, ne Rezk-kompletigo.
+La interna grupoido nun ankaŭ havas veran simplician nervon. Ĉiu simplaĵo estas
+unike rekonstruebla el sia kunmetebla spino, do la nervo estas pruvite strikta
+Segal, kvazaŭkategorio kaj 2-koskeleta; verticoj, eĝoj kaj kunmetaj
+2-simplaĵoj precize reakiras interfacojn, internajn identojn kaj vojkunmeton.
+Ĝia homotopikategorio estas izomorfa al la fonta grupoido. Tio restas la
+strikta kategoria nervo de 1-grupoido: neniu aserto pri Kan-kornplenigo,
+kompleta Segal-strukturo, lokalizo aŭ Rezk-kompletigo estas farata.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -565,8 +572,67 @@ Tiu tavolo havas eksplicitan klasikan limon. La fiksitaj Mathlib-deklaroj
 `[propext, Classical.choice, Quot.sound]`; la esenc-bilda ekvivalento ankaŭ
 elektas reprezentajn atestantojn. Neniu tia valoro fluas en plenumeblan
 sintakson aŭ finiajn modelojn. La envolvaĵo ne egaligas ekstere izomorfajn
-antaŭfaskojn kaj ne liveras simplician objekton, kompletan Segal-kondiĉon,
-pli-altan koheron, lokalizan teoremon aŭ eksteran univalentecon.
+antaŭfaskojn kaj per si mem ne liveras kompletan Segal-kondiĉon, pli-altan
+lokalizon aŭ eksteran univalentecon.
+
+### 16. La strikta simplicia nervo
+
+La interna grupoido nun havas efektivan prezenton kiel simplicia aro:
+
+```lean
+InterfaceNerve M := CategoryTheory.nerve M.Object
+
+interfaceNerveStrictSegal :
+  SSet.StrictSegal M.InterfaceNerve
+
+interfaceNerveSegalEquiv (n) :
+  M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
+```
+
+Do ĉiu `n`-simplaĵo estas unike rekonstruita el sia longo-`n` spino de
+kunmeteblaj eĝoj. La pruvitaj sekvoj en Mathlib donas kaj `Quasicategory`-an
+instancon kaj `SimplicialObject.IsCoskeletal M.InterfaceNerve 2`: pli altaj
+simplaĵoj enhavas neniun plian datumon preter la 2-tranĉo.
+
+La malaltdimensia interpreto estas ekzakta, ne nur sugesta:
+
+```lean
+interfaceNerveEdgeEquiv (A B) :
+  M.InterfaceNerve.Edge
+      (M.interfaceNerveVertex A) (M.interfaceNerveVertex B) ≃
+    M.Identity A B
+
+interfaceNerveEquivEdgeEquiv (A B) :
+  M.InterfaceNerve.Edge
+      (M.interfaceNerveVertex A) (M.interfaceNerveVertex B) ≃
+    M.InternalEquiv A B
+```
+
+Du kunmeteblaj internaj identoj produktas eksplicitan 2-simplaĵon. Ĝiaj dua
+kaj nula facoj estas la enigaj eĝoj, dum ĝia meza faco estas ilia interna
+kunmeto. Ĉiu eĝo estas inversigebla ĉar la fonto estas grupoido; eĝo sekvata
+de sia inverso randigas 2-simplaĵon kies kunmetita faco estas la degenerita
+refleksiva eĝo.
+
+La nervo konservas precize la originan 1-kategorian homotopian informon:
+
+```lean
+interfaceNerveHomotopyCategoryIso :
+  SSet.hoFunctor.obj M.InterfaceNerve ≅ Cat.of M.Object
+```
+
+En la Bulea ekzemplo, tensora simetrio malkodiĝas kaj kiel la origina interna
+vojo kaj kiel ĝia struktura ekvivalento. La antaŭa eĝo kaj ĝia inverso formas
+nuligan 2-simplaĵon, strikta Segal-rekonstruo redonas tiun simplaĵon ekzakte,
+kaj la ekstere malegalaj tensoraj kodarboj restas ligitaj per eĝo.
+
+La fidlimo estas eksplicita. La fiksitaj Mathlib-deklaroj pri strikta Segal,
+kvazaŭkategorio, koskeleteco kaj nerva adjunkcio reviziiĝas kiel
+`[propext, Classical.choice, Quot.sound]`; tiu posta semantika spuro ne eniras
+plenumeblan sintakson. Oni atendas, ke la kategoria nervo de grupoido estas
+Kan, sed ĉi tiu dosiero ne pruvas tiun teoremon per la nuna Mathlib-API. Ĝi
+ankaŭ ne pruvas kompletan Segal-kondiĉon, antaŭfaskan lokalizon, eksteran
+univalentecon aŭ Rezk-kompletigon.
 
 ## Kio estas pruvita
 
@@ -699,6 +765,19 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Taksi la Bulean tensoran simetrion ĉe la fonta idento reakiras la originan vojon. |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Izomorfaj Yoneda-envolvaĵaj prezentoj konservas malegalan krudan kodsintakson. |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensora simetrio konservas la ekzaktan interfacan kardinalon. |
+| `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | La interna grupoidnervo havas eksplicitajn datumojn por strikta Segal-rekonstruo. |
+| `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | Ĉiu simplaĵo ekvivalentas al sia kunmetebla spino de eĝoj. |
+| `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | La strikta kategoria nervo estas kvazaŭkategorio. |
+| `Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal` | La interna nervo estas determinita de sia 2-tranĉo. |
+| `Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv` | Nervaj eĝoj inter kodverticoj estas precize internaj strukturaj ekvivalentoj. |
+| `Ript.Univalent.UniverseModel.interfaceNerveComposition_composite` | La meza faco de kunmeta 2-simplaĵo estas interna vojkunmeto. |
+| `Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite` | Eĝo sekvata de sia inverso havas refleksivan kunmetitan facon. |
+| `Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso` | La homotopikategorio de la nervo reakiras la fontan grupoidon. |
+| `Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv` | La Bulea simetria eĝo malkodiĝas al la origina tensora ekvivalento. |
+| `Ript.Examples.UnivalentSimplicial.swapCancellation_faces` | La Bulea nuliga 2-simplaĵo havas antaŭan, inversan kaj refleksivan facojn. |
+| `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strikta Segal-rekonstruo redonas la Bulean 2-simplaĵon ekzakte. |
+| `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | Eĝo ligas tensorajn prezentojn kies kruda kodsintakso restas malegala. |
+| `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | La simplicie ligitaj prezentoj havas egalan ekzaktan kardinalon. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -729,7 +808,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
-| 12, pli-alta etendaĵo | Rezk-kompletigo aŭ pli-altdimensia univalenta semantika etendaĵo | **OPEN RESEARCH** |
+| 12, simplicia fundamento | Kategoria nervo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
+| 12, pli-alta etendaĵo | Kan-kornplenigo, kompleta Segal/Rezk-kompletigo kaj pli-alta lokalizo preter la strikta kategoria nervo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -755,6 +835,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; ne Rezk-kompletigo |
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
 | Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
+| Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kvazaŭkategorio kaj 2-koskeleta; eĝoj kodas internajn identojn/ekvivalentojn; sen Kan- aŭ Rezk-aserto |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -771,7 +852,10 @@ kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
 nekomputebla skeletokompletigo establas nur la eksplicite reviziitan
 0/1-tranĉitan fundamenton. La reprezentebla antaŭfaska semantiko kaj la
 Yoneda-esenc-bilda envolvaĵo ankaŭ estas realigitaj, sed restas ordinaraj
-1-kategoriaj konstruoj sen pli-alta lokalizo. La modeldukategorio estas realigita por fiksa
+1-kategoriaj konstruoj sen pli-alta lokalizo. Ilia strikta kategoria nervo estas
+realigita kiel vera simplicia aro kun teoremoj pri strikta Segal,
+kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio, sed neniu
+rezulto pri Kan, kompleta Segal aŭ lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -1045,6 +1129,8 @@ import Ript.Univalent.Process
 import Ript.Univalent.Completion
 -- aŭ, por reprezenteblaj antaŭfaskoj kaj la Yoneda-envolvaĵo:
 import Ript.Univalent.Presheaf
+-- aŭ, por la strikta simplicia nervo kaj ĝia Segal-strukturo:
+import Ript.Univalent.Simplicial
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -1061,7 +1147,7 @@ malsupra laboro.
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
 | [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
 | [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio kaj kohero |
-| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, tranĉitaj kompletigoj kaj reprezentebla antaŭfaska semantiko |
+| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, tranĉitaj kompletigoj, reprezentebla antaŭfaska semantiko kaj la strikta simplicia nervo |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -1110,7 +1196,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    modeldukategorio, la malgranda interne univalenta universo kaj ĝiaj
    0/1-tranĉitaj kompletigoj estas realigitaj kun eksplicitaj ampleksolimoj.
    La reprezentebla antaŭfaska envolvaĵo same estas realigita kun sia ordinara
-   1-kategoria limo klare deklarita.
+   1-kategoria limo klare deklarita. La strikta kategoria nervo ankaŭ estas
+   realigita kun pruvitaj strikta-Segal, kvazaŭkategoria kaj 2-koskeleta
+   strukturoj, sen prezenti ilin kiel Kan- aŭ Rezk-kompletecon.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -1200,7 +1288,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
 - [x] Senelekta objektokompletigo, invarianta malsuprenigo kaj skeleta grupoidokompletigo
 - [x] Plene fidela Yoneda-semantiko kaj la esenc-bilda reprezentebla envolvaĵo
-- [ ] Rezk-kompletigo aŭ antaŭfaska/simplicia univalenta modelo kun eksplicita pli-alta kohero
+- [x] Strikta simplicia nervo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
+- [ ] Kan-kornplenigo kaj kompleta-Segal/Rezk-lokalizo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

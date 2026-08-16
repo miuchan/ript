@@ -104,4 +104,13 @@ if [[ "$univalent_presheaf_output" != "$expected_univalent_presheaf_output" ]]; 
   exit 1
 fi
 
+univalent_simplicial_output="$(lake env lean Ript/Examples/UnivalentSimplicial.lean)"
+expected_univalent_simplicial_output='true'
+
+if [[ "$univalent_simplicial_output" != "$expected_univalent_simplicial_output" ]]; then
+  printf 'Univalent-simplicial example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_univalent_simplicial_output" "$univalent_simplicial_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'

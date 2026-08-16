@@ -9,6 +9,7 @@ import Ript.Examples.StochasticBits
 import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
+import Ript.Examples.UnivalentSimplicial
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
@@ -162,3 +163,16 @@ set_option autoImplicit false
 #print axioms Ript.Examples.UnivalentPresheaf.swapTransformation_component
 #print axioms Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality
 #print axioms Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveStrictSegal
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveQuasicategory
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveComposition_composite
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso
+#print axioms Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv
+#print axioms Ript.Examples.UnivalentSimplicial.swapCancellation_faces
+#print axioms Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip
+#print axioms Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality
+#print axioms Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality
