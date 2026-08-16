@@ -20,14 +20,16 @@ executable finite stochastic model, its finite-distribution Kleisli
 representation, and a faithful semantic bridge into Mathlib's
 measure-theoretic category `Stoch`. On top of that bridge, Ript now formalizes
 Blackwell comparison, exact executable finite Bayes risk, resource-bounded
-decision risk, and task-relative semantic value. General measurable-space
-models, the converse Blackwell representation theorem, thermodynamics,
-quantum theory, and higher categories remain research directions rather than
-current capabilities.
+decision risk, and task-relative semantic value. It also includes total and
+possibly failing computation categories with explicit step, query, storage,
+and gate resources. Finite causal interventions, general measurable-space
+models, the converse Blackwell representation theorem, thermodynamics, quantum
+theory, and higher categories remain research directions.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–6 are implemented and
-> checked by Lean's kernel; the public API is not yet stable, and no claim is
+> Ript is early-stage research software. Stages 1–6 and the computation half
+> of Stage 7 are implemented and checked by Lean's kernel; the public API is
+> not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
 
 ## Contents
@@ -255,6 +257,28 @@ monotonicity, invariance under information equivalence, zero value at the
 baseline, task irrelevance for zero loss, and budget monotonicity. It does
 **not** identify this task-relative quantity with Shannon information.
 
+### 9. Total and partial computation with explicit resources
+
+The first computation resource is `ComputationResource := Fin 4 → Nat`, with
+named coordinates for formal steps, oracle queries, a storage bound, and
+circuit gates. These are mathematical accounting units, not measured
+wall-clock time. Addition and comparison are componentwise, and the executable
+`ComputationResource.within` checker has a proof-level soundness theorem.
+
+Two genuine process categories use this resource. `Computation.Total` has
+total functions paired with a resource vector. `Computation.Partial` has
+functions `X → Option Y`; serial composition is actual `Option` Kleisli
+composition, so failure propagates. Both add resources exactly under serial
+composition, expose an independent-product bifunctor, prove interchange, and
+add parallel resources exactly. This is a bifunctor rather than a claimed
+native `MonoidalCategory` instance; packaged associators and unitors remain
+future work.
+
+The functor `Partial.ofTotal` embeds every total computation as an
+always-successful partial computation and preserves all resource coordinates.
+A shared typed query/negation/guard program is interpreted in both models; the
+generic `eval_cost_le` theorem and executable budget checks apply to both.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -305,6 +329,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Certified reductions transport risk with explicit additive overhead. |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling cannot increase task-relative semantic value. |
 | `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | Resource value obeys certified reductions and their overhead. |
+| `Ript.Models.Computation.ComputationResource.within_sound` | A true executable vector check proves the corresponding resource bound. |
+| `Ript.Models.Computation.Total.tensor_comp` | Parallel total execution satisfies interchange. |
+| `Ript.Models.Computation.Partial.tensor_comp` | Parallel `Option` execution satisfies Kleisli interchange. |
+| `Ript.Models.Computation.Partial.ofTotal_resource` | The total-to-partial functor preserves every resource coordinate. |
+| `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | Generic syntax-cost soundness applies to the total executor. |
+| `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | The partial checker certifies the exact syntax-derived budget. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -326,7 +356,9 @@ finished physical theory.
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
 | 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
-| 7–11 | Causal, computational, thermal, quantum, and higher layers | **OPEN RESEARCH** |
+| 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
+| 7, causal | Finite DAG mechanisms and interventions | **OPEN RESEARCH** |
+| 8–11 | Thermal, quantum, bicategorical, and univalent layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -340,15 +372,18 @@ Implemented model support is intentionally narrow:
 | Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
 | Mathlib `Stoch` bridge, finite discrete image | Yes | Yes, up to canonical isomorphism | Semantic layer | Faithful Markov-kernel interpretation; source matrices stay executable |
 | Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Blackwell order respects `FinStoch` products; finite minima, resource budgets, task-relative value |
+| Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
+| `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
 in Mathlib `Stoch`, and its exact finite decision layer has compiled Blackwell,
 Bayes-risk, resource, and semantic-value theorems. The converse finite
 Blackwell--Sherman--Stein representation theorem, general measurable decision
-problems, generic copy/discard and convex interfaces, thermal structure,
-quantum channels, and univalent or higher-categorical structure are **not
-implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
+problems, finite DAG interventions, native monoidal packaging for computation,
+generic copy/discard and convex interfaces, thermal structure, quantum
+channels, and univalent or higher-categorical structure are **not implemented**.
+See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
 statements. There are currently no registered conjectures.
 
@@ -386,6 +421,10 @@ flowchart LR
   FR --> RR["Resource-bounded decision risk"]
   RR --> SV["Task-relative semantic value"]
   BW --> SB
+  CR["Step/query/storage/gate resources"] --> TC["Total computation category"]
+  TC --> PC["Option Kleisli partial category"]
+  TC --> CE["Shared typed computation example"]
+  PC --> CE
 ```
 
 | Layer | Main modules | Responsibility |
@@ -394,7 +433,7 @@ flowchart LR
 | Process capabilities | `Ript.Core.*` | Sequential, tensor, structural cost laws, and post-processing simulation |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, Blackwell comparison, and decision risk |
+| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability and decisions, and total/partial computation |
 | Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, and exact decision values |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
@@ -424,7 +463,9 @@ decision, and `Stoch` theorem proofs also report `Classical.choice` through
 Mathlib's generic finite-sum, finite-function, measure, and category
 infrastructure. Runtime data is supplied by explicit computational `Fintype`
 and `DecidableEq` values: finite channels, finite risks, budgeted risks, and
-semantic values are executable exact `ℚ≥0` data. Noncomputability appears only
+semantic values are executable exact `ℚ≥0` data. Total functions, `Option`
+failure, resource vectors, and computation budget checks are also executable.
+Noncomputability appears only
 in the measure-theoretic `Stoch`/semantic-Bayes-risk boundary. The audit reports
 no compiler-trust escape or placeholder-proof axiom.
 
@@ -537,6 +578,11 @@ falls from `1/2` to `0` when the budget grows from `0` to `1`. Its task value is
 exactly `1/2` for guessing and `0` for a zero-loss irrelevant task. Six exact
 `#eval decide` contracts all print `true` and are checked by CI.
 
+`Ript/Examples/SimpleComputation.lean` executes the same typed program in the
+total and `Option`-partial categories. It computes the exact resource vector
+`(steps, queries, storage, gates) = (3, 1, 0, 1)`, exercises success and failure,
+and checks both model budgets. Seven `#eval decide` contracts print `true`.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -557,6 +603,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- or, for Blackwell order and task-relative decision value:
 import Ript.Models.Decision.SemanticValue
+-- or, for resource-aware total and partial computation:
+import Ript.Models.Computation.Partial
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -570,7 +618,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Deterministic models, exact finite probability, the Mathlib `Stoch` bridge, and finite decision theory |
+| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, and total/partial computation models |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -620,6 +668,8 @@ force-pushes and branch deletion are disabled.
 9. **Charge computation explicitly.** A post-processing becomes a resource
    comparison only after a reduction supplies both its decision-quality bound
    and additive cost overhead.
+10. **Do not confuse formal cost with elapsed time.** Computation resources are
+    semantic annotations with proved composition laws, not performance claims.
 
 ## Roadmap
 
@@ -647,6 +697,9 @@ updated assumption audit.
 - [x] Resource-bounded decision risk, budget monotonicity, and additive-overhead reductions
 - [x] Task-relative semantic value, equivalence, garbling, budget, baseline, and task-irrelevance laws
 - [x] Executable perfect-versus-uninformative Boolean decision example
+- [x] Four-coordinate computation resource and sound executable budget checker
+- [x] Total and `Option`-partial categories with exact serial and parallel costs
+- [x] Product bifunctors, interchange, resource-preserving total embedding, and typed example
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -654,6 +707,8 @@ updated assumption audit.
 - [ ] Generic copy/discard capability interfaces beyond the finite stochastic model
 - [ ] Stochastic semantics over general measurable spaces beyond the finite discrete image
 - [ ] Convex and causal structure
+- [ ] Finite DAG causal mechanisms, normalized joint distribution, and interventions
+- [ ] Native monoidal packaging for the total and partial computation categories
 - [ ] Converse finite Blackwell--Sherman--Stein representation theorem
 - [ ] General measurable-space decision problems beyond exact finite data
 - [ ] Rich computational cost models and operationally validated reduction costs
@@ -719,6 +774,13 @@ No. Ript's current `semanticValue` is a decision-theoretic risk improvement
 relative to a specified baseline. Changing the prior, action space, loss, or
 budget can change the value of the same experiment. No equality with Shannon
 mutual information is claimed.
+
+### Does Ript model real program runtime?
+
+No. It models declared formal bounds for steps, queries, storage, and gates.
+The total and partial executors prove exact accounting for their serial and
+parallel operations, but no theorem identifies these units with elapsed time,
+machine memory, or a particular hardware cost model.
 
 ### Does the monoidal layer imply copying or discarding?
 

@@ -17,11 +17,11 @@ Ript 形式化了 **Resource-Indexed Information Process Theory（资源索引�
 本项目严格按层推进。目前已经包含精确、可执行的有限随机模型、其有限分布 Kleisli 表示，
 以及到 Mathlib 测度论范畴 `Stoch` 的 faithful 语义桥。在此基础上，Ript 还已形式化
 Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风险与任务相对语义价值。
-一般可测空间模型、Blackwell 反向表示定理、热力学、量子理论和高阶范畴仍是研究方向，
-而不是当前能力。
+项目还包含带显式步数、查询、存储与门数量资源的总函数和可失败计算范畴。有限因果干预、
+一般可测空间模型、Blackwell 反向表示定理、热力学、量子理论和高阶范畴仍是研究方向。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–6 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–6 以及 Stage 7 的计算部分已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -206,6 +206,20 @@ Ript 有意分离两层决策理论：
 等价不变性、相对自身基线为零、零损失任务的无关性，以及预算单调性；它**不**把这个任务
 相对量等同于 Shannon 信息。
 
+### 9. 带显式资源的总计算与部分计算
+
+第一版计算资源是 `ComputationResource := Fin 4 → Nat`，四个命名坐标分别表示形式步数、
+oracle 查询、存储上界与电路门数量。这些是数学记账单位，不是实际墙钟时间。加法与比较逐坐标
+进行，可执行的 `ComputationResource.within` 检查器具有 proof-level 可靠性定理。
+
+`Computation.Total` 的态射是带资源向量的总函数；`Computation.Partial` 的态射是
+`X → Option Y`，串行复合是真正的 `Option` Kleisli 复合，因此失败会传播。两者都精确相加
+串行资源，提供独立积 bifunctor，证明 interchange，并精确相加并行资源。目前只宣称已证明的
+bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
+
+函子 `Partial.ofTotal` 把总计算嵌入为必定成功的部分计算，并逐坐标保持资源。一个共享的带类型
+查询/否定/guard 程序在两个模型中执行，通用 `eval_cost_le` 与可执行预算检查都适用。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -255,6 +269,12 @@ Ript 有意分离两层决策理论：
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 认证 reduction 按显式加法 overhead 传递风险。 |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling 不能增加任务相对语义价值。 |
 | `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | 资源价值服从认证 reduction 及其 overhead。 |
+| `Ript.Models.Computation.ComputationResource.within_sound` | 可执行向量检查成功会产生资源上界证明。 |
+| `Ript.Models.Computation.Total.tensor_comp` | 总计算的并行执行满足 interchange。 |
+| `Ript.Models.Computation.Partial.tensor_comp` | `Option` 并行执行满足 Kleisli interchange。 |
+| `Ript.Models.Computation.Partial.ofTotal_resource` | 总计算到部分计算的函子保持全部资源坐标。 |
+| `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | 通用语法成本可靠性适用于总执行器。 |
+| `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | 部分计算检查器认证精确语法预算。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -273,7 +293,9 @@ Ript 有意分离两层决策理论：
 | 4 | 有限分布的 Kleisli 表示 | **PROVED** |
 | 5 | 到 Mathlib `Stoch` 的 faithful 有限信道桥 | **PROVED** |
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
-| 7–11 | 因果、计算、热力学、量子与高阶层 | **OPEN RESEARCH** |
+| 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
+| 7，因果 | 有限 DAG 机制与干预 | **OPEN RESEARCH** |
+| 8–11 | 热力学、量子、双范畴与单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -287,6 +309,8 @@ Ript 有意分离两层决策理论：
 | 有限分布 Kleisli 范畴 | 是 | 否 | 可执行 | 精确 `pure`/`bind`，与 `FinStoch` 范畴等价 |
 | Mathlib `Stoch` 桥的有限离散像 | 是 | 是，在规范同构意义下 | 语义层 | faithful Markov-kernel 解释；源矩阵保持可执行 |
 | 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | Blackwell 序保持 `FinStoch` 积；有限最小值、资源预算与任务相对价值 |
+| 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
+| `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
@@ -329,6 +353,10 @@ flowchart LR
   FR --> RR["资源受限决策风险"]
   RR --> SV["任务相对语义价值"]
   BW --> SB
+  CR["步数/查询/存储/门资源"] --> TC["总计算范畴"]
+  TC --> PC["Option Kleisli 部分计算范畴"]
+  TC --> CE["共享带类型计算示例"]
+  PC --> CE
 ```
 
 | 层 | 主要模块 | 职责 |
@@ -361,7 +389,8 @@ Stage 1 和 Stage 2 的旗舰审计只在必要处报告 Lean 的标准原则 `p
 `Quot.sound`。有限随机、Kleisli、决策与 `Stoch` 定理的证明还会通过 Mathlib 通用有限和、
 有限函数空间、测度及范畴基础设施报告 `Classical.choice`。运行时数据由显式、可计算的
 `Fintype` 和 `DecidableEq` 提供；有限信道、有限风险、预算风险与语义价值都是可执行的精确
-`ℚ≥0` 数据。不可计算性只出现在测度论 `Stoch`/语义 Bayes 风险边界。审计不含编译器信任
+`ℚ≥0` 数据。总函数、`Option` 失败、资源向量和计算预算检查同样可执行。不可计算性只出现在
+测度论 `Stoch`/语义 Bayes 风险边界。审计不含编译器信任
 逃逸或占位证明公理。
 
 查看逐定理输出：
@@ -461,6 +490,10 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 价值恰为 `1/2`，对零损失无关任务则为 `0`。六个精确 `#eval decide` 契约全部输出 `true`，
 并由 CI 检查。
 
+`Ript/Examples/SimpleComputation.lean` 在总计算与 `Option` 部分计算范畴中执行同一个带类型
+程序，得到精确资源向量 `(步数, 查询, 存储, 门) = (3, 1, 0, 1)`，覆盖成功与失败，并检查两个
+模型的预算。七个 `#eval decide` 契约全部输出 `true`。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -480,6 +513,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- 或者导入 Blackwell 序与任务相对决策价值：
 import Ript.Models.Decision.SemanticValue
+-- 或者导入资源感知的总计算与部分计算：
+import Ript.Models.Computation.Partial
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -493,7 +528,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 确定性模型、精确有限概率、Mathlib `Stoch` 语义桥与有限决策论 |
+| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策以及总计算/部分计算模型 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -532,6 +567,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
    才能成为资源比较。
+10. **不把形式成本混同于运行时间。**计算资源是具有已证明复合律的语义标注，不是性能宣称。
 
 ## 路线图
 
@@ -556,6 +592,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 资源受限决策风险、预算单调性与带加法 overhead 的 reduction
 - [x] 任务相对语义价值的等价、garbling、预算、基线与任务无关性定律
 - [x] 完美观察对比无信息观察的可执行布尔决策示例
+- [x] 四坐标计算资源与可靠的可执行预算检查器
+- [x] 具有精确串并行成本的总计算和 `Option` 部分计算范畴
+- [x] 积 bifunctor、interchange、保持资源的总计算嵌入与带类型示例
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
@@ -564,6 +603,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 将复制/丢弃能力接口推广到有限随机模型以外
 - [ ] 超出有限离散像的一般可测空间随机语义
 - [ ] 凸结构与因果结构
+- [ ] 有限 DAG 因果机制、归一化联合分布与干预
+- [ ] 总计算和部分计算范畴的原生幺半群封装
 - [ ] 有限 Blackwell--Sherman--Stein 反向表示定理
 - [ ] 超出精确有限数据的一般可测空间决策问题
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
@@ -615,6 +656,11 @@ garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价�
 
 不等同。当前 `semanticValue` 是相对于指定基线的决策风险改善。改变先验、行动空间、损失或
 预算，都可能改变同一个实验的价值。项目没有声称它与 Shannon 互信息相等。
+
+### Ript 会建模真实程序运行时间吗？
+
+不会。当前建模的是步数、查询、存储和门数量的声明式形式上界。总执行器与部分执行器已证明
+串并行操作的精确记账，但没有定理把这些单位等同于墙钟时间、机器内存或具体硬件成本。
 
 ### 幺半群层是否自动带来复制或丢弃？
 

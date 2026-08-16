@@ -69,6 +69,13 @@ flowchart LR
   SemanticValue --> SimpleDecision["Examples.SimpleDecision"]
   SimpleDecision --> Audit
   SemanticValue --> Audit
+  Resource --> ComputationResource["Models.Computation.Resource"]
+  ComputationResource --> TotalComputation["Models.Computation.Total"]
+  TotalComputation --> PartialComputation["Models.Computation.Partial"]
+  Eval --> SimpleComputation["Examples.SimpleComputation"]
+  TotalComputation --> SimpleComputation
+  PartialComputation --> SimpleComputation
+  SimpleComputation --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -84,7 +91,9 @@ Every node in this graph is an existing compiled module.
 | 4 | Finite-distribution Kleisli representation | PROVED |
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
-| 7-11 | Causal, computational, thermal, quantum, and higher layers | OPEN_RESEARCH |
+| 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
+| 7 (causal) | Finite DAG mechanisms and intervention semantics | OPEN_RESEARCH |
+| 8-11 | Thermal, quantum, bicategorical, and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -877,6 +886,150 @@ quantity.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Decision/SemanticValue.lean`.
 
+## Stage-7 computation flagship theorem records
+
+The computation half of Stage 7 separates formal cost from physical runtime.
+Its resource is a pointwise ordered four-coordinate vector for abstract steps,
+queries, storage, and gates. Total functions and `Option`-valued partial
+functions form separate executable categories. Both have exact additive serial
+cost, an independent-product bifunctor with exact additive parallel cost, and
+an executable budget check connected to the generic `WithinBudget` interface.
+The causal half of Stage 7 remains open and is not covered by this status.
+
+### `Ript.Models.Computation.ComputationResource.within_sound`
+
+- Natural-language statement: a successful executable componentwise resource
+  check yields the corresponding proof-level order judgment.
+- Lean type:
+
+  ```lean
+  theorem ComputationResource.within_sound
+      {cost budget : ComputationResource}
+      (h : ComputationResource.within cost budget = true) : cost ≤ budget
+  ```
+
+- Prerequisite definitions: `ComputationResource := Fin 4 → Nat` and the
+  decidable Boolean checker `ComputationResource.within`.
+- Prerequisite lemmas: `ComputationResource.within_eq_true_iff`.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; the checker evaluates four natural-number comparisons.
+- Kernel assumptions: `[propext]`.
+- Source: `Ript/Models/Computation/Resource.lean`.
+
+### `Ript.Models.Computation.Total.tensor_comp`
+
+- Natural-language statement: independent parallel execution of total
+  computations satisfies interchange with serial function composition.
+- Lean type:
+
+  ```lean
+  theorem Total.tensor_comp
+      (f : A ⟶ B) (f' : B ⟶ C) (g : D ⟶ E) (g' : E ⟶ F) :
+      Total.tensor (f ≫ f') (g ≫ g') =
+        Total.tensor f g ≫ Total.tensor f' g'
+  ```
+
+- Prerequisite definitions: the total-function category, product interface,
+  exact additive morphism resources, and `Total.tensor`.
+- Prerequisite lemmas: function extensionality and commutativity of pointwise
+  resource addition.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; both sides execute the same pair of total functions.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Models/Computation/Total.lean`.
+
+### `Ript.Models.Computation.Partial.tensor_comp`
+
+- Natural-language statement: independent parallel execution of possibly
+  failing computations satisfies interchange with `Option` Kleisli
+  composition.
+- Lean type:
+
+  ```lean
+  theorem Partial.tensor_comp
+      (f : A ⟶ B) (f' : B ⟶ C) (g : D ⟶ E) (g' : E ⟶ F) :
+      Partial.tensor (f ≫ f') (g ≫ g') =
+        Partial.tensor f g ≫ Partial.tensor f' g'
+  ```
+
+- Prerequisite definitions: the costed `Option` Kleisli category,
+  `Partial.pairOptions`, and exact additive resource composition.
+- Prerequisite lemmas: exhaustive `Option` failure/success cases and
+  commutativity of pointwise resource addition.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; failure propagation and successful pairs reduce directly.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Models/Computation/Partial.lean`.
+
+### `Ript.Models.Computation.Partial.ofTotal_resource`
+
+- Natural-language statement: embedding a total function as an
+  always-successful partial computation preserves every formal resource
+  coordinate exactly.
+- Lean type:
+
+  ```lean
+  theorem Partial.ofTotal_resource {X Y : Total.Object} (f : X ⟶ Y) :
+      (Partial.ofTotal.map f).resource = f.resource
+  ```
+
+- Prerequisite definitions: `Partial.ofTotalObject`, `Partial.ofTotalHom`, and
+  the functor `Partial.ofTotal`.
+- Prerequisite lemmas: none; preservation is definitional.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; the embedding wraps the result in `some` and copies cost.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Models/Computation/Partial.lean`.
+
+### `Ript.Examples.SimpleComputation.total_interpreter_cost_sound`
+
+- Natural-language statement: the generic syntax interpreter bounds the
+  concrete total executor by the program's four-coordinate syntax cost.
+- Lean type:
+
+  ```lean
+  theorem total_interpreter_cost_sound :
+      processCost (R := ComputationResource)
+        (eval totalInterpretation pipeline) ≤ pipeline.syntaxCost
+  ```
+
+- Prerequisite definitions: a typed query/negation/guard signature, its total
+  interpretation, and the generic recursive evaluator.
+- Prerequisite lemmas: `Ript.Semantics.eval_cost_le`.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; the interpreted program and exact resource vector execute.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Examples/SimpleComputation.lean`.
+
+### `Ript.Examples.SimpleComputation.partial_budget_checker_sound`
+
+- Natural-language statement: the executable partial-model checker certifies
+  the interpreted program at its exact syntax-computed resource budget.
+- Lean type:
+
+  ```lean
+  theorem partial_budget_checker_sound :
+      WithinBudget pipeline.syntaxCost
+        (eval partialInterpretation pipeline)
+  ```
+
+- Prerequisite definitions: the typed program, its `Option` interpretation,
+  exact resource equality, and `Partial.withinBudget`.
+- Prerequisite lemmas: `Partial.withinBudget_sound` and
+  `partial_pipeline_resource`.
+- Status: `PROVED`.
+- Classical choice: yes in the audited proof that the closed finite Boolean
+  comparison reduces to true; no choice produces runtime data.
+- Computable: the checker and interpreted program are executable; the theorem
+  is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleComputation.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -935,3 +1088,14 @@ quantity.
 17. Stage 6 proves the forward finite Blackwell implication. The converse
     finite Blackwell--Sherman--Stein representation theorem remains open and
     is not claimed by any current declaration.
+18. Computation resources are explicit formal bounds on steps, oracle queries,
+    storage, and gates. They are not identified with observed wall-clock time,
+    and their pointwise function representation reuses Mathlib's ordered
+    additive instances without a stronger custom algebra.
+19. Total and possibly failing computations are separate categories. The
+    `Option` model uses genuine Kleisli composition and receives total
+    computations through an always-successful, resource-preserving functor.
+20. Parallel computation is currently exposed as a proved product bifunctor,
+    not as a native `MonoidalCategory` instance. Associators, unitors, and a
+    packaged parallel-cost capability remain future interface work and are not
+    implied by the current model matrix.

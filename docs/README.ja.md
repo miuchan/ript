@@ -17,13 +17,14 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 本プロジェクトは各層を厳密な順序で構築します。現在は、正確で実行可能な有限確率モデル、
 その有限分布 Kleisli 表現、そして Mathlib の測度論的圏 `Stoch` への忠実な意味論的橋渡しを
 含みます。その上に、Blackwell 比較、正確で実行可能な有限 Bayes リスク、資源制約付き
-意思決定リスク、タスク相対的な意味価値も形式化しました。一般の可測空間モデル、Blackwell
-逆表現定理、熱力学、量子理論、高次圏は引き続き研究課題です。
+意思決定リスク、タスク相対的な意味価値も形式化しました。また、明示的なステップ・問い合わせ・
+記憶域・ゲート資源を持つ全域計算と失敗可能計算の圏も含みます。一般の可測空間モデル、
+Blackwell 逆表現定理、有限因果介入、熱力学、量子理論、高次圏は研究課題です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 6 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 6、および Stage 7 の計算部分は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -226,6 +227,20 @@ Ript は二つの意思決定層を意図的に分離します。
 単調性、情報同値での不変性、基準自身でのゼロ、ゼロ損失タスクでの無関連性、予算単調性を
 証明済みです。このタスク相対量を Shannon 情報と同一視してはいません。
 
+### 9. 明示的資源を持つ全域計算と部分計算
+
+最初の計算資源は `ComputationResource := Fin 4 → Nat` で、形式的ステップ数、oracle
+問い合わせ、記憶域上界、回路ゲート数を表します。これは壁時計時間ではありません。加算と比較は
+成分ごとで、実行可能な `ComputationResource.within` 検査には証明レベルの健全性があります。
+
+`Computation.Total` の射は資源ベクトル付き全域関数です。`Computation.Partial` の射は
+`X → Option Y` で、直列合成は本物の `Option` Kleisli 合成なので失敗が伝播します。両圏は
+直列資源を正確に加算し、独立積 bifunctor、interchange、正確な並列資源加算を備えます。
+現時点では native `MonoidalCategory` ではなく、証明済み bifunctor として公開します。
+
+`Partial.ofTotal` は全域計算を必ず成功する部分計算へ埋め込み、全資源成分を保存します。同じ
+型付き query/negation/guard プログラムを両モデルで実行し、`eval_cost_le` と予算検査を再利用します。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -276,6 +291,12 @@ Ript は二つの意思決定層を意図的に分離します。
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 認証付き reduction は明示的な加法 overhead とともにリスクを移送します。 |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling はタスク相対的意味価値を増やしません。 |
 | `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | 資源価値は認証付き reduction と overhead に従います。 |
+| `Ript.Models.Computation.ComputationResource.within_sound` | 実行可能ベクトル検査の成功から資源上界が従います。 |
+| `Ript.Models.Computation.Total.tensor_comp` | 全域計算の並列実行は interchange を満たします。 |
+| `Ript.Models.Computation.Partial.tensor_comp` | `Option` 並列実行は Kleisli interchange を満たします。 |
+| `Ript.Models.Computation.Partial.ofTotal_resource` | 全域から部分への関手は全資源成分を保存します。 |
+| `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | 一般の構文コスト健全性が全域実行器に適用されます。 |
+| `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | 部分計算検査器が正確な構文予算を認証します。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -295,7 +316,9 @@ Ript は二つの意思決定層を意図的に分離します。
 | 4 | 有限分布の Kleisli 表現 | **PROVED** |
 | 5 | Mathlib `Stoch` への忠実な有限チャネル橋 | **PROVED** |
 | 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
-| 7–11 | 因果・計算・熱・量子・高次の層 | **OPEN RESEARCH** |
+| 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
+| 7、因果 | 有限 DAG 機構と介入 | **OPEN RESEARCH** |
+| 8–11 | 熱・量子・双圏・ユニバレント層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -309,6 +332,8 @@ Ript は二つの意思決定層を意図的に分離します。
 | 有限分布 Kleisli 圏 | 可 | 不可 | 実行可能 | 正確な `pure`/`bind`、`FinStoch` と圏同値 |
 | Mathlib `Stoch` 橋の有限離散像 | 可 | 可（標準同型を介して） | 意味論層 | 忠実な Markov-kernel 解釈；元の行列は実行可能 |
 | 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | Blackwell 順序は `FinStoch` 積を保存；有限最小値、資源予算、タスク相対価値 |
+| 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
+| `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
@@ -352,6 +377,10 @@ flowchart LR
   FR --> RR["資源制約付き意思決定リスク"]
   RR --> SV["タスク相対的意味価値"]
   BW --> SB
+  CR["ステップ/問い合わせ/記憶域/ゲート"] --> TC["全域計算圏"]
+  TC --> PC["Option Kleisli 部分計算圏"]
+  TC --> CE["共有型付き計算例"]
+  PC --> CE
 ```
 
 | 層 | 主なモジュール | 責務 |
@@ -385,7 +414,8 @@ Stage 1 と Stage 2 の主要定理の監査では、必要な箇所に Lean 標
 一般的な有限和・有限関数空間・測度・圏論基盤を通して `Classical.choice` も報告されます。
 実行時データは列挙と決定可能等式を明示的に保持し、有限チャネル、有限リスク、予算付きリスク、
 意味価値は正確な `ℚ≥0` データとして実行可能です。非計算性は測度論的 `Stoch`／意味論的
-Bayes リスク境界だけに現れます。
+Bayes リスク境界だけに現れます。全域関数、`Option` 失敗、資源ベクトル、計算予算検査も
+実行可能です。
 `AXIOMS.md` は各定理の実際の監査出力を完全一致で固定します。
 
 定理ごとの正確な出力は、次で確認できます。
@@ -491,6 +521,10 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 無関係タスクでは `0` です。6 個の正確な `#eval decide` 契約はすべて `true` を出力し、CI が
 検査します。
 
+`Ript/Examples/SimpleComputation.lean` は同じ型付きプログラムを全域圏と `Option` 部分圏で
+実行し、正確な資源ベクトル `(ステップ, 問い合わせ, 記憶域, ゲート) = (3, 1, 0, 1)`、成功・
+失敗、両モデルの予算を検査します。7 個の `#eval decide` はすべて `true` です。
+
 ## Lean 依存パッケージとして使う
 
 Ript はルートモジュール `Ript` を公開します。プレリリース期間中は、変化するブランチではなく、
@@ -511,6 +545,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- または Blackwell 順序とタスク相対的意思決定価値を使う場合：
 import Ript.Models.Decision.SemanticValue
+-- または資源付き全域・部分計算：
+import Ript.Models.Computation.Partial
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -524,7 +560,7 @@ import Ript.Models.Decision.SemanticValue
 | [`Ript/Resource/`](../Ript/Resource/) | 資源代数と検証済み予算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
-| [`Ript/Models/`](../Ript/Models/) | 決定論モデル、正確な有限確率、Mathlib `Stoch` 橋、有限意思決定理論 |
+| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・全域／部分計算モデル |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -563,6 +599,8 @@ import Ript.Models.Decision.SemanticValue
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
    加法的コスト overhead の両方を与えなければなりません。
+10. **形式コストを経過時間と混同しない。** 計算資源は合成則を証明した意味論的注釈であり、
+    性能測定の主張ではありません。
 
 ## ロードマップ
 
@@ -588,6 +626,9 @@ import Ript.Models.Decision.SemanticValue
 - [x] 資源制約付き意思決定リスク、予算単調性、加法 overhead 付き reduction
 - [x] タスク相対的意味価値の同値・garbling・予算・基準・タスク無関連性の法則
 - [x] 完全観測と無情報観測を比較する実行可能 Boolean 意思決定例
+- [x] 4 成分計算資源と健全な実行可能予算検査
+- [x] 正確な直列・並列コストを持つ全域圏と `Option` 部分圏
+- [x] 積 bifunctor、interchange、資源保存全域埋め込み、型付き例
 - [x] 再現可能な CI、宣言 lint、仮定許可リスト
 
 ### 未解決の研究トラック
@@ -595,6 +636,8 @@ import Ript.Models.Decision.SemanticValue
 - [ ] 有限確率モデル以外への、意味論的に正当化されたコピー・破棄能力の拡張
 - [ ] 有限離散像を越える一般可測空間上の確率意味論
 - [ ] 凸構造と因果構造
+- [ ] 有限 DAG 因果機構、正規化同時分布、介入
+- [ ] 全域・部分計算圏の native モノイダル構造
 - [ ] 有限 Blackwell--Sherman--Stein 逆表現定理
 - [ ] 正確な有限データを越える一般可測空間の意思決定問題
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
@@ -650,6 +693,12 @@ import Ript.Models.Decision.SemanticValue
 
 いいえ。現在の `semanticValue` は、指定した基準に対する意思決定リスクの改善です。事前分布、
 行動空間、損失、予算を変えると、同じ実験の価値も変わり得ます。Shannon 相互情報量との等式は
+主張していません。
+
+### Ript は実際のプログラム実行時間をモデル化しますか？
+
+いいえ。ステップ、問い合わせ、記憶域、ゲートの宣言された形式上界をモデル化します。直列・
+並列演算の正確な会計は証明済みですが、壁時計時間、実機メモリ、特定ハードウェアとの同一視は
 主張していません。
 
 ### モノイダル層があればコピーや破棄も可能ですか？
