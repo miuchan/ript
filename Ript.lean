@@ -20,6 +20,7 @@ import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
+import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
 import Ript.Higher.Coherence
 import Ript.Higher.Equivalence
 import Ript.Higher.ModelBicategory

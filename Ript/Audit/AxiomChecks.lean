@@ -165,6 +165,9 @@ set_option autoImplicit false
 #print axioms Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveStrictSegal
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv
+#print axioms CategoryTheory.Nerve.kanComplex
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveKanComplex
+#print axioms Ript.Univalent.UniverseModel.interfaceNerveHornFiller_restricts
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveQuasicategory
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv
@@ -172,6 +175,7 @@ set_option autoImplicit false
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite
 #print axioms Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso
 #print axioms Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv
+#print axioms Ript.Examples.UnivalentSimplicial.swapCancellationKanFiller_restricts
 #print axioms Ript.Examples.UnivalentSimplicial.swapCancellation_faces
 #print axioms Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip
 #print axioms Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality

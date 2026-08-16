@@ -120,12 +120,14 @@ flowchart LR
   UnivalentCompletion --> UnivalentPresheaf["Univalent.Presheaf"]
   UnivalentCompletionExample --> UnivalentPresheafExample["Examples.UnivalentPresheaf"]
   UnivalentPresheaf --> UnivalentPresheafExample
+  GroupoidNerve["ForMathlib.GroupoidNerve"] --> UnivalentSimplicial["Univalent.Simplicial"]
   UnivalentPresheaf --> UnivalentSimplicial["Univalent.Simplicial"]
   UnivalentPresheafExample --> UnivalentSimplicialExample["Examples.UnivalentSimplicial"]
   UnivalentSimplicial --> UnivalentSimplicialExample
   UnivalentExample --> Audit
   UnivalentCompletionExample --> Audit
   UnivalentPresheafExample --> Audit
+  GroupoidNerve --> Audit
   UnivalentSimplicialExample --> Audit
 ```
 
@@ -151,8 +153,8 @@ Every node in this graph is an existing compiled module.
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
-| 12 (simplicial foundation) | Categorical nerve, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
-| 12 (higher extension) | Kan/groupoid horn filling, complete Segal or Rezk completion, and localization beyond the strict categorical nerve | OPEN_RESEARCH |
+| 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
+| 12 (higher extension) | Complete Segal or Rezk completion and localization beyond the strict categorical nerve | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -2573,7 +2575,7 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 
 ## Stage-12 simplicial-nerve flagship records
 
-### `InterfaceNerve`, strict Segal reconstruction, and truncation control
+### `InterfaceNerve`, Kan filling, strict Segal reconstruction, and truncation control
 
 - Natural-language statement: the ordinary categorical nerve of the internal
   interface groupoid is a genuine simplicial set. Every `n`-simplex is
@@ -2593,6 +2595,18 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   def UniverseModel.interfaceNerveSegalEquiv (n : ℕ) :
       M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
 
+  instance UniverseModel.interfaceNerveKanComplex :
+      SSet.KanComplex M.InterfaceNerve
+
+  noncomputable def UniverseModel.interfaceNerveHornFiller
+      (hornMap : (Λ[n + 1, i] : SSet) ⟶ M.InterfaceNerve) :
+      Δ[n + 1] ⟶ M.InterfaceNerve
+
+  theorem UniverseModel.interfaceNerveHornFiller_restricts
+      (hornMap : (Λ[n + 1, i] : SSet) ⟶ M.InterfaceNerve) :
+      hornMap = Λ[n + 1, i].ι ≫
+        UniverseModel.interfaceNerveHornFiller M hornMap
+
   instance UniverseModel.interfaceNerveQuasicategory :
       Quasicategory M.InterfaceNerve
 
@@ -2602,15 +2616,43 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 
 - Prerequisites: the Stage-11 groupoid instance and Mathlib
   `CategoryTheory.nerve`, `CategoryTheory.Nerve.strictSegal`,
-  `AlgebraicTopology.Quasicategory.Nerve`, and simplicial coskeleta.
+  `AlgebraicTopology.Quasicategory.Nerve`, simplicial coskeleta, and the
+  project-local ForMathlib groupoid-nerve Kan theorem.
 - Status: `PROVED`; the explicit `spineEquiv` gives both reconstruction round
-  trips rather than only proposition-level existence.
+  trips rather than only proposition-level existence, while the Kan instance
+  supplies fillers for every inner and outer horn.
 - Computable: semantic proof layer. Explicit low-dimensional simplices are
   data, but Mathlib's generic nerve infrastructure is not exposed as a finite
   executable model API.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`; direct audits
   of the corresponding generic Mathlib declarations report the same list.
 - Source: `Ript/Univalent/Simplicial.lean`.
+
+### `CategoryTheory.Nerve.kanComplex`
+
+- Natural-language statement: the ordinary categorical nerve of every
+  groupoid satisfies the complete Kan condition. The proof covers all horn
+  dimensions rather than appealing to an unavailable Mathlib theorem.
+- Lean type:
+
+  ```lean
+  theorem CategoryTheory.Nerve.kanComplex
+      (C : Type u) [Groupoid.{v} C] :
+      SSet.KanComplex (CategoryTheory.nerve C)
+  ```
+
+- Construction: one-dimensional horns use degenerate identity edges;
+  two-dimensional outer horns solve for a missing edge using an inverse;
+  three-dimensional outer horns cancel an isomorphism; inner horns use the
+  strict-Segal quasicategory theorem; dimensions at least four reconstruct a
+  simplex from the horn spine and its consecutive triangles.
+- Status: `PROVED`; both outer orientations and every dimension are handled.
+- Computable: proposition-level semantic theorem. The exposed chosen filler is
+  noncomputable because Mathlib packages `KanComplex` as a lifting property and
+  extracts a witness with choice.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`, confirmed by
+  `Ript/Audit/AxiomChecks.lean`.
+- Source: `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean`.
 
 ### Vertices, edges, composition 2-simplices, and inverses
 
@@ -2689,11 +2731,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   structural-equivalence decoding recovers the original swap. Together with
   its inverse it bounds a 2-simplex with forward, inverse, and reflexive faces;
   strict Segal reconstruction returns that simplex exactly. The edge exists
-  while the two raw tensor code trees remain unequal.
+  while the two raw tensor code trees remain unequal. Its zeroth outer horn
+  omits the inverse edge, and the chosen Kan filler is proved to restrict to
+  that horn.
 - Status: `PROVED`; exact cardinality invariance evaluates to `true` and is
   enforced by `scripts/check-examples.sh`.
 - Kernel assumptions: the edge, face, Segal round-trip, and nonreflection
-  theorems use `[propext, Classical.choice, Quot.sound]`; executable
+  theorems, together with the Kan-filler restriction theorem, use
+  `[propext, Classical.choice, Quot.sound]`; executable
   cardinality preservation uses `[propext]`.
 - Source: `Ript/Examples/UnivalentSimplicial.lean`.
 
@@ -2707,8 +2752,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   not make isomorphic presheaves externally equal and is not a complete Segal
   or Rezk object.
 - The simplicial interface nerve is the strict categorical nerve of a
-  1-groupoid. Strict Segal, quasicategory, and 2-coskeletal results do not by
-  themselves prove the full Kan condition, complete-Segal completeness, or a
+  1-groupoid. Its complete Kan condition is proved, but Kan filling does not
+  by itself establish complete-Segal completeness, Rezk completion, or a
   localization universal property.
 - None of the completion, envelope, or nerve layers is a Rezk completion or a
   full presheaf model of the resource-process bicategory.
@@ -2724,10 +2769,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   arbitrary higher identity types or higher inductive types.
 - The quotient groupoid is not advertised as a Rezk completion of the full
   resource-process bicategory.
-- Representable presheaf semantics and a strict simplicial nerve now have
-  proved foundations, but Kan horn filling, Rezk completeness, presheaf
-  localization, and genuinely higher identity remain Stage-12 research
-  targets; the proved foundations above do not discharge them.
+- Representable presheaf semantics and a strict Kan simplicial nerve now have
+  proved foundations, but Rezk completeness, presheaf localization, and
+  genuinely higher identity remain Stage-12 research targets; the proved
+  foundations above do not discharge them.
 
 ## Design decisions
 
@@ -2912,9 +2957,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     a class instance. The `interfaceNerveSegalEquiv` API therefore exposes both
     round trips between an `n`-simplex and its composable spine.
 49. Quasicategory and 2-coskeletal are theorem-backed consequences of the
-    strict categorical nerve. They are not renamed as Kan, complete Segal, or
-    Rezk properties: each stronger condition remains a separate named proof
-    obligation.
+    strict categorical nerve. Kan is proved separately, with a named theorem
+    covering low-dimensional outer horns rather than being inferred from the
+    inner-horn result. Complete Segal and Rezk properties remain distinct open
+    proof obligations.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
     edges, and composition simplices are still constructible explicitly, and

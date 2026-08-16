@@ -1,5 +1,6 @@
 import Mathlib.AlgebraicTopology.Quasicategory.Nerve
 import Mathlib.AlgebraicTopology.SimplicialSet.NerveAdjunction
+import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
 import Ript.Univalent.Presheaf
 
 /-!
@@ -8,7 +9,9 @@ import Ript.Univalent.Presheaf
 This file adds genuine simplicial data to the internally univalent interface
 model.  It takes the ordinary categorical nerve of `UniverseModel.Object` and
 specializes Mathlib's strict Segal, quasicategory, 2-coskeletal, and homotopy-
-category theorems to Ript's internal groupoid.
+category theorems to Ript's internal groupoid.  It also applies Ript's
+formalized groupoid-nerve theorem to prove the complete Kan horn-filling
+condition.
 
 The low-dimensional semantics are exposed explicitly.
 
@@ -20,11 +23,12 @@ The low-dimensional semantics are exposed explicitly.
 * Every edge has a groupoid inverse, and the corresponding 2-simplex has a
   degenerate composite face.
 * Every `n`-simplex is uniquely reconstructed from its spine.
+* Every horn, including both outer horns, has a filler.
 
 This is a strict 1-categorical nerve.  It is a simplicial set and a
-quasicategory, but this file does not prove the Kan horn-filling condition,
-construct a complete Segal space, localize a presheaf category, or identify
-equivalent external Lean types.  In particular, it is not a Rezk completion.
+Kan complex, but this file does not construct a complete Segal space,
+localize a presheaf category, or identify equivalent external Lean types.  In
+particular, it is not a Rezk completion.
 -/
 
 set_option autoImplicit false
@@ -56,6 +60,11 @@ reconstruction data. -/
 instance interfaceNerveIsStrictSegal : M.InterfaceNerve.IsStrictSegal :=
   (interfaceNerveStrictSegal M).isStrictSegal
 
+/-- The internal interface nerve is a Kan complex because `M.Object` is a
+groupoid and the nerve of every groupoid has fillers for all horns. -/
+instance interfaceNerveKanComplex : KanComplex M.InterfaceNerve :=
+  CategoryTheory.Nerve.kanComplex M.Object
+
 /-- The internal interface nerve is a quasicategory because every strict Segal
 simplicial set has unique inner horn fillers. -/
 instance interfaceNerveQuasicategory : Quasicategory M.InterfaceNerve :=
@@ -72,6 +81,20 @@ spines of edges. -/
 def interfaceNerveSegalEquiv (n : ℕ) :
     M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n :=
   (interfaceNerveStrictSegal M).spineEquiv n
+
+/-- A chosen extension of an arbitrary horn in the internal interface nerve.
+The choice is noncomputable because Mathlib packages the Kan condition as a
+lifting property in `Prop`. -/
+noncomputable def interfaceNerveHornFiller {n : ℕ} {i : Fin (n + 2)}
+    (hornMap : (Λ[n + 1, i] : SSet) ⟶ M.InterfaceNerve) :
+    Δ[n + 1] ⟶ M.InterfaceNerve :=
+  (KanComplex.hornFilling hornMap).choose
+
+/-- The chosen Kan filler restricts to the supplied horn map. -/
+theorem interfaceNerveHornFiller_restricts {n : ℕ} {i : Fin (n + 2)}
+    (hornMap : (Λ[n + 1, i] : SSet) ⟶ M.InterfaceNerve) :
+    hornMap = Λ[n + 1, i].ι ≫ interfaceNerveHornFiller M hornMap :=
+  (KanComplex.hornFilling hornMap).choose_spec
 
 /-- Vertices of the internal nerve are exactly internal interface objects. -/
 def interfaceNerveVertexEquiv :

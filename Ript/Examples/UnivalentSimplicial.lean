@@ -50,6 +50,32 @@ theorem swapEdge_decodes_equiv :
 def swapCancellationSimplex : model.InterfaceNerve _⦋2⦌ :=
   UniverseModel.interfaceNerveInverseCompositionSimplex model swapIdentity
 
+/-- The zeroth outer horn of the cancellation simplex.  It exposes the
+forward symmetry and the reflexive composite while omitting the inverse edge
+that a Kan filler must supply. -/
+def swapCancellationOuterHorn :
+    (Λ[2, (0 : Fin 3)] : SSet) ⟶ model.InterfaceNerve :=
+  Λ[2, (0 : Fin 3)].ι ≫ SSet.yonedaEquiv.symm swapCancellationSimplex
+
+/-- The explicit cancellation simplex fills its zeroth outer horn. -/
+theorem swapCancellationSimplex_fills_outerHorn :
+    swapCancellationOuterHorn =
+      Λ[2, (0 : Fin 3)].ι ≫ SSet.yonedaEquiv.symm swapCancellationSimplex :=
+  rfl
+
+/-- The canonical noncomputable filler supplied by the Kan instance for the
+Boolean cancellation horn. -/
+noncomputable def swapCancellationKanFiller : Δ[2] ⟶ model.InterfaceNerve :=
+  UniverseModel.interfaceNerveHornFiller model swapCancellationOuterHorn
+
+/-- The Kan filler for Boolean tensor symmetry restricts to the original
+outer horn. -/
+theorem swapCancellationKanFiller_restricts :
+    swapCancellationOuterHorn =
+      Λ[2, (0 : Fin 3)].ι ≫ swapCancellationKanFiller :=
+  UniverseModel.interfaceNerveHornFiller_restricts model
+    swapCancellationOuterHorn
+
 /-- The three faces of the cancellation 2-simplex are the forward symmetry,
 its inverse, and reflexivity. -/
 theorem swapCancellation_faces :

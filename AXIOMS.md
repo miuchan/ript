@@ -143,6 +143,9 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | `[propext]` | `Ript/Examples/UnivalentPresheaf.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
+| `CategoryTheory.Nerve.kanComplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `Ript.Univalent.UniverseModel.interfaceNerveKanComplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
+| `Ript.Univalent.UniverseModel.interfaceNerveHornFiller_restricts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
@@ -150,6 +153,7 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
+| `Ript.Examples.UnivalentSimplicial.swapCancellationKanFiller_restricts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_faces` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
@@ -284,16 +288,22 @@ coherence.
 The simplicial layer then specializes Mathlib's ordinary categorical nerve to
 the internal groupoid. Its explicit spine equivalence proves the strict Segal
 condition; Mathlib derives a quasicategory instance and 2-coskeletality, and
-the homotopy-category/nerve counit recovers the source groupoid. The base
+the homotopy-category/nerve counit recovers the source groupoid. The
+ForMathlib extension proves the missing general theorem that the nerve of a
+groupoid is Kan: degenerate identities fill dimension one, inverses and
+cancellation fill low-dimensional outer horns, strict-Segal quasicategory
+structure fills inner horns, and spine reconstruction handles dimension four
+and above. The base
 Mathlib declarations `CategoryTheory.Nerve.strictSegal`,
 `CategoryTheory.Nerve.quasicategory`, `SSet.StrictSegal.isCoskeletal`, and
 `CategoryTheory.nerveFunctorCompHoFunctorIso` each audit as `[propext,
 Classical.choice, Quot.sound]`, which explains the identical footprint of the
 new semantic declarations. The executable syntax remains upstream and does
-not consume nerve reconstruction data. This categorical nerve is not claimed
-to be a Kan complex, complete Segal space, presheaf localization, or Rezk
-completion; those require additional horn-filling, completeness, or
-localization results not supplied here.
+not consume nerve reconstruction data. The Kan theorem and chosen-filler
+restriction theorem audit with the same exact list. This categorical nerve is
+not claimed to be a complete Segal space, presheaf localization, or Rezk
+completion; those require additional completeness or localization results not
+supplied here.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that
