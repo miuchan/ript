@@ -29,10 +29,16 @@ mezureblaj kaŭzaj modeloj restas malfermaj. La sekva kompilita tavolo aldonas
 finiajn termikajn sistemojn kun specifitaj ekvilibraj distribuoj, kategorion kaj
 tensora bifunktoron de Gibbs-konservaj ekzaktaj kanaloj, liberajn ekvilibrajn
 preparojn kaj ĝeneralan diverĝencan monotonecon. Aparta semantika tavolo nun
+aldonas plenumeblajn finiajn fermitajn protokolojn kiel ordigitajn listojn de
+Gibbs-konservaj endomorfioj, kun pruvitaj paŝa plenumo, kompleta statspuro kaj
+kongruo inter listkunigo kaj kanalkunmeto. Bulea du-renversa ciklo estas
+nekonstanta kaj ekzakta; ĝenerala teoremo montras ke tia fermita protokolo ne
+povas movi ekvilibron al alia celo. La semantika tavolo
 difinas konkretan finian KL en `ℝ≥0∞`, pruvas ĝian nulvaloron kaj subtenliman
 konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
-konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo kaj
-eksplicitaj banaj/ciklaj protokoloj restas esplorvojoj.
+konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo,
+ban-helpataj viŝprotokoloj kaj laborportaj termodinamikaj cikloj restas
+esplorvojoj.
 Nova realiga tavolo aldonas reelajn
 energiojn kaj pozitivan inversan temperaturon al ne-vakaj finiaj sistemoj,
 konstruas strikt-pozitivajn normaligitajn Gibbs-probablojn kaj atestas kiam
@@ -419,6 +425,16 @@ strukturon. Tensoro konservas produktajn ekvilibrojn kaj plenumas identan leĝon
 kaj interchange, do ĝi formas eksplicitan bifunktoron. La specifita ekvilibro
 de ĉiu objekto ankaŭ estas libera preparo el la termika tensora unuo.
 
+`FiniteClosedProtocol X` estas eksplicita finia operacia protokoltavolo. Ĝi
+plenumas ordigitan liston de Gibbs-konservaj endomorfioj, redonas la kompletan
+statspuron kun ambaŭ finpunktoj, kaj kunmetas ĉiujn paŝojn al unu
+Gibbs-konserva procezo. Lean pruvas ke la paŝa plenumo egalas antaŭenigon tra
+la kunmetita kanalo kaj ke protokola kunigo egalas sinsekvan procezkunmeton.
+Sekve ĉiu finia fermita protokolo fiksas ekvilibron. La Bulea ekzemplo donas la
+nekonstantan ekzaktan ciklon `pure false -> pure true -> pure false` kaj pruvas
+ke neniu finia fermita protokolo ekzakte viŝas la justan ekvilibron. Tio estas
+ferm-sistema limo, ne maleblo de viŝo kun eksplicita bano aŭ baterio.
+
 La diverĝenca tavolo eksplicite montras sian premison. `Divergence Value`
 enhavas statkomparon kune kun pruvita stokasta datumtrakta neegalaĵo. Por ĉiu
 tia diverĝenco kaj Gibbs-konserva `T`, Ript pruvas
@@ -525,8 +541,9 @@ La kosto estas nenegativa kaj monotone nepligrandiĝas kun la permesita eraro;
 je nula eraro ĝi estas `log 2 / β`, kaj je eraro `1/2` ĝi estas nulo. La
 produkt-finpunkta kaj korelaci-korektita laborlimoj estas pruvitaj. Ili estas
 nur necesaj limoj por liveritaj transiratestiloj kaj ne asertas protokolan
-ekziston aŭ saturiĝon. Eksplicitaj banaj/ciklaj protokoloj kaj klasifiko de
-raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj restas malfermaj.
+ekziston aŭ saturiĝon. Ban-helpataj viŝprotokoloj, laborportaj cikloj,
+atingebleco de la limo, kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj
+reelaj energispektroj restas malfermaj.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -884,6 +901,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.GibbsPreserving.tensor_id` | Tensoro konservas termikajn identajn procezojn. |
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | Termika tensoro plenumas interchange kun kunmeto. |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Ĉiu specifita ekvilibro estas libera preparo. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.runSteps_eq_push_composeSteps` | Paŝa protokolplenumo egalas evoluon tra ĝia kunmetita Gibbs-konserva kanalo. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.composeSteps_append` | Kunigo de protokollistoj egalas sinsekvan kanalkunmeton. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.run_equilibrium` | Ĉiu finia fermita Gibbs-konserva protokolo fiksas ekvilibron. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium` | Fermita protokolo ne povas atingi alian celon el ekvilibro. |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Ĉiu diverĝenco kun DPI donas Gibbs-konservan termikan monotonon. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | Plenumebla distribua antaŭenigo egalas mezur–kernan kunmeton. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | Finia absoluta kontinueco ekzakte egalas inkludon de nenula subteno. |
@@ -908,6 +929,9 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | Por arbitraj kunaj finpunktoj, bateria liberenergia perdo pagas sistemajn kaj korelaciajn gajnojn. |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | Entropie neŭtralaj bateriaj marĝenoj turnas la korelaciitan bilancon en averaĝenergian laborlimon. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | La eksplicita dupaŝa ciklo sekvas `pure false -> pure true -> pure false`. |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns` | La du-renversa fermita ciklo redonas ĉiun ekzaktan Bulean staton. |
+| `Ript.Examples.SimpleThermalModel.no_finiteClosedProtocol_exact_erasure` | Neniu finia fermita Gibbs-konserva Bulea protokolo ekzakte viŝas la justan ekvilibron. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Bulea KL-atermikeco estas eksplicita duterma logaritma sumo. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Inversigebla termika bitrenverso ekzakte konservas KL-atermikecon. |
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | La nulenergia Bulea Gibbs-modelo realigas la KL/liberenergia identecon je `β = 1`. |
@@ -1021,7 +1045,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8 | Finiaj ekvilibraj sistemoj, Gibbs-realigoj, KL/liberenergia identeco, arbitra-kuna korelacia malkompono kaj ekzaktaj/raci-eraraj produktaj kaj korelaci-korektitaj Buleaj Landauer-limoj | **PROVED** |
+| 8 | Finiaj ekvilibraj sistemoj, kunmeteblaj fermitaj protokoloj kaj ekzakta viŝ-neebleco, Gibbs-realigoj, KL/liberenergia identeco, arbitra-kuna korelacia malkompono kaj ekzaktaj/raci-eraraj produktaj kaj korelaci-korektitaj Buleaj Landauer-limoj | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
@@ -1046,7 +1070,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
-| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Ekzaktaj statoj/kanaloj plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Atestita Gibbs-realigo, konkreta finia KL, plenumeblaj marĝenoj, arbitra-kuna korelacia malkompono kaj ekzaktaj raci-eraraj produktaj/korelaci-korektitaj Landauer-limoj |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio; finiaj fermitaj protokoloj | Produkta bifunktoro | Ekzaktaj statoj/kanaloj/protokolspuroj/marĝenoj plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Fermita protokola kunmeto kaj viŝ-neebleco, atestita Gibbs-realigo, konkreta finia KL, arbitra-kuna korelacia malkompono kaj ekzaktaj raci-eraraj produktaj/korelaci-korektitaj Landauer-limoj |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
@@ -1325,17 +1349,21 @@ ekskludon de kontraŭaj valoroj kaj supran invariadon.
 `Ript/Examples/SimpleThermalModel.lean` specifas ekzaktan unuforman ekvilibran
 distribuon por Bulea sistemo. Determinisma bitrenverso konservas la ekvilibron
 kaj estas involucio sub Gibbs-konserva kunmeto. La ekzemplo ankaŭ plenumas la
-liberan ekvilibran preparon kaj produktan ekvilibron, kaj pruvas ke la ekvilibra
+liberan ekvilibran preparon kaj produktan ekvilibron. Ĝi plenumas la ekzaktan
+dupaŝan fermitan ciklon `pure false -> pure true -> pure false`, pruvas redonon
+de ĉiu stato kaj la neekziston de finia fermita protokolo kiu ekzakte viŝas la
+justan ekvilibron. Ĝi ankaŭ pruvas ke la ekvilibra
 KL-atermikeco estas nul kaj ke la inversigebla renverso konservas ĝin ekzakte.
 La sama ekvilibro estas atestita kiel la Gibbs-distribuo de du nulenergiaj
 niveloj je `β = 1`; Lean pruvas `Z = 2`, `F(γ) = -log 2`, la specialigitan
 KL/liberenergian identecon kaj invariadon de la liberenergia diferenco. Ĝi
 ankaŭ konstruas perfekte korelaciitan justan paron subtenatan nur sur egalaj
 bitoj kaj pruvas justajn marĝenojn, reciprokan informon `log 2` kaj korelacian
-liberan energion `log 2 / β`. Naŭ `#eval decide`-kontraktoj kontrolas
+liberan energion `log 2 / β`. Dek unu `#eval decide`-kontraktoj kontrolas
 normaligon, kanal-elementojn, evoluitan mason, liberan preparon, produktan
-mason `1/4`, la identecon de du renversoj, la determinisman forviŝitan
-bitfinstaton, korelaciitajn kunajn masojn kaj marĝenajn masojn.
+mason `1/4`, la identecon de du renversoj, protokollongon, la tristatan spuron,
+la determinisman forviŝitan bitfinstaton, korelaciitajn kunajn masojn kaj
+marĝenajn masojn.
 
 `Ript/Examples/ApproximateErasure.lean` konstruas ekzaktajn Buleajn celojn je
 nula, kvarona kaj duona eraro, kaj pruvas ilian duumentropian liberenergian
@@ -1550,7 +1578,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Produkt-finpunkta labor-helpata Landauer-kalkulo kaj Bulea `log 2 / β` viŝlimo
 - [x] Arbitraj korelaciitaj finpunktoj, reciprokinforma liberenergia malkompono kaj korelaci-korektitaj Landauer-limoj
 - [x] Ekzakta raci-erara proksimuma viŝo, duumentropia kosto kaj produktaj/korelaci-korektitaj Landauer-limoj
-- [ ] Eksplicitaj banaj/ciklaj protokoloj kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
+- [x] Plenumeblaj finiaj fermitaj protokoloj, ekzaktaj spuro/kunmeta semantikoj, du-renversa ciklo kaj fermita ekzakta viŝ-neebleco
+- [ ] Ban-helpataj viŝprotokoloj, laborportaj cikloj, saturiĝo kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
@@ -1635,9 +1664,10 @@ nenegativecon de reciproka informo/KL, kunan liberenergian malkomponon,
 korelaci-korektitan laborlimon kaj la perfekte korelaciitan Bulean ekzemplon
 por arbitraj ekzaktaj korelaciitaj finpunktoj. Ĝi ankaŭ pruvas la duumentropian
 koston, monotonecon kaj produkt-finpunktajn/korelaci-korektitajn laborlimojn
-por ekzakta raci-erara proksimuma viŝo. Ĝi ankoraŭ ne kovras eksplicitajn
-banajn/ciklajn protokolojn aŭ raci-pezan klasifikon por aparte donitaj reelaj
-energispektroj.
+por ekzakta raci-erara proksimuma viŝo. Ĝi ankaŭ donas plenumeblajn finiajn
+fermitajn protokolojn, nekonstantan du-renversan ciklon kaj fermitan ekzaktan
+viŝ-neeblecon. Ĝi ankoraŭ ne kovras ban-helpatajn viŝprotokolojn, laborportajn
+ciklojn aŭ raci-pezan klasifikon por aparte donitaj reelaj energispektroj.
 Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.

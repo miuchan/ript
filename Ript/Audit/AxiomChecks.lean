@@ -131,6 +131,10 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.GibbsPreserving.tensor_id
 #print axioms Ript.Models.Thermal.GibbsPreserving.tensor_comp
 #print axioms Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free
+#print axioms Ript.Models.Thermal.FiniteClosedProtocol.runSteps_eq_push_composeSteps
+#print axioms Ript.Models.Thermal.FiniteClosedProtocol.composeSteps_append
+#print axioms Ript.Models.Thermal.FiniteClosedProtocol.run_equilibrium
+#print axioms Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium
 #print axioms Ript.Models.Thermal.Divergence.athermality_monotone
 #print axioms Ript.Models.Thermal.klAthermality_monotone
 #print axioms Ript.Models.Thermal.FiniteGibbsData.partitionFunction_pos
@@ -151,6 +155,10 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound
 #print axioms Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
+#print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_process
+#print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace
+#print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns
+#print axioms Ript.Examples.SimpleThermalModel.no_finiteClosedProtocol_exact_erasure
 #print axioms Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant
 #print axioms Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity

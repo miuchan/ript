@@ -28,7 +28,11 @@ interventions, and exact `FinStoch` semantics. General measurable-space causal
 models remain open. The next compiled layer adds finite thermal systems with
 specified equilibrium distributions, a category and tensor bifunctor of
 Gibbs-preserving exact channels, free equilibrium preparations, and generic
-divergence monotonicity. A separate semantic layer now defines finite KL in
+divergence monotonicity. Finite closed protocols are executable ordered lists
+of Gibbs-preserving endomorphisms with proved stepwise/composite semantics,
+complete traces, sequential composition, and equilibrium preservation. A
+two-flip Boolean cycle is explicit, and a generic theorem proves that no such
+closed protocol can move equilibrium to a distinct target. A separate semantic layer now defines finite KL in
 `ℝ≥0∞`, proves its exact zero/support-boundary behavior and full data-processing
 inequality for every finite stochastic channel, and instantiates concrete KL
 athermality monotonicity. A realization layer now equips nonempty finite
@@ -67,9 +71,9 @@ proofs. The classical-to-quantum layer is now implemented as a faithful
 measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
-stochastic entry are proved. The converse Blackwell representation theorem
-and explicit bath/cyclic thermodynamic
-protocols remain research directions. The higher-categorical
+stochastic entry are proved. The converse Blackwell representation theorem,
+bath-assisted erasure protocols, and work-bearing thermodynamic cycles remain
+research directions. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
 monoidal functors, and monoidal natural transformations form a bicategory with
@@ -426,6 +430,19 @@ composition preserves product equilibria and satisfies identity and
 interchange, yielding an explicit bifunctor. The distinguished equilibrium of
 every object is also constructed as a free state from the thermal tensor unit.
 
+`FiniteClosedProtocol X` adds an explicit finite operational protocol layer.
+Its ordered list of Gibbs-preserving endomorphisms can be executed step by
+step, emits the complete state trace, and composes to one Gibbs-preserving
+process. Lean proves that stepwise execution equals pushforward through that
+composite and that concatenating protocols equals serial process composition.
+Therefore every finite closed protocol fixes equilibrium, and no distinct
+target can be reached from equilibrium without modelling an external resource.
+The Boolean example supplies the nonconstant exact cycle
+`pure false -> pure true -> pure false`, proves its two-flip composite is the
+identity, and proves that no finite closed protocol maps the fair equilibrium
+to the erased pure state. This is a closed-system no-go, not a claim that
+erasure is impossible when a bath or battery is explicitly included.
+
 The divergence layer is assumption-transparent. `Divergence Value` contains a
 state comparison together with its proved stochastic data-processing law. For
 every such divergence, Ript proves
@@ -545,8 +562,9 @@ This cost is nonnegative and antitone in `ε`; its endpoints are the exact
 arbitrary-correlated-endpoint free-energy/work bounds use this exact quantity,
 with the latter also charging the correlation-free-energy increase. The
 theorems remain necessary bounds for supplied transition certificates and do
-not assert existence or saturation. Explicit bath/cyclic protocols and classification of
-rational Gibbs weights for independently specified real spectra remain open.
+not assert existence or saturation. Bath-assisted erasure protocols,
+work-bearing cycles, and classification of rational Gibbs weights for
+independently specified real spectra remain open.
 
 ### 12. Finite complex density matrices and Kraus channels
 
@@ -913,6 +931,10 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Thermal.GibbsPreserving.tensor_id` | Tensor preserves thermal identity processes. |
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | Thermal tensor satisfies interchange with composition. |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Every distinguished equilibrium is a free preparation. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.runSteps_eq_push_composeSteps` | Stepwise protocol execution equals evolution through its composite Gibbs-preserving channel. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.composeSteps_append` | Protocol-list concatenation agrees with serial channel composition. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.run_equilibrium` | Every finite closed Gibbs-preserving protocol fixes equilibrium. |
+| `Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium` | A closed protocol cannot reach a target distinct from equilibrium when started at equilibrium. |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Every divergence with DPI yields a Gibbs-preserving thermal monotone. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | Executable distribution pushforward agrees with measure–kernel composition. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | Finite absolute continuity is exactly nonzero-support containment. |
@@ -937,6 +959,9 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | For arbitrary joint endpoints, battery free-energy loss pays system and correlation free-energy gains. |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | Entropy-neutral battery marginals turn the correlated balance into a mean-energy work bound. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | The explicit two-step cycle follows `pure false -> pure true -> pure false`. |
+| `Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns` | The two-flip closed cycle returns every exact Boolean state. |
+| `Ript.Examples.SimpleThermalModel.no_finiteClosedProtocol_exact_erasure` | No finite closed Gibbs-preserving Boolean protocol exactly erases the fair equilibrium. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality is the explicit two-term logarithmic sum. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Reversible thermal bit flip preserves KL athermality exactly. |
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | The zero-energy Boolean Gibbs model realizes the KL/free-energy identity at `β = 1`. |
@@ -1050,7 +1075,7 @@ finished physical theory.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
-| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and exact/rational-error Boolean Landauer bounds | **PROVED** |
+| 8 | Finite equilibrium systems, compositional closed protocols and exact-erasure no-go, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and exact/rational-error Boolean Landauer bounds | **PROVED** |
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
@@ -1075,7 +1100,7 @@ Implemented model support is intentionally narrow:
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
-| Finite thermal systems | Gibbs-preserving category | Product bifunctor | Exact states/channels/marginals executable; Gibbs/KL/free-energy/work semantics noncomputable | Certified Gibbs realization, concrete finite KL, arbitrary-joint correlation decomposition, and exact rational-error product/correlated Landauer bounds |
+| Finite thermal systems | Gibbs-preserving category; finite closed protocols | Product bifunctor | Exact states/channels/protocol traces/marginals executable; Gibbs/KL/free-energy/work semantics noncomputable | Closed-protocol composition/no-go, certified Gibbs realization, concrete finite KL, arbitrary-joint correlation decomposition, and exact rational-error product/correlated Landauer bounds |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
@@ -1094,8 +1119,7 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, rational Gibbs-weight classification for independently specified
-real energy spectra, explicit bath or
-cyclic thermodynamic protocols,
+real energy spectra, bath-assisted erasure protocols, work-bearing cycles,
 and a complete-Segal/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
@@ -1163,6 +1187,7 @@ flowchart LR
   CK --> GP["Gibbs-preserving channel category"]
   TE --> GP
   GP --> TM["Generic divergence thermal monotone"]
+  GP --> CP["Finite closed protocol traces and exact-erasure no-go"]
   FD --> FKL["Finite KL in extended nonnegative reals"]
   ST --> FKL
   FKL --> KTM["Concrete KL athermality monotone"]
@@ -1362,16 +1387,20 @@ forced-value exclusion, and upstream invariance.
 `Ript/Examples/SimpleThermalModel.lean` equips a Boolean system with the exact
 uniform equilibrium distribution. Deterministic bit flip preserves that
 equilibrium and is involutive under Gibbs-preserving composition. The example
-also proves zero KL athermality at equilibrium and exact KL-athermality
+also defines an executable two-step closed protocol whose exact trajectory is
+`pure false -> pure true -> pure false`, proves that it returns every state,
+and proves that no finite closed protocol exactly erases the fair equilibrium.
+It proves zero KL athermality at equilibrium and exact KL-athermality
 invariance under the reversible flip. The same exact equilibrium is certified
 as the Gibbs distribution of two zero-energy levels at `β = 1`; Lean computes
 `Z = 2`, proves `F(γ) = -log 2`, specializes the KL/free-energy identity, and
 proves free-energy-gap invariance under the reversible flip. It executes the free equilibrium
-preparation and product equilibrium; nine
+preparation and product equilibrium; eleven
 `#eval decide` contracts check exact normalization, channel entries, evolved
-mass, free-state preparation, product mass `1/4`, double-flip identity, and the
-deterministic erased-bit endpoint, plus a perfectly correlated fair pair and
-its exact fair marginals. Lean also proves the pair's mutual information is
+mass, free-state preparation, product mass `1/4`, double-flip identity,
+protocol length and the three-state trace, and the deterministic erased-bit
+endpoint, plus a perfectly correlated fair pair and its exact fair marginals.
+Lean also proves the pair's mutual information is
 `log 2` and its correlation free energy is `log 2 / β`.
 
 `Ript/Examples/ApproximateErasure.lean` executes the zero-, quarter-, and
@@ -1417,6 +1446,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.KLDivergence
 -- or, for Gibbs free energy and correlated Landauer bounds:
 import Ript.Models.Thermal.CorrelatedWork
+-- or, for executable finite closed protocols and their no-go theorem:
+import Ript.Models.Thermal.Protocol
 -- or, for executable rational-error Boolean erasure theorems:
 import Ript.Examples.ApproximateErasure
 -- or, for complex density matrices and trace-preserving Kraus channels:
@@ -1596,7 +1627,8 @@ updated assumption audit.
 - [x] Product-endpoint work-assisted Landauer balance and Boolean `log 2 / β` erasure bound
 - [x] Arbitrary correlated endpoints, mutual-information free-energy decomposition, and correlation-corrected Landauer bounds
 - [x] Exact rational-error approximate erasure, binary-entropy cost, and product/correlated work bounds
-- [ ] Explicit bath/cyclic protocols and rational-weight classification for independently specified real spectra
+- [x] Executable finite closed protocols, exact trace/composition semantics, a two-flip cycle, and closed exact-erasure no-go
+- [ ] Bath-assisted erasure protocols, work-bearing cycles, saturation, and rational-weight classification for independently specified real spectra
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
@@ -1677,9 +1709,11 @@ work form, and the Boolean `log 2 / β` erasure bound. It also proves exact
 marginalization, mutual-information KL/nonnegativity, arbitrary-joint
 free-energy decomposition, and correlation-corrected Landauer bounds. It does
 also cover exact rational-error approximate erasure with its sharp
-binary-entropy-deficit cost and product/correlated work forms. It does not yet
-cover explicit bath/cyclic protocols or
-classify rational Gibbs weights for independently specified real spectra.
+binary-entropy-deficit cost and product/correlated work forms. It also provides
+executable finite closed protocols, a nonconstant two-flip cycle, and a closed
+exact-erasure no-go. It does not yet cover bath-assisted erasure protocols or
+work-bearing cycles, or classify rational Gibbs weights for independently
+specified real spectra.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite

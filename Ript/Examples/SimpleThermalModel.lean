@@ -1,5 +1,6 @@
 import Mathlib.Tactic.NormNum
 import Ript.Models.Thermal.CorrelatedWork
+import Ript.Models.Thermal.Protocol
 
 /-!
 # Executable finite thermal example
@@ -185,6 +186,88 @@ theorem thermalFlip_involutive :
       (if (!middle) = output then 1 else 0)) =
     if input = output then 1 else 0
   cases input <;> cases output <;> rw [Fintype.sum_bool] <;> norm_num
+
+/-- The explicit two-step closed protocol that flips the thermal bit twice. -/
+def thermalFlipCycle : FiniteClosedProtocol thermalBit where
+  steps := [thermalFlip, thermalFlip]
+
+/-- The composite process denoted by the two-flip protocol is exactly the
+thermal identity, not merely observationally equivalent on equilibrium. -/
+theorem thermalFlipCycle_process :
+    thermalFlipCycle.process = GibbsPreserving.identity thermalBit := by
+  have hCompId :
+      GibbsPreserving.comp thermalFlip
+          (GibbsPreserving.identity thermalBit) = thermalFlip := by
+    apply GibbsPreserving.ext
+    apply FinStoch.ext
+    intro input output
+    simp [GibbsPreserving.comp, GibbsPreserving.identity,
+      FinStoch.comp, FinStoch.identity]
+  change GibbsPreserving.comp thermalFlip
+      (GibbsPreserving.comp thermalFlip
+        (GibbsPreserving.identity thermalBit)) =
+    GibbsPreserving.identity thermalBit
+  rw [hCompId, thermalFlip_involutive]
+
+/-- The first step takes the erased Boolean state to the opposite pure state. -/
+theorem erasedBit_push_thermalFlip :
+    erasedBit.push thermalFlip.channel = FinDist.pure true := by
+  apply FinDist.ext
+  intro output
+  change Bool at output
+  change (∑ input : Bool,
+      (if false = input then (1 : ℚ≥0) else 0) *
+        (if (!input) = output then 1 else 0)) =
+    if true = output then 1 else 0
+  cases output <;> rw [Fintype.sum_bool] <;> norm_num
+
+/-- The second flip returns the opposite pure state to the erased state. -/
+theorem pureTrue_push_thermalFlip :
+    (FinDist.pure true).push thermalFlip.channel = erasedBit := by
+  apply FinDist.ext
+  intro output
+  change Bool at output
+  change (∑ input : Bool,
+      (if true = input then (1 : ℚ≥0) else 0) *
+        (if (!input) = output then 1 else 0)) =
+    if false = output then 1 else 0
+  cases output <;> rw [Fintype.sum_bool] <;> norm_num
+
+/-- The two-step protocol has a nonconstant, fully explicit trajectory on an
+erased input and returns exactly to that input after the second step. -/
+theorem thermalFlipCycle_erased_trace :
+    thermalFlipCycle.trace erasedBit =
+      [erasedBit, FinDist.pure true, erasedBit] := by
+  change erasedBit ::
+      (erasedBit.push thermalFlip.channel) ::
+      ((erasedBit.push thermalFlip.channel).push thermalFlip.channel) :: [] = _
+  rw [erasedBit_push_thermalFlip, pureTrue_push_thermalFlip]
+
+/-- The explicit two-flip cycle returns every exact Boolean state. -/
+theorem thermalFlipCycle_returns (state : FinDist thermalBit.system) :
+    thermalFlipCycle.run state = state := by
+  rw [FiniteClosedProtocol.run_eq_push_process,
+    thermalFlipCycle_process, GibbsPreserving.id_channel,
+    FinDist.push_identity]
+
+/-- Exact erasure differs from the uniform equilibrium state. -/
+theorem erasedBit_ne_equilibrium : erasedBit ≠ thermalBit.equilibrium := by
+  intro h
+  have hTrue := congrArg (fun state : FinDist thermalBit.system ↦
+    state.prob true) h
+  change (0 : ℚ≥0) = (1 : ℚ≥0) / 2 at hTrue
+  norm_num at hTrue
+
+/-- **Closed exact-erasure no-go.** No finite list of Gibbs-preserving
+operations on the thermal bit alone can transform its uniform equilibrium
+state into the erased pure state.  An exact erasure witness must therefore
+model an external bath, work-storage system, or another non-closed resource. -/
+theorem no_finiteClosedProtocol_exact_erasure :
+    ¬ ∃ protocol : FiniteClosedProtocol thermalBit,
+      protocol.run fairEquilibrium = erasedBit := by
+  simpa [thermalBit] using
+    (FiniteClosedProtocol.cannot_reach_from_equilibrium erasedBit
+      erasedBit_ne_equilibrium)
 
 /-- The equilibrium state's concrete KL athermality is zero. -/
 @[simp]
@@ -557,6 +640,13 @@ theorem thermalPair_freeEnergyGap_additive
 -- Serial composition computes two flips as the identity channel.
 #eval decide ((GibbsPreserving.comp thermalFlip thermalFlip).channel.prob
   true true = 1)
+
+-- The explicit closed protocol contains exactly its two declared steps.
+#eval decide (thermalFlipCycle.steps.length = 2)
+
+-- Its exact false-mass trace is erased, opposite pure, erased.
+#eval decide ((thermalFlipCycle.trace erasedBit).map
+  (fun state ↦ state.prob false) = [(1 : ℚ≥0), 0, 1])
 
 -- The declared erased memory is exactly concentrated on `false`.
 #eval decide (erasedBit.prob false = 1 ∧ erasedBit.prob true = 0)

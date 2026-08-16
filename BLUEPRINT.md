@@ -96,6 +96,7 @@ flowchart LR
   FiniteDistribution --> ThermalEquilibrium["Models.Thermal.Equilibrium"]
   FiniteStochastic --> ThermalEquilibrium
   ThermalEquilibrium --> GibbsPreserving["Models.Thermal.GibbsPreserving"]
+  GibbsPreserving --> ThermalProtocol["Models.Thermal.Protocol"]
   GibbsPreserving --> ThermalMonotone["Models.Thermal.Monotone"]
   FiniteKL --> ThermalKL["Models.Thermal.KLDivergence"]
   ThermalMonotone --> ThermalKL
@@ -106,6 +107,7 @@ flowchart LR
   ThermalFreeEnergy --> ThermalWork["Models.Thermal.Work"]
   ThermalCorrelation --> CorrelatedWork["Models.Thermal.CorrelatedWork"]
   ThermalWork --> CorrelatedWork
+  ThermalProtocol --> SimpleThermal
   CorrelatedWork --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> ApproximateErasure["Examples.ApproximateErasure"]
   ApproximateErasure --> Audit
@@ -168,7 +170,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and exact/rational-error product/correlation-corrected Boolean Landauer bounds | PROVED |
+| 8 | Finite equilibrium systems, compositional closed protocols and exact-erasure no-go, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and exact/rational-error product/correlation-corrected Boolean Landauer bounds | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1543,6 +1545,19 @@ bifunctor, and the distinguished equilibrium is a free preparation from the
 thermal unit. No energy spectrum, inverse temperature, Gibbs exponential, or
 analytic limit is assumed by that operational layer.
 
+`FiniteClosedProtocol X` makes finite same-system protocols explicit. Its
+ordered `List` of Gibbs-preserving endomorphisms has stepwise `run`, complete
+`trace`, and composite `process` semantics. Ript proves that stepwise execution
+equals pushforward through the composite channel and that concatenating
+protocols agrees with serial composition. Consequently every finite closed
+protocol fixes equilibrium, so no target distinct from equilibrium is
+reachable from equilibrium in this closed model. The Boolean example supplies
+a nontrivial two-flip cycle with exact trajectory
+`pure false -> pure true -> pure false`, proves its composite is identity, and
+proves that no finite closed protocol exactly erases the fair equilibrium.
+This is an explicit cyclic protocol and a closed-system no-go theorem, not an
+external-bath or work-storage realization of Landauer erasure.
+
 The concrete KL layer is separate and semantic. It interprets exact rational
 `FinDist` values as discrete probability measures, defines `finiteKL` by
 specializing Mathlib's `InformationTheory.klDiv`, and takes values in `ℝ≥0∞`
@@ -1603,8 +1618,9 @@ Mathlib's `binEntropy ε`, so its excess free energy is
 `(log 2 - binEntropy ε) / β`. This cost is nonnegative, antitone in the
 allowed error, equals `log 2 / β` at zero error, and vanishes at error one
 half. Product-endpoint and correlation-corrected work bounds are proved for
-supplied transition certificates. Explicit bath/cyclic protocols, transition
-existence, and saturation remain open extensions.
+supplied transition certificates. Explicit bath-assisted protocols,
+work-bearing cycles, erasure-transition existence, and saturation remain open
+extensions.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2448,6 +2464,57 @@ existence, and saturation remain open extensions.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/FreeEnergy.lean`.
 
+### `Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium`
+
+- Natural-language statement: any finite list of Gibbs-preserving
+  endomorphisms fixes the distinguished equilibrium, so it cannot reach a
+  different target from equilibrium in the closed same-system model.
+- Lean type:
+
+  ```lean
+  theorem FiniteClosedProtocol.cannot_reach_from_equilibrium
+      (target : FinDist X.system) (hTarget : target ≠ X.equilibrium) :
+      ¬ ∃ protocol : FiniteClosedProtocol X,
+        protocol.run X.equilibrium = target
+  ```
+
+- Prerequisite definitions: `FiniteClosedProtocol.composeSteps`, stepwise
+  `runSteps`, composite `process`, and exact `FinDist.push`.
+- Prerequisite lemmas: stepwise execution equals composite pushforward and
+  every composite process carries `preserves_equilibrium`.
+- Status: `PROVED`; the theorem is a closed-system boundary and does not rule
+  out transitions with an explicitly modelled bath or battery.
+- Classical choice: inherited from generic finite stochastic/category proof
+  infrastructure; no chosen datum appears in protocol execution.
+- Computable: protocol lists, traces, channels, and rational states are
+  executable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Protocol.lean`.
+
+### `Ript.Examples.SimpleThermalModel.no_finiteClosedProtocol_exact_erasure`
+
+- Natural-language statement: no finite closed Gibbs-preserving Boolean
+  protocol takes the fair equilibrium to the pure erased state.
+- Lean type:
+
+  ```lean
+  theorem no_finiteClosedProtocol_exact_erasure :
+      ¬ ∃ protocol : FiniteClosedProtocol thermalBit,
+        protocol.run fairEquilibrium = erasedBit
+  ```
+
+- Prerequisite definitions: the fair Boolean equilibrium, `erasedBit`, and
+  the generic finite closed-protocol semantics.
+- Prerequisite lemmas: `erasedBit ≠ thermalBit.equilibrium` and the generic
+  closed equilibrium reachability no-go.
+- Status: `PROVED`; separately, `thermalFlipCycle_erased_trace` gives the
+  nonconstant exact cycle `pure false -> pure true -> pure false`.
+- Classical choice: only the audited standard finite/category footprint.
+- Computable: the example's protocol length and three-state trace are checked
+  by ordinary `#eval decide` reduction.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleThermalModel.lean`.
+
 ### `Ript.Examples.SimpleThermalModel.thermalFlip_involutive`
 
 - Natural-language statement: deterministic bit flip is a Gibbs-preserving
@@ -2468,7 +2535,7 @@ existence, and saturation remain open extensions.
   arithmetic.
 - Status: `PROVED`.
 - Classical choice: reported through generic finite stochastic proof
-  dependencies; the nine accompanying `#eval decide` assertions use ordinary
+  dependencies; the eleven accompanying `#eval decide` assertions use ordinary
   executable reduction.
 - Computable: yes.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
@@ -3897,11 +3964,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     erasure. Its correlated extension proves exact marginalization, the
     mutual-information KL identity and nonnegativity, arbitrary-joint free-
     energy decomposition, and correlation-corrected Landauer bounds. It does
-    not claim transition existence or saturation. The exact rational-error
-    Boolean extension proves the binary-entropy cost, its antitonicity, and
+    not claim transition existence or saturation. The finite closed-protocol
+    layer gives executable lists, traces, composition, an explicit two-flip
+    cycle, and a closed exact-erasure no-go. The exact rational-error Boolean
+    extension proves the binary-entropy cost, its antitonicity, and
     product/correlation-corrected necessary bounds, but still does not provide
-    an explicit bath/cyclic protocol or assert that arbitrary independently
-    supplied exponential weights are rational.
+    an explicit bath-assisted erasure protocol or work-bearing cycle, or assert
+    that arbitrary independently supplied exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to

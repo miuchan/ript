@@ -15,7 +15,7 @@ Only implemented and compiled capabilities are marked as supported.
 | Total computation (`Fin 4 → Nat` resources) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
-| Finite thermal systems (specified and realized Gibbs equilibrium) | Gibbs-preserving category | Bifunctor; realized Gibbs tensor at common temperature | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes: KL/free-energy, correlation, and Landauer bounds | Exact states/channels/marginals executable; Gibbs/KL/free-energy/work accounting analytic layer |
+| Finite thermal systems (specified and realized Gibbs equilibrium) | Gibbs-preserving category; finite closed protocols | Bifunctor; realized Gibbs tensor at common temperature | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes: protocol composition/no-go, KL/free-energy, correlation, and Landauer bounds | Exact states/channels/protocol traces/marginals executable; Gibbs/KL/free-energy/work accounting analytic layer |
 | Finite quantum Kraus channels (`ℂ`) | Kraus category | Yes | Yes | No | No | Yes | No | No | Matrix proof layer; basis labels executable |
 | Classical quantum dephasing subcategory | Yes; identity is basis dephasing | Bifunctor | Via ambient trace discard, not separately packaged | No exported copy | No generic interface | Yes | No | No | Exact `FinStoch` source; noncomputable complex matrix semantics |
 
@@ -67,8 +67,11 @@ into marginal gaps plus `I / β`; and the Landauer bound includes the exact
 correlation free-energy change. For every exact rational error
 `0 ≤ ε ≤ 1/2`, the executable approximate-erasure target has binary entropy,
 cost `(log 2 - binEntropy ε) / β`, an antitone cost law, and product-endpoint
-and correlation-corrected work bounds. Explicit bath or cyclic-protocol models
-remain outside the current row.
+and correlation-corrected work bounds. Explicit bath-assisted or work-bearing
+cyclic protocols with external bath/work storage remain outside the current row. The row now
+does include executable finite closed same-system protocols, their composite
+channel semantics, a nonconstant two-flip Boolean cycle, and the theorem that
+no such closed protocol can erase the uniform equilibrium exactly.
 
 The classical quantum row is the proved faithful measurement--preparation
 image of `FiniteStochastic`. Its Kraus operators are
