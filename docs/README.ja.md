@@ -18,13 +18,14 @@ Ript は **Resource-Indexed Information Process Theory（資源添字付き情�
 その有限分布 Kleisli 表現、そして Mathlib の測度論的圏 `Stoch` への忠実な意味論的橋渡しを
 含みます。その上に、Blackwell 比較、正確で実行可能な有限 Bayes リスク、資源制約付き
 意思決定リスク、タスク相対的な意味価値も形式化しました。また、明示的なステップ・問い合わせ・
-記憶域・ゲート資源を持つ全域計算と失敗可能計算の圏も含みます。一般の可測空間モデル、
-Blackwell 逆表現定理、有限因果介入、熱力学、量子理論、高次圏は研究課題です。
+記憶域・ゲート資源を持つ全域計算と失敗可能計算の圏に加え、実行可能な有限 DAG 因果モデル、
+親だけを読む正確な機構、正規化観測同時分布、ハード介入、正確な `FinStoch` 意味論も含みます。
+一般の可測因果モデル、Blackwell 逆表現定理、熱力学、量子理論、高次圏は研究課題です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 6、および Stage 7 の計算部分は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 7 は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -241,6 +242,28 @@ Ript は二つの意思決定層を意図的に分離します。
 `Partial.ofTotal` は全域計算を必ず成功する部分計算へ埋め込み、全資源成分を保存します。同じ
 型付き query/negation/guard プログラムを両モデルで実行し、`eval_cost_le` と予算検査を再利用します。
 
+### 10. 有限 DAG 因果モデルとハード介入
+
+`FiniteDAG n` は `Fin n` をノードとし、各親の番号が子より小さいというトポロジカル証明を
+直接保持します。したがって標準番号順は実行可能で無閉路と証明済みであり、同時分布の構築に
+古典的に選んだトポロジカルソートは不要です。任意の有限 DAG は境界でトポロジカル番号を与えれば
+このインターフェースを利用できます。
+
+`FiniteCausalModel n Value` は各ノードに正規化された正確な `FinDist Value` 機構を割り当てます。
+機構が受け取るのは宣言された親の値だけです。Ript は局所条件質量をトポロジカル順に積算し、
+各接頭辞の正規化を帰納的に証明して、観測因子分解式を満たす実行可能な同時分布を得ます。
+
+`Intervention` はノードへの部分代入です。`do(node = value)` は対象の局所機構を
+`FinDist.pure value` に置換し、観測同時分布の条件付けとしては定義しません。同じ介入は冪等で、
+台が互いに素な介入は可換です。置換後も正規化と因子分解が保たれます。各局所機構は親代入から
+ノード値への `FinStoch` チャネルに、観測・介入同時分布は `Object.unit` からの正確な確率状態に
+解釈されます。
+
+実行可能な二ノード例では、公平な Boolean 原因を結果がコピーします。観測時の不一致は質量ゼロです。
+`do(effect = true)` の後も原因は公平で、観測では不可能だった `(false, true)` が正確な質量
+`1/2` を持ちます。これは介入と通常の条件付けの違いを検証済みデータで示します。初版は意図的に
+全ノードで共通の有限値型を使い、異種ノード値域と一般 do-calculus は将来の拡張です。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -297,6 +320,15 @@ Ript は二つの意思決定層を意図的に分離します。
 | `Ript.Models.Computation.Partial.ofTotal_resource` | 全域から部分への関手は全資源成分を保存します。 |
 | `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | 一般の構文コスト健全性が全域実行器に適用されます。 |
 | `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | 部分計算検査器が正確な構文予算を認証します。 |
+| `Ript.Models.Causal.FiniteDAG.acyclic` | 認証済み親関係には有向閉路がありません。 |
+| `Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized` | 正規化局所機構は正規化されたトポロジカル接頭辞を生成します。 |
+| `Ript.Models.Causal.FiniteCausalModel.observational_factorization` | 同時質量は親局所条件質量の積に正確に一致します。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_same` | ハード介入は対象機構を Dirac 分布で置換します。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_idempotent` | 同じ介入を繰り返しても追加の変化はありません。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint` | 台が互いに素な介入は可換です。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | ハード介入後の同時分布も正規化されています。 |
+| `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | 介入状態は未変更条件機構と対象 Dirac 因子に分解します。 |
+| `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | Boolean 鎖の例が介入と観測を正確に区別します。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -317,7 +349,7 @@ Ript は二つの意思決定層を意図的に分離します。
 | 5 | Mathlib `Stoch` への忠実な有限チャネル橋 | **PROVED** |
 | 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
-| 7、因果 | 有限 DAG 機構と介入 | **OPEN RESEARCH** |
+| 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
 | 8–11 | 熱・量子・双圏・ユニバレント層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
@@ -334,11 +366,13 @@ Ript は二つの意思決定層を意図的に分離します。
 | 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | Blackwell 順序は `FinStoch` 積を保存；有限最小値、資源予算、タスク相対価値 |
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
+| 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
-Bayes リスク、資源、意味価値定理があります。有限 Blackwell--Sherman--Stein 逆表現定理、
-一般可測意思決定問題、一般的なコピー・破棄および凸構造、熱的構造、量子チャネル、
+Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
+有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
+完全な do-calculus、一般的なコピー・破棄および凸構造、熱的構造、量子チャネル、
 ユニバレント構造、高次圏構造は**未実装**です。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
 [CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
@@ -381,6 +415,11 @@ flowchart LR
   TC --> PC["Option Kleisli 部分計算圏"]
   TC --> CE["共有型付き計算例"]
   PC --> CE
+  DAG["トポロジカル番号付き有限 DAG"] --> CM["親局所正確機構"]
+  CM --> OJ["正規化観測同時分布"]
+  CM --> DO["機構置換ハード介入"]
+  DO --> IS["正確な介入 FinStoch 状態"]
+  CK --> IS
 ```
 
 | 層 | 主なモジュール | 責務 |
@@ -389,8 +428,8 @@ flowchart LR
 | プロセス能力 | `Ript.Core.*` | 直列・テンソル・構造コスト則と後処理シミュレーション |
 | 実行可能構文 | `Ript.Syntax.*` | 型付き式、再帰的コスト、導出 |
 | 意味論 | `Ript.Semantics.*` | 解釈、評価、健全性、完全性 |
-| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 比較、意思決定リスク |
-| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値 |
+| 具体モデル | `Ript.Models.*` | 有限関数、有限確率、Blackwell 意思決定、計算、有限因果機構 |
+| 実行可能例 | `Ript.Examples.*` | 計算結果、予算、有理確率、正確な意思決定価値、介入 |
 | 監査面 | `Ript.Audit.*` | 宣言 lint とカーネル仮定の報告 |
 
 直列の核は単独で利用できます。対称モノイダル層は別のインターフェースとして拡張され、すべての
@@ -414,8 +453,8 @@ Stage 1 と Stage 2 の主要定理の監査では、必要な箇所に Lean 標
 一般的な有限和・有限関数空間・測度・圏論基盤を通して `Classical.choice` も報告されます。
 実行時データは列挙と決定可能等式を明示的に保持し、有限チャネル、有限リスク、予算付きリスク、
 意味価値は正確な `ℚ≥0` データとして実行可能です。非計算性は測度論的 `Stoch`／意味論的
-Bayes リスク境界だけに現れます。全域関数、`Option` 失敗、資源ベクトル、計算予算検査も
-実行可能です。
+Bayes リスク境界だけに現れます。全域関数、`Option` 失敗、資源ベクトル、計算予算検査、
+有限因果同時分布、ハード介入も実行可能です。
 `AXIOMS.md` は各定理の実際の監査出力を完全一致で固定します。
 
 定理ごとの正確な出力は、次で確認できます。
@@ -525,6 +564,12 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 実行し、正確な資源ベクトル `(ステップ, 問い合わせ, 記憶域, ゲート) = (3, 1, 0, 1)`、成功・
 失敗、両モデルの予算を検査します。7 個の `#eval decide` はすべて `true` です。
 
+`Ript/Examples/SimpleCausalModel.lean` は二ノード Boolean 鎖を実行します。公平な根がそれを
+コピーする子を因果的に生成するため、観測不一致の質量はゼロです。ハード介入
+`do(effect = true)` は子機構だけを置換し、上流の根を公平に保ったまま `(false, true)` に
+正確な質量 `1/2` を与えます。5 個の `#eval decide` が正規化、観測台、強制値排除、上流不変性を
+検査します。
+
 ## Lean 依存パッケージとして使う
 
 Ript はルートモジュール `Ript` を公開します。プレリリース期間中は、変化するブランチではなく、
@@ -547,6 +592,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- または資源付き全域・部分計算：
 import Ript.Models.Computation.Partial
+-- または有限 DAG、ハード介入、正確な確率状態：
+import Ript.Models.Causal.FinStoch
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -560,7 +607,7 @@ import Ript.Models.Computation.Partial
 | [`Ript/Resource/`](../Ript/Resource/) | 資源代数と検証済み予算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
-| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・全域／部分計算モデル |
+| [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果モデル |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -593,14 +640,16 @@ import Ript.Models.Computation.Partial
 4. **実行可能構文と証明用の商を分離する。** 完全性の商モデルを理由に計算コードを非計算的にしません。
 5. **完全性の範囲を明記する。** すべての完全性主張が標準モデルと証明境界を指定します。
 6. **仮定をバージョン付き API として扱う。** 新しい公理は後日の注釈ではなく即時のゲート失敗です。
-7. **実装と構想を区別する。** 有限離散 `Stoch` 像と正確な有限意思決定層は実装済みです。
-   逆表現、一般確率・因果・熱・量子・高次の未解決層とは明確に分けます。
+7. **実装と構想を区別する。** 有限離散 `Stoch` 像、正確な有限意思決定層、同種有限 DAG
+   因果層は実装済みです。逆表現、一般確率・因果・熱・量子・高次の未解決層とは明確に分けます。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
    加法的コスト overhead の両方を与えなければなりません。
 10. **形式コストを経過時間と混同しない。** 計算資源は合成則を証明した意味論的注釈であり、
     性能測定の主張ではありません。
+11. **介入を条件付けと混同しない。** ハード介入は局所機構を置換してから同時分布を再生成します。
+    観測条件付けは別の操作であり、代替実装には使いません。
 
 ## ロードマップ
 
@@ -629,14 +678,17 @@ import Ript.Models.Computation.Partial
 - [x] 4 成分計算資源と健全な実行可能予算検査
 - [x] 正確な直列・並列コストを持つ全域圏と `Option` 部分圏
 - [x] 積 bifunctor、interchange、資源保存全域埋め込み、型付き例
+- [x] トポロジカル証明付き有限 DAG と親局所正確機構
+- [x] 正規化観測同時分布、ハード介入、介入法則、`FinStoch` 状態
+- [x] `do` と観測を正確に区別する実行可能 Boolean 因果鎖
 - [x] 再現可能な CI、宣言 lint、仮定許可リスト
 
 ### 未解決の研究トラック
 
 - [ ] 有限確率モデル以外への、意味論的に正当化されたコピー・破棄能力の拡張
 - [ ] 有限離散像を越える一般可測空間上の確率意味論
-- [ ] 凸構造と因果構造
-- [ ] 有限 DAG 因果機構、正規化同時分布、介入
+- [ ] 一般的な凸・因果能力インターフェース
+- [ ] 異種ノード値域、一般可測因果モデル、条件付け、do-calculus 拡張
 - [ ] 全域・部分計算圏の native モノイダル構造
 - [ ] 有限 Blackwell--Sherman--Stein 逆表現定理
 - [ ] 正確な有限データを越える一般可測空間の意思決定問題
@@ -688,6 +740,9 @@ import Ript.Models.Computation.Partial
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
 一般可測意思決定理論はまだ証明していません。
+また、共通有限値域を持つトポロジカル番号付き DAG、親局所正確機構、正規化観測同時分布、
+ハード介入、正確な `FinStoch` 状態をサポートします。異種値域、一般可測因果モデル、条件付け API、
+do-calculus の完全性は未実装です。
 
 ### 意味価値は相互情報量と同じですか？
 

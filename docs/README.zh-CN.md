@@ -17,11 +17,13 @@ Ript 形式化了 **Resource-Indexed Information Process Theory（资源索引�
 本项目严格按层推进。目前已经包含精确、可执行的有限随机模型、其有限分布 Kleisli 表示，
 以及到 Mathlib 测度论范畴 `Stoch` 的 faithful 语义桥。在此基础上，Ript 还已形式化
 Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风险与任务相对语义价值。
-项目还包含带显式步数、查询、存储与门数量资源的总函数和可失败计算范畴。有限因果干预、
-一般可测空间模型、Blackwell 反向表示定理、热力学、量子理论和高阶范畴仍是研究方向。
+项目还包含带显式步数、查询、存储与门数量资源的总函数和可失败计算范畴，并已实现可执行
+有限 DAG 因果模型、只读取父节点的精确机制、归一化观测联合分布、硬干预及其精确
+`FinStoch` 语义。一般可测因果模型、Blackwell 反向表示定理、热力学、量子理论和高阶范畴
+仍是研究方向。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–6 以及 Stage 7 的计算部分已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–7 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -220,6 +222,26 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 函子 `Partial.ofTotal` 把总计算嵌入为必定成功的部分计算，并逐坐标保持资源。一个共享的带类型
 查询/否定/guard 程序在两个模型中执行，通用 `eval_cost_le` 与可执行预算检查都适用。
 
+### 10. 有限 DAG 因果模型与硬干预
+
+`FiniteDAG n` 使用 `Fin n` 作为节点，并直接保存拓扑证书：每个父节点的编号严格小于子节点。
+因此规范编号顺序既可执行又已证明无环；构造联合分布不需要在内部用经典选择寻找拓扑排序。
+任意有限 DAG 都可以在边界处选定拓扑编号后进入该接口。
+
+`FiniteCausalModel n Value` 为每个节点提供精确、归一化的 `FinDist Value` 局部机制，且机制
+只接收已声明父节点的值。Ript 按拓扑顺序相乘这些局部条件质量，通过前缀归纳证明总质量为一，
+并得到满足观测因子分解公式的可执行联合分布。
+
+`Intervention` 是节点的部分赋值。`do(node = value)` 会把目标节点的局部机制替换为
+`FinDist.pure value`，而不是对观测联合分布做条件化。重复同一干预具有幂等性，不相交支持上的
+干预彼此交换；替换后仍保持归一化与因子分解。每个局部机制被解释为从父赋值到节点值的
+`FinStoch` 信道，观测和干预联合分布则成为从 `Object.unit` 出发的精确随机状态。
+
+可执行的两节点例子包含一个公平 Boolean 原因和复制它的结果。观测时不一致赋值的质量为零；
+执行 `do(effect = true)` 后，原因仍然公平，而原本不可能的 `(false, true)` 获得精确质量
+`1/2`。这用经过检验的精确数据区分了干预与普通条件化。第一版有意要求所有节点共享同一个
+有限值类型；异构节点值域和一般 do-calculus 仍是后续扩展。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -275,6 +297,15 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 | `Ript.Models.Computation.Partial.ofTotal_resource` | 总计算到部分计算的函子保持全部资源坐标。 |
 | `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | 通用语法成本可靠性适用于总执行器。 |
 | `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | 部分计算检查器认证精确语法预算。 |
+| `Ript.Models.Causal.FiniteDAG.acyclic` | 经认证的父关系不存在有向环。 |
+| `Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized` | 归一化局部机制生成归一化拓扑前缀。 |
+| `Ript.Models.Causal.FiniteCausalModel.observational_factorization` | 联合质量精确等于父局部条件质量的乘积。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_same` | 硬干预把目标机制替换为 Dirac 分布。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_idempotent` | 重复同一干预不会产生进一步变化。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint` | 支持不相交的干预彼此交换。 |
+| `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | 每个硬干预联合分布仍然归一化。 |
+| `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | 干预状态分解为未变条件机制与目标 Dirac 因子。 |
+| `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | Boolean 链例子精确区分干预与观测。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -294,7 +325,7 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 | 5 | 到 Mathlib `Stoch` 的 faithful 有限信道桥 | **PROVED** |
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
-| 7，因果 | 有限 DAG 机制与干预 | **OPEN RESEARCH** |
+| 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
 | 8–11 | 热力学、量子、双范畴与单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -311,11 +342,14 @@ bifunctor，而不提前宣称原生 `MonoidalCategory` 实例。
 | 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | Blackwell 序保持 `FinStoch` 积；有限最小值、资源预算与任务相对价值 |
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
+| 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
-资源与语义价值定理。有限 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、通用
-复制/丢弃与凸结构接口、热结构、量子信道，以及单价或高阶范畴结构都**尚未实现**。权威能力矩阵见
+资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
+Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
+do-calculus、通用复制/丢弃与凸结构接口、热结构、量子信道，以及单值或高阶范畴结构都
+**尚未实现**。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
 
@@ -357,6 +391,11 @@ flowchart LR
   TC --> PC["Option Kleisli 部分计算范畴"]
   TC --> CE["共享带类型计算示例"]
   PC --> CE
+  DAG["带拓扑编号的有限 DAG"] --> CM["父局部精确机制"]
+  CM --> OJ["归一化观测联合分布"]
+  CM --> DO["替换机制的硬干预"]
+  DO --> IS["精确干预 FinStoch 状态"]
+  CK --> IS
 ```
 
 | 层 | 主要模块 | 职责 |
@@ -365,8 +404,8 @@ flowchart LR
 | 过程能力 | `Ript.Core.*` | 串行、张量、结构成本律与后处理模拟 |
 | 可执行语法 | `Ript.Syntax.*` | 带类型表达式、递归成本与推导 |
 | 语义 | `Ript.Semantics.*` | 解释、求值、可靠性与完备性 |
-| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 比较与决策风险 |
-| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率与精确决策价值 |
+| 具体模型 | `Ript.Models.*` | 有限函数、有限概率、Blackwell 决策、计算与有限因果机制 |
+| 可执行示例 | `Ript.Examples.*` | 计算行为、预算、有理概率、精确决策价值与干预 |
 | 审计界面 | `Ript.Audit.*` | 声明 lint 与内核假设报告 |
 
 串行核心可以独立使用。对称幺半群层通过独立接口扩展它，而不会把张量假设强行塞入每个
@@ -389,7 +428,8 @@ Stage 1 和 Stage 2 的旗舰审计只在必要处报告 Lean 的标准原则 `p
 `Quot.sound`。有限随机、Kleisli、决策与 `Stoch` 定理的证明还会通过 Mathlib 通用有限和、
 有限函数空间、测度及范畴基础设施报告 `Classical.choice`。运行时数据由显式、可计算的
 `Fintype` 和 `DecidableEq` 提供；有限信道、有限风险、预算风险与语义价值都是可执行的精确
-`ℚ≥0` 数据。总函数、`Option` 失败、资源向量和计算预算检查同样可执行。不可计算性只出现在
+`ℚ≥0` 数据。总函数、`Option` 失败、资源向量、计算预算检查、有限因果联合分布与硬干预同样
+可执行。不可计算性只出现在
 测度论 `Stoch`/语义 Bayes 风险边界。审计不含编译器信任
 逃逸或占位证明公理。
 
@@ -494,6 +534,11 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 程序，得到精确资源向量 `(步数, 查询, 存储, 门) = (3, 1, 0, 1)`，覆盖成功与失败，并检查两个
 模型的预算。七个 `#eval decide` 契约全部输出 `true`。
 
+`Ript/Examples/SimpleCausalModel.lean` 执行一个两节点 Boolean 链。公平根节点导致一个复制
+它的子节点，因此观测不一致的质量为零。硬干预 `do(effect = true)` 只替换子机制：上游根节点
+仍然公平，`(false, true)` 获得精确质量 `1/2`。五个 `#eval decide` 契约检查归一化、观测支持、
+强制值排除和上游不变性。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -515,6 +560,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- 或者导入资源感知的总计算与部分计算：
 import Ript.Models.Computation.Partial
+-- 或者导入有限 DAG、硬干预与精确随机状态：
+import Ript.Models.Causal.FinStoch
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -528,7 +575,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策以及总计算/部分计算模型 |
+| [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算与有限因果模型 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -561,13 +608,15 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 4. **分离可执行语法与证明商。**完备性使用商模型，不应让计算代码无端继承不可计算性。
 5. **明确完备性的范围。**每项完备性结论都点名规范模型和证明边界。
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
-7. **区分实现与愿景。**有限离散 `Stoch` 像和精确有限决策层已经实现；反向表示、一般随机、
-   因果、热力学、量子和高阶层仍必须清楚标记为开放研究。
+7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层和同质有限 DAG 因果层已经实现；
+   反向表示、一般随机与因果、热力学、量子和高阶层仍必须清楚标记为开放研究。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
    才能成为资源比较。
 10. **不把形式成本混同于运行时间。**计算资源是具有已证明复合律的语义标注，不是性能宣称。
+11. **不把干预混同于条件化。**硬干预先替换局部机制再重新生成联合分布；观测条件化是不同操作，
+    不能作为替代实现。
 
 ## 路线图
 
@@ -595,6 +644,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 四坐标计算资源与可靠的可执行预算检查器
 - [x] 具有精确串并行成本的总计算和 `Option` 部分计算范畴
 - [x] 积 bifunctor、interchange、保持资源的总计算嵌入与带类型示例
+- [x] 带拓扑证书的有限 DAG 与父局部精确机制
+- [x] 归一化观测联合分布、硬干预、干预定律与 `FinStoch` 状态
+- [x] 精确区分 `do` 与观测的可执行 Boolean 因果链示例
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
@@ -602,8 +654,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 
 - [ ] 将复制/丢弃能力接口推广到有限随机模型以外
 - [ ] 超出有限离散像的一般可测空间随机语义
-- [ ] 凸结构与因果结构
-- [ ] 有限 DAG 因果机制、归一化联合分布与干预
+- [ ] 通用凸结构与因果能力接口
+- [ ] 异构节点值域、一般可测因果模型、条件化与 do-calculus 扩展
 - [ ] 总计算和部分计算范畴的原生幺半群封装
 - [ ] 有限 Blackwell--Sherman--Stein 反向表示定理
 - [ ] 超出精确有限数据的一般可测空间决策问题
@@ -651,6 +703,8 @@ Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复�
 随机模型、热模型和量子信道仍属于路线图。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
+项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与
+精确 `FinStoch` 状态。异构值域、一般可测因果模型、条件化 API 和 do-calculus 完备性尚未实现。
 
 ### 语义价值等同于互信息吗？
 

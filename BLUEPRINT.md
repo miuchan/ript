@@ -76,6 +76,13 @@ flowchart LR
   TotalComputation --> SimpleComputation
   PartialComputation --> SimpleComputation
   SimpleComputation --> Audit
+  FiniteDistribution --> CausalModel["Models.Causal.Model"]
+  CausalDAG["Models.Causal.DAG"] --> CausalModel
+  CausalModel --> Intervention["Models.Causal.Intervention"]
+  Intervention --> CausalFinStoch["Models.Causal.FinStoch"]
+  FiniteStochastic --> CausalFinStoch
+  CausalFinStoch --> SimpleCausal["Examples.SimpleCausalModel"]
+  SimpleCausal --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -92,7 +99,7 @@ Every node in this graph is an existing compiled module.
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
-| 7 (causal) | Finite DAG mechanisms and intervention semantics | OPEN_RESEARCH |
+| 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8-11 | Thermal, quantum, bicategorical, and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
@@ -894,7 +901,7 @@ queries, storage, and gates. Total functions and `Option`-valued partial
 functions form separate executable categories. Both have exact additive serial
 cost, an independent-product bifunctor with exact additive parallel cost, and
 an executable budget check connected to the generic `WithinBudget` interface.
-The causal half of Stage 7 remains open and is not covered by this status.
+The causal half of Stage 7 is recorded separately below.
 
 ### `Ript.Models.Computation.ComputationResource.within_sound`
 
@@ -1030,6 +1037,235 @@ The causal half of Stage 7 remains open and is not covered by this status.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleComputation.lean`.
 
+## Stage-7 causal flagship theorem records
+
+The first causal model uses nodes `Fin n` with an explicit topological
+numbering certificate: every parent has a smaller index than its child. A
+local mechanism receives values only for its declared parents and returns an
+exact `FinDist`. The common finite value carrier is an explicit first-version
+restriction. Observational and hard-interventional joints are executable
+exact rational distributions and stochastic states in `FinStoch`.
+
+### `Ript.Models.Causal.FiniteDAG.acyclic`
+
+- Natural-language statement: the certified parent relation contains no
+  nonempty directed cycle.
+- Lean type:
+
+  ```lean
+  theorem FiniteDAG.acyclic (graph : FiniteDAG n) (node : Fin n) :
+      ¬ Relation.TransGen graph.Parent node node
+  ```
+
+- Prerequisite definitions: finite parent sets and the proof that every parent
+  precedes its child.
+- Prerequisite lemmas: transitive parent paths strictly increase node indices.
+- Status: `PROVED`.
+- Classical choice: reported through generic finite-set infrastructure; the
+  topological order itself is supplied data rather than chosen.
+- Computable: yes; the graph and its canonical order are finite data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/DAG.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized`
+
+- Natural-language statement: multiplying normalized local mechanisms over
+  any initial topological prefix produces total mass one.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.prefixFactorMass_normalized
+      (model : FiniteCausalModel n Value) :
+      ∀ {k : Nat} (hkn : k ≤ n),
+        ∑ assignment : Assignment k Value,
+          model.prefixFactorMass hkn assignment = 1
+  ```
+
+- Prerequisite definitions: parent-local `Mechanism`, prefix parent
+  assignments, next-node conditionals, and factor products.
+- Prerequisite lemmas: `prefixFactorMass_snoc`, finite tuple splitting by
+  `Fin.snocEquiv`, and normalization of each next-node `FinDist`.
+- Status: `PROVED`.
+- Classical choice: yes through Mathlib finite products and exact rational
+  proof infrastructure; no choice constructs probability data.
+- Computable: yes; every finite sum, product, and conditional mass evaluates.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/Model.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.observational_factorization`
+
+- Natural-language statement: the observational joint mass of a complete
+  assignment is exactly the product of its local conditional probabilities.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.observational_factorization
+      (model : FiniteCausalModel n Value)
+      (assignment : Assignment n Value) :
+      model.joint.prob assignment =
+        ∏ node,
+          ((model.mechanism node).run
+            (fun parent ↦ assignment parent.1)).prob (assignment node)
+  ```
+
+- Prerequisite definitions: `FiniteCausalModel.joint` and the normalized
+  topological factor mass.
+- Prerequisite lemmas: `prefixFactorMass_normalized`.
+- Status: `PROVED`.
+- Classical choice: yes through the finite-product proof dependency.
+- Computable: yes; the equality exposes the executable factorization formula.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/Model.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.intervene_same`
+
+- Natural-language statement: `do(node = value)` replaces the target
+  mechanism by the point distribution at `value`, independently of parents.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.intervene_same
+      (model : FiniteCausalModel n Value) (node : Fin n) (value : Value)
+      (parents : model.dag.ParentAssignment Value node) :
+      (((model.intervene (Intervention.doAt node value)).mechanism node).run
+        parents) = FinDist.pure value
+  ```
+
+- Prerequisite definitions: executable partial interventions and
+  mechanism-replacement semantics.
+- Prerequisite lemmas: none; target replacement reduces definitionally.
+- Status: `PROVED`.
+- Classical choice: reported through imported finite-distribution
+  infrastructure; no choice is used by the replacement.
+- Computable: yes.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/Intervention.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.intervene_idempotent`
+
+- Natural-language statement: applying the same hard intervention twice has
+  exactly the same model as applying it once.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.intervene_idempotent
+      (model : FiniteCausalModel n Value)
+      (intervention : Intervention n Value) :
+      (model.intervene intervention).intervene intervention =
+        model.intervene intervention
+  ```
+
+- Prerequisite definitions: pointwise mechanism replacement.
+- Prerequisite lemmas: extensionality of local mechanisms.
+- Status: `PROVED`.
+- Classical choice: yes through imported finite proof infrastructure.
+- Computable: yes; equality follows by cases on each `Option` setting.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/Intervention.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint`
+
+- Natural-language statement: two hard interventions commute when their
+  executable target supports are disjoint.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.intervene_comm_of_disjoint
+      (model : FiniteCausalModel n Value)
+      (first second : Intervention n Value)
+      (hdisjoint : Disjoint first.support second.support) :
+      (model.intervene first).intervene second =
+        (model.intervene second).intervene first
+  ```
+
+- Prerequisite definitions: `Intervention.support` and mechanism replacement.
+- Prerequisite lemmas: support membership characterizes a nonempty setting,
+  plus mechanism extensionality.
+- Status: `PROVED`.
+- Classical choice: yes through finite-set proof infrastructure.
+- Computable: target support and both transformed models are executable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/Intervention.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization`
+
+- Natural-language statement: replacing any finite family of local mechanisms
+  by Dirac mechanisms preserves normalization of the generated joint.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.intervention_preserves_normalization
+      (model : FiniteCausalModel n Value)
+      (intervention : Intervention n Value) :
+      ∑ assignment,
+        (model.intervene intervention).joint.prob assignment = 1
+  ```
+
+- Prerequisite definitions: intervened model and topological joint.
+- Prerequisite lemmas: the general prefix normalization theorem applied to the
+  intervened model.
+- Status: `PROVED`.
+- Classical choice: yes through finite sums and products in the proof layer.
+- Computable: yes; intervened joint probabilities are exact rational data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/Intervention.lean`.
+
+### `Ript.Models.Causal.FiniteCausalModel.interventional_factorization`
+
+- Natural-language statement: an interventional stochastic state factors into
+  original conditionals at untargeted nodes and zero-or-one Dirac factors at
+  targeted nodes.
+- Lean type:
+
+  ```lean
+  theorem FiniteCausalModel.interventional_factorization
+      (model : FiniteCausalModel n Value)
+      (intervention : Intervention n Value) (input : Object.unit)
+      (assignment : Assignment n Value) :
+      (model.interventionalChannel intervention).prob input assignment =
+        ∏ node,
+          match intervention.setting node with
+          | none =>
+              ((model.mechanism node).run
+                (fun parent ↦ assignment parent.1)).prob (assignment node)
+          | some forced => if forced = assignment node then 1 else 0
+  ```
+
+- Prerequisite definitions: local `Mechanism.toFinStoch`, observational state,
+  interventional state, and hard intervention.
+- Prerequisite lemmas: observational factorization and `FinDist.pure_apply`.
+- Status: `PROVED`.
+- Classical choice: yes through finite stochastic and product proof
+  infrastructure.
+- Computable: yes; both the channel entry and factor product execute exactly.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Causal/FinStoch.lean`.
+
+### `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism`
+
+- Natural-language statement: in the Boolean chain with a fair root and
+  deterministic-copy child, `do(effect = true)` leaves the root fair, forces
+  the child, and gives exact mass `1/2` to each compatible assignment.
+- Lean type:
+
+  ```lean
+  theorem intervention_replaces_child_mechanism :
+      interventionalProbability false false = 0 ∧
+      interventionalProbability false true = (1 : ℚ≥0) / 2 ∧
+      interventionalProbability true false = 0 ∧
+      interventionalProbability true true = (1 : ℚ≥0) / 2
+  ```
+
+- Prerequisite definitions: the two-node chain DAG, fair root, copying child,
+  and hard child intervention.
+- Prerequisite lemmas: observational factorization for the intervened model.
+- Status: `PROVED`.
+- Classical choice: yes through the generic causal normalization dependency;
+  the four closed probabilities themselves execute exactly.
+- Computable: yes; five checked `#eval decide` assertions accompany the proof.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleCausalModel.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -1099,3 +1335,16 @@ The causal half of Stage 7 remains open and is not covered by this status.
     not as a native `MonoidalCategory` instance. Associators, unitors, and a
     packaged parallel-cost capability remain future interface work and are not
     implied by the current model matrix.
+21. A finite causal graph carries a topological numbering certificate directly:
+    every declared parent has a smaller `Fin n` index. Any finite DAG can enter
+    this interface after topological numbering, while joint evaluation remains
+    executable and never chooses an order internally.
+22. The first causal carrier is homogeneous: every node uses the same finite
+    value type, although parent sets and conditional mechanisms vary by node.
+    Heterogeneous dependent node carriers are future work and are not implied
+    by the name `FiniteCausalModel`.
+23. `Intervention` is a simultaneous partial node assignment that replaces
+    local mechanisms by Dirac distributions. It is intentionally distinct
+    from conditioning an observational joint. Local mechanisms and normalized
+    observational/interventional states receive explicit exact `FinStoch`
+    interpretations; no generic do-calculus completeness claim is made.

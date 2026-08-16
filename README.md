@@ -22,13 +22,15 @@ measure-theoretic category `Stoch`. On top of that bridge, Ript now formalizes
 Blackwell comparison, exact executable finite Bayes risk, resource-bounded
 decision risk, and task-relative semantic value. It also includes total and
 possibly failing computation categories with explicit step, query, storage,
-and gate resources. Finite causal interventions, general measurable-space
+and gate resources. It now also provides executable finite DAG causal models,
+parent-local exact mechanisms, normalized observational joints, hard
+interventions, and exact `FinStoch` semantics. General measurable-space causal
 models, the converse Blackwell representation theorem, thermodynamics, quantum
 theory, and higher categories remain research directions.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–6 and the computation half
-> of Stage 7 are implemented and checked by Lean's kernel; the public API is
+> Ript is early-stage research software. Stages 1–7 are implemented and
+> checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
 
@@ -279,6 +281,36 @@ always-successful partial computation and preserves all resource coordinates.
 A shared typed query/negation/guard program is interpreted in both models; the
 generic `eval_cost_le` theorem and executable budget checks apply to both.
 
+### 10. Finite DAG causal models and hard interventions
+
+`FiniteDAG n` uses `Fin n` nodes and stores a topological certificate directly:
+every declared parent has a smaller index than its child. The canonical order
+is therefore executable and proved acyclic; constructing a joint distribution
+does not rely on a classically chosen topological sort. Any finite DAG can use
+this interface after choosing a topological numbering at its boundary.
+
+A `FiniteCausalModel n Value` assigns an exact normalized `FinDist Value`
+mechanism to each node. The mechanism receives values only for its declared
+parents. Ript multiplies those local conditional masses in topological order,
+proves every prefix normalized by induction, and obtains an executable joint
+distribution satisfying the observational factorization formula.
+
+An `Intervention` is a partial node assignment. `do(node = value)` replaces
+the corresponding local mechanism with `FinDist.pure value`; it is not defined
+by conditioning the observational joint. Repeating an intervention is
+idempotent, and interventions with disjoint supports commute. Normalization and
+factorization are preserved after replacement. Each local mechanism becomes a
+`FinStoch` channel from parent assignments to node values, while observational
+and interventional joints become exact stochastic states from `Object.unit`.
+
+The executable two-node example has a fair Boolean cause and an effect that
+copies it. Observational mismatches have mass zero. After `do(effect = true)`,
+the cause remains fair and the previously impossible assignment
+`(false, true)` has mass `1/2`. This distinguishes intervention from ordinary
+conditioning with exact checked data. The first model intentionally uses a
+common finite value type for every node; heterogeneous node carriers and
+general do-calculus remain future extensions.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -335,6 +367,15 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Computation.Partial.ofTotal_resource` | The total-to-partial functor preserves every resource coordinate. |
 | `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | Generic syntax-cost soundness applies to the total executor. |
 | `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | The partial checker certifies the exact syntax-derived budget. |
+| `Ript.Models.Causal.FiniteDAG.acyclic` | The certified parent relation has no directed cycle. |
+| `Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized` | Normalized local mechanisms generate a normalized topological prefix. |
+| `Ript.Models.Causal.FiniteCausalModel.observational_factorization` | Joint mass is exactly the product of parent-local conditional masses. |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_same` | A hard intervention replaces its target mechanism by a Dirac distribution. |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_idempotent` | Repeating the same intervention changes nothing further. |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint` | Interventions on disjoint supports commute. |
+| `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | Every hard-intervened joint remains normalized. |
+| `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | Interventional states factor into unchanged conditionals and Dirac target factors. |
+| `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | The Boolean chain example distinguishes intervention from observation exactly. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -357,7 +398,7 @@ finished physical theory.
 | 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
-| 7, causal | Finite DAG mechanisms and interventions | **OPEN RESEARCH** |
+| 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8–11 | Thermal, quantum, bicategorical, and univalent layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -374,14 +415,16 @@ Implemented model support is intentionally narrow:
 | Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Blackwell order respects `FinStoch` products; finite minima, resource budgets, task-relative value |
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
+| Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
 in Mathlib `Stoch`, and its exact finite decision layer has compiled Blackwell,
 Bayes-risk, resource, and semantic-value theorems. The converse finite
 Blackwell--Sherman--Stein representation theorem, general measurable decision
-problems, finite DAG interventions, native monoidal packaging for computation,
-generic copy/discard and convex interfaces, thermal structure, quantum
+problems, heterogeneous or measurable causal models, complete do-calculus,
+native monoidal packaging for computation, generic copy/discard and convex
+interfaces, thermal structure, quantum
 channels, and univalent or higher-categorical structure are **not implemented**.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
@@ -425,6 +468,11 @@ flowchart LR
   TC --> PC["Option Kleisli partial category"]
   TC --> CE["Shared typed computation example"]
   PC --> CE
+  DAG["Topologically numbered finite DAG"] --> CM["Parent-local exact mechanisms"]
+  CM --> IJ["Normalized observational joint"]
+  CM --> DO["Hard mechanism-replacement interventions"]
+  DO --> IS["Exact interventional FinStoch states"]
+  CK --> IS
 ```
 
 | Layer | Main modules | Responsibility |
@@ -433,8 +481,8 @@ flowchart LR
 | Process capabilities | `Ript.Core.*` | Sequential, tensor, structural cost laws, and post-processing simulation |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability and decisions, and total/partial computation |
-| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, and exact decision values |
+| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, decisions, total/partial computation, and finite causal mechanisms |
+| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, exact decision values, and interventions |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
 The sequential core remains independently usable. The symmetric monoidal layer
@@ -464,7 +512,8 @@ Mathlib's generic finite-sum, finite-function, measure, and category
 infrastructure. Runtime data is supplied by explicit computational `Fintype`
 and `DecidableEq` values: finite channels, finite risks, budgeted risks, and
 semantic values are executable exact `ℚ≥0` data. Total functions, `Option`
-failure, resource vectors, and computation budget checks are also executable.
+failure, resource vectors, computation budget checks, finite causal joints,
+and hard interventions are also executable.
 Noncomputability appears only
 in the measure-theoretic `Stoch`/semantic-Bayes-risk boundary. The audit reports
 no compiler-trust escape or placeholder-proof axiom.
@@ -583,6 +632,13 @@ total and `Option`-partial categories. It computes the exact resource vector
 `(steps, queries, storage, gates) = (3, 1, 0, 1)`, exercises success and failure,
 and checks both model budgets. Seven `#eval decide` contracts print `true`.
 
+`Ript/Examples/SimpleCausalModel.lean` executes a two-node Boolean chain. A fair
+root causes a child that copies it, so observational mismatches have mass zero.
+The hard intervention `do(effect = true)` replaces only the child mechanism:
+the upstream root remains fair and `(false, true)` receives exact mass `1/2`.
+Five `#eval decide` contracts check normalization, observational support,
+forced-value exclusion, and upstream invariance.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -605,6 +661,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- or, for resource-aware total and partial computation:
 import Ript.Models.Computation.Partial
+-- or, for finite DAGs, hard interventions, and exact stochastic states:
+import Ript.Models.Causal.FinStoch
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -618,7 +676,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, and total/partial computation models |
+| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, and finite causal models |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -659,9 +717,9 @@ force-pushes and branch deletion are disabled.
 6. **Treat assumptions as versioned API surface.** A theorem acquiring a new
    axiom is a gate failure, not a footnote discovered later.
 7. **Distinguish implementation from aspiration.** The finite discrete `Stoch`
-   image and exact finite decision layer are implemented; converse
-   representation, general stochastic, causal, thermal, quantum, and higher
-   layers remain visibly marked as open research.
+   image, exact finite decision layer, and homogeneous finite DAG causal layer
+   are implemented; converse representation, general stochastic and causal,
+   thermal, quantum, and higher layers remain visibly marked as open research.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -670,6 +728,9 @@ force-pushes and branch deletion are disabled.
    and additive cost overhead.
 10. **Do not confuse formal cost with elapsed time.** Computation resources are
     semantic annotations with proved composition laws, not performance claims.
+11. **Do not confuse intervention with conditioning.** A hard intervention
+    replaces a local mechanism before the joint is regenerated; observational
+    conditioning is a distinct operation and is not used as a surrogate.
 
 ## Roadmap
 
@@ -700,14 +761,17 @@ updated assumption audit.
 - [x] Four-coordinate computation resource and sound executable budget checker
 - [x] Total and `Option`-partial categories with exact serial and parallel costs
 - [x] Product bifunctors, interchange, resource-preserving total embedding, and typed example
+- [x] Topologically certified finite DAGs and parent-local exact mechanisms
+- [x] Normalized observational joints, hard interventions, intervention laws, and `FinStoch` states
+- [x] Executable Boolean causal-chain example distinguishing `do` from observation
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
 
 - [ ] Generic copy/discard capability interfaces beyond the finite stochastic model
 - [ ] Stochastic semantics over general measurable spaces beyond the finite discrete image
-- [ ] Convex and causal structure
-- [ ] Finite DAG causal mechanisms, normalized joint distribution, and interventions
+- [ ] Generic convex and causal capability interfaces
+- [ ] Heterogeneous node carriers, general measurable causal models, conditioning, and do-calculus extensions
 - [ ] Native monoidal packaging for the total and partial computation categories
 - [ ] Converse finite Blackwell--Sherman--Stein representation theorem
 - [ ] General measurable-space decision problems beyond exact finite data
@@ -767,6 +831,11 @@ For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite
 Blackwell representation theorem or a general measurable decision theory.
+It also supports topologically numbered finite DAGs with a common finite value
+carrier, exact parent-local mechanisms, normalized observational joints, hard
+interventions, and exact `FinStoch` states. Heterogeneous carriers, general
+measurable causal models, conditioning APIs, and do-calculus completeness are
+not yet implemented.
 
 ### Is semantic value the same thing as mutual information?
 
