@@ -1,5 +1,5 @@
 import Mathlib.Tactic.NormNum
-import Ript.Models.Thermal.FreeEnergy
+import Ript.Models.Thermal.Work
 
 /-!
 # Executable finite thermal example
@@ -63,6 +63,41 @@ noncomputable def gibbsThermalBit : GibbsThermalObject where
       Real.exp (-1 * 0) / (∑ _ : Bool, Real.exp (-1 * 0))
     rw [Fintype.sum_bool]
     norm_num
+
+/-- The zero-energy Boolean Gibbs data at an arbitrary positive inverse
+temperature. -/
+noncomputable def uniformGibbsDataAt (β : ℝ) (hβ : 0 < β) :
+    FiniteGibbsData bitSystem where
+  energy _ := 0
+  inverseTemperature := β
+  inverseTemperature_pos := hβ
+  nonempty := ⟨false⟩
+
+/-- Degenerate Boolean energy levels remain uniformly Gibbs distributed at
+every positive inverse temperature. -/
+theorem uniformGibbs_probabilityAt (β : ℝ) (hβ : 0 < β) (x : bitSystem) :
+    (uniformGibbsDataAt β hβ).probability x = (1 : ℝ) / 2 := by
+  change Real.exp (-β * 0) /
+      (∑ _ : Bool, Real.exp (-β * 0)) = (1 : ℝ) / 2
+  rw [Fintype.sum_bool]
+  norm_num
+
+/-- The exact uniform thermal bit realized at an arbitrary positive inverse
+temperature. -/
+noncomputable def gibbsThermalBitAt (β : ℝ) (hβ : 0 < β) :
+    GibbsThermalObject where
+  thermal := thermalBit
+  gibbs := uniformGibbsDataAt β hβ
+  equilibrium_eq_probability x := by
+    change Bool at x
+    change (((1 : ℚ≥0) / 2 : ℚ≥0) : ℝ) =
+      Real.exp (-β * 0) / (∑ _ : Bool, Real.exp (-β * 0))
+    rw [Fintype.sum_bool]
+    norm_num
+
+/-- Exact erased Boolean memory state. -/
+def erasedBit : FinDist thermalBit.system :=
+  FinDist.pure false
 
 /-- The uniform exact equilibrium has full support. -/
 theorem fairEquilibrium_fullSupport (x : thermalBit.system) :
@@ -168,6 +203,87 @@ theorem thermalBit_equilibriumFreeEnergy :
   rw [Fintype.sum_bool]
   norm_num
 
+/-- The mean energy of every state is zero for the degenerate Boolean
+Hamiltonian at arbitrary positive inverse temperature. -/
+@[simp]
+theorem thermalBitAt_meanEnergy (β : ℝ) (hβ : 0 < β)
+    (state : FinDist thermalBit.system) :
+    (gibbsThermalBitAt β hβ).meanEnergy state = 0 := by
+  simp [GibbsThermalObject.meanEnergy, gibbsThermalBitAt,
+    uniformGibbsDataAt]
+
+/-- A perfectly erased Boolean state has zero Shannon entropy. -/
+@[simp]
+theorem erasedBit_entropy (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).entropy erasedBit = 0 := by
+  change -(∑ x : Bool,
+    (((if false = x then 1 else 0 : ℚ≥0) : ℚ≥0) : ℝ) *
+      Real.log (((if false = x then 1 else 0 : ℚ≥0) : ℚ≥0) : ℝ)) = 0
+  rw [Fintype.sum_bool]
+  norm_num
+
+/-- The equilibrium free energy of the degenerate Boolean system is
+`-log 2 / β`. -/
+theorem thermalBitAt_equilibriumFreeEnergy (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).equilibriumFreeEnergy =
+      -Real.log 2 / β := by
+  change -Real.log (∑ _ : Bool, Real.exp (-β * 0)) / β =
+    -Real.log 2 / β
+  rw [Fintype.sum_bool]
+  norm_num
+
+/-- The uniform equilibrium has zero excess free energy at every positive
+inverse temperature. -/
+@[simp]
+theorem thermalBitAt_fair_freeEnergyGap (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).freeEnergyGap fairEquilibrium = 0 := by
+  exact (gibbsThermalBitAt β hβ).freeEnergyGap_equilibrium
+
+/-- Perfect erasure of the degenerate Boolean memory raises its excess free
+energy by exactly `log 2 / β`. -/
+theorem thermalBitAt_erased_freeEnergyGap (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).freeEnergyGap erasedBit =
+      Real.log 2 / β := by
+  unfold GibbsThermalObject.freeEnergyGap
+    GibbsThermalObject.nonequilibriumFreeEnergy
+  rw [thermalBitAt_meanEnergy β hβ erasedBit,
+    erasedBit_entropy β hβ,
+    thermalBitAt_equilibriumFreeEnergy β hβ]
+  ring
+
+/-- Any Gibbs-preserving work-assisted erasure of a degenerate Boolean memory
+must consume at least `log 2 / β` of battery free energy. -/
+theorem thermalBit_erasure_landauer_freeEnergy_bound
+    (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+    (transition : WorkAssistedTransition
+      (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+    (hInitial : transition.initialSystem = fairEquilibrium)
+    (hFinal : transition.finalSystem = erasedBit) :
+    Real.log 2 / β ≤ transition.batteryFreeEnergyDecrease := by
+  have hbound := transition.landauer_freeEnergy_bound
+  unfold WorkAssistedTransition.systemFreeEnergyIncrease at hbound
+  rw [hInitial, hFinal, thermalBitAt_erased_freeEnergyGap β hβ,
+    thermalBitAt_fair_freeEnergyGap β hβ, sub_zero] at hbound
+  exact hbound
+
+/-- **Boolean Landauer work bound.** If the explicit battery has equal initial
+and final entropy, erasing one degenerate bit requires a battery mean-energy
+decrease of at least `log 2 / β`. -/
+theorem thermalBit_erasure_landauer_work_bound
+    (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+    (transition : WorkAssistedTransition
+      (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+    (hInitial : transition.initialSystem = fairEquilibrium)
+    (hFinal : transition.finalSystem = erasedBit)
+    (hEntropy : battery.entropy transition.initialBattery =
+      battery.entropy transition.finalBattery) :
+    Real.log 2 / β ≤ transition.batteryEnergyDecrease := by
+  have hbound := transition.landauer_work_bound hEntropy
+  unfold WorkAssistedTransition.systemFreeEnergyIncrease at hbound
+  rw [hInitial, hFinal, thermalBitAt_erased_freeEnergyGap β hβ,
+    thermalBitAt_fair_freeEnergyGap β hβ, sub_zero] at hbound
+  exact hbound
+
 /-- The general KL/free-energy theorem specializes without a scaling factor
 because the Boolean model has inverse temperature one. -/
 theorem thermalBit_kl_freeEnergy_identity
@@ -261,5 +377,8 @@ theorem thermalPair_freeEnergyGap_additive
 -- Serial composition computes two flips as the identity channel.
 #eval decide ((GibbsPreserving.comp thermalFlip thermalFlip).channel.prob
   true true = 1)
+
+-- The declared erased memory is exactly concentrated on `false`.
+#eval decide (erasedBit.prob false = 1 ∧ erasedBit.prob true = 0)
 
 end Ript.Examples.SimpleThermalModel

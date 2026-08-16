@@ -61,6 +61,7 @@ import Ript.Models.Thermal.Gibbs
 import Ript.Models.Thermal.GibbsPreserving
 import Ript.Models.Thermal.KLDivergence
 import Ript.Models.Thermal.Monotone
+import Ript.Models.Thermal.Work
 import Ript.Resource.Basic
 import Ript.Resource.Budget
 import Ript.Resource.Filtration

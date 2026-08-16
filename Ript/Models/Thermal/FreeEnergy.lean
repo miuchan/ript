@@ -308,6 +308,20 @@ theorem klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap
   field_simp [ne_of_gt X.gibbs.inverseTemperature_pos]
   ring
 
+/-- The distinguished Gibbs equilibrium has zero excess free energy. -/
+@[simp]
+theorem freeEnergyGap_equilibrium (X : GibbsThermalObject.{u}) :
+    X.freeEnergyGap X.thermal.equilibrium = 0 := by
+  have hidentity :=
+    X.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap
+      X.thermal.equilibrium
+  rw [klAthermality_eq, finiteKL_self] at hidentity
+  have hmul : X.gibbs.inverseTemperature *
+      X.freeEnergyGap X.thermal.equilibrium = 0 := by
+    simpa using hidentity.symm
+  exact (mul_eq_zero.mp hmul).resolve_left
+    (ne_of_gt X.gibbs.inverseTemperature_pos)
+
 /-- **Free-energy gap monotonicity.** A Gibbs-preserving channel between
 realized systems at the same inverse temperature cannot increase excess free
 energy. -/

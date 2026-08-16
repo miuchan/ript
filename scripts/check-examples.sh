@@ -87,7 +87,7 @@ if [[ "$causal_output" != "$expected_causal_output" ]]; then
 fi
 
 thermal_output="$(lake env lean Ript/Examples/SimpleThermalModel.lean)"
-expected_thermal_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue'
+expected_thermal_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue'
 
 if [[ "$thermal_output" != "$expected_thermal_output" ]]; then
   printf 'Finite-thermal example output changed.\nExpected:\n%s\nActual:\n%s\n' \

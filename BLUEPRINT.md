@@ -102,7 +102,8 @@ flowchart LR
   ThermalEquilibrium --> ThermalGibbs["Models.Thermal.Gibbs"]
   ThermalGibbs --> ThermalFreeEnergy["Models.Thermal.FreeEnergy"]
   ThermalKL --> ThermalFreeEnergy
-  ThermalFreeEnergy --> SimpleThermal["Examples.SimpleThermalModel"]
+  ThermalFreeEnergy --> ThermalWork["Models.Thermal.Work"]
+  ThermalWork --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
@@ -163,7 +164,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, Gibbs-preserving monotonicity, and concrete finite KL data processing | PROVED |
+| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, Gibbs-preserving monotonicity, tensor additivity, and work-assisted Boolean Landauer bound | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1568,7 +1569,20 @@ Gibbs-preserving channels between realized systems at common inverse
 temperature. Common-temperature realized systems also tensor: Boltzmann
 weights and probabilities factor, partition functions multiply, and mean
 energy, entropy, both free energies, and the free-energy gap are additive on
-product states. Landauer inequalities remain open.
+product states.
+
+The work-assisted layer makes the missing accounting boundary explicit. A
+`WorkAssistedTransition` carries exact source, target, and battery endpoint
+states, common-temperature certificates, a Gibbs-preserving joint channel,
+and an exact product-to-product evolution equation. Free-energy monotonicity
+and tensor additivity prove that the system's free-energy increase is at most
+the battery's free-energy decrease. Only an additional equality of the
+battery's initial and final entropies converts this into a mean-energy work
+bound. For a degenerate Boolean memory, the exact erasure transition from the
+uniform state to a pure state therefore costs at least `log 2 / β`. This does
+not assert existence or tightness of an erasure channel, and correlated
+endpoints, approximate erasure, and explicit bath/cyclic protocols remain
+open extensions.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2030,6 +2044,72 @@ product states. Landauer inequalities remain open.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/FreeEnergy.lean`.
 
+### `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound`
+
+- Natural-language statement: for an exact product-endpoint Gibbs-preserving
+  transition of a system and battery at common inverse temperature, if the
+  battery entropy is unchanged, the system's excess-free-energy increase is
+  at most the battery's mean-energy decrease.
+- Lean type:
+
+  ```lean
+  theorem WorkAssistedTransition.landauer_work_bound
+      {source target battery : GibbsThermalObject}
+      (transition : WorkAssistedTransition source target battery)
+      (hEntropy : battery.entropy transition.initialBattery =
+        battery.entropy transition.finalBattery) :
+      transition.systemFreeEnergyIncrease ≤
+        transition.batteryEnergyDecrease
+  ```
+
+- Prerequisite definitions: common-temperature realized Gibbs tensors,
+  exact product endpoint states, a Gibbs-preserving joint process, system
+  free-energy increase, and battery free-energy/mean-energy decrease.
+- Prerequisite lemmas: free-energy-gap monotonicity, tensor additivity, and
+  cancellation of the unchanged entropy and equilibrium free-energy terms.
+- Status: `PROVED`. The companion `landauer_freeEnergy_bound` needs no battery
+  entropy assumption and bounds the system increase by battery free-energy
+  decrease.
+- Classical choice: inherited only through the finite KL/Gibbs analytic
+  layer; the transition endpoints and stochastic channel are explicit data.
+- Computable: exact endpoint states, channels, and the evolution certificate
+  are based on executable `FinDist`/`FinStoch`; real free energy and work
+  accounting are noncomputable semantic values.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Work.lean`.
+
+### `Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound`
+
+- Natural-language statement: at every `β > 0`, any certified work-assisted
+  erasure of a degenerate Boolean memory from its uniform Gibbs equilibrium to
+  the pure `false` state requires at least `log 2 / β` of battery mean-energy
+  decrease when the battery entropy is unchanged.
+- Lean type:
+
+  ```lean
+  theorem thermalBit_erasure_landauer_work_bound
+      (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+      (transition : WorkAssistedTransition
+        (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+      (hInitial : transition.initialSystem = fairEquilibrium)
+      (hFinal : transition.finalSystem = erasedBit)
+      (hEntropy : battery.entropy transition.initialBattery =
+        battery.entropy transition.finalBattery) :
+      Real.log 2 / β ≤ transition.batteryEnergyDecrease
+  ```
+
+- Prerequisite lemmas: zero equilibrium free-energy gap, zero energy and
+  entropy of the erased degenerate bit, its exact excess-free-energy value
+  `log 2 / β`, and the generic work-assisted Landauer theorem.
+- Status: `PROVED` as a necessary lower bound for every transition certificate
+  satisfying the displayed hypotheses; existence and saturation are not
+  claimed.
+- Classical choice: inherited only from the audited analytic layer.
+- Computable: the uniform and erased Boolean states are exact and executable;
+  the logarithmic lower bound is analytic semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleThermalModel.lean`.
+
 ### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
 
 - Natural-language statement: at a common inverse temperature, excess
@@ -2105,7 +2185,7 @@ product states. Landauer inequalities remain open.
   arithmetic.
 - Status: `PROVED`.
 - Classical choice: reported through generic finite stochastic proof
-  dependencies; the six accompanying `#eval decide` assertions use ordinary
+  dependencies; the seven accompanying `#eval decide` assertions use ordinary
   executable reduction.
 - Computable: yes.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
@@ -3528,8 +3608,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     energy layer now proves normalized Boltzmann probabilities, the exact
     KL/free-energy identity, and common-temperature free-energy-gap
     monotonicity. It also canonically realizes every full-support exact
-    equilibrium and proves common-temperature tensor additivity, without
-    claiming arbitrary independently supplied exponential weights are rational.
+    equilibrium and proves common-temperature tensor additivity. The
+    work-assisted layer proves a product-endpoint free-energy balance and, for
+    entropy-neutral batteries, a work bound including Boolean `log 2 / β`
+    erasure. It does not claim transition existence or saturation, correlated
+    or approximate erasure, or that arbitrary independently supplied
+    exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to
