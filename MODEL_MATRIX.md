@@ -3,7 +3,7 @@
 Only implemented and compiled capabilities are marked as supported.
 
 | Model | Sequential | Tensor | Discard | Copy | Convex | Causal | Decision | Thermal | Computable |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | FiniteFunction (zero cost) | Yes | Yes | Yes | Yes | No | Yes | No | No | Yes |
 | FiniteFunction.Metered | Yes | No | No | No | No | No | No | No | Yes |
 | Sequential term model | Yes | No | No | No | No | No | No | No | Proof layer |

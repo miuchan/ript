@@ -54,6 +54,36 @@ reject_matches \
   '\\operatorname' \
   '*.md'
 
+markdown_table_errors=0
+while IFS= read -r markdown_file; do
+  if ! awk '
+    function pipe_count(line, copy) {
+      copy = line
+      return gsub(/\|/, "", copy)
+    }
+
+    NR > 1 &&
+        $0 ~ /^[[:space:]]*\|[[:space:]]*:?-+/ &&
+        $0 !~ /[^|:[:space:]-]/ {
+      if (previous !~ /^[[:space:]]*\|/ ||
+          pipe_count(previous) != pipe_count($0)) {
+        printf "Source quality check failed: malformed Markdown table separator at %s:%d\n", FILENAME, NR
+        failed = 1
+      }
+    }
+
+    { previous = $0 }
+
+    END { exit failed }
+  ' "$markdown_file"; then
+    markdown_table_errors=1
+  fi
+done < <(git ls-files --cached --others --exclude-standard -- '*.md')
+
+if [[ "$markdown_table_errors" -ne 0 ]]; then
+  exit 1
+fi
+
 missing_auto_implicit=0
 while IFS= read -r lean_file; do
   if ! grep -q -E '^set_option autoImplicit false[[:space:]]*$' "$lean_file"; then
