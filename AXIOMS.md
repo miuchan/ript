@@ -88,6 +88,14 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.DeterministicBlackwell.crossing_reconstructionRisk_half` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
 | `Ript.Examples.DeterministicBlackwell.block_dominates_aligned` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
 | `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
+| `Ript.Models.Decision.Separation.finiteDecisionOrder_of_dominates` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Separation.lean` |
+| `Ript.Models.Decision.Separation.DecisionSeparationCertificate.not_dominates` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Separation.lean` |
+| `Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Separation.lean` |
+| `Ript.Models.Decision.Separation.blackwellShermanSteinConverse_iff_separationComplete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Separation.lean` |
+| `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Separation.lean` |
+| `Ript.Examples.StochasticSeparation.noisy_information_quarter_risk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/StochasticSeparation.lean` |
+| `Ript.Examples.StochasticSeparation.uninformative_information_half_risk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/StochasticSeparation.lean` |
+| `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/StochasticSeparation.lean` |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/ResourceBounded.lean` |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/ResourceBounded.lean` |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
@@ -305,6 +313,13 @@ observation to its whole finite observation carrier. The extracted Blackwell
 witness, all reconstruction risks, and the four-state aligned/crossing example
 remain exact executable data; no choice-derived value is returned by an
 evaluator. The converse for arbitrary stochastic experiments is not assumed.
+The stochastic separation layer gives that missing converse an exact Lean
+proposition and proves it equivalent to completeness of concrete finite
+decision certificates. Constructing a certificate from failure of the
+universal risk order uses an optimal deterministic rule and hence proof-only
+finite choice. Certificate checking and the noisy Boolean example remain
+exact `ℚ≥0` computations; the unproved geometric certificate-completeness
+proposition is neither an axiom nor a theorem.
 The Stage-7 computation slice uses a pointwise `Fin 4 → Nat` resource vector
 and executable total and `Option`-partial functions. Its category, tensor
 bifunctor, total-to-partial embedding, and resource data are computational.

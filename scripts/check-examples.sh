@@ -77,6 +77,15 @@ if [[ "$deterministic_blackwell_output" != "$expected_deterministic_blackwell_ou
   exit 1
 fi
 
+stochastic_separation_output="$(lake env lean Ript/Examples/StochasticSeparation.lean)"
+expected_stochastic_separation_output=$'true\ntrue\ntrue'
+
+if [[ "$stochastic_separation_output" != "$expected_stochastic_separation_output" ]]; then
+  printf 'Stochastic decision-separation example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_stochastic_separation_output" "$stochastic_separation_output" >&2
+  exit 1
+fi
+
 computation_output="$(lake env lean Ript/Examples/SimpleComputation.lean)"
 expected_computation_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue'
 

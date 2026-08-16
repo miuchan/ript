@@ -4,16 +4,41 @@ Only unresolved mathematical statements are listed here. Each entry uses the
 required marker `FORMALIZED_BUT_UNPROVED` once its exact Lean proposition has
 been checked but no kernel proof is available.
 
-There are currently no registered conjectures. The deterministic finite
-Blackwell converse is now proved, not conjectural: under any exact full-support
-prior, comparison on the zero-one target-reconstruction task recovers an exact
-post-processing witness, equivalently the target is constant on every source
-fiber. The general converse for arbitrary finite stochastic experiments still
-requires a finite-dimensional convex-separation or linear-programming duality
-development. Its exact Lean proposition has not yet been registered, so it is
-a documented research boundary rather than a `FORMALIZED_BUT_UNPROVED` entry.
+## Exact finite stochastic Blackwell converse
 
-In particular, the canonical
+Status: `FORMALIZED_BUT_UNPROVED`.
+
+The exact proposition is now checked by Lean as
+`Ript.Models.Decision.Separation.FiniteBlackwellShermanStein`:
+
+```lean
+universe u
+
+def FiniteBlackwellShermanStein : Prop :=
+  ∀ (Θ X Y : Object.{u}) (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+    FiniteDecisionOrder P Q → BlackwellDominates P Q
+```
+
+Here `FiniteDecisionOrder P Q` quantifies over every finite action carrier,
+exact prior, and exact nonnegative-rational loss. The compiled theorem
+`finiteBlackwellShermanStein_iff_certificateComplete` reduces this conjecture
+exactly to the claim that every non-garbling pair admits a concrete finite
+decision-separation certificate. Certificates are already proved sound, and a
+genuinely stochastic Boolean pair has an executable certificate with risks
+`1/4 < 1/2`.
+
+The missing implication is geometric: derive an exact rational certificate
+from failure of an exact rational stochastic garbling. Mathlib supplies real
+locally convex Hahn--Banach/Farkas separation, but the project still needs a
+finite garbling-polytope construction and a proof that the resulting strict
+separator can be represented by exact nonnegative-rational decision data.
+
+The deterministic finite Blackwell converse is proved, not conjectural: under
+any exact full-support prior, target-reconstruction risk recovers an exact
+post-processing witness, equivalently the target is constant on every source
+fiber.
+
+Apart from that registered converse, the canonical
 Gibbs realization of every full-support exact finite equilibrium and the
 common-temperature tensor/additivity laws are proved declarations, not
 conjectural placeholders. The exact product-endpoint Landauer free-energy
