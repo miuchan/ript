@@ -199,6 +199,7 @@ or the executable cores.
 | Presheaf universe | Type-valued presheaves on the internal groupoid | Yoneda is fully faithful; representable transformations/isomorphisms correspond to internal identity/equivalence | Semantic proof layer; Mathlib Yoneda audits with classical choice |
 | Yoneda envelope | Essential image of representables in the presheaf universe | Groupoid equivalent to the internal groupoid; inclusion factors Yoneda; functor categories are equivalent | Noncomputable essential-image witnesses; not a Rezk completion |
 | Simplicial interface nerve | Ordinary categorical nerve of the internal groupoid | Complete Kan horn filling, strict Segal, quasicategory, 2-coskeletal; vertices/edges/2-simplices encode interfaces, identities, and composition; homotopy category recovers the groupoid | Semantic proof layer; chosen fillers audit with classical choice; no complete-Segal or Rezk claim |
+| Rezk classifying diagram | Outer simplicial category of composable interface strings, followed levelwise by the ordinary nerve | Every vertical level is a groupoid nerve, Kan, strict Segal, quasicategorical, and 2-coskeletal; vertical vertices naturally recover the ordinary interface nerve; vertical edges are invertible natural transformations | Semantic proof layer; outer Segal equivalences and the Rezk completeness map remain open, so no complete-Segal or localization claim |
 
 The concrete Boolean model proves that `bit tensor unit` and `unit tensor bit`
 are unequal syntax trees in Lean while tensor symmetry makes them internally
@@ -212,11 +213,19 @@ quasicategory, coskeletal, and homotopy-category infrastructure carries the
 same classical audit footprint in the simplicial layer. Ript's ForMathlib
 extension proves that every groupoid nerve is Kan and the chosen filler
 interface has that same audited footprint.
+The classifying-diagram layer preserves a second simplicial direction rather
+than collapsing back to the strict nerve. Its outer `n`-object is the category
+of `n`-strings and natural transformations; pointwise groupoid inversion makes
+every vertical level Kan. The vertical-vertex row is naturally isomorphic to
+the ordinary interface nerve, and vertical edges have explicit inverse and
+cancellation laws. This is the classifying-diagram construction used on the
+Rezk route, but its outer Segal comparison maps and completeness map have not
+yet been proved.
 
 Together these are a 0-truncated object completion and a 1-truncated skeletal
-groupoid model, an ordinary representable-presheaf envelope, and the strict
-categorical nerve of that groupoid. The nerve is a proved strict Segal
-simplicial set, Kan complex, quasicategory, and 2-coskeletal object, but no
-complete-Segal, Rezk-completion, or localization theorem is claimed. These layers do not add
-`Equiv α β → α = β` and are not a Rezk completion or a complete presheaf model
-of the full resource-process bicategory.
+groupoid model, an ordinary representable-presheaf envelope, the strict
+categorical nerve of that groupoid, and a levelwise controlled Rezk
+classifying diagram. The outer Segal and Rezk-completeness obligations remain
+open, so no complete-Segal or localization theorem is claimed. These layers do
+not add `Equiv α β → α = β` and are not a complete presheaf model or proved
+localization of the full resource-process bicategory.
