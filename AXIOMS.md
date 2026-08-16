@@ -132,6 +132,12 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.ExplicitBathErasure.bathBatterySwap_erases` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExplicitBathErasure.lean` |
 | `Ript.Examples.ExplicitBathErasure.explicitBathErasure_saturates` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExplicitBathErasure.lean` |
 | `Ript.Examples.ExplicitBathErasure.explicitBathErasure_batteryEntropy_changes` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExplicitBathErasure.lean` |
+| `Ript.Models.Thermal.GibbsThermalObject.meanEnergy_pure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/FreeEnergy.lean` |
+| `Ript.Models.Thermal.GibbsThermalObject.entropy_pure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/FreeEnergy.lean` |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasureChannel_erases` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
+| `Ript.Examples.ExactWorkErasure.workBattery_low_lt_high` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_process` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
@@ -338,6 +344,13 @@ erasure equation, free-energy saturation theorem, and battery entropy-change
 theorem have that same footprint. The channel and rational endpoint states
 still reduce in the kernel; `Classical.choice` is confined to proof and
 analytic semantics and does not generate runtime data.
+The separate two-level work-battery witness has the same audited footprint.
+Its exact rational channel, pure endpoint states, and three regression checks
+are executable; its logarithmic energy-gap calculation remains in the analytic
+layer. The audit covers the generic pure-state energy and entropy lemmas, exact
+erasure, strict battery nondegeneracy, endpoint entropy neutrality, and exact
+mechanical Landauer saturation. No new axiom or choice-derived runtime data is
+introduced.
 The Boolean thermal example still evaluates its rational channel and protocol
 trace facts by ordinary kernel reduction, while its no-go, KL, and free-energy
 theorems are kernel-checked proof data.

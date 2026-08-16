@@ -37,9 +37,11 @@ Landauer 界会同时核算系统自由能和相关自由能的变化。精确�
 有理数 `0 ≤ ε ≤ 1/2`，可执行目标的错误质量为 `ε`，熵为 `binEntropy ε`，精确超额
 自由能成本为 `(log 2 - binEntropy ε) / β`；该成本非负并随允许误差单调不增，且已进入
 乘积端点与相关修正的 Landauer 供功界。一般可测因果模型、Blackwell 反向表示定理、
-熵中性携功循环仍是研究方向。一个显式的有限热浴辅助协议现已通过编译：三比特置换
+闭合工作电池充电循环仍是研究方向。一个显式的有限热浴辅助协议现已通过编译：三比特置换
 `((系统, 热浴), 电池) -> ((电池, 热浴), 系统)` 精确擦除系统、原样返回热浴，
-并以信息电池支付 `log 2 / β`。证明同时显示电池熵发生变化，因此它不是机械功循环。Ript 现在还
+并以信息电池支付 `log 2 / β`。证明同时显示电池熵发生变化，因此它不是机械功循环。另一个
+无需热浴的有限见证实现了机械功形式：非简并两能级电池从纯高能态放电到纯低能态，熵保持为
+零，精确擦除公平比特并提供 `log 2 / β`，从而达到 Landauer 供功界等号。Ript 现在还
 拥有一个与经典随机模型分离的有限维复数量子核心：正半定、迹为一的密度矩阵；由有限完备
 Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
 Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、基 bra 构造的迹/丢弃信道、
@@ -399,7 +401,9 @@ F(目标 ε) - F(平衡态) = (log 2 - binEntropy ε) / β。
 `BathAssistedTransition` 现在把系统、热浴和电池的精确端点分开记账。通用定理证明：系统自由能上升不超过热浴与电池自由能下降之和；热浴精确返回时只剩电池项，但只有电池熵不变才能称为机械功。
 
 `Ript.Examples.ExplicitBathErasure` 给出真正的有限存在与等号见证。确定性置换
-`((系统, 热浴), 电池) -> ((电池, 热浴), 系统)` 把 `(均匀, 均匀, 已擦除)` 精确映到 `(已擦除, 均匀, 均匀)`。全局均匀 Gibbs 态保持不变，热浴原样返回，系统自由能上升和电池自由能下降均为 `log 2 / β`。Lean 还证明电池熵从 `0` 变为 `log 2`：这是信息电池协议，不是熵中性携功循环。后者以及另行给定实能谱的有理 Gibbs 权重分类仍属开放研究。
+`((系统, 热浴), 电池) -> ((电池, 热浴), 系统)` 把 `(均匀, 均匀, 已擦除)` 精确映到 `(已擦除, 均匀, 均匀)`。全局均匀 Gibbs 态保持不变，热浴原样返回，系统自由能上升和电池自由能下降均为 `log 2 / β`。Lean 还证明电池熵从 `0` 变为 `log 2`：这是信息电池协议，不是熵中性机械功协议。
+
+`Ript.Examples.ExactWorkErasure` 给出互补的机械功见证，无需热浴。Boolean 工作电池的 Gibbs 权重为 `2/3` 与 `1/3`，因此在任意正逆温度下都有严格能隙 `E(高)-E(低)=log 2 / β`。一个完全可执行的精确有理信道把 `(公平存储器, 纯高能电池)` 映到 `(已擦除存储器, 纯低能电池)`，同时保持联合平衡态。两个电池端点的 Shannon 熵都严格为零，平均能量下降和存储器自由能上升都严格等于 `log 2 / β`。因此 Lean 已证明非简并性、熵中性和机械 Landauer 等号。该结果是一次放电协议；闭合再充电循环与另行给定实能谱的有理 Gibbs 权重分类仍属开放研究。
 
 ### 12. 有限复密度矩阵与 Kraus 信道
 
@@ -727,6 +731,12 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound` | 电池熵不变时，同一结论成为电池平均能量供功界。 |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | 任意联合端点下，电池自由能下降同时支付系统与相关自由能上升。 |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | 边缘电池熵不变时，相关核算成为平均能量供功界。 |
+| `Ript.Models.Thermal.GibbsThermalObject.meanEnergy_pure` | 纯有限态的平均能量等于其支撑微观态的能量。 |
+| `Ript.Models.Thermal.GibbsThermalObject.entropy_pure` | 每个纯有限态的 Shannon 熵均为零。 |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasureChannel_erases` | 可执行二比特信道在工作电池放电时精确擦除存储器。 |
+| `Ript.Examples.ExactWorkErasure.workBattery_low_lt_high` | 有偏两能级电池在每个正逆温度下都严格非简并。 |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral` | 纯高能与纯低能电池端点具有严格相同的熵。 |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work` | 电池供能与存储器自由能增量均严格等于 `log 2 / β`。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | 显式两步循环遵循 `pure false -> pure true -> pure false`。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns` | 两步翻转闭合循环返回每个精确 Boolean 状态。 |
@@ -841,7 +851,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
-| 8 | 有限平衡系统、闭合协议擦除不可能性、Gibbs/KL/自由能理论、相关分解、精确/有理误差 Landauer 界、热浴分项记账与信息电池等号见证 | **PROVED** |
+| 8 | 有限平衡系统、闭合协议擦除不可能性、Gibbs/KL/自由能理论、相关分解、精确/有理误差 Landauer 界、信息电池见证与熵中性非简并工作电池等号见证 | **PROVED** |
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
@@ -866,7 +876,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
-| 有限热系统 | Gibbs-preserving 范畴；有限闭合与热浴辅助协议 | 积 bifunctor | 精确状态/信道/协议轨迹/边缘及三比特见证可执行；Gibbs/KL/自由能/功语义不可计算 | 闭合协议不可能性、Gibbs/KL/自由能理论、相关分解、有理误差界、热浴分项记账与信息电池等号见证 |
+| 有限热系统 | Gibbs-preserving 范畴；有限闭合与热浴辅助协议 | 积 bifunctor | 精确状态/信道/协议轨迹/边缘及信息/工作电池见证可执行；Gibbs/KL/自由能/功语义不可计算 | 闭合协议不可能性、Gibbs/KL/自由能理论、相关分解、有理误差界、热浴分项记账、信息电池与熵中性机械功等号见证 |
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
@@ -881,7 +891,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
-do-calculus、通用复制/丢弃与凸结构接口、另行给定实能谱的有理 Gibbs 权重分类、熵中性携功循环、
+do-calculus、通用复制/丢弃与凸结构接口、另行给定实能谱的有理 Gibbs 权重分类、闭合工作电池再充电循环、
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
@@ -1154,6 +1164,8 @@ import Ript.Models.Thermal.KLDivergence
 import Ript.Models.Thermal.CorrelatedWork
 -- 或者导入精确有理误差近似擦除及其 Landauer 界：
 import Ript.Examples.ApproximateErasure
+-- 或者导入熵中性机械功精确等号见证：
+import Ript.Examples.ExactWorkErasure
 -- 或者导入复密度矩阵与迹保持 Kraus 信道：
 import Ript.Models.Quantum.Kraus
 -- 或者导入无公理的内部单值过程 universe：
@@ -1301,7 +1313,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 精确有理误差近似擦除、二元熵成本及乘积/相关修正 Landauer 界
 - [x] 可执行有限闭合协议、精确轨迹/复合语义、两步翻转循环与闭合精确擦除不可能性
 - [x] 热浴分项 Landauer 记账，以及热浴精确返回、信息电池支付的可执行等号见证
-- [ ] 熵中性携功循环与另行给定实能谱的有理 Gibbs 权重分类
+- [x] 非简并两能级工作电池的熵中性精确擦除与 `log 2 / β` 等号见证
+- [ ] 闭合工作电池再充电循环与另行给定实能谱的有理 Gibbs 权重分类
 - [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
@@ -1365,7 +1378,7 @@ Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence �
 `log 2 / β` 擦除界；任意相关端点的互信息/KL 非负性、联合自由能分解、相关修正供功界以及
 完全相关 Boolean 对也已证明。精确有理误差近似擦除的二元熵成本、单调性以及乘积端点和相关
 修正供功界也已证明。可执行有限闭合协议、非恒定两步翻转循环及闭合精确擦除不可能性也已证明。
-热浴分项自由能/供功界与一个精确返回热浴、以信息电池支付并达到等号的可执行三比特协议也已证明。由于电池熵变化，它不是熵中性携功循环；此类循环与另行给定实能谱的有理 Gibbs 权重分类仍待完成。
+热浴分项自由能/供功界与一个精确返回热浴、以信息电池支付并达到等号的可执行三比特协议也已证明。由于该电池熵变化，它不是机械功协议；独立的两能级工作电池例子以纯态熵中性端点补上了这个一次性见证，并精确达到 `log 2 / β`。闭合再充电循环与另行给定实能谱的有理 Gibbs 权重分类仍待完成。
 对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。

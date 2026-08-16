@@ -113,8 +113,11 @@ flowchart LR
   SimpleThermal --> ApproximateErasure["Examples.ApproximateErasure"]
   ThermalBath --> ExplicitBathErasure["Examples.ExplicitBathErasure"]
   SimpleThermal --> ExplicitBathErasure
+  ThermalWork --> ExactWorkErasure["Examples.ExactWorkErasure"]
+  SimpleThermal --> ExactWorkErasure
   ApproximateErasure --> Audit
   ExplicitBathErasure --> Audit
+  ExactWorkErasure --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
   QuantumTensor --> QuantumCP["Models.Quantum.CompletePositivity"]
@@ -174,7 +177,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, and an executable bath-returning information-battery saturation witness | PROVED |
+| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, and an entropy-neutral nondegenerate work-battery saturation witness | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1635,7 +1638,17 @@ mean-energy work bound. The executable Boolean witness uses the permutation
 the global uniform Gibbs state, and saturates the free-energy balance at
 `log 2 / β`. Its battery entropy changes from `0` to `log 2`, so it is an
 information-battery protocol rather than an entropy-neutral work-bearing
-cycle. Such cycles remain open extensions.
+protocol.
+
+The exact-work example closes the complementary one-shot existence question
+without a bath. Its nondegenerate Boolean battery has equilibrium weights
+`2/3` and `1/3`, hence canonical energy gap `log 2 / β`. An executable exact
+rational channel preserves the joint Gibbs equilibrium while mapping fair
+memory with pure high battery to erased memory with pure low battery. Both
+battery endpoints have entropy zero, and its mean-energy decrease equals the
+memory free-energy increase at `log 2 / β`. Thus the mechanical Landauer work
+bound is attained exactly. This does not construct a closed recharge cycle or
+classify arbitrary independently supplied spectra.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2506,6 +2519,90 @@ cycle. Such cycles remain open extensions.
   is noncomputable.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/ExplicitBathErasure.lean`.
+
+### `Ript.Examples.ExactWorkErasure.exactWorkErasureChannel_erases`
+
+- Natural-language statement: the executable two-bit channel maps a fair
+  memory with a pure high work battery exactly to an erased memory with a pure
+  low battery.
+- Lean type:
+
+  ```lean
+  theorem exactWorkErasureChannel_erases :
+      (fairEquilibrium.tensor batteryHigh).push
+          exactWorkErasureChannel =
+        erasedBit.tensor batteryLow
+  ```
+
+- Prerequisite definitions: exact Boolean distributions, the biased battery
+  equilibrium with low/high masses `2/3` and `1/3`, and the explicit four-row
+  `FinStoch` channel.
+- Prerequisite lemmas: Boolean/product finite-sum expansion and exact rational
+  normalization. A separate theorem proves that the same channel preserves
+  the joint Gibbs equilibrium.
+- Status: `PROVED`; this is an exact transition-existence result, not only a
+  lower bound.
+- Classical choice: theorem audit reports the standard exact finite
+  distribution footprint.
+- Computable: yes; three `#eval decide` checks exercise discharge routing, the
+  compensating half-probability row, and exclusion of a non-erased output.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkErasure.lean`.
+
+### `Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral`
+
+- Natural-language statement: the pure high and pure low endpoints of the
+  nondegenerate work battery have exactly equal Shannon entropy.
+- Lean type:
+
+  ```lean
+  theorem exactWorkErasure_batteryEntropy_neutral
+      (beta : ℝ) (hbeta : 0 < beta) :
+      (workBatteryAt beta hbeta).entropy
+          (exactWorkErasure beta hbeta).initialBattery =
+        (workBatteryAt beta hbeta).entropy
+          (exactWorkErasure beta hbeta).finalBattery
+  ```
+
+- Prerequisite lemmas: the generic theorem that every pure finite state has
+  zero Shannon entropy.
+- Status: `PROVED`; another audited theorem proves the battery is genuinely
+  nondegenerate, with low energy strictly below high energy.
+- Classical choice: inherited from finite-sum analytic infrastructure only.
+- Computable: endpoint states are exact; Shannon-entropy evaluation belongs to
+  the noncomputable analytic layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkErasure.lean`.
+
+### `Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work`
+
+- Natural-language statement: at every positive inverse temperature, the
+  exact entropy-neutral battery discharge supplies exactly the memory's
+  free-energy increase, attaining the mechanical Landauer work bound.
+- Lean type:
+
+  ```lean
+  theorem exactWorkErasure_saturates_landauer_work
+      (beta : ℝ) (hbeta : 0 < beta) :
+      (exactWorkErasure beta hbeta).systemFreeEnergyIncrease =
+        (exactWorkErasure beta hbeta).batteryEnergyDecrease
+  ```
+
+- Prerequisite definitions: `WorkAssistedTransition`, the exact
+  Gibbs-preserving two-bit channel, the degenerate fair memory, and the
+  nondegenerate biased work battery.
+- Prerequisite lemmas: pure-state mean energy and entropy, strict canonical
+  battery energy gap `log 2 / beta`, exact erasure, and the Boolean memory's
+  exact free-energy cost. Both sides are independently proved equal to
+  `Real.log 2 / beta`.
+- Status: `PROVED`; this is a one-shot discharge saturation theorem. It does
+  not assert a closed recharge cycle or a classification for arbitrary spectra.
+- Classical choice: yes, inherited only from the audited finite
+  KL/free-energy analytic layer.
+- Computable: the channel and endpoint distributions are executable;
+  logarithmic energy/free-energy accounting is noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkErasure.lean`.
 
 ### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
 
@@ -4071,8 +4168,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     one executable Boolean existence/saturation witness: a three-bit
     permutation returns the bath and consumes information-battery purity. Its
     battery entropy changes, so it is not an entropy-neutral work-bearing
-    cycle. Such cycles remain open, and no claim is made that arbitrary
-    independently supplied exponential weights are rational.
+    protocol. A separate executable two-level witness uses pure entropy-neutral
+    battery endpoints, a strict energy gap, and exact `log 2 / β` discharge to
+    saturate the mechanical-work bound. Closed recharge cycles remain open,
+    and no claim is made that arbitrary independently supplied exponential
+    weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to
