@@ -37,8 +37,12 @@ povas movi ekvilibron al alia celo. La semantika tavolo
 difinas konkretan finian KL en `ℝ≥0∞`, pruvas ĝian nulvaloron kaj subtenliman
 konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
 konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo,
-ban-helpataj viŝprotokoloj kaj laborportaj termodinamikaj cikloj restas
-esplorvojoj.
+entropie neŭtralaj laborportaj termodinamikaj cikloj restas esplorvojoj.
+Eksplicita finia ban-helpata protokolo nun estas kompilita: la tri-bita
+permutacio `((sistemo, bano), baterio) -> ((baterio, bano), sistemo)` ekzakte
+viŝas la sistemon, redonas la banon senŝanĝe kaj pagas `log 2 / β` per informa
+baterio. La bateria entropiŝanĝo estas ankaŭ pruvita, do tio ne estas mekanika
+laborciklo.
 Nova realiga tavolo aldonas reelajn
 energiojn kaj pozitivan inversan temperaturon al ne-vakaj finiaj sistemoj,
 konstruas strikt-pozitivajn normaligitajn Gibbs-probablojn kaj atestas kiam
@@ -541,9 +545,22 @@ La kosto estas nenegativa kaj monotone nepligrandiĝas kun la permesita eraro;
 je nula eraro ĝi estas `log 2 / β`, kaj je eraro `1/2` ĝi estas nulo. La
 produkt-finpunkta kaj korelaci-korektita laborlimoj estas pruvitaj. Ili estas
 nur necesaj limoj por liveritaj transiratestiloj kaj ne asertas protokolan
-ekziston aŭ saturiĝon. Ban-helpataj viŝprotokoloj, laborportaj cikloj,
-atingebleco de la limo, kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj
-reelaj energispektroj restas malfermaj.
+ekziston aŭ saturiĝon per si mem.
+
+`BathAssistedTransition` aparte registras la ekzaktajn finpunktojn de sistemo,
+bano kaj baterio. La ĝenerala teoremo pagigas sisteman liberenergian kreskon
+per la sumo de la ban- kaj bateri-liberenergiaj malkreskoj. Ekzakta reveno de
+la bano nuligas la banan terminon; tamen bateria entropineŭtraleco plu necesas
+antaŭ ol nomi la perdon mekanika laboro.
+
+`Ript.Examples.ExplicitBathErasure` donas veran finian ekzisto- kaj
+saturiĝ-atestilon. La supra determinisma permutacio mapas
+`(justa, justa, viŝita)` ekzakte al `(viŝita, justa, justa)`, konservas la
+tutmondan uniforman Gibbs-staton, redonas la banon kaj igas kaj la sisteman
+kreskon kaj la baterian malkreskon egalaj al `log 2 / β`. Lean ankaŭ pruvas ke
+la bateria entropio ŝanĝiĝas de `0` al `log 2`; tio estas informa-bateria
+protokolo. Entropie neŭtralaj laborcikloj kaj klasifiko de raciaj Gibbs-pezoj
+por aparte donitaj reelaj energispektroj restas malfermaj.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -1045,7 +1062,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8 | Finiaj ekvilibraj sistemoj, kunmeteblaj fermitaj protokoloj kaj ekzakta viŝ-neebleco, Gibbs-realigoj, KL/liberenergia identeco, arbitra-kuna korelacia malkompono kaj ekzaktaj/raci-eraraj produktaj kaj korelaci-korektitaj Buleaj Landauer-limoj | **PROVED** |
+| 8 | Finiaj ekvilibraj sistemoj, fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, ekzaktaj/raci-eraraj Landauer-limoj, ban-aparta kalkulo kaj informa-bateria saturiĝ-atestilo | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
@@ -1070,7 +1087,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
-| Finiaj termikaj sistemoj | Gibbs-konserva kategorio; finiaj fermitaj protokoloj | Produkta bifunktoro | Ekzaktaj statoj/kanaloj/protokolspuroj/marĝenoj plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Fermita protokola kunmeto kaj viŝ-neebleco, atestita Gibbs-realigo, konkreta finia KL, arbitra-kuna korelacia malkompono kaj ekzaktaj raci-eraraj produktaj/korelaci-korektitaj Landauer-limoj |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio; finiaj fermitaj kaj ban-helpataj protokoloj | Produkta bifunktoro | Ekzaktaj statoj/kanaloj/spuroj/marĝenoj kaj la tri-bita atestilo plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, raci-eraraj limoj, ban-aparta kalkulo kaj informa-bateria saturiĝo |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
@@ -1579,7 +1596,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Arbitraj korelaciitaj finpunktoj, reciprokinforma liberenergia malkompono kaj korelaci-korektitaj Landauer-limoj
 - [x] Ekzakta raci-erara proksimuma viŝo, duumentropia kosto kaj produktaj/korelaci-korektitaj Landauer-limoj
 - [x] Plenumeblaj finiaj fermitaj protokoloj, ekzaktaj spuro/kunmeta semantikoj, du-renversa ciklo kaj fermita ekzakta viŝ-neebleco
-- [ ] Ban-helpataj viŝprotokoloj, laborportaj cikloj, saturiĝo kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
+- [x] Ban-aparta Landauer-kalkulo kaj plenumebla saturiĝ-atestilo kiu redonas la banon kaj pagas per informa baterio
+- [ ] Entropie neŭtralaj laborportaj cikloj kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
@@ -1666,8 +1684,11 @@ por arbitraj ekzaktaj korelaciitaj finpunktoj. Ĝi ankaŭ pruvas la duumentropia
 koston, monotonecon kaj produkt-finpunktajn/korelaci-korektitajn laborlimojn
 por ekzakta raci-erara proksimuma viŝo. Ĝi ankaŭ donas plenumeblajn finiajn
 fermitajn protokolojn, nekonstantan du-renversan ciklon kaj fermitan ekzaktan
-viŝ-neeblecon. Ĝi ankoraŭ ne kovras ban-helpatajn viŝprotokolojn, laborportajn
-ciklojn aŭ raci-pezan klasifikon por aparte donitaj reelaj energispektroj.
+viŝ-neeblecon. Ĝi ankaŭ pruvas ban-apartajn liberenergiajn/laborajn limojn
+kaj plenumeblan tri-bitan viŝprotokolon kiu redonas la banon kaj saturas la
+liberenergian bilancon per informa baterio. Ĉar la bateria entropio ŝanĝiĝas,
+tio ne estas entropie neŭtrala laborciklo; tiaj cikloj kaj raci-peza klasifiko
+por aparte donitaj reelaj energispektroj restas malfermaj.
 Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.

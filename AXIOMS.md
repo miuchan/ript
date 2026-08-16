@@ -127,6 +127,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Work.lean` |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/CorrelatedWork.lean` |
 | `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/CorrelatedWork.lean` |
+| `Ript.Models.Thermal.BathAssistedTransition.landauer_freeEnergy_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Bath.lean` |
+| `Ript.Models.Thermal.BathAssistedTransition.landauer_work_bound_of_bath_returns` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Bath.lean` |
+| `Ript.Examples.ExplicitBathErasure.bathBatterySwap_erases` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExplicitBathErasure.lean` |
+| `Ript.Examples.ExplicitBathErasure.explicitBathErasure_saturates` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExplicitBathErasure.lean` |
+| `Ript.Examples.ExplicitBathErasure.explicitBathErasure_batteryEntropy_changes` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExplicitBathErasure.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_process` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
@@ -325,6 +330,14 @@ the finite KL divergence to the product of the exact marginals, proves its
 nonnegativity, decomposes joint excess free energy, and derives the corrected
 Landauer bounds with the same audited footprint. The executable correlated
 Boolean pair stores exactly `log 2 / β` of correlation free energy.
+The bath-assisted layer adds no assumption: its system--bath--battery balance,
+exact-bath-return specialization, and entropy-neutral work form all audit as
+`[propext, Classical.choice, Quot.sound]`, inherited from the same analytic
+finite KL/free-energy layer. The executable three-bit permutation, exact
+erasure equation, free-energy saturation theorem, and battery entropy-change
+theorem have that same footprint. The channel and rational endpoint states
+still reduce in the kernel; `Classical.choice` is confined to proof and
+analytic semantics and does not generate runtime data.
 The Boolean thermal example still evaluates its rational channel and protocol
 trace facts by ordinary kernel reduction, while its no-go, KL, and free-energy
 theorems are kernel-checked proof data.

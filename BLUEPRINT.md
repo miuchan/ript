@@ -107,10 +107,14 @@ flowchart LR
   ThermalFreeEnergy --> ThermalWork["Models.Thermal.Work"]
   ThermalCorrelation --> CorrelatedWork["Models.Thermal.CorrelatedWork"]
   ThermalWork --> CorrelatedWork
+  ThermalWork --> ThermalBath["Models.Thermal.Bath"]
   ThermalProtocol --> SimpleThermal
   CorrelatedWork --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> ApproximateErasure["Examples.ApproximateErasure"]
+  ThermalBath --> ExplicitBathErasure["Examples.ExplicitBathErasure"]
+  SimpleThermal --> ExplicitBathErasure
   ApproximateErasure --> Audit
+  ExplicitBathErasure --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
   QuantumTensor --> QuantumCP["Models.Quantum.CompletePositivity"]
@@ -170,7 +174,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, compositional closed protocols and exact-erasure no-go, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and exact/rational-error product/correlation-corrected Boolean Landauer bounds | PROVED |
+| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, and an executable bath-returning information-battery saturation witness | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1618,9 +1622,20 @@ Mathlib's `binEntropy ε`, so its excess free energy is
 `(log 2 - binEntropy ε) / β`. This cost is nonnegative, antitone in the
 allowed error, equals `log 2 / β` at zero error, and vanishes at error one
 half. Product-endpoint and correlation-corrected work bounds are proved for
-supplied transition certificates. Explicit bath-assisted protocols,
-work-bearing cycles, erasure-transition existence, and saturation remain open
-extensions.
+supplied transition certificates.
+
+The bath-assisted layer then separates exact system, bath, and battery
+endpoints around one global Gibbs-preserving process. Its generic theorem
+charges a system free-energy increase to the combined bath and battery
+free-energy decrease. Exact bath return removes the bath term; only an
+additional entropy-neutral battery certificate converts the remainder into a
+mean-energy work bound. The executable Boolean witness uses the permutation
+`((system, bath), battery) -> ((battery, bath), system)` to map
+`(fair, fair, erased)` to `(erased, fair, fair)`. It returns the bath, preserves
+the global uniform Gibbs state, and saturates the free-energy balance at
+`log 2 / β`. Its battery entropy changes from `0` to `log 2`, so it is an
+information-battery protocol rather than an entropy-neutral work-bearing
+cycle. Such cycles remain open extensions.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2408,6 +2423,89 @@ extensions.
   executable; free-energy accounting is noncomputable real semantics.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/ApproximateErasure.lean`.
+
+### `Ript.Models.Thermal.BathAssistedTransition.landauer_freeEnergy_bound`
+
+- Natural-language statement: in an explicit finite product-endpoint
+  system--bath--battery transition, every system free-energy increase is at
+  most the combined free-energy decrease of bath and battery.
+- Lean type:
+
+  ```lean
+  theorem BathAssistedTransition.landauer_freeEnergy_bound
+      {source target bath battery : GibbsThermalObject}
+      (transition : BathAssistedTransition source target bath battery) :
+      transition.systemFreeEnergyIncrease ≤
+        transition.bathFreeEnergyDecrease +
+          transition.batteryFreeEnergyDecrease
+  ```
+
+- Prerequisite definitions: explicit system, bath, and battery endpoint states;
+  nested common-temperature Gibbs tensors; one certified global
+  Gibbs-preserving channel; exact product-to-product evolution.
+- Prerequisite lemmas: global free-energy-gap monotonicity and two applications
+  of independent-state tensor additivity.
+- Status: `PROVED`; exact bath return is separately proved to zero the bath
+  contribution, and entropy-neutral battery endpoints yield the mean-energy
+  work form.
+- Classical choice: yes, inherited from the finite KL/free-energy semantic
+  layer; no choice-derived data enters the executable channel.
+- Computable: endpoint states and channel are executable; real free-energy
+  accounting is noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Bath.lean`.
+
+### `Ript.Examples.ExplicitBathErasure.bathBatterySwap_erases`
+
+- Natural-language statement: swapping the system and information battery
+  while fixing the bath maps fair system and bath bits plus an erased battery
+  exactly to an erased system, returned fair bath, and fair battery.
+- Lean type:
+
+  ```lean
+  theorem bathBatterySwap_erases :
+      ((fairEquilibrium.tensor fairEquilibrium).tensor erasedBit).push
+          bathBatterySwapChannel =
+        (erasedBit.tensor fairEquilibrium).tensor fairEquilibrium
+  ```
+
+- Prerequisite definitions: exact Boolean distributions and the deterministic
+  permutation `((s, b), w) ↦ ((w, b), s)` as a `FinStoch.dirac` channel.
+- Prerequisite lemmas: finite-product and Boolean sum expansion.
+- Status: `PROVED`; the same channel separately preserves the global uniform
+  Gibbs equilibrium.
+- Classical choice: theorem audit reports the standard exact finite
+  distribution footprint.
+- Computable: yes; three `#eval decide` checks exercise the routing, a positive
+  output mass, and the forbidden non-erased output.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExplicitBathErasure.lean`.
+
+### `Ript.Examples.ExplicitBathErasure.explicitBathErasure_saturates`
+
+- Natural-language statement: for every positive inverse temperature, the
+  explicit returned-bath information-battery protocol saturates the Landauer
+  free-energy balance.
+- Lean type:
+
+  ```lean
+  theorem explicitBathErasure_saturates (beta : ℝ) (hbeta : 0 < beta) :
+      (explicitBathErasure beta hbeta).systemFreeEnergyIncrease =
+        (explicitBathErasure beta hbeta).batteryFreeEnergyDecrease
+  ```
+
+- Prerequisite definitions: `BathAssistedTransition`, the three-bit
+  Gibbs-preserving permutation, uniform/erased Boolean Gibbs states.
+- Prerequisite lemmas: both sides are proved equal to `Real.log 2 / beta`; the
+  bath-return equation is definitional. A separate theorem proves the battery
+  entropy changes from `0` to `Real.log 2`.
+- Status: `PROVED`; this is an existence and saturation theorem for an
+  information battery, not an entropy-neutral mechanical-work theorem.
+- Classical choice: yes, inherited only in the analytic free-energy proof.
+- Computable: the underlying transition is executable; logarithmic accounting
+  is noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExplicitBathErasure.lean`.
 
 ### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
 
@@ -3964,13 +4062,17 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     erasure. Its correlated extension proves exact marginalization, the
     mutual-information KL identity and nonnegativity, arbitrary-joint free-
     energy decomposition, and correlation-corrected Landauer bounds. It does
-    not claim transition existence or saturation. The finite closed-protocol
+    not by itself claim transition existence or saturation. The finite closed-protocol
     layer gives executable lists, traces, composition, an explicit two-flip
     cycle, and a closed exact-erasure no-go. The exact rational-error Boolean
     extension proves the binary-entropy cost, its antitonicity, and
-    product/correlation-corrected necessary bounds, but still does not provide
-    an explicit bath-assisted erasure protocol or work-bearing cycle, or assert
-    that arbitrary independently supplied exponential weights are rational.
+    product/correlation-corrected necessary bounds. The bath-assisted layer
+    separately accounts system, bath, and battery contributions and supplies
+    one executable Boolean existence/saturation witness: a three-bit
+    permutation returns the bath and consumes information-battery purity. Its
+    battery entropy changes, so it is not an entropy-neutral work-bearing
+    cycle. Such cycles remain open, and no claim is made that arbitrary
+    independently supplied exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to
