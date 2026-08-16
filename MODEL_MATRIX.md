@@ -15,7 +15,7 @@ Only implemented and compiled capabilities are marked as supported.
 | Total computation (`Fin 4 → Nat` resources) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
 | Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
-| Finite thermal systems (specified and realized Gibbs equilibrium) | Gibbs-preserving category | Bifunctor; realized Gibbs tensor at common temperature | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes: KL/free-energy and work-assisted Landauer bound | Exact states/channels executable; Gibbs/KL/free-energy/work accounting analytic layer |
+| Finite thermal systems (specified and realized Gibbs equilibrium) | Gibbs-preserving category | Bifunctor; realized Gibbs tensor at common temperature | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes: KL/free-energy, correlation, and Landauer bounds | Exact states/channels/marginals executable; Gibbs/KL/free-energy/work accounting analytic layer |
 | Finite quantum Kraus channels (`ℂ`) | Kraus category | Yes | Yes | No | No | Yes | No | No | Matrix proof layer; basis labels executable |
 | Classical quantum dephasing subcategory | Yes; identity is basis dephasing | Bifunctor | Via ambient trace discard, not separately packaged | No exported copy | No generic interface | Yes | No | No | Exact `FinStoch` source; noncomputable complex matrix semantics |
 
@@ -60,7 +60,11 @@ work-assisted layer proves that a Gibbs-preserving product-endpoint transition
 must pay every system free-energy increase from battery free-energy decrease.
 Only under an explicit entropy-neutral battery hypothesis does this become a
 mean-energy work bound; the degenerate Boolean erasure instance costs at least
-`log 2 / β`. Correlated endpoints, approximate erasure, and explicit bath or
+`log 2 / β`. For arbitrary correlated endpoints, exact marginals are
+executable; mutual information is proved equal to finite KL from the joint to
+the product of its marginals and is nonnegative; joint free energy decomposes
+into marginal gaps plus `I / β`; and the Landauer bound includes the exact
+correlation free-energy change. Approximate erasure and explicit bath or
 cyclic-protocol models remain outside the current row.
 
 The classical quantum row is the proved faithful measurement--preparation

@@ -9,7 +9,10 @@ Gibbs realization of every full-support exact finite equilibrium and the
 common-temperature tensor/additivity laws are proved declarations, not
 conjectural placeholders. The exact product-endpoint Landauer free-energy
 balance, its entropy-neutral battery work form, and the Boolean `log 2 / β`
-erasure bound are also proved declarations. Correlated endpoints, approximate
-erasure, explicit bath/cyclic protocols, and rational-weight classification
+erasure bound are also proved declarations. The arbitrary-joint marginal
+decomposition, mutual-information KL identity and nonnegativity,
+correlation-corrected Landauer bounds, and correlated Boolean example are
+proved as well. Approximate erasure, explicit bath/cyclic protocols, and
+rational-weight classification
 for independently specified real spectra remain roadmap items rather than
 formalized-but-unproved propositions.

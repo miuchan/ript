@@ -1,5 +1,5 @@
 import Mathlib.Tactic.NormNum
-import Ript.Models.Thermal.Work
+import Ript.Models.Thermal.CorrelatedWork
 
 /-!
 # Executable finite thermal example
@@ -98,6 +98,42 @@ noncomputable def gibbsThermalBitAt (β : ℝ) (hβ : 0 < β) :
 /-- Exact erased Boolean memory state. -/
 def erasedBit : FinDist thermalBit.system :=
   FinDist.pure false
+
+/-- Perfectly correlated fair Boolean pair: equal outcomes have mass one
+half and unequal outcomes have mass zero. -/
+def correlatedBits : FinDist (Object.tensor thermalBit.system
+    thermalBit.system) where
+  prob outcome := if outcome.1 = outcome.2 then (1 : ℚ≥0) / 2 else 0
+  normalized := by
+    change (∑ outcome : Bool × Bool,
+      if outcome.1 = outcome.2 then (1 : ℚ≥0) / 2 else 0) = 1
+    rw [Fintype.sum_prod_type]
+    repeat' rw [Fintype.sum_bool]
+    norm_num
+
+/-- The left marginal of the perfectly correlated pair is fair. -/
+@[simp]
+theorem correlatedBits_leftMarginal :
+    correlatedBits.leftMarginal = fairEquilibrium := by
+  apply FinDist.ext
+  intro x
+  rw [FinDist.leftMarginal_apply]
+  change Bool at x
+  change (∑ y : Bool,
+    if x = y then (1 : ℚ≥0) / 2 else 0) = (1 : ℚ≥0) / 2
+  cases x <;> rw [Fintype.sum_bool] <;> norm_num
+
+/-- The right marginal of the perfectly correlated pair is fair. -/
+@[simp]
+theorem correlatedBits_rightMarginal :
+    correlatedBits.rightMarginal = fairEquilibrium := by
+  apply FinDist.ext
+  intro y
+  rw [FinDist.rightMarginal_apply]
+  change Bool at y
+  change (∑ x : Bool,
+    if x = y then (1 : ℚ≥0) / 2 else 0) = (1 : ℚ≥0) / 2
+  cases y <;> rw [Fintype.sum_bool] <;> norm_num
 
 /-- The uniform exact equilibrium has full support. -/
 theorem fairEquilibrium_fullSupport (x : thermalBit.system) :
@@ -212,6 +248,75 @@ theorem thermalBitAt_meanEnergy (β : ℝ) (hβ : 0 < β)
   simp [GibbsThermalObject.meanEnergy, gibbsThermalBitAt,
     uniformGibbsDataAt]
 
+/-- The fair Boolean equilibrium has Shannon entropy `log 2` at every
+positive inverse temperature. -/
+@[simp]
+theorem thermalBitAt_fair_entropy (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).entropy fairEquilibrium = Real.log 2 := by
+  unfold GibbsThermalObject.entropy
+  change -(∑ _ : Bool,
+    (((1 : ℚ≥0) / 2 : ℚ≥0) : ℝ) *
+      Real.log (((1 : ℚ≥0) / 2 : ℚ≥0) : ℝ)) = Real.log 2
+  rw [Fintype.sum_bool]
+  norm_num
+  have hlogHalf : Real.log ((1 : ℝ) / 2) = -Real.log 2 := by
+    rw [show (1 : ℝ) / 2 = (2 : ℝ)⁻¹ by norm_num, Real.log_inv]
+  rw [hlogHalf]
+  ring
+
+/-- The perfectly correlated fair pair has only two equiprobable outcomes,
+so its joint entropy is `log 2`. -/
+@[simp]
+theorem correlatedBits_entropy (β : ℝ) (hβ : 0 < β) :
+    ((gibbsThermalBitAt β hβ).tensor
+      (gibbsThermalBitAt β hβ) rfl).entropy correlatedBits =
+        Real.log 2 := by
+  unfold GibbsThermalObject.entropy
+  change -(∑ outcome : Bool × Bool,
+    ((if outcome.1 = outcome.2 then (1 : ℚ≥0) / 2 else 0 : ℚ≥0) : ℝ) *
+      Real.log
+        ((if outcome.1 = outcome.2 then (1 : ℚ≥0) / 2 else 0 : ℚ≥0) : ℝ)) =
+    Real.log 2
+  rw [Fintype.sum_prod_type]
+  repeat' rw [Fintype.sum_bool]
+  norm_num
+  have hlogHalf : Real.log ((1 : ℝ) / 2) = -Real.log 2 := by
+    rw [show (1 : ℝ) / 2 = (2 : ℝ)⁻¹ by norm_num, Real.log_inv]
+  rw [hlogHalf]
+  ring
+
+/-- The perfectly correlated fair pair carries exactly one bit (`log 2`
+nats) of mutual information. -/
+theorem correlatedBits_mutualInformation (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).mutualInformation
+      (gibbsThermalBitAt β hβ) rfl correlatedBits = Real.log 2 := by
+  unfold GibbsThermalObject.mutualInformation
+  have hleftState :
+      (@FinDist.leftMarginal
+        (gibbsThermalBitAt β hβ).thermal.system
+        (gibbsThermalBitAt β hβ).thermal.system correlatedBits) =
+          fairEquilibrium :=
+    correlatedBits_leftMarginal
+  have hrightState :
+      (@FinDist.rightMarginal
+        (gibbsThermalBitAt β hβ).thermal.system
+        (gibbsThermalBitAt β hβ).thermal.system correlatedBits) =
+          fairEquilibrium :=
+    correlatedBits_rightMarginal
+  rw [hleftState, hrightState, thermalBitAt_fair_entropy β hβ,
+    correlatedBits_entropy β hβ]
+  ring
+
+/-- The perfectly correlated pair stores correlation free energy
+`log 2 / β`. -/
+theorem correlatedBits_correlationFreeEnergy (β : ℝ) (hβ : 0 < β) :
+    (gibbsThermalBitAt β hβ).correlationFreeEnergy
+      (gibbsThermalBitAt β hβ) rfl correlatedBits =
+        Real.log 2 / β := by
+  unfold GibbsThermalObject.correlationFreeEnergy
+  rw [correlatedBits_mutualInformation β hβ]
+  rfl
+
 /-- A perfectly erased Boolean state has zero Shannon entropy. -/
 @[simp]
 theorem erasedBit_entropy (β : ℝ) (hβ : 0 < β) :
@@ -238,6 +343,46 @@ inverse temperature. -/
 theorem thermalBitAt_fair_freeEnergyGap (β : ℝ) (hβ : 0 < β) :
     (gibbsThermalBitAt β hβ).freeEnergyGap fairEquilibrium = 0 := by
   exact (gibbsThermalBitAt β hβ).freeEnergyGap_equilibrium
+
+/-- The perfectly correlated fair pair has excess free energy exactly equal
+to its correlation free energy, `log 2 / β`. -/
+theorem correlatedBits_freeEnergyGap (β : ℝ) (hβ : 0 < β) :
+    ((gibbsThermalBitAt β hβ).tensor
+      (gibbsThermalBitAt β hβ) rfl).freeEnergyGap correlatedBits =
+        Real.log 2 / β := by
+  have hleftState :
+      (@FinDist.leftMarginal
+        (gibbsThermalBitAt β hβ).thermal.system
+        (gibbsThermalBitAt β hβ).thermal.system correlatedBits) =
+          fairEquilibrium :=
+    correlatedBits_leftMarginal
+  have hrightState :
+      (@FinDist.rightMarginal
+        (gibbsThermalBitAt β hβ).thermal.system
+        (gibbsThermalBitAt β hβ).thermal.system correlatedBits) =
+          fairEquilibrium :=
+    correlatedBits_rightMarginal
+  calc
+    ((gibbsThermalBitAt β hβ).tensor
+        (gibbsThermalBitAt β hβ) rfl).freeEnergyGap correlatedBits =
+        (gibbsThermalBitAt β hβ).freeEnergyGap
+            (@FinDist.leftMarginal
+              (gibbsThermalBitAt β hβ).thermal.system
+              (gibbsThermalBitAt β hβ).thermal.system correlatedBits) +
+          (gibbsThermalBitAt β hβ).freeEnergyGap
+            (@FinDist.rightMarginal
+              (gibbsThermalBitAt β hβ).thermal.system
+              (gibbsThermalBitAt β hβ).thermal.system correlatedBits) +
+          (gibbsThermalBitAt β hβ).correlationFreeEnergy
+            (gibbsThermalBitAt β hβ) rfl correlatedBits := by
+      exact GibbsThermalObject.freeEnergyGap_eq_marginals_add_correlation
+        (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) rfl
+          correlatedBits
+    _ = Real.log 2 / β := by
+      rw [hleftState, hrightState,
+        thermalBitAt_fair_freeEnergyGap β hβ,
+        correlatedBits_correlationFreeEnergy β hβ]
+      ring
 
 /-- Perfect erasure of the degenerate Boolean memory raises its excess free
 energy by exactly `log 2 / β`. -/
@@ -280,6 +425,41 @@ theorem thermalBit_erasure_landauer_work_bound
     Real.log 2 / β ≤ transition.batteryEnergyDecrease := by
   have hbound := transition.landauer_work_bound hEntropy
   unfold WorkAssistedTransition.systemFreeEnergyIncrease at hbound
+  rw [hInitial, hFinal, thermalBitAt_erased_freeEnergyGap β hβ,
+    thermalBitAt_fair_freeEnergyGap β hβ, sub_zero] at hbound
+  exact hbound
+
+/-- **Correlation-corrected Boolean Landauer bound.** With arbitrary joint
+system--battery endpoints, erasure requires the battery to pay `log 2 / β`
+plus the increase in correlation free energy. -/
+theorem thermalBit_correlated_erasure_landauer_freeEnergy_bound
+    (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+    (transition : CorrelatedWorkAssistedTransition
+      (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+    (hInitial : transition.initialSystem = fairEquilibrium)
+    (hFinal : transition.finalSystem = erasedBit) :
+    Real.log 2 / β + transition.correlationFreeEnergyIncrease ≤
+      transition.batteryFreeEnergyDecrease := by
+  have hbound := transition.landauer_freeEnergy_bound
+  unfold CorrelatedWorkAssistedTransition.systemFreeEnergyIncrease at hbound
+  rw [hInitial, hFinal, thermalBitAt_erased_freeEnergyGap β hβ,
+    thermalBitAt_fair_freeEnergyGap β hβ, sub_zero] at hbound
+  exact hbound
+
+/-- Entropy-neutral battery form of the correlation-corrected Boolean
+Landauer work bound. -/
+theorem thermalBit_correlated_erasure_landauer_work_bound
+    (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+    (transition : CorrelatedWorkAssistedTransition
+      (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+    (hInitial : transition.initialSystem = fairEquilibrium)
+    (hFinal : transition.finalSystem = erasedBit)
+    (hEntropy : battery.entropy transition.initialBattery =
+      battery.entropy transition.finalBattery) :
+    Real.log 2 / β + transition.correlationFreeEnergyIncrease ≤
+      transition.batteryEnergyDecrease := by
+  have hbound := transition.landauer_work_bound hEntropy
+  unfold CorrelatedWorkAssistedTransition.systemFreeEnergyIncrease at hbound
   rw [hInitial, hFinal, thermalBitAt_erased_freeEnergyGap β hβ,
     thermalBitAt_fair_freeEnergyGap β hβ, sub_zero] at hbound
   exact hbound
@@ -380,5 +560,15 @@ theorem thermalPair_freeEnergyGap_additive
 
 -- The declared erased memory is exactly concentrated on `false`.
 #eval decide (erasedBit.prob false = 1 ∧ erasedBit.prob true = 0)
+
+-- The correlated pair has exact half-mass on equal outcomes only.
+#eval decide (correlatedBits.prob (false, false) = (1 : ℚ≥0) / 2 ∧
+  correlatedBits.prob (false, true) = 0 ∧
+  correlatedBits.prob (true, false) = 0 ∧
+  correlatedBits.prob (true, true) = (1 : ℚ≥0) / 2)
+
+-- Both executable marginals of the correlated pair are exactly fair.
+#eval decide (correlatedBits.leftMarginal.prob false = (1 : ℚ≥0) / 2 ∧
+  correlatedBits.rightMarginal.prob true = (1 : ℚ≥0) / 2)
 
 end Ript.Examples.SimpleThermalModel

@@ -102,8 +102,11 @@ flowchart LR
   ThermalEquilibrium --> ThermalGibbs["Models.Thermal.Gibbs"]
   ThermalGibbs --> ThermalFreeEnergy["Models.Thermal.FreeEnergy"]
   ThermalKL --> ThermalFreeEnergy
+  ThermalFreeEnergy --> ThermalCorrelation["Models.Thermal.Correlation"]
   ThermalFreeEnergy --> ThermalWork["Models.Thermal.Work"]
-  ThermalWork --> SimpleThermal["Examples.SimpleThermalModel"]
+  ThermalCorrelation --> CorrelatedWork["Models.Thermal.CorrelatedWork"]
+  ThermalWork --> CorrelatedWork
+  CorrelatedWork --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
@@ -164,7 +167,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, Gibbs-preserving monotonicity, tensor additivity, and work-assisted Boolean Landauer bound | PROVED |
+| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and product/correlation-corrected Boolean Landauer bounds | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1580,9 +1583,18 @@ the battery's free-energy decrease. Only an additional equality of the
 battery's initial and final entropies converts this into a mean-energy work
 bound. For a degenerate Boolean memory, the exact erasure transition from the
 uniform state to a pure state therefore costs at least `log 2 / β`. This does
-not assert existence or tightness of an erasure channel, and correlated
-endpoints, approximate erasure, and explicit bath/cyclic protocols remain
-open extensions.
+not assert existence or tightness of an erasure channel.
+
+The correlated work layer removes the product-endpoint restriction. Exact
+left and right marginals are executable. Their entropy deficit is proved equal
+to finite KL divergence from the joint state to the product of its marginals,
+so mutual information and correlation free energy are nonnegative. Arbitrary
+joint excess free energy decomposes into the two marginal gaps plus `I / β`.
+The resulting Landauer theorem charges the battery for the system free-energy
+increase plus the change in correlation free energy, with an entropy-neutral
+battery work form. The correlated fair Boolean pair realizes
+`I = log 2` and correlation free energy `log 2 / β`. Approximate erasure and
+explicit bath/cyclic protocols remain open extensions.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2110,6 +2122,137 @@ open extensions.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleThermalModel.lean`.
 
+### `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_eq_finiteKL_toReal`
+
+- Natural-language statement: the entropy deficit of any exact finite joint
+  state is its finite KL divergence from the product of its executable
+  marginals.  Consequently, mutual information and correlation free energy
+  are nonnegative without a full-support assumption on the joint state.
+- Lean type:
+
+  ```lean
+  theorem mutualInformation_eq_finiteKL_toReal
+      (left right : GibbsThermalObject)
+      (hTemperature : left.gibbs.inverseTemperature =
+        right.gibbs.inverseTemperature)
+      (joint : FinDist (Object.tensor left.thermal.system
+        right.thermal.system)) :
+      left.mutualInformation right hTemperature joint =
+        (finiteKL joint
+          (joint.leftMarginal.tensor joint.rightMarginal)).toReal
+  ```
+
+- Prerequisite definitions: exact left and right marginals, product
+  distributions, Shannon entropy, finite KL, mutual information, and
+  correlation free energy.
+- Prerequisite lemmas: joint support is contained in the support of the
+  product of its marginals, the zero-mass logarithmic boundary cases, and
+  finite-sum reindexing over products.
+- Status: `PROVED` for every exact finite joint state.  The companion theorems
+  `mutualInformation_nonneg` and `correlationFreeEnergy_nonneg` follow from
+  finite-KL nonnegativity and positive inverse temperature.
+- Classical choice: proof-only through the finite-KL analytic layer.
+- Computable: the joint state, marginals, and tensor product are executable;
+  logarithmic KL and entropy are noncomputable semantic values.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Correlation.lean`.
+
+### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_eq_marginals_add_correlation`
+
+- Natural-language statement: the excess Helmholtz free energy of an
+  arbitrary exact joint state equals the sum of the two marginal excess free
+  energies and the correlation free energy `I / β`.
+- Lean type:
+
+  ```lean
+  theorem freeEnergyGap_eq_marginals_add_correlation
+      (left right : GibbsThermalObject)
+      (hTemperature : left.gibbs.inverseTemperature =
+        right.gibbs.inverseTemperature)
+      (joint : FinDist (Object.tensor left.thermal.system
+        right.thermal.system)) :
+      (left.tensor right hTemperature).freeEnergyGap joint =
+        left.freeEnergyGap joint.leftMarginal +
+          right.freeEnergyGap joint.rightMarginal +
+            left.correlationFreeEnergy right hTemperature joint
+  ```
+
+- Prerequisite definitions: common-temperature Gibbs tensor, executable
+  marginals, mean energy, Shannon entropy, equilibrium and nonequilibrium
+  free energy, and correlation free energy.
+- Prerequisite lemmas: marginal decomposition of mean energy, entropy-deficit
+  definition of mutual information, and equilibrium-free-energy additivity.
+- Status: `PROVED` for arbitrary exact joint states; product states specialize
+  to the existing additive theorem because their correlation term is zero.
+- Classical choice: inherited only from the audited finite Gibbs and analytic
+  entropy layers.
+- Computable: endpoints and marginals are executable; real free-energy
+  evaluation is noncomputable semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Correlation.lean`.
+
+### `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound`
+
+- Natural-language statement: for a Gibbs-preserving transition with
+  arbitrary exact joint system--battery endpoints, an entropy-neutral battery
+  must pay both the system free-energy increase and any increase in
+  correlation free energy.
+- Lean type:
+
+  ```lean
+  theorem CorrelatedWorkAssistedTransition.landauer_work_bound
+      {source target battery : GibbsThermalObject}
+      (transition : CorrelatedWorkAssistedTransition source target battery)
+      (hEntropy : battery.entropy transition.initialBattery =
+        battery.entropy transition.finalBattery) :
+      transition.systemFreeEnergyIncrease +
+          transition.correlationFreeEnergyIncrease ≤
+        transition.batteryEnergyDecrease
+  ```
+
+- Prerequisite definitions: arbitrary exact joint endpoints, their executable
+  system and battery marginals, a common-temperature Gibbs-preserving joint
+  channel, marginal free-energy accounting, and correlation free energy.
+- Prerequisite lemmas: joint free-energy monotonicity, the arbitrary-joint
+  free-energy decomposition, and equality of battery free-energy and energy
+  decreases under marginal entropy neutrality.
+- Status: `PROVED` as a necessary bound.  The companion
+  `landauer_freeEnergy_bound` requires no entropy-neutrality hypothesis; no
+  transition-existence or saturation claim is made.
+- Classical choice: inherited only through the analytic KL/Gibbs layer; all
+  endpoints, marginals, channels, and exact evolution are explicit data.
+- Computable: joint endpoints and channels are executable; the real-valued
+  resource accounting is noncomputable semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/CorrelatedWork.lean`.
+
+### `Ript.Examples.SimpleThermalModel.correlatedBits_freeEnergyGap`
+
+- Natural-language statement: the exact fair Boolean pair supported on
+  `(false, false)` and `(true, true)` has fair marginals, mutual information
+  `log 2`, and excess free energy exactly `log 2 / β`.
+- Lean type:
+
+  ```lean
+  theorem correlatedBits_freeEnergyGap (β : ℝ) (hβ : 0 < β) :
+      ((gibbsThermalBitAt β hβ).tensor
+        (gibbsThermalBitAt β hβ) rfl).freeEnergyGap correlatedBits =
+          Real.log 2 / β
+  ```
+
+- Prerequisite lemmas: exact marginal calculations, the uniform-bit entropy,
+  joint entropy, correlation free energy, and the arbitrary-joint
+  free-energy decomposition.
+- Status: `PROVED` for every positive inverse temperature.  The companion
+  `thermalBit_correlated_erasure_landauer_work_bound` specializes the generic
+  corrected bound to erasure and charges `log 2 / β` plus the endpoint
+  correlation-free-energy increase.
+- Classical choice: inherited only from the audited analytic layer.
+- Computable: all four joint masses and both marginals have executable
+  `#eval decide` contracts; logarithms and free energy are analytic semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleThermalModel.lean`.
+
 ### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
 
 - Natural-language statement: at a common inverse temperature, excess
@@ -2185,7 +2328,7 @@ open extensions.
   arithmetic.
 - Status: `PROVED`.
 - Classical choice: reported through generic finite stochastic proof
-  dependencies; the seven accompanying `#eval decide` assertions use ordinary
+  dependencies; the nine accompanying `#eval decide` assertions use ordinary
   executable reduction.
 - Computable: yes.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
@@ -3611,9 +3754,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     equilibrium and proves common-temperature tensor additivity. The
     work-assisted layer proves a product-endpoint free-energy balance and, for
     entropy-neutral batteries, a work bound including Boolean `log 2 / β`
-    erasure. It does not claim transition existence or saturation, correlated
-    or approximate erasure, or that arbitrary independently supplied
-    exponential weights are rational.
+    erasure. Its correlated extension proves exact marginalization, the
+    mutual-information KL identity and nonnegativity, arbitrary-joint free-
+    energy decomposition, and correlation-corrected Landauer bounds. It does
+    not claim transition existence or saturation, approximate erasure, or that
+    arbitrary independently supplied exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to

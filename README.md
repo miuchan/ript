@@ -46,6 +46,10 @@ free-energy gaps. A work-assisted layer now proves that a Gibbs-preserving
 system+battery transition cannot raise system free energy by more than the
 battery free-energy decrease; for an entropy-neutral battery this is a work
 bound, and erasing a degenerate Boolean memory costs at least `log 2 / β`.
+Arbitrary correlated system--battery endpoints are now supported as well:
+joint free energy splits into the two marginal gaps plus nonnegative
+correlation free energy, which is proved equal to mutual-information KL, and
+the Landauer bound carries the exact correlation-change correction.
 Ript now also has a separate finite-dimensional
 quantum core over `ℂ`: positive-semidefinite trace-one density matrices,
 operational maps certified by finite complete Kraus families, proved positivity
@@ -58,7 +62,7 @@ measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
 stochastic entry are proved. The converse Blackwell representation theorem,
-correlated or approximate erasure, and explicit bath/cyclic thermodynamic
+approximate erasure, and explicit bath/cyclic thermodynamic
 protocols remain research directions. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
@@ -498,8 +502,29 @@ explicit supplied-work quantity. For the zero-energy Boolean memory at every
 `β > 0`, exact erasure from the uniform equilibrium to `pure false` therefore
 requires at least `log 2 / β` of battery mean-energy decrease. The theorem is
 a necessary bound for every supplied transition certificate; it does not
-claim that such a channel exists or saturates the bound. Correlated endpoints,
-approximate erasure, explicit bath/cyclic protocols, and classification of
+claim that such a channel exists or saturates the bound.
+
+`CorrelatedWorkAssistedTransition` removes the product-endpoint restriction.
+For every exact joint state, Ript computes both marginals and proves
+
+```text
+joint free-energy gap
+  = left marginal gap + right marginal gap + mutual information / β.
+```
+
+The mutual information is proved equal to finite KL divergence from the joint
+state to the product of its marginals, so it and the correlation free energy
+are nonnegative. Consequently an arbitrary correlated transition satisfies
+
+```text
+system free-energy increase + correlation free-energy increase
+  <= battery free-energy decrease.
+```
+
+The entropy-neutral battery work form and the Boolean erasure specialization
+are proved too. An executable perfectly correlated fair Boolean pair has
+`I = log 2` and correlation free energy `log 2 / β`. Approximate erasure,
+explicit bath/cyclic protocols, and classification of
 rational Gibbs weights for independently specified real spectra remain open.
 
 ### 12. Finite complex density matrices and Kraus channels
@@ -883,8 +908,13 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finite KL athermality equals inverse temperature times excess Helmholtz free energy. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Common-temperature Gibbs-preserving channels cannot increase excess free energy. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | Excess free energy is additive on independent states at common inverse temperature. |
+| `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_eq_finiteKL_toReal` | Joint mutual information equals finite KL divergence to the product of its exact marginals. |
+| `Ript.Models.Thermal.GibbsThermalObject.mutualInformation_nonneg` | Exact finite mutual information is nonnegative. |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_eq_marginals_add_correlation` | Arbitrary joint excess free energy splits into marginal gaps plus correlation free energy. |
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_freeEnergy_bound` | A free joint system+battery transition pays system free-energy increase from battery free-energy decrease. |
 | `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound` | With an entropy-neutral battery, the same bound is a battery mean-energy work bound. |
+| `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_freeEnergy_bound` | For arbitrary joint endpoints, battery free-energy loss pays system and correlation free-energy gains. |
+| `Ript.Models.Thermal.CorrelatedWorkAssistedTransition.landauer_work_bound` | Entropy-neutral battery marginals turn the correlated balance into a mean-energy work bound. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality is the explicit two-term logarithmic sum. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Reversible thermal bit flip preserves KL athermality exactly. |
@@ -892,6 +922,8 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | Reversible thermal bit flip preserves excess free energy exactly. |
 | `Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap` | A pure erased degenerate bit has excess free energy `log 2 / β`. |
 | `Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound` | Every certified entropy-neutral-battery bit erasure supplies at least `log 2 / β` of work. |
+| `Ript.Examples.SimpleThermalModel.correlatedBits_freeEnergyGap` | A perfectly correlated fair Boolean pair stores exactly `log 2 / β` of excess correlation free energy. |
+| `Ript.Examples.SimpleThermalModel.thermalBit_correlated_erasure_landauer_work_bound` | Correlated Boolean erasure pays `log 2 / β` plus the correlation free-energy increase. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Every finite Kraus sum preserves complex operator positivity. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus completeness implies exact trace preservation. |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Every certified channel preserves positive semidefiniteness. |
@@ -993,7 +1025,7 @@ finished physical theory.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
-| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, tensor additivity, and work-assisted Boolean Landauer bound | **PROVED** |
+| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and correlation-corrected Boolean Landauer bounds | **PROVED** |
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
@@ -1018,7 +1050,7 @@ Implemented model support is intentionally narrow:
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
-| Finite thermal systems | Gibbs-preserving category | Product bifunctor | Exact states/channels executable; Gibbs/KL/free-energy/work semantics noncomputable | Certified Gibbs realization, concrete finite KL, tensor additivity, product-endpoint Landauer balance, and Boolean `log 2 / β` bound |
+| Finite thermal systems | Gibbs-preserving category | Product bifunctor | Exact states/channels/marginals executable; Gibbs/KL/free-energy/work semantics noncomputable | Certified Gibbs realization, concrete finite KL, arbitrary-joint correlation decomposition, and product/correlated Landauer bounds |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
@@ -1037,7 +1069,7 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, rational Gibbs-weight classification for independently specified
-real energy spectra, correlated/approximate erasure and explicit bath or
+real energy spectra, approximate erasure and explicit bath or
 cyclic thermodynamic protocols,
 and a complete-Segal/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
@@ -1113,7 +1145,9 @@ flowchart LR
   TE --> GD["Real finite energy and Gibbs realization"]
   GD --> FE["KL/free-energy identity"]
   KTM --> FE
-  FE --> LW["Work-assisted Landauer bounds"]
+  FE --> Corr["Joint correlation free energy"]
+  FE --> LW["Product-endpoint Landauer bounds"]
+  Corr --> CLW["Correlated-endpoint Landauer bounds"]
   QB["Complex PSD trace-one matrices"] --> QK["Complete finite Kraus certificates"]
   QK --> QC["Trace-preserving Kraus channel category"]
   QC --> QT["Canonical tensor and trace discard"]
@@ -1306,10 +1340,12 @@ invariance under the reversible flip. The same exact equilibrium is certified
 as the Gibbs distribution of two zero-energy levels at `β = 1`; Lean computes
 `Z = 2`, proves `F(γ) = -log 2`, specializes the KL/free-energy identity, and
 proves free-energy-gap invariance under the reversible flip. It executes the free equilibrium
-preparation and product equilibrium; seven
+preparation and product equilibrium; nine
 `#eval decide` contracts check exact normalization, channel entries, evolved
 mass, free-state preparation, product mass `1/4`, double-flip identity, and the
-deterministic erased-bit endpoint.
+deterministic erased-bit endpoint, plus a perfectly correlated fair pair and
+its exact fair marginals. Lean also proves the pair's mutual information is
+`log 2` and its correlation free energy is `log 2 / β`.
 
 `Ript/Examples/QubitChannel.lean` defines a Boolean-basis qubit, its complex
 Pauli-X matrix, and computational-basis pure density matrices. Lean proves
@@ -1345,8 +1381,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- or, for finite KL data processing and concrete thermal monotonicity:
 import Ript.Models.Thermal.KLDivergence
--- or, for Gibbs free energy and work-assisted Landauer bounds:
-import Ript.Models.Thermal.Work
+-- or, for Gibbs free energy and correlated Landauer bounds:
+import Ript.Models.Thermal.CorrelatedWork
 -- or, for complex density matrices and trace-preserving Kraus channels:
 import Ript.Models.Quantum.Kraus
 -- or, for the axiom-free internally univalent process universe:
@@ -1522,7 +1558,8 @@ updated assumption audit.
 - [x] Exact finite KL/free-energy identity and common-temperature free-energy-gap monotonicity
 - [x] Canonical Gibbs realization of every full-support exact equilibrium and common-temperature tensor additivity
 - [x] Product-endpoint work-assisted Landauer balance and Boolean `log 2 / β` erasure bound
-- [ ] Correlated endpoints, approximate erasure, explicit bath/cyclic protocols, and rational-weight classification for independently specified real spectra
+- [x] Arbitrary correlated endpoints, mutual-information free-energy decomposition, and correlation-corrected Landauer bounds
+- [ ] Approximate erasure, explicit bath/cyclic protocols, and rational-weight classification for independently specified real spectra
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
@@ -1599,8 +1636,10 @@ the KL/free-energy identity plus common-temperature free-energy-gap
 monotonicity. It also canonically realizes every full-support exact equilibrium
 and proves common-temperature tensor additivity. Its work-assisted layer proves
 the product-endpoint Landauer free-energy balance, its entropy-neutral battery
-work form, and the Boolean `log 2 / β` erasure bound. It does not yet cover
-correlated endpoints, approximate erasure, explicit bath/cyclic protocols, or
+work form, and the Boolean `log 2 / β` erasure bound. It also proves exact
+marginalization, mutual-information KL/nonnegativity, arbitrary-joint
+free-energy decomposition, and correlation-corrected Landauer bounds. It does
+not yet cover approximate erasure, explicit bath/cyclic protocols, or
 classify rational Gibbs weights for independently specified real spectra.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
