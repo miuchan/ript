@@ -205,8 +205,8 @@ Every node in this graph is an existing compiled module.
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
-| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, and natural recovery of the ordinary nerve from vertical vertices | PROVED |
-| 12 (higher extension) | Rezk completeness and localization beyond the outer-Segal classifying diagram | OPEN_RESEARCH |
+| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, categorical Rezk completeness comparison, and natural recovery of the ordinary nerve from vertical vertices | PROVED |
+| 12 (higher extension) | Reedy fibrancy, complete-Segal packaging, and localization beyond the categorical completeness comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4751,6 +4751,54 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - Source: `Ript/ForMathlib/AlgebraicTopology/StrictSegalIso.lean` and
   `Ript/Univalent/ClassifyingDiagram.lean`.
 
+### Rezk completeness comparison
+
+- Natural-language statement: in a groupoid every horizontal arrow is an
+  equivalence, so the equivalence subspace of the classifying diagram is its
+  entire outer degree-one vertical nerve. The actual outer zero-degeneracy
+  from degree zero to degree one is the nerve of an explicit equivalence of
+  categories; it sends a zero-simplex diagram to its identity walking arrow.
+- Lean interfaces:
+
+  ```lean
+  def CategoryTheory.Groupoid.constantDiagramEquivalence (C) (n : ℕ) :
+      C ≌ ComposableArrows C n
+
+  def UniverseModel.interfaceClassifyingDiagramCompletenessMap :
+      M.InterfaceClassifyingDiagramObjectSpace ⟶
+        M.InterfaceClassifyingDiagramEquivalenceSpace
+
+  def UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence :
+      ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1
+
+  theorem UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap :
+      M.interfaceClassifyingDiagramCompletenessMap =
+        CategoryTheory.nerveMap
+          M.interfaceClassifyingDiagramCompletenessEquivalence.functor
+  ```
+
+- Construction: evaluation at the initial vertex is inverse to the constant
+  finite-diagram functor on any groupoid. The counit contracts a diagram using
+  the unique maps `0 ⟶ i`, which are sent to isomorphisms. Composing the degree
+  zero and degree one equivalences gives the desired functor up to a natural
+  isomorphism; `Equivalence.changeFunctor` changes its forward functor to the
+  actual outer degeneracy. The final equality is definitional.
+- Strength of comparison: the theorem concerns the real structure map
+  `(M.InterfaceClassifyingDiagram).σ 0`, not an unrelated map between
+  equivalent simplicial sets. A named `Functor.IsEquivalence` instance is
+  installed for its underlying category functor.
+- Status: `PROVED`. This discharges the completeness comparison for this
+  groupoidal classifying diagram at nerve-of-category-equivalence strength.
+  Reedy fibrancy, a bundled complete-Segal-space structure, and the
+  localization universal property are separate open obligations.
+- Computable: semantic proof layer. The outer degeneracy is explicit; the
+  displayed categorical equivalence is noncomputable and remains downstream
+  of all executable models.
+- Kernel assumptions: exactly `[propext, Classical.choice, Quot.sound]`,
+  confirmed by direct checks in `Ript/Audit/AxiomChecks.lean`.
+- Source: `Ript/ForMathlib/CategoryTheory/GroupoidInterval.lean` and
+  `Ript/Univalent/ClassifyingDiagram.lean`.
+
 ### Vertical vertices and invertible vertical edges
 
 - Natural-language statement: taking vertical vertices of the entire
@@ -4796,9 +4844,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   localization universal property.
 - The Rezk classifying diagram is now constructed as a genuine bisimplicial
   object, its vertical levels are controlled, and its actual outer Segal maps
-  are equivalences in every bidegree. The Rezk completeness map has not yet
-  been defined and proved, so the object is not yet advertised as a complete
-  Segal space or as a localization of the resource-process bicategory.
+  are equivalences in every bidegree. Its actual completeness map is the nerve
+  of a category equivalence. Reedy fibrancy and complete-Segal packaging have
+  not yet been proved, so the object is not yet advertised as a complete Segal
+  space or as a localization of the resource-process bicategory.
 - None of the completion, envelope, nerve, or classifying-diagram layers is a
   full presheaf model or proved localization of the resource-process
   bicategory.
@@ -4816,8 +4865,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   resource-process bicategory.
 - Representable presheaf semantics, a strict Kan simplicial nerve, and the
   levelwise groupoidal Rezk classifying diagram now have proved foundations,
-  including outer Segal equivalences, but Rezk completeness, presheaf
-  localization, and genuinely higher identity remain Stage-12 research targets; the proved
+  including outer Segal equivalences and the categorical completeness
+  comparison, but Reedy fibrancy, presheaf localization, and genuinely higher
+  identity remain Stage-12 research targets; the proved
   foundations above do not discharge them.
 
 ## Design decisions
@@ -5021,9 +5071,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     Mathlib skeleton construction.
 42. The phrase “truncated completion” is used literally. The Rezk route now
     includes a classifying diagram with a second simplicial direction and a
-    new audit whose outer Segal comparisons are strict equivalences, but still
-    requires the Rezk completeness equivalence before it can be called a
-    complete Segal space or localization. The object
+    new audit whose outer Segal comparisons are strict equivalences and whose
+    actual completeness map is the nerve of a category equivalence. It still
+    requires Reedy fibrancy and complete-Segal packaging before it can be
+    called a complete Segal space or localization. The object
     and skeletal completions remain only the compiled 0/1-truncated
     foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
@@ -5052,7 +5103,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 49. Quasicategory and 2-coskeletal are theorem-backed consequences of the
     strict categorical nerve. Kan is proved separately, with a named theorem
     covering low-dimensional outer horns rather than being inferred from the
-    inner-horn result. Complete Segal and Rezk properties remain distinct open
+    inner-horn result. The classifying diagram's completeness comparison is a
+    separate theorem; Reedy fibrancy and localization remain distinct open
     proof obligations.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
@@ -5065,5 +5117,6 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     simplicial sets, and every vertical level is proved Kan. Flipping the two
     finite indexing categories makes every horizontal row an ordinary nerve,
     so the actual outer spine maps are equivalences. The Rezk completeness map
-    remains a named proof obligation rather than an implicit consequence of
+    is then defined as the actual outer zero-degeneracy and proved to be the
+    nerve of a category equivalence; this is not inferred implicitly from
     levelwise Kan filling or outer Segal structure.

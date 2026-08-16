@@ -299,6 +299,13 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowIsStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `CategoryTheory.Groupoid.constantDiagramEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/GroupoidInterval.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalArrow_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessFunctorIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence_functor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessFunctorIsEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
@@ -585,9 +592,16 @@ is an equivalence in every bidegree. The row isomorphism, transported
 strict-Segal structure, outer equivalence, and theorem identifying its forward
 map with the spine all audit as `[propext, Classical.choice, Quot.sound]`.
 The construction is downstream of all executable models. It introduces no
-project axiom and no choice-derived runtime data. The Rezk completeness map
-remains unproved, so the diagram is not yet claimed to be a complete Segal
-space or a localization.
+project axiom and no choice-derived runtime data. The generic groupoid
+equivalence `CategoryTheory.Groupoid.constantDiagramEquivalence`, the theorem
+that every represented horizontal arrow is invertible, the natural
+comparison with the actual outer zero-degeneracy, the resulting category
+equivalence and `Functor.IsEquivalence` instance, and the theorem identifying
+the completeness map with its nerve all audit exactly as
+`[propext, Classical.choice, Quot.sound]`. Thus the actual Rezk completeness
+comparison is proved without a project axiom. Reedy fibrancy,
+complete-Segal-space packaging, and a localization universal property remain
+unproved and are not claimed.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that

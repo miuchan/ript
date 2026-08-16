@@ -146,8 +146,10 @@ vertical vertices naturally recovers the strict interface nerve, while
 vertical edges are invertible natural transformations. Flipping the two
 finite indexing categories naturally identifies every horizontal row with an
 ordinary categorical nerve, so every actual outer spine/Segal comparison is
-an equivalence in every bidegree. The Rezk completeness map remains open, so
-no complete-Segal or localization claim is made.
+an equivalence in every bidegree. The actual Rezk completeness map is now
+defined as the outer zero-degeneracy and proved to be the nerve of an
+equivalence of categories. Reedy fibrancy, complete-Segal packaging, and a
+localization universal property remain open.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -1036,6 +1038,15 @@ interfaceClassifyingDiagramHorizontalRowIso M k :
 interfaceClassifyingDiagramOuterSegalEquiv M k n :
   (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌ ≃
     (InterfaceClassifyingDiagramHorizontalRow M k).Path n
+
+interfaceClassifyingDiagramCompletenessMap M :
+  InterfaceClassifyingDiagramObjectSpace M ⟶
+    InterfaceClassifyingDiagramEquivalenceSpace M
+
+interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
+  interfaceClassifyingDiagramCompletenessMap M =
+    CategoryTheory.nerveMap
+      (interfaceClassifyingDiagramCompletenessEquivalence M).functor
 ```
 
 The forward map of the second equivalence is proved to be the actual spine
@@ -1043,10 +1054,15 @@ map. Thus the outer Segal condition holds strictly, degree by degree, rather
 than only up to an unspecified weak equivalence.
 
 This is the standard classifying-diagram construction on the internal
-groupoid and a real step beyond the strict nerve. It is not yet a theorem that
-the resulting object is a complete Segal space: the Rezk completeness map
-still needs a definition and proof. No localization universal property for
-the full resource-process bicategory is claimed. The audited declarations use exactly
+groupoid and a real step beyond the strict nerve. Every horizontal arrow is
+invertible, so the equivalence subspace is the whole outer degree-one space.
+The actual outer zero-degeneracy is definitionally the nerve of the forward
+functor in an explicit equivalence
+`ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`. This proves the
+Rezk completeness comparison at nerve-of-category-equivalence strength. The
+remaining complete-Segal boundary is Reedy fibrancy and its packaging; no
+localization universal property for the full resource-process bicategory is
+claimed. The audited declarations use exactly
 `[propext, Classical.choice, Quot.sound]`, inherited from quotient semantics
 and generic category/nerve infrastructure; no project axiom or executable
 choice-derived value is introduced.
@@ -1298,6 +1314,8 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal` | Every horizontal row has explicit strict-Segal reconstruction data. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv` | Every outer spine comparison is an equivalence in every vertical and horizontal degree. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | The forward outer Segal equivalence is exactly the spine map. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | The actual outer zero-degeneracy functor is an equivalence of categories. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | The Rezk completeness map is exactly the nerve of that equivalence's forward functor. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Every vertical level of the classifying diagram has explicit strict-Segal reconstruction data. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Every vertical level of the classifying diagram is a Kan complex. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Taking vertical vertices naturally recovers the ordinary interface nerve. |
@@ -1340,8 +1358,8 @@ finished physical theory.
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
-| 12, classifying-diagram foundation | Rezk classifying diagram, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, natural recovery of the ordinary nerve, and invertible vertical transformations | **PROVED** |
-| 12, higher extension | Rezk completeness and higher localization beyond the outer-Segal classifying diagram | **OPEN RESEARCH** |
+| 12, classifying-diagram foundation | Rezk classifying diagram, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, categorical Rezk completeness comparison, natural recovery of the ordinary nerve, and invertible vertical transformations | **PROVED** |
+| 12, higher extension | Reedy fibrancy, complete-Segal packaging, and higher localization beyond the complete comparison | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -1368,7 +1386,7 @@ Implemented model support is intentionally narrow:
 | Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
 | Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
 | Simplicial interface nerve | Simplicial faces and degeneracies; homotopy category | Strict Segal spine composition | Semantic proof layer | Kan, quasicategory, and 2-coskeletal; explicit inner and outer horn fillers; no complete-Segal or Rezk claim |
-| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; levelwise strict Segal and Kan; strict outer Segal equivalences in every bidegree | Semantic proof layer | Genuine bisimplicial construction; horizontal rows are ordinary nerves and vertical vertices recover the strict nerve; Rezk completeness remains open |
+| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; levelwise strict Segal and Kan; strict outer Segal equivalences in every bidegree | Semantic proof layer | Genuine bisimplicial construction; the actual completeness map is the nerve of a category equivalence; Reedy fibrancy, complete-Segal packaging, and localization remain open |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -1395,7 +1413,9 @@ strict Segal, complete Kan horn filling, quasicategory, 2-coskeletal, and
 homotopy-category recovery theorems. The classifying diagram additionally has
 a natural vertical-vertex comparison, invertible vertical transformations,
 and actual outer Segal equivalences in every bidegree, but no
-Rezk-completeness or localization result is claimed. The model
+Reedy-fibrancy, complete-Segal packaging, or localization result is claimed.
+Its actual Rezk completeness comparison is proved as the nerve of a category
+equivalence. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -1948,7 +1968,8 @@ updated assumption audit.
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
 - [x] Strict simplicial nerve, complete Kan horn filling, exact Segal reconstruction, quasicategory, 2-coskeletality, and homotopy-category recovery
 - [x] Rezk classifying diagram with levelwise groupoid/Kan structure, strict outer Segal equivalences, natural vertical-vertex comparison, and invertible vertical transformations
-- [ ] Rezk completeness and localization with explicit higher coherence
+- [x] Actual Rezk completeness comparison as the nerve of a category equivalence
+- [ ] Reedy fibrancy, complete-Segal packaging, and localization with explicit higher coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate
