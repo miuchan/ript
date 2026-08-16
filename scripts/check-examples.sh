@@ -104,6 +104,15 @@ if [[ "$approximate_erasure_output" != "$expected_approximate_erasure_output" ]]
   exit 1
 fi
 
+explicit_bath_erasure_output="$(lake env lean Ript/Examples/ExplicitBathErasure.lean)"
+expected_explicit_bath_erasure_output=$'true\ntrue\ntrue'
+
+if [[ "$explicit_bath_erasure_output" != "$expected_explicit_bath_erasure_output" ]]; then
+  printf 'Explicit bath-erasure example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_explicit_bath_erasure_output" "$explicit_bath_erasure_output" >&2
+  exit 1
+fi
+
 qubit_output="$(lake env lean Ript/Examples/QubitChannel.lean)"
 expected_qubit_output=$'true\ntrue'
 

@@ -17,6 +17,9 @@ entropy free-energy identity and monotonicity law, and its product-endpoint and
 correlation-corrected Landauer bounds are proved declarations too. Explicit
 finite closed protocols, their composite semantics, the two-flip Boolean
 cycle, and the closed exact-erasure no-go are now proved declarations too.
-Bath-assisted erasure protocols, work-bearing cycles, transition saturation,
-and rational-weight classification for independently specified real spectra
-remain roadmap items rather than formalized-but-unproved propositions.
+Bath-resolved Landauer accounting and an executable exact-erasure protocol are
+also proved: the three-bit permutation returns the bath, consumes information-
+battery purity, and saturates the free-energy balance. Its battery entropy
+changes, so entropy-neutral work-bearing cycles and rational-weight
+classification for independently specified real spectra remain roadmap items
+rather than formalized-but-unproved propositions.

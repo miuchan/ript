@@ -13,6 +13,7 @@ import Ript.Examples.ClassicalCopy
 import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
+import Ript.Examples.ExplicitBathErasure
 import Ript.Examples.HigherModels
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
@@ -56,6 +57,7 @@ import Ript.Models.Quantum.CompletePositivity
 import Ript.Models.Quantum.Discard
 import Ript.Models.Quantum.Kraus
 import Ript.Models.Quantum.Tensor
+import Ript.Models.Thermal.Bath
 import Ript.Models.Thermal.CorrelatedWork
 import Ript.Models.Thermal.Correlation
 import Ript.Models.Thermal.Equilibrium
