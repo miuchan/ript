@@ -67,6 +67,13 @@ identity and structural equivalence correspond exactly to natural
 transformations and natural isomorphisms of representables, and the essential
 image forms a groupoid equivalent to the source. This `YonedaEnvelope` remains
 an ordinary 1-categorical envelope, not a Rezk completion.
+The internal groupoid now also has a genuine simplicial nerve. Its simplices
+are uniquely reconstructed from composable spines, so the nerve is proved
+strict Segal, a quasicategory, and 2-coskeletal; vertices, edges, and
+composition 2-simplices recover interfaces, internal identities, and path
+composition exactly. Its homotopy category is isomorphic to the source
+groupoid. This is still the strict categorical nerve of a 1-groupoid: no Kan,
+complete-Segal, localization, or Rezk-completion claim is made.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -583,8 +590,68 @@ This layer has an explicit classical boundary. The pinned Mathlib declarations
 `[propext, Classical.choice, Quot.sound]`; essential-image equivalence also
 chooses representing witnesses. No such value flows into executable syntax or
 finite models. The envelope does not make isomorphic presheaves externally
-equal and supplies no simplicial object, complete Segal condition, higher
-coherence, localization theorem, or external univalence.
+equal and by itself supplies no complete Segal condition, higher localization,
+or external univalence.
+
+### 16. The strict simplicial nerve
+
+The internal groupoid now has an actual simplicial-set presentation:
+
+```lean
+InterfaceNerve M := CategoryTheory.nerve M.Object
+
+interfaceNerveStrictSegal :
+  SSet.StrictSegal M.InterfaceNerve
+
+interfaceNerveSegalEquiv (n) :
+  M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
+```
+
+Thus every `n`-simplex is reconstructed uniquely from its length-`n` spine of
+composable edges. Mathlib's proved consequences give both a `Quasicategory`
+instance and `SimplicialObject.IsCoskeletal M.InterfaceNerve 2`: higher
+simplices contain no extra data beyond the 2-truncation.
+
+The low-dimensional interpretation is exact rather than suggestive:
+
+```lean
+interfaceNerveEdgeEquiv (A B) :
+  M.InterfaceNerve.Edge
+      (M.interfaceNerveVertex A) (M.interfaceNerveVertex B) ≃
+    M.Identity A B
+
+interfaceNerveEquivEdgeEquiv (A B) :
+  M.InterfaceNerve.Edge
+      (M.interfaceNerveVertex A) (M.interfaceNerveVertex B) ≃
+    M.InternalEquiv A B
+```
+
+Two composable internal identities produce an explicit 2-simplex. Its second
+and zeroth faces are the input edges, while its middle face is their internal
+composition. Every edge is reversible because the source is a groupoid; an
+edge followed by its inverse bounds a 2-simplex whose composite face is the
+degenerate reflexivity edge.
+
+The nerve retains precisely the original 1-categorical homotopy information:
+
+```lean
+interfaceNerveHomotopyCategoryIso :
+  SSet.hoFunctor.obj M.InterfaceNerve ≅ Cat.of M.Object
+```
+
+In the Boolean example, tensor symmetry is decoded both as the original
+internal path and as its structural equivalence. The forward edge and its
+inverse form a cancellation 2-simplex, strict Segal reconstruction returns
+that simplex exactly, and the externally unequal tensor code trees remain
+connected by an edge.
+
+The trust boundary is explicit. The pinned Mathlib strict-Segal,
+quasicategory, coskeletal, and nerve-adjunction declarations audit as
+`[propext, Classical.choice, Quot.sound]`; this downstream semantic footprint
+does not enter executable syntax. A categorical groupoid nerve is expected to
+be Kan, but this file does not prove that theorem in the current Mathlib API.
+It also proves no complete-Segal condition, presheaf localization, external
+univalence, or Rezk completion.
 
 ## What is proved
 
@@ -717,6 +784,19 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Evaluating Boolean tensor symmetry at the source identity recovers the original path. |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Isomorphic Yoneda-envelope presentations retain unequal raw code syntax. |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensor symmetry preserves exact interface cardinality. |
+| `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | The internal groupoid nerve has explicit strict-Segal reconstruction data. |
+| `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | Every simplex is equivalent to its composable spine of edges. |
+| `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | The strict categorical nerve is a quasicategory. |
+| `Ript.Univalent.UniverseModel.interfaceNerveTwoCoskeletal` | The internal nerve is determined by its 2-truncation. |
+| `Ript.Univalent.UniverseModel.interfaceNerveEquivEdgeEquiv` | Nerve edges between code vertices are exactly internal structural equivalences. |
+| `Ript.Univalent.UniverseModel.interfaceNerveComposition_composite` | The middle face of a composition 2-simplex is internal path composition. |
+| `Ript.Univalent.UniverseModel.interfaceNerveInverseComposition_composite` | An edge followed by its inverse has a reflexive composite face. |
+| `Ript.Univalent.UniverseModel.interfaceNerveHomotopyCategoryIso` | The homotopy category of the nerve recovers the source groupoid. |
+| `Ript.Examples.UnivalentSimplicial.swapEdge_decodes_equiv` | The Boolean symmetry edge decodes to the original tensor equivalence. |
+| `Ript.Examples.UnivalentSimplicial.swapCancellation_faces` | The Boolean cancellation 2-simplex has forward, inverse, and reflexive faces. |
+| `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strict Segal reconstruction returns the Boolean 2-simplex exactly. |
+| `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | An edge connects tensor presentations whose raw code syntax remains unequal. |
+| `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | The simplicially connected presentations have equal exact cardinality. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -747,7 +827,8 @@ finished physical theory.
 | 11 | Axiom-free deep interface/process syntax, quotient groupoid, internal univalence, soundness, and indiscernibility | **PROVED** |
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
-| 12, higher extension | Rezk completion or a higher-dimensional univalent semantic extension | **OPEN RESEARCH** |
+| 12, simplicial foundation | Categorical nerve, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
+| 12, higher extension | Kan horn filling, complete Segal/Rezk completion, and higher localization beyond the strict categorical nerve | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -773,6 +854,7 @@ Implemented model support is intentionally narrow:
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; chosen representatives; not a Rezk completion |
 | Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
 | Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
+| Simplicial interface nerve | Simplicial faces and degeneracies; homotopy category | Strict Segal spine composition | Semantic proof layer | Quasicategory and 2-coskeletal; edges encode internal identities/equivalences; no Kan or Rezk claim |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -782,13 +864,16 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
-and a higher-dimensional/Rezk-complete univalent semantics are **not implemented**.
+and a Kan/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
 object completion and noncomputable skeletal completion establish only the
 explicitly audited 0/1-truncated foundation. The representable-presheaf
 semantics and Yoneda essential-image envelope are also implemented, but remain
-ordinary 1-categorical constructions without higher localization. The model
+ordinary 1-categorical constructions without higher localization. Their
+strict categorical nerve is implemented as a genuine simplicial set with
+strict Segal, quasicategory, 2-coskeletal, and homotopy-category recovery
+theorems, but no Kan, complete-Segal, or localization result is claimed. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -1070,6 +1155,8 @@ import Ript.Univalent.Process
 import Ript.Univalent.Completion
 -- or, for representable presheaves and the Yoneda envelope:
 import Ript.Univalent.Presheaf
+-- or, for the strict simplicial nerve and its Segal structure:
+import Ript.Univalent.Simplicial
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -1085,7 +1172,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
 | [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, finite thermal, and finite quantum models |
 | [`Ript/Higher/`](Ript/Higher/) | Resource-indexed model bicategory and coherence |
-| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, transport, truncated completions, and representable-presheaf semantics |
+| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, truncated completions, representable-presheaf semantics, and the strict simplicial nerve |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -1133,7 +1220,9 @@ force-pushes and branch deletion are disabled.
    layers remain visibly marked as open research. The classical quantum
    embedding, model bicategory, small internally univalent universe, and its
    0/1-truncated completions and representable-presheaf envelope are
-   implemented with their scope boundaries explicit.
+   implemented with their scope boundaries explicit. The strict categorical
+   nerve is also implemented with strict-Segal, quasicategory, and
+   2-coskeletal proofs, without presenting them as Kan or Rezk completeness.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -1226,7 +1315,8 @@ updated assumption audit.
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
-- [ ] Rezk completion or a presheaf/simplicial higher-dimensional univalent model with explicit coherence
+- [x] Strict simplicial nerve, exact Segal reconstruction, quasicategory, 2-coskeletality, and homotopy-category recovery
+- [ ] Kan horn filling and complete-Segal/Rezk localization with explicit higher coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

@@ -19,6 +19,7 @@ import Ript.Examples.StochasticBits
 import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
+import Ript.Examples.UnivalentSimplicial
 import Ript.Higher.Coherence
 import Ript.Higher.Equivalence
 import Ript.Higher.ModelBicategory
@@ -76,5 +77,6 @@ import Ript.Univalent.Completion
 import Ript.Univalent.Model
 import Ript.Univalent.Presheaf
 import Ript.Univalent.Process
+import Ript.Univalent.Simplicial
 import Ript.Univalent.Soundness
 import Ript.Univalent.Syntax

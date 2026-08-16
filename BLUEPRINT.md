@@ -120,9 +120,13 @@ flowchart LR
   UnivalentCompletion --> UnivalentPresheaf["Univalent.Presheaf"]
   UnivalentCompletionExample --> UnivalentPresheafExample["Examples.UnivalentPresheaf"]
   UnivalentPresheaf --> UnivalentPresheafExample
+  UnivalentPresheaf --> UnivalentSimplicial["Univalent.Simplicial"]
+  UnivalentPresheafExample --> UnivalentSimplicialExample["Examples.UnivalentSimplicial"]
+  UnivalentSimplicial --> UnivalentSimplicialExample
   UnivalentExample --> Audit
   UnivalentCompletionExample --> Audit
   UnivalentPresheafExample --> Audit
+  UnivalentSimplicialExample --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -147,7 +151,8 @@ Every node in this graph is an existing compiled module.
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
-| 12 (higher extension) | Rezk completion and higher-dimensional extension beyond the 1-truncated model | OPEN_RESEARCH |
+| 12 (simplicial foundation) | Categorical nerve, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
+| 12 (higher extension) | Kan/groupoid horn filling, complete Segal or Rezk completion, and localization beyond the strict categorical nerve | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -2566,6 +2571,132 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `[propext]`.
 - Source: `Ript/Examples/UnivalentPresheaf.lean`.
 
+## Stage-12 simplicial-nerve flagship records
+
+### `InterfaceNerve`, strict Segal reconstruction, and truncation control
+
+- Natural-language statement: the ordinary categorical nerve of the internal
+  interface groupoid is a genuine simplicial set. Every `n`-simplex is
+  uniquely determined by its length-`n` spine of composable edges. Mathlib's
+  strict Segal theorem yields a quasicategory instance, while its coskeletal
+  theorem proves that all dimensions above two are determined by the
+  2-truncation.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.InterfaceNerve : SSet.{u} :=
+    CategoryTheory.nerve M.Object
+
+  def UniverseModel.interfaceNerveStrictSegal :
+      SSet.StrictSegal M.InterfaceNerve
+
+  def UniverseModel.interfaceNerveSegalEquiv (n : ℕ) :
+      M.InterfaceNerve _⦋n⦌ ≃ M.InterfaceNerve.Path n
+
+  instance UniverseModel.interfaceNerveQuasicategory :
+      Quasicategory M.InterfaceNerve
+
+  instance UniverseModel.interfaceNerveTwoCoskeletal :
+      SimplicialObject.IsCoskeletal M.InterfaceNerve 2
+  ```
+
+- Prerequisites: the Stage-11 groupoid instance and Mathlib
+  `CategoryTheory.nerve`, `CategoryTheory.Nerve.strictSegal`,
+  `AlgebraicTopology.Quasicategory.Nerve`, and simplicial coskeleta.
+- Status: `PROVED`; the explicit `spineEquiv` gives both reconstruction round
+  trips rather than only proposition-level existence.
+- Computable: semantic proof layer. Explicit low-dimensional simplices are
+  data, but Mathlib's generic nerve infrastructure is not exposed as a finite
+  executable model API.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`; direct audits
+  of the corresponding generic Mathlib declarations report the same list.
+- Source: `Ript/Univalent/Simplicial.lean`.
+
+### Vertices, edges, composition 2-simplices, and inverses
+
+- Natural-language statement: vertices are interface objects; edges between
+  chosen code vertices are exactly internal identities and, through internal
+  univalence, exactly structural equivalences. Two composable identities give
+  a 2-simplex whose faces are the first path, second path, and their composite.
+  An edge followed by its groupoid inverse has reflexivity as its composite
+  face.
+- Lean interfaces:
+
+  ```lean
+  def UniverseModel.interfaceNerveEdgeEquiv (A B : Code Atom) :
+      M.InterfaceNerve.Edge
+          (UniverseModel.interfaceNerveVertex M A)
+          (UniverseModel.interfaceNerveVertex M B) ≃
+        M.Identity A B
+
+  def UniverseModel.interfaceNerveEquivEdgeEquiv (A B : Code Atom) :
+      M.InterfaceNerve.Edge
+          (UniverseModel.interfaceNerveVertex M A)
+          (UniverseModel.interfaceNerveVertex M B) ≃
+        M.InternalEquiv A B
+
+  def UniverseModel.interfaceNerveCompositionSimplex
+      (first : M.Identity A B) (second : M.Identity B C) :
+      M.InterfaceNerve _⦋2⦌
+
+  theorem UniverseModel.interfaceNerveComposition_composite
+      (first : M.Identity A B) (second : M.Identity B C) :
+      M.InterfaceNerve.δ 1
+          (UniverseModel.interfaceNerveCompositionSimplex M first second) =
+        ComposableArrows.mk₁ (UniverseModel.Identity.trans M first second)
+
+  theorem UniverseModel.interfaceNerveInverseComposition_composite
+      (path : M.Identity A B) :
+      M.InterfaceNerve.δ 1
+          (UniverseModel.interfaceNerveInverseCompositionSimplex M path) =
+        ComposableArrows.mk₁ (UniverseModel.Identity.refl M A)
+  ```
+
+- Prerequisites: Mathlib's low-dimensional nerve face calculations, internal
+  path composition/symmetry, and `internalUnivalence`.
+- Status: `PROVED`; reflexivity is also proved to be the degenerate identity
+  edge, and decoding a constructed or inverse edge is exact.
+- Computable: quotient/semantic proof layer; raw codes and their external
+  interpretations remain independently executable.
+- Kernel assumptions for the audited declarations:
+  `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Simplicial.lean`.
+
+### `interfaceNerveHomotopyCategoryIso`
+
+- Natural-language statement: taking the homotopy category of the internal
+  categorical nerve recovers the original internal interface groupoid. This
+  is the component of the counit isomorphism for Mathlib's homotopy-category/
+  nerve adjunction.
+- Lean type:
+
+  ```lean
+  noncomputable def UniverseModel.interfaceNerveHomotopyCategoryIso :
+      SSet.hoFunctor.obj M.InterfaceNerve ≅ Cat.of M.Object
+  ```
+
+- Prerequisites: Mathlib `SSet.hoFunctor`, the fully faithful nerve functor,
+  and `CategoryTheory.nerveFunctorCompHoFunctorIso`.
+- Status: `PROVED`.
+- Computable: no; the generic homotopy-category quotient and counit
+  isomorphism form a downstream semantic construction.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Simplicial.lean`.
+
+### Boolean tensor-symmetry cancellation simplex
+
+- Natural-language statement: Boolean tensor symmetry is an edge whose
+  structural-equivalence decoding recovers the original swap. Together with
+  its inverse it bounds a 2-simplex with forward, inverse, and reflexive faces;
+  strict Segal reconstruction returns that simplex exactly. The edge exists
+  while the two raw tensor code trees remain unequal.
+- Status: `PROVED`; exact cardinality invariance evaluates to `true` and is
+  enforced by `scripts/check-examples.sh`.
+- Kernel assumptions: the edge, face, Segal round-trip, and nonreflection
+  theorems use `[propext, Classical.choice, Quot.sound]`; executable
+  cardinality preservation uses `[propext]`.
+- Source: `Ript/Examples/UnivalentSimplicial.lean`.
+
 ### Explicit non-claims for Stage 12
 
 - `ObjectCompletion` is a propositional 0-truncation, not a category and not a
@@ -2575,8 +2706,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - The representable-presheaf envelope is an ordinary essential image. It does
   not make isomorphic presheaves externally equal and is not a complete Segal
   or Rezk object.
-- None of the three completion/envelope layers is a Rezk completion or a full
-  presheaf model of the resource-process bicategory.
+- The simplicial interface nerve is the strict categorical nerve of a
+  1-groupoid. Strict Segal, quasicategory, and 2-coskeletal results do not by
+  themselves prove the full Kan condition, complete-Segal completeness, or a
+  localization universal property.
+- None of the completion, envelope, or nerve layers is a Rezk completion or a
+  full presheaf model of the resource-process bicategory.
 - No external univalence axiom, higher inductive type, localization theorem,
   or map `Equiv α β → α = β` is introduced.
 
@@ -2589,10 +2724,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   arbitrary higher identity types or higher inductive types.
 - The quotient groupoid is not advertised as a Rezk completion of the full
   resource-process bicategory.
-- Representable presheaf semantics now has a proved foundation, but Rezk
-  completion, presheaf localization, and higher-dimensional identity remain
-  Stage-12 research targets; the proved foundations above do not discharge
-  them.
+- Representable presheaf semantics and a strict simplicial nerve now have
+  proved foundations, but Kan horn filling, Rezk completeness, presheaf
+  localization, and genuinely higher identity remain Stage-12 research
+  targets; the proved foundations above do not discharge them.
 
 ## Design decisions
 
@@ -2769,3 +2904,18 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     so it remains noncomputable. Explicit representables and explicit Yoneda
     images of internal paths can still be constructed without feeding that
     choice back into raw syntax or the finite executable models.
+47. The first simplicial layer reuses Mathlib's categorical nerve of the
+    internal groupoid. This supplies actual simplices and face/degeneracy maps
+    without inventing a project-local simplex category or claiming external
+    univalence.
+48. Strict Segal is recorded with explicit reconstruction data, not merely as
+    a class instance. The `interfaceNerveSegalEquiv` API therefore exposes both
+    round trips between an `n`-simplex and its composable spine.
+49. Quasicategory and 2-coskeletal are theorem-backed consequences of the
+    strict categorical nerve. They are not renamed as Kan, complete Segal, or
+    Rezk properties: each stronger condition remains a separate named proof
+    obligation.
+50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
+    adjunction counit and remains noncomputable. Low-dimensional vertices,
+    edges, and composition simplices are still constructible explicitly, and
+    none of this semantic data flows into the executable process core.
