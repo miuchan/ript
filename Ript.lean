@@ -111,6 +111,7 @@ import Ript.Syntax.Signature
 import Ript.Univalent.Boundary
 import Ript.Univalent.ClassifyingDiagram
 import Ript.Univalent.Completion
+import Ript.Univalent.Localization
 import Ript.Univalent.Model
 import Ript.Univalent.Presheaf
 import Ript.Univalent.Process

@@ -26,7 +26,8 @@ The construction proves three precise facts.
 `YonedaEnvelope` is intentionally not called a Rezk completion.  It is an
 ordinary 1-categorical essential image inside a presheaf category.  Its
 objects still use Lean's external equality, and the construction supplies no
-higher paths, Segal objects, localization, or external univalence principle.
+higher paths, Segal objects, presheaf/higher localization, or external
+univalence principle.
 The equivalence with the essential image uses chosen witnesses and is confined
 to this noncomputable semantic layer.
 -/

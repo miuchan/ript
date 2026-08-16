@@ -74,6 +74,9 @@ Stage 12 现已完成第一步严格限界的补全：无选择的对象商精�
 presheaf 路线也已有第一层经过编译的基础：Yoneda 把内部群胚 fully faithfully 嵌入类型值
 presheaf；内部恒等与结构等价精确对应 representable 之间的自然变换和自然同构；其本质像
 形成与源群胚等价的 `YonedaEnvelope`。它仍是普通 1-范畴 envelope，不是 Rezk completion。
+限制后的 Yoneda 函子和骨架补全函子现已进一步证明为 Mathlib 意义下对所有内部恒等态射的
+localization。由于源已经是群胚，这个精确普遍性质不会添加新的逆；它只是 1-范畴 localization
+基例，不是仍开放的完整资源过程双范畴 localization。
 内部群胚现在还拥有真正的 simplicial nerve。每个单形都能从可复合 spine 唯一重建，因此该
 nerve 已证明为 strict Segal、quasicategory 和 2-coskeletal；顶点、边与复合 2-单形分别精确
 恢复接口、内部恒等与 path 复合，其同伦范畴同构于源群胚。这仍只是 1-群胚的严格范畴 nerve：
@@ -88,7 +91,7 @@ matching 锥已证明为真实极限，所有 matching map 都是 fibration。Ma
 模型结构尚不存在；项目现已用精确的 `SSet.GroupoidalCompleteSegal` 结构封装这些结果，
 并进一步证明每条横向行都是 Kan，实际完备性映射带有明确的范畴等价 nerve 见证。固定版本
 Mathlib 尚无 simplicial set 弱等价或完整 Quillen 模型 API，因此 Mathlib 原生的标准
-complete-Segal-space 实例与 localization 普遍性质仍然开放。
+complete-Segal-space 实例与完整资源过程双范畴的 localization 普遍性质仍然开放。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–12 已实现的基础层均通过 Lean 内核检验；公共 API 尚未
@@ -592,7 +595,16 @@ representableEquivNaturalIsoEquiv (A B) :
 ```lean
 yonedaEnvelopeUniversal (E) :
   (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+
+yonedaEnvelopeLocalizationUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌
+    M.InterfaceIdentities.FunctorsInverting E
 ```
+
+第二个等价是 Mathlib 的规范 localization 普遍性质。`InterfaceIdentities` 是 `M.Object` 上的
+top 态射性质，并已证明精确等于其 isomorphisms。`toSkeletalCompletion M` 与
+`toYonedaEnvelope M` 都具有实际的 `Functor.IsLocalization` 实例，因此这里的正向函子就是
+沿具体补全映射预复合，而不是无关的范畴等价。
 
 Boolean 示例把 tensor 对称性送入自然变换，在源恒等截面上求值后恢复原内部 path，并构造相应
 envelope 同构，同时保留原始 code 不相等的证明。
@@ -601,7 +613,8 @@ envelope 同构，同时保留原始 code 不相等的证明。
 `Yoneda.fullyFaithful` 自身公理审计就是 `[propext, Classical.choice, Quot.sound]`，本质像
 等价还会选择表示 witness。这些值不会流入可执行语法或有限模型。该 envelope 不会令同构
 presheaf 在外部相等，它本身也没有提供 complete Segal 条件、高阶 localization 或外部
-univalence。
+univalence。上述普通 localization 只反转一个已经是群胚的源的全部态射，并不构成
+presheaf、Rezk 或完整资源过程 localization。
 
 ### 16. Kan simplicial nerve
 
@@ -986,6 +999,10 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | Yoneda 嵌入通过其本质像 envelope 分解。 |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | 内部群胚与 Yoneda envelope 范畴等价。 |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | 从 Yoneda envelope 与原群胚出发的函子范畴等价。 |
+| `Ript.Univalent.UniverseModel.interfaceIdentities_eq_isomorphisms` | 所有内部恒等态射精确等于接口群胚的同构态射。 |
+| `Ript.Univalent.UniverseModel.interfaceIdentityLocalizationUniversal` | 接口恒等函子满足对全部内部恒等的 Mathlib localization 普遍性质。 |
+| `Ript.Univalent.UniverseModel.skeletalCompletionLocalizationUniversal` | 沿骨架补全预复合等价于反转全部内部恒等的函子范畴。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeLocalizationUniversal` | 限制后的 Yoneda 函子满足相同的精确 1-范畴 localization 普遍性质。 |
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Boolean tensor 对称性在源恒等截面上恢复原 path。 |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Yoneda-envelope 表示同构，但原始 code 仍不相等。 |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | tensor 对称性保持精确接口基数。 |
@@ -1057,9 +1074,10 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 11 | 无公理的深嵌入接口/过程语法、商群胚、内部单值性、soundness 与 indiscernibility | **PROVED** |
 | 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
 | 12，presheaf 基础 | Fully faithful Yoneda 语义、representable 身份/等价对应与本质像 envelope | **PROVED** |
+| 12，群胚 localization 基础 | 恒等、骨架补全与限制 Yoneda 函子对全部内部恒等的 Mathlib localization 模型及函子范畴普遍性质 | **PROVED** |
 | 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
 | 12，classifying-diagram 基础 | Rezk classifying diagram、纵横群胚/Kan 结构、严格外层 Segal 等价、精确项目内群胚型 complete-Segal 封装、自然单形映射表示、真实边界 matching limit 与 matching-map fibration | **PROVED** |
-| 12，高阶扩展 | Mathlib 原生 simplicial 弱等价/标准 complete-Segal 封装与高阶 localization | **OPEN RESEARCH** |
+| 12，高阶扩展 | Mathlib 原生 simplicial 弱等价/标准 complete-Segal 封装与完整资源过程双范畴 localization | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -1082,11 +1100,11 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
-| 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；选择代表元；不是 Rezk completion |
+| 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；对所有内部恒等的 Mathlib localization；不是 Rezk completion |
 | 内部 presheaf universe | 类型值 presheaf 之间的自然变换 | Representable 作用 | 语义证明层 | Yoneda fully faithful；恒等/等价对应 representable 变换/同构 |
-| Yoneda envelope | 从 representable 本质像出发的函子 | 通过范畴等价继承结构 | 不可计算本质像语义 | 与源群胚等价；无外部 univalence；不是 Rezk completion |
+| Yoneda envelope | 从 representable 本质像出发的函子 | 通过范畴等价继承结构 | 不可计算本质像语义 | 与源群胚等价，并局部化其全部已可逆态射；无外部 univalence；不是 Rezk completion |
 | Simplicial 接口 nerve | Simplicial 面与退化映射；同伦范畴 | Strict Segal spine 复合 | 语义证明层 | Kan、quasicategory 且 2-coskeletal；具有显式内外 horn filler；没有 complete-Segal 或 Rezk 宣称 |
-| Rezk classifying diagram | 可复合箭头串的外层 simplicial 范畴与逐层 nerve | 箭头串之间的自然变换；纵横 Kan；严格外层 Segal 等价；真实边界 matching limit 与 fibration | 语义证明层 | 精确项目内 `GroupoidalCompleteSegal` 见证已证明；Mathlib 原生弱等价/标准 complete-Segal 封装与 localization 仍开放 |
+| Rezk classifying diagram | 可复合箭头串的外层 simplicial 范畴与逐层 nerve | 箭头串之间的自然变换；纵横 Kan；严格外层 Segal 等价；真实边界 matching limit 与 fibration | 语义证明层 | 精确项目内 `GroupoidalCompleteSegal` 见证已证明；Mathlib 原生弱等价/标准 complete-Segal 封装与完整资源过程双范畴的 localization 仍开放 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
@@ -1103,7 +1121,8 @@ diagram 已作为真正的 simplicial 对象实现，并具有完整 Kan horn fi
 quasicategory、2-coskeletal 与同伦范畴恢复定理。Classifying diagram 还具有自然的纵向顶点比较、
 可逆纵向变换、所有双次数上的外层 Segal 等价、自然单形映射表示、真实边界 matching limit
 以及 fibrant matching map；实际 Rezk 完备性比较也已证明为范畴等价的 nerve，但尚无 Mathlib
-原生弱等价/标准 complete-Segal 实例或 localization 结果。项目内精确的群胚型
+原生弱等价/标准 complete-Segal 实例或完整资源过程双范畴 localization。普通 1-范畴群胚边界
+已经证明骨架与 Yoneda-envelope 映射满足 Mathlib localization 普遍性质。项目内精确的群胚型
 `GroupoidalCompleteSegal` 见证已经证明。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
@@ -1568,12 +1587,13 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
 - [x] 无选择对象补全、不变量下降与骨架群胚补全
 - [x] Fully faithful Yoneda 语义与 representable 本质像 envelope
+- [x] 恒等、骨架与限制 Yoneda 函子对全部内部恒等的 Mathlib localization 普遍性质
 - [x] 严格 simplicial nerve、完整 Kan horn filling、精确 Segal 重建、quasicategory、2-coskeletality 与同伦范畴恢复
 - [x] Rezk classifying diagram、逐层群胚/Kan 结构、严格外层 Segal 等价、自然纵向顶点比较与可逆纵向变换
 - [x] 实际 Rezk 完备性比较是范畴等价的 nerve
 - [x] 自然单形映射表示、真实边界 matching limit 与 matching-map fibration
 - [x] 带横向 Kan 行的精确项目内群胚型 complete-Segal 见证
-- [ ] Mathlib 原生 simplicial 弱等价/标准 complete-Segal 封装与带显式高阶 coherence 的 localization
+- [ ] Mathlib 原生 simplicial 弱等价/标准 complete-Segal 封装与带显式高阶 coherence 的完整资源过程双范畴 localization
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。

@@ -130,7 +130,12 @@ internal groupoid fully faithfully into type-valued presheaves, internal
 identity and structural equivalence correspond exactly to natural
 transformations and natural isomorphisms of representables, and the essential
 image forms a groupoid equivalent to the source. This `YonedaEnvelope` remains
-an ordinary 1-categorical envelope, not a Rezk completion.
+an ordinary 1-categorical envelope, not a Rezk completion. Its restricted
+Yoneda functor and the skeletal-completion functor are now also proved to be
+Mathlib localizations at all internal identity morphisms. Because the source
+is already a groupoid, this exact universal property adds no formal inverses;
+it is a one-categorical localization base, not the still-open localization of
+the full resource-process bicategory.
 The internal groupoid now also has a genuine simplicial nerve. Its simplices
 are uniquely reconstructed from composable spines, so the nerve is proved
 strict Segal, a quasicategory, and 2-coskeletal; vertices, edges, and
@@ -156,8 +161,8 @@ fibration. These results are now bundled in the exact project-local
 and the actual completeness map carries a displayed nerve-of-category-
 equivalence witness. The pinned Mathlib release has no simplicial-set weak-
 equivalence or completed Quillen-model API, so a Mathlib-native standard
-complete-Segal-space instance and a localization universal property remain
-open.
+complete-Segal-space instance and a localization universal property for the
+full resource-process bicategory remain open.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -895,7 +900,20 @@ category `E`:
 ```lean
 yonedaEnvelopeUniversal (E) :
   (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+
+yonedaEnvelopeLocalizationUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌
+    M.InterfaceIdentities.FunctorsInverting E
 ```
+
+The second equivalence is Mathlib's canonical localization universal
+property. `InterfaceIdentities` is the top morphism property on `M.Object`,
+and Ript proves it equals `MorphismProperty.isomorphisms M.Object`. Every
+functor from this already-groupoidal source therefore inverts it. Both
+`toSkeletalCompletion M` and `toYonedaEnvelope M` carry actual
+`Functor.IsLocalization` instances, so the displayed forward functors are
+precomposition with those concrete completion maps rather than unrelated
+equivalences of categories.
 
 The Boolean example sends tensor symmetry to a natural transformation,
 evaluates it on the source identity to recover the original internal path,
@@ -908,7 +926,9 @@ This layer has an explicit classical boundary. The pinned Mathlib declarations
 chooses representing witnesses. No such value flows into executable syntax or
 finite models. The envelope does not make isomorphic presheaves externally
 equal and by itself supplies no complete Segal condition, higher localization,
-or external univalence.
+or external univalence. The ordinary localization result above is deliberately
+limited to inverting all morphisms of a source that is already a groupoid; it
+does not establish presheaf, Rezk, or resource-process localization.
 
 ### 16. The Kan simplicial nerve
 
@@ -1352,6 +1372,10 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | The Yoneda embedding factors through its essential-image envelope. |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | The internal groupoid and its Yoneda envelope are categorically equivalent. |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | Functor categories from the Yoneda envelope and original groupoid are equivalent. |
+| `Ript.Univalent.UniverseModel.interfaceIdentities_eq_isomorphisms` | All internal identity morphisms are exactly the isomorphisms of the interface groupoid. |
+| `Ript.Univalent.UniverseModel.interfaceIdentityLocalizationUniversal` | The identity interface functor satisfies Mathlib's localization universal property at all internal identities. |
+| `Ript.Univalent.UniverseModel.skeletalCompletionLocalizationUniversal` | Precomposition with the skeletal-completion functor is an equivalence onto functors inverting every internal identity. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeLocalizationUniversal` | The restricted Yoneda functor satisfies the same exact one-categorical localization universal property. |
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Evaluating Boolean tensor symmetry at the source identity recovers the original path. |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Isomorphic Yoneda-envelope presentations retain unequal raw code syntax. |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensor symmetry preserves exact interface cardinality. |
@@ -1426,9 +1450,10 @@ finished physical theory.
 | 11 | Axiom-free deep interface/process syntax, quotient groupoid, internal univalence, soundness, and indiscernibility | **PROVED** |
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
+| 12, groupoidal localization foundation | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
 | 12, classifying-diagram foundation | Rezk classifying diagram, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
-| 12, higher extension | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and higher localization | **OPEN RESEARCH** |
+| 12, higher extension | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -1451,11 +1476,11 @@ Implemented model support is intentionally narrow:
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
-| Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; chosen representatives; not a Rezk completion |
+| Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; Mathlib localization at every internal identity; not a Rezk completion |
 | Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
-| Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
+| Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source and a localization at all its already-invertible arrows; not externally univalent or Rezk complete |
 | Simplicial interface nerve | Simplicial faces and degeneracies; homotopy category | Strict Segal spine composition | Semantic proof layer | Kan, quasicategory, and 2-coskeletal; explicit inner and outer horn fillers; no complete-Segal or Rezk claim |
-| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; vertical and horizontal Kan structure; strict outer Segal equivalences; genuine boundary matching limits and fibrations | Semantic proof layer | Exact project-local `GroupoidalCompleteSegal` witness proved; Mathlib-native weak-equivalence/standard complete-Segal packaging and localization remain open |
+| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; vertical and horizontal Kan structure; strict outer Segal equivalences; genuine boundary matching limits and fibrations | Semantic proof layer | Exact project-local `GroupoidalCompleteSegal` witness proved; Mathlib-native weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory remain open |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -1487,7 +1512,10 @@ Its actual Rezk completeness comparison is proved as the nerve of a category
 equivalence, and an exact project-local groupoidal complete-Segal witness
 bundles both simplicial directions with genuine Reedy matching data. No
 Mathlib-native weak-equivalence/standard complete-Segal instance or
-localization result is claimed. The model
+localization of the full resource-process bicategory is claimed. At the
+ordinary 1-categorical groupoid boundary, the skeletal and Yoneda-envelope
+maps now do satisfy Mathlib's localization universal property at all internal
+identities. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -2038,12 +2066,13 @@ updated assumption audit.
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
+- [x] Mathlib localization universal properties for the identity, skeletal, and restricted-Yoneda functors at all internal identities
 - [x] Strict simplicial nerve, complete Kan horn filling, exact Segal reconstruction, quasicategory, 2-coskeletality, and homotopy-category recovery
 - [x] Rezk classifying diagram with levelwise groupoid/Kan structure, strict outer Segal equivalences, natural vertical-vertex comparison, and invertible vertical transformations
 - [x] Actual Rezk completeness comparison as the nerve of a category equivalence
 - [x] Natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations
 - [x] Exact project-local groupoidal complete-Segal witness with horizontal Kan rows
-- [ ] Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization with explicit higher coherence
+- [ ] Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory with explicit higher coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

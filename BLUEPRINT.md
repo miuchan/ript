@@ -204,9 +204,10 @@ Every node in this graph is an existing compiled module.
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
+| 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher extension) | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization | OPEN_RESEARCH |
+| 12 (higher extension) | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4483,6 +4484,82 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `[propext]`.
 - Source: `Ript/Examples/UnivalentPresheaf.lean`.
 
+## Stage-12 groupoidal-localization flagship records
+
+### Internal identities as a morphism property
+
+- Natural-language statement: every morphism of the interpreted interface
+  category is an internal identity, and because that category is a groupoid
+  these morphisms are exactly its isomorphisms. Every functor out of the
+  interface category therefore inverts the whole property.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.InterfaceIdentities : MorphismProperty M.Object := ⊤
+
+  theorem UniverseModel.interfaceIdentities_eq_isomorphisms :
+      M.InterfaceIdentities = MorphismProperty.isomorphisms M.Object
+
+  theorem UniverseModel.interfaceIdentities_isInvertedBy
+      (F : M.Object ⥤ E) :
+      M.InterfaceIdentities.IsInvertedBy F
+  ```
+
+- Status: `PROVED`. The result uses the actual groupoid instance rather than
+  postulating invertibility for a selected class of arrows.
+- Computable: proposition-level semantic infrastructure.
+- Kernel assumptions: exactly `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Localization.lean`.
+
+### Identity, skeleton, and Yoneda-envelope localization models
+
+- Natural-language statement: the identity functor, the functor to the
+  categorical skeleton, and the restricted Yoneda functor to the essential
+  image of representables all satisfy Mathlib's `Functor.IsLocalization`
+  predicate at every internal identity morphism. Consequently, for every
+  target category `E`, precomposition with each functor is an equivalence onto
+  the full subcategory of functors that invert those identities.
+- Lean interfaces:
+
+  ```lean
+  instance UniverseModel.interfaceIdentityIsLocalization :
+      (𝟭 M.Object).IsLocalization M.InterfaceIdentities
+
+  instance UniverseModel.toSkeletalCompletionIsLocalization :
+      M.toSkeletalCompletion.IsLocalization M.InterfaceIdentities
+
+  noncomputable def UniverseModel.skeletalCompletionLocalizationUniversal
+      (E : Type v) [Category.{w} E] :
+      (M.SkeletalCompletion ⥤ E) ≌
+        M.InterfaceIdentities.FunctorsInverting E
+
+  instance UniverseModel.toYonedaEnvelopeIsLocalization :
+      M.toYonedaEnvelope.IsLocalization M.InterfaceIdentities
+
+  noncomputable def UniverseModel.yonedaEnvelopeLocalizationUniversal
+      (E : Type v) [Category.{w} E] :
+      (M.YonedaEnvelope ⥤ E) ≌
+        M.InterfaceIdentities.FunctorsInverting E
+  ```
+
+- Construction: `Functor.IsLocalization.for_id` handles the identity model.
+  The skeleton and restricted Yoneda functors are categorical equivalences,
+  so Mathlib's `Functor.IsLocalization.of_isEquivalence` transports the same
+  universal property. `Localization.functorEquivalence` supplies the canonical
+  functor-category equivalences; their forward functors are precomposition
+  with the displayed completion maps.
+- Exact scope: this is an ordinary 1-categorical localization of a source in
+  which every arrow was already invertible. It neither inverts noninvertible
+  resource processes nor proves a bicategorical, presheaf, simplicial, or
+  Rezk localization universal property.
+- Status: `PROVED`; this discharges the groupoidal base case only.
+- Computable: noncomputable semantic layer because skeleton and essential-
+  image equivalences choose representatives. No chosen value flows into an
+  executable model.
+- Kernel assumptions: every audited declaration has exactly
+  `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Localization.lean`.
+
 ## Stage-12 simplicial-nerve flagship records
 
 ### `InterfaceNerve`, Kan filling, strict Segal reconstruction, and truncation control
@@ -4847,7 +4924,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   Project-local boundary Reedy fibrancy is proved separately and then bundled
   in the exact project-local groupoidal complete-Segal witness below. A
   Mathlib-native weak-equivalence/standard complete-Segal-space instance and
-  the localization universal property are open obligations.
+  the localization universal property for the full resource-process
+  bicategory are open obligations.
 - Computable: semantic proof layer. The outer degeneracy is explicit; the
   displayed categorical equivalence is noncomputable and remains downstream
   of all executable models.
@@ -4894,7 +4972,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   exact data available; it is not a replacement definition of weak
   equivalence.
 - Status: `PROVED`. A future bridge to an upstream weak-equivalence interface
-  and a localization universal property remain open.
+  and a localization universal property for the full resource-process
+  bicategory remain open.
 - Computable: noncomputable semantic proof layer; no chosen value enters any
   executable model.
 - Kernel assumptions: exactly `[propext, Classical.choice, Quot.sound]` for
@@ -4961,8 +5040,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - None of the completion, envelope, nerve, or classifying-diagram layers is a
   full presheaf model or proved localization of the resource-process
   bicategory.
-- No external univalence axiom, higher inductive type, localization theorem,
-  or map `Equiv α β → α = β` is introduced.
+- No external univalence axiom, higher inductive type, higher localization of
+  the resource-process bicategory, or map `Equiv α β → α = β` is introduced.
 
 ## Explicit non-claims for Stage 11
 
@@ -5190,7 +5269,7 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     with horizontal Kan structure in an exact project-local groupoidal
     complete-Segal witness. A Mathlib-native standard complete Segal space
     claim still requires the missing simplicial weak-equivalence API; a
-    localization claim requires a separate universal property. The object
+    higher localization claim requires a separate universal property. The object
     and skeletal completions remain only the compiled 0/1-truncated
     foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
@@ -5200,7 +5279,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 44. `YonedaEnvelope` means the essential image of representables, not the
     entire presheaf category and not a Rezk completion. The name prevents an
     ordinary 1-categorical equivalence from being mistaken for external
-    univalence or higher completeness.
+    univalence or higher completeness. Its new `Functor.IsLocalization`
+    instance only localizes the already-groupoidal source at all of its
+    already-invertible arrows.
 45. Internal identities correspond to all natural transformations between
     internal representables, not only to a selected class. Invertibility is a
     theorem derived from source groupoid structure and Yoneda full
@@ -5224,7 +5305,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     boundary matching fibration are now proved, as are naturality and the
     matching-limit universal property. The project-local groupoidal package is
     proved; Mathlib-native weak-equivalence/standard complete-Segal packaging
-    and localization remain distinct open proof obligations.
+    and localization of the full resource-process bicategory remain distinct
+    open proof obligations.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
     edges, and composition simplices are still constructible explicitly, and
@@ -5242,3 +5324,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     `Map(∂Δ[n], N(M.Object))` is the genuine matching limit, and its universal
     restriction map is proved fibrant. None of this is inferred implicitly
     from levelwise Kan filling or outer Segal structure.
+52. Ordinary localization is recorded through Mathlib's existing
+    `Functor.IsLocalization`, not through a project-local substitute. The
+    identity, skeleton, and restricted Yoneda models invert the top morphism
+    property because `M.Object` is already a groupoid. This gives genuine
+    functor-category universal properties while making explicit that no
+    noninvertible resource process has yet been localized.

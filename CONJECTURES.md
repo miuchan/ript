@@ -27,8 +27,16 @@ Segal data, genuine matching fibrations, and the actual completeness map's
 work is broader infrastructure: the pinned Mathlib release has neither a
 simplicial-set weak-equivalence class nor a completed Quillen model structure,
 so a Mathlib-native standard complete-Segal instance cannot yet be stated. A
-localization universal property also remains open research rather than a
-silently assumed proposition.
+localization universal property for the full resource-process bicategory also
+remains open research rather than a silently assumed proposition.
+
+The ordinary groupoidal base case is no longer open: the identity,
+skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's
+`Functor.IsLocalization` predicate at all internal identity morphisms, and
+their functor-category universal properties are compiled. This does not
+invert any previously noninvertible process; the source is already a
+groupoid. The open localization problem is specifically the higher or
+bicategorical localization of the full resource-process theory.
 
 ## Recently discharged: exact finite stochastic Blackwell converse
 

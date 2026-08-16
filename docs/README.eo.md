@@ -123,7 +123,11 @@ internan grupoidon plene fidele en tip-valorajn antaŭfaskojn; interna idento ka
 struktura ekvivalento respondas precize al naturaj transformoj kaj naturaj
 izomorfioj de reprezenteblaj antaŭfaskoj; kaj la esenca bildo formas grupoidon
 kategorie ekvivalentan al la fonto. Tiu `YonedaEnvelope` restas ordinara
-1-kategoria envolvaĵo, ne Rezk-kompletigo.
+1-kategoria envolvaĵo, ne Rezk-kompletigo. Ĝiaj limigita Yoneda-funktoro kaj
+la skeletokompletiga funktoro estas ankaŭ Mathlib-lokalizoj je ĉiuj internaj
+identecmorfioj. Ĉar la fonto jam estas grupoido, tiu ekzakta universala eco ne
+aldonas formalajn inversojn: ĝi estas 1-kategoria lokaliza fundamento, ne la
+ankoraŭ malferma lokalizo de la tuta rimed-proceza dukategorio.
 La interna grupoido nun ankaŭ havas veran simplician nervon. Ĉiu simplaĵo estas
 unike rekonstruebla el sia kunmetebla spino, do la nervo estas pruvite strikta
 Segal, kvazaŭkategorio kaj 2-koskeleta; verticoj, eĝoj kaj kunmetaj
@@ -151,7 +155,8 @@ pruvas ke ĉiu horizontala vico estas Kan-a kaj donas eksplicitan
 nervon-de-kategoria-ekvivalento-atestilon por la efektiva kompleteca mapo. La
 fiksita Mathlib ne havas malfortajn ekvivalentojn de simpliciaj aroj aŭ
 kompletan Quillen-modelan API-on, do Mathlib-denaska norma kompleta-Segal-a
-instanco kaj la universala eco de lokalizo restas malfermitaj.
+instanco kaj la lokaliza universala eco por la tuta rimed-proceza dukategorio
+restas malfermitaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -845,7 +850,21 @@ kategorio `E`:
 ```lean
 yonedaEnvelopeUniversal (E) :
   (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+
+yonedaEnvelopeLocalizationUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌
+    M.InterfaceIdentities.FunctorsInverting E
 ```
+
+La dua ekvivalento estas la efektiva universala eco de lokalizo de Mathlib,
+ne nur propra projekt-loka nomo. `InterfaceIdentities` estas la pinta morfia
+eco sur `M.Object`; ĉar `M.Object` jam estas grupoido, ĝi egalas al la
+izomorfia morfia eco. La identa funktoro, `toSkeletalCompletion M` kaj
+`toYonedaEnvelope M` portas verajn `Functor.IsLocalization`-instancojn, do la
+montritaj antaŭkunmetaj funktoroj estas ekvivalentoj al funktoroj inversigantaj
+ĉiun internan identecon. Tio estas preciza ordinara-kategoria bazo; ĝi ne
+lokalizas ne-inversigeblajn rimedprocezojn kaj ne asertas antaŭfaskan,
+simplician, Rezk-an aŭ pli-altan lokalizon.
 
 La Bulea ekzemplo sendas tensoran simetrion al natura transformo, taksas ĝin ĉe
 la fonta idento por reakiri la originan internan vojon, kaj konstruas la
@@ -1276,6 +1295,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | La Yoneda-enigo faktoriĝas tra sia esenc-bilda envolvaĵo. |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | La interna grupoido kaj ĝia Yoneda-envolvaĵo estas kategorie ekvivalentaj. |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | Funktorkategorioj el la Yoneda-envolvaĵo kaj la origina grupoido estas ekvivalentaj. |
+| `Ript.Univalent.UniverseModel.interfaceIdentities_eq_isomorphisms` | Ĉiuj internaj identecmorfioj estas precize la izomorfioj de la interfaca grupoido. |
+| `Ript.Univalent.UniverseModel.interfaceIdentityLocalizationUniversal` | La identa interfaca funktoro plenumas la Mathlib-lokalizan universalan econ je ĉiuj internaj identecoj. |
+| `Ript.Univalent.UniverseModel.skeletalCompletionLocalizationUniversal` | Antaŭkunmeto per la skeletokompletiga funktoro estas ekvivalento al funktoroj inversigantaj ĉiun internan identecon. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeLocalizationUniversal` | La limigita Yoneda-funktoro plenumas la saman ekzaktan 1-kategorian lokalizan universalan econ. |
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Taksi la Bulean tensoran simetrion ĉe la fonta idento reakiras la originan vojon. |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Izomorfaj Yoneda-envolvaĵaj prezentoj konservas malegalan krudan kodsintakson. |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensora simetrio konservas la ekzaktan interfacan kardinalon. |
@@ -1350,9 +1373,10 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
+| 12, grupoida lokaliza fundamento | Lokalizaj modeloj per idento, skeletokompletigo kaj limigita Yoneda je ĉiuj internaj identecoj, kun Mathlib-universalaj ecoj de funktorkategorioj | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
 | 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, vertikalaj kaj horizontalaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, ekzakta projekt-loka grupoida kompleta-Segal-a pakado, natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj | **PROVED** |
-| 12, pli-alta etendaĵo | Mathlib-denaskaj simpliciaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj pli-alta lokalizo | **OPEN RESEARCH** |
+| 12, pli-alta etendaĵo | Mathlib-denaskaj simpliciaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo de la tuta rimed-proceza dukategorio | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -1375,11 +1399,11 @@ La realigita modelsubteno estas intence mallarĝa:
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
-| Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; ne Rezk-kompletigo |
+| Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; Mathlib-lokalizo je ĉiu interna identeco; ne Rezk-kompletigo |
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
-| Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
+| Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; ekzakta ordinara lokalizo de jam grupoida fonto; nek ekstere univalenta nek Rezk-kompleta |
 | Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kan-a, kvazaŭkategoria kaj 2-koskeleta; eksplicitaj internaj kaj eksteraj kornplenigiloj; sen kompleta-Segal- aŭ Rezk-aserto |
-| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; vertikala kaj horizontala Kan-strukturoj; striktaj eksteraj Segal-ekvivalentoj; veraj randaj kongruaj limesoj kaj fibrecoj | Semantika pruva tavolo | Ekzakta projekt-loka `GroupoidalCompleteSegal`-atestilo estas pruvita; Mathlib-denaskaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo restas malfermitaj |
+| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; vertikala kaj horizontala Kan-strukturoj; striktaj eksteraj Segal-ekvivalentoj; veraj randaj kongruaj limesoj kaj fibrecoj | Semantika pruva tavolo | Ekzakta projekt-loka `GroupoidalCompleteSegal`-atestilo estas pruvita; Mathlib-denaskaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo de la tuta rimed-proceza dukategorio restas malfermitaj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -1398,8 +1422,10 @@ univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalenta
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
 nekomputebla skeletokompletigo establas nur la eksplicite reviziitan
 0/1-tranĉitan fundamenton. La reprezentebla antaŭfaska semantiko kaj la
-Yoneda-esenc-bilda envolvaĵo ankaŭ estas realigitaj, sed restas ordinaraj
-1-kategoriaj konstruoj sen pli-alta lokalizo. Ilia strikta kategoria nervo kaj
+Yoneda-esenc-bilda envolvaĵo ankaŭ estas realigitaj, kaj iliaj identa,
+skeletokompletiga kaj limigita-Yoneda funktoroj plenumas la ordinaran Mathlib-
+lokalizan universalan econ je ĉiuj morfioj de la jam grupoida fonto. Neniu
+lokalizo de la tuta rimed-proceza dukategorio estas asertata. Ilia strikta kategoria nervo kaj
 la nivele grupoida Rezk-klasifika diagramo estas realigitaj kiel veraj
 simpliciaj objektoj kun teoremoj pri strikta Segal, kompleta Kan-kornplenigo,
 kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio. La
@@ -1408,8 +1434,8 @@ inversigeblajn vertikalajn transformojn kaj eksterajn Segal-ekvivalentojn en
 ĉiuj dugradoj, naturan simplaĵ-mapospacan prezenton, verajn randajn kongruajn
 limesojn kaj fibrantajn kongruajn mapojn; la efektiva Rezk-kompleteca komparo
 estas ankaŭ pruvita kiel la nervo de kategoria ekvivalento. Neniu Mathlib-denaska
-malfort-ekvivalenta/norma kompleta-Segal-a instanco aŭ lokaliza rezulto estas
-asertata; la ekzakta projekt-loka grupoida `GroupoidalCompleteSegal`-atestilo
+malfort-ekvivalenta/norma kompleta-Segal-a instanco aŭ pli-alta lokaliza rezulto
+estas asertata; la ekzakta projekt-loka grupoida `GroupoidalCompleteSegal`-atestilo
 estas pruvita. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
@@ -1944,12 +1970,13 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
 - [x] Senelekta objektokompletigo, invarianta malsuprenigo kaj skeleta grupoidokompletigo
 - [x] Plene fidela Yoneda-semantiko kaj la esenc-bilda reprezentebla envolvaĵo
+- [x] Mathlib-lokalizaj universalaj ecoj por la identa, skeletokompletiga kaj limigita-Yoneda funktoroj de la interna grupoido
 - [x] Strikta simplicia nervo, kompleta Kan-kornplenigo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
 - [x] Rezk-klasifika diagramo kun nivelaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, natura vertikal-vertica komparo kaj inversigeblaj vertikalaj transformoj
 - [x] La efektiva Rezk-kompleteca komparo estas nervo de kategoria ekvivalento
 - [x] Natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj
 - [x] Ekzakta projekt-loka grupoida kompleta-Segal-a atestilo kun horizontalaj Kan-vicoj
-- [ ] Mathlib-denaskaj simpliciaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo kun eksplicita pli-alta kohero
+- [ ] Mathlib-denaskaj simpliciaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo de la tuta rimed-proceza dukategorio kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.
