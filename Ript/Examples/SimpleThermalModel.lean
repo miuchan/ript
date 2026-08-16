@@ -1,5 +1,5 @@
 import Mathlib.Tactic.NormNum
-import Ript.Models.Thermal.Monotone
+import Ript.Models.Thermal.KLDivergence
 
 /-!
 # Executable finite thermal example
@@ -17,6 +17,7 @@ namespace Ript.Examples.SimpleThermalModel
 
 open Ript.Models.FiniteDistribution
 open Ript.Models.FiniteStochastic
+open Ript.Models.Probability.FiniteKL
 open Ript.Models.Thermal
 
 /-- Executable two-state carrier. -/
@@ -68,6 +69,34 @@ theorem thermalFlip_involutive :
       (if (!middle) = output then 1 else 0)) =
     if input = output then 1 else 0
   cases input <;> cases output <;> rw [Fintype.sum_bool] <;> norm_num
+
+/-- The equilibrium state's concrete KL athermality is zero. -/
+@[simp]
+theorem fairEquilibrium_klAthermality :
+    klAthermality thermalBit fairEquilibrium = 0 := by
+  change finiteKL fairEquilibrium fairEquilibrium = 0
+  exact finiteKL_self fairEquilibrium
+
+/-- Reversible equilibrium-preserving bit flip leaves concrete KL athermality
+unchanged.  Each inequality comes from the full stochastic KL data-processing
+theorem; involutivity supplies the reverse inequality. -/
+theorem thermalFlip_klAthermality_invariant
+    (state : FinDist thermalBit.system) :
+    klAthermality thermalBit (state.push thermalFlip.channel) =
+      klAthermality thermalBit state := by
+  apply le_antisymm
+  · exact klAthermality_monotone thermalFlip state
+  · have hroundtrip :
+        (state.push thermalFlip.channel).push thermalFlip.channel = state := by
+      rw [← FinDist.push_comp]
+      change state.push
+        (GibbsPreserving.comp thermalFlip thermalFlip).channel = state
+      rw [thermalFlip_involutive]
+      exact FinDist.push_identity state
+    have h := klAthermality_monotone thermalFlip
+      (state.push thermalFlip.channel)
+    rw [hroundtrip] at h
+    exact h
 
 /-- The equilibrium distribution of two independent thermal bits assigns
 probability one quarter to every pair. -/

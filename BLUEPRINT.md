@@ -64,6 +64,8 @@ flowchart LR
   StochasticBits --> KleisliBits
   FiniteKleisli --> Audit
   FiniteStochastic --> StochFunctor["Models.Probability.StochFunctor"]
+  FiniteDistribution --> FiniteKL["Models.Probability.FiniteKL"]
+  StochFunctor --> FiniteKL
   StochFunctor --> StochBits["Examples.StochBits"]
   StochasticBits --> StochBits
   StochFunctor --> Audit
@@ -95,7 +97,9 @@ flowchart LR
   FiniteStochastic --> ThermalEquilibrium
   ThermalEquilibrium --> GibbsPreserving["Models.Thermal.GibbsPreserving"]
   GibbsPreserving --> ThermalMonotone["Models.Thermal.Monotone"]
-  ThermalMonotone --> SimpleThermal["Examples.SimpleThermalModel"]
+  FiniteKL --> ThermalKL["Models.Thermal.KLDivergence"]
+  ThermalMonotone --> ThermalKL
+  ThermalKL --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
@@ -156,7 +160,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
+| 8 | Finite equilibrium systems, Gibbs-preserving processes, generic divergence monotonicity, and concrete finite KL data processing | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1528,8 +1532,18 @@ normalized equilibrium distribution. A `GibbsPreserving X Y` process is an
 exact `FinStoch` channel that maps the equilibrium of `X` exactly to the
 equilibrium of `Y`. These morphisms form a category, independent product is a
 bifunctor, and the distinguished equilibrium is a free preparation from the
-thermal unit. No energy spectrum, inverse temperature, Gibbs exponential, KL
-formula, or analytic limit is assumed at this layer.
+thermal unit. No energy spectrum, inverse temperature, Gibbs exponential, or
+analytic limit is assumed by that operational layer.
+
+The concrete KL layer is separate and semantic. It interprets exact rational
+`FinDist` values as discrete probability measures, defines `finiteKL` by
+specializing Mathlib's `InformationTheory.klDiv`, and takes values in `ℝ≥0∞`
+so that support violations remain genuinely infinite. It then proves the
+bridge between executable pushforward and measure--kernel composition and
+specializes Mathlib's Markov-kernel data-processing theorem to every exact
+finite stochastic channel. Thus KL data processing is a compiled theorem, not
+an axiom or structure premise. Logarithms, integration, and noncomputability
+remain downstream of the exact executable model.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -1652,6 +1666,117 @@ formula, or analytic limit is assumed at this layer.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/GibbsPreserving.lean`.
 
+### `Ript.Models.Probability.FiniteKL.distributionMeasure_push`
+
+- Natural-language statement: interpreting the result of executable finite
+  stochastic evolution as a measure is exactly composition of the interpreted
+  source measure with the interpreted Markov kernel.
+- Lean type:
+
+  ```lean
+  theorem distributionMeasure_push (p : FinDist X)
+      (channel : FinStoch X Y) :
+      toKernel channel ∘ₘ distributionMeasure p =
+        distributionMeasure (p.push channel)
+  ```
+
+- Prerequisite definitions: finite sums of Dirac measures, `FinDist.push`, and
+  the exact-channel `toKernel` interpretation.
+- Status: `PROVED` by singleton-measure extensionality and exact finite-sum
+  cast preservation.
+- Classical choice: inherited from Mathlib's measure and finite-sum proof
+  infrastructure; no interpreted value is returned to executable code.
+- Computable: source evolution is executable; the measure interpretation is a
+  noncomputable semantic boundary.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
+### `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff`
+
+- Natural-language statement: for exact finite distributions, measure
+  absolute continuity is equivalent to containment of nonzero support.
+- Lean type:
+
+  ```lean
+  theorem distributionMeasure_absolutelyContinuous_iff :
+      distributionMeasure p ≪ distributionMeasure q ↔
+        ∀ x, q.prob x = 0 → p.prob x = 0
+  ```
+
+- Prerequisite definitions: discrete distribution measures and Mathlib measure
+  absolute continuity.
+- Status: `PROVED` for arbitrary finite carriers, including exact zero masses.
+- Classical choice: proof-only, inherited from the same measure infrastructure.
+- Computable: the support predicate is decidable on executable rational data;
+  absolute continuity is semantic proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
+### `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff`
+
+- Natural-language statement: concrete finite KL divergence is zero exactly
+  when the two exact finite distributions are equal.
+- Lean type:
+
+  ```lean
+  theorem finiteKL_eq_zero_iff : finiteKL p q = 0 ↔ p = q
+  ```
+
+- Prerequisite definitions: the injective discrete-measure interpretation and
+  Mathlib's converse Gibbs inequality for finite measures.
+- Status: `PROVED`.
+- Classical choice: inherited from the analytic measure theorem only.
+- Computable: no; `finiteKL` contains logarithmic measure semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
+### `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation`
+
+- Natural-language statement: if `p` assigns positive mass to an outcome to
+  which the reference distribution `q` assigns zero mass, then
+  `finiteKL p q = ∞`.
+- Lean type:
+
+  ```lean
+  theorem finiteKL_eq_top_of_support_violation
+      (h : ∃ x, p.prob x ≠ 0 ∧ q.prob x = 0) :
+      finiteKL p q = ∞
+  ```
+
+- Prerequisite lemmas: the finite support characterization of absolute
+  continuity and Mathlib's `klDiv_of_not_ac`.
+- Status: `PROVED`; `finiteKL_pure` specializes it to show that distinct point
+  masses have infinite divergence.
+- Classical choice: proof-only at the measure-theoretic boundary.
+- Computable: the support violation witness is executable data; KL evaluation
+  itself is noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
+### `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing`
+
+- Natural-language statement: applying the same arbitrary exact finite
+  stochastic channel to two distributions cannot increase their finite KL
+  divergence.
+- Lean type:
+
+  ```lean
+  theorem finiteKL_dataProcessing (channel : FinStoch X Y)
+      (p q : FinDist X) :
+      finiteKL (p.push channel) (q.push channel) ≤ finiteKL p q
+  ```
+
+- Prerequisite lemmas: `distributionMeasure_push`, the Markov proof for
+  `toKernel channel`, and Mathlib's `InformationTheory.klDiv_comp_right_le`.
+- Status: `PROVED` for every finite carrier, distribution, and stochastic
+  matrix; no positivity-of-reference shortcut or deterministic-only
+  restriction is used.
+- Classical choice: inherited from Mathlib's KL and kernel data-processing
+  development; no optimizer or chosen representative enters Ript data.
+- Computable: no; the theorem concerns the semantic analytic interpretation.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
 ### `Ript.Models.Thermal.Divergence.athermality_monotone`
 
 - Natural-language statement: for any divergence satisfying stochastic data
@@ -1681,6 +1806,31 @@ formula, or analytic limit is assumed at this layer.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/Monotone.lean`.
 
+### `Ript.Models.Thermal.klAthermality_monotone`
+
+- Natural-language statement: finite KL divergence from the distinguished
+  equilibrium cannot increase under any exact Gibbs-preserving stochastic
+  process.
+- Lean type:
+
+  ```lean
+  theorem klAthermality_monotone (process : GibbsPreserving X Y)
+      (state : FinDist X.system) :
+      klAthermality Y (state.push process.channel) ≤
+        klAthermality X state
+  ```
+
+- Prerequisite definitions: `finiteKLDivergence`, which packages the proved
+  finite KL DPI as a `Divergence`, and generic equilibrium-relative
+  athermality.
+- Status: `PROVED`; `klThermalMonotone` packages the result as a concrete
+  reusable `ThermalMonotone ℝ≥0∞`.
+- Classical choice: inherited only from the measure-theoretic KL proof layer.
+- Computable: equilibrium and channel evolution remain executable; the KL
+  value is a noncomputable analytic semantic value.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/KLDivergence.lean`.
+
 ### `Ript.Examples.SimpleThermalModel.thermalFlip_involutive`
 
 - Natural-language statement: deterministic bit flip is a Gibbs-preserving
@@ -1704,6 +1854,28 @@ formula, or analytic limit is assumed at this layer.
   dependencies; the six accompanying `#eval decide` assertions use ordinary
   executable reduction.
 - Computable: yes.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleThermalModel.lean`.
+
+### `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant`
+
+- Natural-language statement: the reversible equilibrium-preserving Boolean
+  flip leaves concrete KL athermality exactly unchanged.
+- Lean type:
+
+  ```lean
+  theorem thermalFlip_klAthermality_invariant
+      (state : FinDist thermalBit.system) :
+      klAthermality thermalBit (state.push thermalFlip.channel) =
+        klAthermality thermalBit state
+  ```
+
+- Prerequisite lemmas: concrete KL athermality monotonicity in each direction,
+  `thermalFlip_involutive`, and exact distribution push composition.
+- Status: `PROVED` for every exact rational Boolean distribution.
+- Classical choice: proof-only through the concrete KL theorem.
+- Computable: the state round trip is executable; equality of analytic KL
+  values is kernel-checked proof data.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleThermalModel.lean`.
 
@@ -3065,10 +3237,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     independent product is a proved bifunctor whose equilibrium is the product
     distribution. A full packaged symmetric monoidal instance may reuse these
     results later but is not claimed here.
-26. Thermal monotonicity is parameterized by a `Divergence` carrying its own
-    stochastic data-processing proof. This keeps the generic theorem fully
-    proved while leaving finite KL divergence and its nontrivial DPI as future
-    work rather than an axiom or hidden premise.
+26. Thermal monotonicity remains parameterized by a `Divergence` carrying its
+    own stochastic data-processing proof. Finite KL now supplies a concrete
+    instance: exact distributions embed as discrete measures, support
+    violations map to `∞`, and full stochastic DPI follows from Mathlib's
+    Markov-kernel theorem. This analytic interpretation is deliberately
+    noncomputable and downstream of the exact rational core; energy-derived
+    Gibbs states and free-energy identities remain separate future work.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to
