@@ -66,6 +66,13 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/FinStoch.lean` |
 | `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleCausalModel.lean` |
+| `Ript.Models.FiniteDistribution.FinDist.push_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Equilibrium.lean` |
+| `Ript.Models.FiniteDistribution.FinDist.push_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Equilibrium.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.Divergence.athermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monotone.lean` |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -100,6 +107,16 @@ causal theorems report `Classical.choice` and `Quot.sound` through Mathlib's
 generic finite-set, finite-product, and nonnegative-rational proof
 infrastructure; no choice-derived value is used by the evaluator, and the
 two-node example reduces to exact rational results under ordinary `#eval`.
+The finite thermal slice likewise contains only executable finite carriers,
+exact rational equilibrium states, and exact stochastic channels. Its
+Gibbs-preserving category and tensor bifunctor use proof fields only to certify
+that channels preserve the distinguished distributions. The generic
+divergence theorem assumes data processing as an explicit structure field; it
+does not postulate finite KL data processing or manufacture a proof of it. The
+audited thermal theorems inherit `Classical.choice` and `Quot.sound` from the
+same Mathlib finite-sum, category, and nonnegative-rational proof
+infrastructure, while the Boolean thermal example evaluates using ordinary
+kernel reduction and exact arithmetic.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that

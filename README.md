@@ -25,11 +25,15 @@ possibly failing computation categories with explicit step, query, storage,
 and gate resources. It now also provides executable finite DAG causal models,
 parent-local exact mechanisms, normalized observational joints, hard
 interventions, and exact `FinStoch` semantics. General measurable-space causal
-models, the converse Blackwell representation theorem, thermodynamics, quantum
-theory, and higher categories remain research directions.
+models remain open. The next compiled layer adds finite thermal systems with
+specified equilibrium distributions, a category and tensor bifunctor of
+Gibbs-preserving exact channels, free equilibrium preparations, and generic
+divergence monotonicity. The converse Blackwell representation theorem, finite
+KL data processing, energy-derived Gibbs states, quantum theory, and higher
+categories remain research directions.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–7 are implemented and
+> Ript is early-stage research software. Stages 1–8 are implemented and
 > checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
@@ -311,6 +315,36 @@ conditioning with exact checked data. The first model intentionally uses a
 common finite value type for every node; heterogeneous node carriers and
 general do-calculus remain future extensions.
 
+### 11. Finite thermal systems and Gibbs-preserving processes
+
+`ThermalObject` packages an executable finite state space with one exact
+normalized `EquilibriumState`. The equilibrium distribution is supplied
+operationally: this first layer does not pretend that an energy spectrum,
+inverse temperature, or exponential Gibbs formula has already been derived.
+Exact distributions evolve through `FinStoch` channels using `FinDist.push`,
+and independent systems use product distributions via `FinDist.tensor`.
+
+A `GibbsPreserving X Y` process is a finite stochastic channel `T` satisfying
+`T(γX) = γY`. Ript proves that identities are Gibbs-preserving, that these
+processes are closed under composition, and that they form a category. Tensor
+composition preserves product equilibria and satisfies identity and
+interchange, yielding an explicit bifunctor. The distinguished equilibrium of
+every object is also constructed as a free state from the thermal tensor unit.
+
+The divergence layer is assumption-transparent. `Divergence Value` contains a
+state comparison together with its proved stochastic data-processing law. For
+every such divergence, Ript proves
+
+```text
+D(Tp ‖ γY) ≤ D(p ‖ γX)
+```
+
+for every Gibbs-preserving `T`, and packages this result as a
+`ThermalMonotone`. This is a generic theorem, not an unproved assertion that KL
+divergence satisfies data processing. A concrete finite KL definition and its
+DPI, energy functions, temperatures, Gibbs formulas, free energy, and
+Landauer-type inequalities remain separate research obligations.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -376,6 +410,13 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | Every hard-intervened joint remains normalized. |
 | `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | Interventional states factor into unchanged conditionals and Dirac target factors. |
 | `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | The Boolean chain example distinguishes intervention from observation exactly. |
+| `Ript.Models.FiniteDistribution.FinDist.push_comp` | Distribution evolution respects stochastic composition. |
+| `Ript.Models.FiniteDistribution.FinDist.push_tensor` | Independent evolution commutes with product distributions. |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_id` | Tensor preserves thermal identity processes. |
+| `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | Thermal tensor satisfies interchange with composition. |
+| `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Every distinguished equilibrium is a free preparation. |
+| `Ript.Models.Thermal.Divergence.athermality_monotone` | Every divergence with DPI yields a Gibbs-preserving thermal monotone. |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -399,7 +440,8 @@ finished physical theory.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
-| 8–11 | Thermal, quantum, bicategorical, and univalent layers | **OPEN RESEARCH** |
+| 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | **PROVED** |
+| 9–11 | Quantum, bicategorical, and univalent layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -416,6 +458,7 @@ Implemented model support is intentionally narrow:
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
+| Finite thermal systems | Gibbs-preserving category | Product bifunctor | Executable | Specified exact equilibrium; free equilibrium states and generic DPI lifting |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -424,7 +467,8 @@ Bayes-risk, resource, and semantic-value theorems. The converse finite
 Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
-interfaces, thermal structure, quantum
+interfaces, concrete finite KL data processing, energy-derived Gibbs states,
+quantum
 channels, and univalent or higher-categorical structure are **not implemented**.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
@@ -473,6 +517,10 @@ flowchart LR
   CM --> DO["Hard mechanism-replacement interventions"]
   DO --> IS["Exact interventional FinStoch states"]
   CK --> IS
+  FD --> TE["Specified finite equilibrium states"]
+  CK --> GP["Gibbs-preserving channel category"]
+  TE --> GP
+  GP --> TM["Generic divergence thermal monotone"]
 ```
 
 | Layer | Main modules | Responsibility |
@@ -481,8 +529,8 @@ flowchart LR
 | Process capabilities | `Ript.Core.*` | Sequential, tensor, structural cost laws, and post-processing simulation |
 | Executable syntax | `Ript.Syntax.*` | Typed expressions, recursive cost, derivations |
 | Semantics | `Ript.Semantics.*` | Interpretations, evaluation, soundness, completeness |
-| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, decisions, total/partial computation, and finite causal mechanisms |
-| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, exact decision values, and interventions |
+| Concrete models | `Ript.Models.*` | Deterministic functions, finite probability, decisions, total/partial computation, finite causal mechanisms, and finite thermal systems |
+| Executable examples | `Ript.Examples.*` | Computed behavior, budgets, rational probabilities, exact decision values, interventions, and equilibrium-preserving processes |
 | Audit surface | `Ript.Audit.*` | Declaration lint and kernel-assumption reporting |
 
 The sequential core remains independently usable. The symmetric monoidal layer
@@ -639,6 +687,13 @@ the upstream root remains fair and `(false, true)` receives exact mass `1/2`.
 Five `#eval decide` contracts check normalization, observational support,
 forced-value exclusion, and upstream invariance.
 
+`Ript/Examples/SimpleThermalModel.lean` equips a Boolean system with the exact
+uniform equilibrium distribution. Deterministic bit flip preserves that
+equilibrium and is involutive under Gibbs-preserving composition. The example
+also executes the free equilibrium preparation and product equilibrium; six
+`#eval decide` contracts check exact normalization, channel entries, evolved
+mass, free-state preparation, product mass `1/4`, and double-flip identity.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -663,6 +718,8 @@ import Ript.Models.Decision.SemanticValue
 import Ript.Models.Computation.Partial
 -- or, for finite DAGs, hard interventions, and exact stochastic states:
 import Ript.Models.Causal.FinStoch
+-- or, for finite Gibbs-preserving processes and generic thermal monotones:
+import Ript.Models.Thermal.Monotone
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -676,7 +733,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, and finite causal models |
+| [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, and finite thermal models |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -717,9 +774,10 @@ force-pushes and branch deletion are disabled.
 6. **Treat assumptions as versioned API surface.** A theorem acquiring a new
    axiom is a gate failure, not a footnote discovered later.
 7. **Distinguish implementation from aspiration.** The finite discrete `Stoch`
-   image, exact finite decision layer, and homogeneous finite DAG causal layer
-   are implemented; converse representation, general stochastic and causal,
-   thermal, quantum, and higher layers remain visibly marked as open research.
+   image, exact finite decision layer, homogeneous finite DAG causal layer, and
+   specified-equilibrium finite thermal layer are implemented; converse
+   representation, general stochastic and causal, analytic thermodynamic,
+   quantum, and higher layers remain visibly marked as open research.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -731,6 +789,10 @@ force-pushes and branch deletion are disabled.
 11. **Do not confuse intervention with conditioning.** A hard intervention
     replaces a local mechanism before the joint is regenerated; observational
     conditioning is a distinct operation and is not used as a surrogate.
+12. **Do not smuggle in thermodynamic analysis.** A specified equilibrium is
+    operational data, and a generic divergence theorem consumes an explicit
+    DPI proof. Energy-derived Gibbs formulas, KL data processing, and free
+    energy remain named obligations rather than hidden assumptions.
 
 ## Roadmap
 
@@ -764,6 +826,10 @@ updated assumption audit.
 - [x] Topologically certified finite DAGs and parent-local exact mechanisms
 - [x] Normalized observational joints, hard interventions, intervention laws, and `FinStoch` states
 - [x] Executable Boolean causal-chain example distinguishing `do` from observation
+- [x] Exact finite equilibrium systems and stochastic state evolution
+- [x] Gibbs-preserving category, tensor bifunctor, and free equilibrium states
+- [x] Generic divergence-to-thermal-monotone theorem with explicit DPI premise
+- [x] Executable uniform thermal-bit example with equilibrium-preserving flip
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -776,7 +842,8 @@ updated assumption audit.
 - [ ] Converse finite Blackwell--Sherman--Stein representation theorem
 - [ ] General measurable-space decision problems beyond exact finite data
 - [ ] Rich computational cost models and operationally validated reduction costs
-- [ ] Thermal/resource-theoretic models
+- [ ] Concrete finite KL divergence and a proved data-processing inequality
+- [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
 - [ ] Quantum-channel models
 - [ ] Carefully isolated univalent or higher-categorical layers
 
@@ -826,7 +893,12 @@ equivalence with the finite-carrier Kleisli category of exact finite
 distributions and gives a faithful functor from them into Mathlib's
 measure-theoretic category `Stoch`, preserving deterministic channels and
 tensor up to a canonical comparison isomorphism. Arbitrary measurable-space
-stochastic models, thermal models, and quantum channels remain roadmap items.
+stochastic models and quantum channels remain roadmap items. Ript now also
+supports finite systems with a specified exact equilibrium distribution,
+Gibbs-preserving channel composition and tensor, free equilibrium states, and
+generic divergence monotonicity whenever a divergence supplies a proved DPI.
+It does not yet derive equilibria from energies or provide finite KL and free
+energy theorems.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite

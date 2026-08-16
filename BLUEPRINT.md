@@ -83,6 +83,12 @@ flowchart LR
   FiniteStochastic --> CausalFinStoch
   CausalFinStoch --> SimpleCausal["Examples.SimpleCausalModel"]
   SimpleCausal --> Audit
+  FiniteDistribution --> ThermalEquilibrium["Models.Thermal.Equilibrium"]
+  FiniteStochastic --> ThermalEquilibrium
+  ThermalEquilibrium --> GibbsPreserving["Models.Thermal.GibbsPreserving"]
+  GibbsPreserving --> ThermalMonotone["Models.Thermal.Monotone"]
+  ThermalMonotone --> SimpleThermal["Examples.SimpleThermalModel"]
+  SimpleThermal --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -100,7 +106,8 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8-11 | Thermal, quantum, bicategorical, and univalent layers | OPEN_RESEARCH |
+| 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
+| 9-11 | Quantum, bicategorical, and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -1266,6 +1273,193 @@ exact rational distributions and stochastic states in `FinStoch`.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleCausalModel.lean`.
 
+## Stage-8 thermal flagship theorem records
+
+The first thermodynamic model is deliberately finite and operational. A
+`ThermalObject` consists of an executable finite system and one exact
+normalized equilibrium distribution. A `GibbsPreserving X Y` process is an
+exact `FinStoch` channel that maps the equilibrium of `X` exactly to the
+equilibrium of `Y`. These morphisms form a category, independent product is a
+bifunctor, and the distinguished equilibrium is a free preparation from the
+thermal unit. No energy spectrum, inverse temperature, Gibbs exponential, KL
+formula, or analytic limit is assumed at this layer.
+
+### `Ript.Models.FiniteDistribution.FinDist.push_comp`
+
+- Natural-language statement: evolving a finite distribution through a
+  composite stochastic channel is exactly the same as evolving it through the
+  two channels in sequence.
+- Lean type:
+
+  ```lean
+  theorem FinDist.push_comp (p : FinDist X)
+      (f : FinStoch X Y) (g : FinStoch Y Z) :
+      p.push (FinStoch.comp f g) = (p.push f).push g
+  ```
+
+- Prerequisite definitions: exact finite-distribution evolution and
+  Chapman--Kolmogorov channel composition.
+- Prerequisite lemmas: distributivity over finite sums, `Finset.sum_comm`, and
+  associativity in `ℚ≥0`.
+- Status: `PROVED`.
+- Classical choice: yes through generic finite-sum proof infrastructure; the
+  distribution and channel calculations use explicit executable data.
+- Computable: yes; both sides reduce to the same finite exact rational sum.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Equilibrium.lean`.
+
+### `Ript.Models.FiniteDistribution.FinDist.push_tensor`
+
+- Natural-language statement: independently evolving two product states is
+  exactly the product of their separately evolved states.
+- Lean type:
+
+  ```lean
+  theorem FinDist.push_tensor (p : FinDist W) (q : FinDist Y)
+      (f : FinStoch W X) (g : FinStoch Y Z) :
+      (p.tensor q).push (FinStoch.tensor f g) =
+        (p.push f).tensor (q.push g)
+  ```
+
+- Prerequisite definitions: product distributions, product channels, and
+  finite stochastic evolution.
+- Prerequisite lemmas: product finite-sum decomposition and
+  `Fintype.sum_mul_sum`.
+- Status: `PROVED`.
+- Classical choice: yes through Mathlib's finite-product proof
+  infrastructure; all state and channel entries remain executable.
+- Computable: yes; each side evaluates to exact products of finite sums.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Equilibrium.lean`.
+
+### `Ript.Models.Thermal.GibbsPreserving.tensor_id`
+
+- Natural-language statement: tensoring two thermal identity processes gives
+  the identity on the product thermal system.
+- Lean type:
+
+  ```lean
+  theorem GibbsPreserving.tensor_id (X Y : ThermalObject) :
+      GibbsPreserving.tensor (GibbsPreserving.identity X)
+        (GibbsPreserving.identity Y) =
+      GibbsPreserving.identity (ThermalObject.tensor X Y)
+  ```
+
+- Prerequisite definitions: `ThermalObject.tensor`, Gibbs-preserving identity,
+  and product of Gibbs-preserving channels.
+- Prerequisite lemmas: `FinStoch.tensor_id` and morphism extensionality.
+- Status: `PROVED`.
+- Classical choice: yes through imported finite stochastic proof
+  infrastructure; no choice constructs the identity channel.
+- Computable: yes; underlying channel entries are executable zero-or-one
+  probabilities.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/GibbsPreserving.lean`.
+
+### `Ript.Models.Thermal.GibbsPreserving.tensor_comp`
+
+- Natural-language statement: independent tensor of Gibbs-preserving
+  processes satisfies interchange with serial composition.
+- Lean type:
+
+  ```lean
+  theorem GibbsPreserving.tensor_comp
+      (f : GibbsPreserving A B) (f' : GibbsPreserving B C)
+      (g : GibbsPreserving D E) (g' : GibbsPreserving E F) :
+      GibbsPreserving.tensor (GibbsPreserving.comp f f')
+          (GibbsPreserving.comp g g') =
+        GibbsPreserving.comp (GibbsPreserving.tensor f g)
+          (GibbsPreserving.tensor f' g')
+  ```
+
+- Prerequisite definitions: the Gibbs-preserving category and product
+  bifunctor candidate.
+- Prerequisite lemmas: `FinDist.push_tensor`, preservation of each source
+  equilibrium, and `FinStoch.tensor_comp`.
+- Status: `PROVED`; together with `tensor_id`, this packages
+  `GibbsPreserving.tensorFunctor`.
+- Classical choice: yes through finite-sum and category proof infrastructure.
+- Computable: yes for every underlying process; equality is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/GibbsPreserving.lean`.
+
+### `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free`
+
+- Natural-language statement: the distinguished equilibrium distribution of
+  every thermal object is a free preparation from the thermal tensor unit.
+- Lean type:
+
+  ```lean
+  theorem GibbsPreserving.equilibrium_is_free (X : ThermalObject) :
+      ThermalObject.unit.equilibrium.push
+        (GibbsPreserving.equilibriumFreeState X).channel = X.equilibrium
+  ```
+
+- Prerequisite definitions: the unique unit equilibrium, distribution-as-state
+  channel, `FreeState`, and `equilibriumFreeState`.
+- Prerequisite lemmas: `FinDist.pure_unit_push_toState`.
+- Status: `PROVED`.
+- Classical choice: reported through imported finite proof infrastructure;
+  preparation itself reads the supplied equilibrium mass function directly.
+- Computable: yes; the free state channel is executable exact data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/GibbsPreserving.lean`.
+
+### `Ript.Models.Thermal.Divergence.athermality_monotone`
+
+- Natural-language statement: for any divergence satisfying stochastic data
+  processing, divergence of a state from equilibrium cannot increase under a
+  Gibbs-preserving process.
+- Lean type:
+
+  ```lean
+  theorem Divergence.athermality_monotone
+      (divergence : Divergence Value)
+      (process : GibbsPreserving X Y) (state : FinDist X.system) :
+      divergence.athermality Y (state.push process.channel) ≤
+        divergence.athermality X state
+  ```
+
+- Prerequisite definitions: preorder-valued `Divergence`, its explicit
+  `dataProcessing` field, equilibrium-relative `athermality`, and
+  `GibbsPreserving.preserves_equilibrium`.
+- Prerequisite lemmas: only the supplied data-processing proof and exact
+  equilibrium preservation.
+- Status: `PROVED`; `Divergence.toThermalMonotone` packages the theorem as a
+  `ThermalMonotone`.
+- Classical choice: yes only through imported finite distribution and channel
+  interfaces; the proof does not choose any optimizer or analytic witness.
+- Computable: conditional on the supplied divergence's `measure`; the lifting
+  itself is a direct executable function and proof field.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Monotone.lean`.
+
+### `Ript.Examples.SimpleThermalModel.thermalFlip_involutive`
+
+- Natural-language statement: deterministic bit flip is a Gibbs-preserving
+  process for the uniform two-state equilibrium, and composing two flips gives
+  exactly the thermal identity.
+- Lean type:
+
+  ```lean
+  theorem thermalFlip_involutive :
+      GibbsPreserving.comp thermalFlip thermalFlip =
+        GibbsPreserving.identity thermalBit
+  ```
+
+- Prerequisite definitions: the uniform exact equilibrium, deterministic
+  Dirac flip channel, and its proved equilibrium preservation.
+- Prerequisite lemmas: extensionality for Gibbs-preserving morphisms and
+  `FinStoch` channels; the four Boolean entries are discharged by exact kernel
+  arithmetic.
+- Status: `PROVED`.
+- Classical choice: reported through generic finite stochastic proof
+  dependencies; the six accompanying `#eval decide` assertions use ordinary
+  executable reduction.
+- Computable: yes.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleThermalModel.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -1348,3 +1542,16 @@ exact rational distributions and stochastic states in `FinStoch`.
     from conditioning an observational joint. Local mechanisms and normalized
     observational/interventional states receive explicit exact `FinStoch`
     interpretations; no generic do-calculus completeness claim is made.
+24. A finite `ThermalObject` carries its equilibrium distribution as explicit
+    operational data. The name does not imply that an energy function,
+    inverse temperature, or exponential Gibbs formula has already been
+    derived; those are later refinements that can instantiate this interface.
+25. `GibbsPreserving` is a proof-carrying wrapper around `FinStoch`, not a new
+    probability theory. Identity and composition make a genuine category, and
+    independent product is a proved bifunctor whose equilibrium is the product
+    distribution. A full packaged symmetric monoidal instance may reuse these
+    results later but is not claimed here.
+26. Thermal monotonicity is parameterized by a `Divergence` carrying its own
+    stochastic data-processing proof. This keeps the generic theorem fully
+    proved while leaving finite KL divergence and its nontrivial DPI as future
+    work rather than an axiom or hidden premise.
