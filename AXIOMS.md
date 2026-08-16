@@ -270,6 +270,15 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.interfaceIdentities_eq_isomorphisms` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.interfaceIdentities_isInvertedBy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.interfaceIdentityStrictUniversalProperty` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.interfaceIdentityLocalizationUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.toSkeletalCompletionIsEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.toSkeletalCompletionIsLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.skeletalCompletionLocalizationUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.toYonedaEnvelopeIsLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeLocalizationUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Localization.lean` |
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentPresheaf.lean` |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentPresheaf.lean` |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | `[propext]` | `Ript/Examples/UnivalentPresheaf.lean` |
@@ -574,6 +583,16 @@ and no choice-derived object is returned to the computable core. The envelope
 is still an ordinary 1-category: it is not a Rezk completion, does not make
 isomorphic presheaves externally equal, and supplies no higher path or Segal
 coherence.
+The localization refinement uses Mathlib's existing
+`Functor.IsLocalization` predicate. Since the internal interface category is
+already a groupoid, its top morphism property equals its isomorphisms and
+every outgoing functor inverts it. The identity, skeletal-completion, and
+restricted-Yoneda functors are localization models, and Mathlib's canonical
+`Localization.functorEquivalence` supplies their fixed-target universal
+properties. All nine audited declarations report exactly `[propext,
+Classical.choice, Quot.sound]`; this ordinary semantic theorem introduces no
+project axiom and no runtime data. It does not prove localization of any
+noninvertible resource process or the full model bicategory.
 The simplicial layer then specializes Mathlib's ordinary categorical nerve to
 the internal groupoid. Its explicit spine equivalence proves the strict Segal
 condition; Mathlib derives a quasicategory instance and 2-coskeletality, and

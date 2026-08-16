@@ -22,6 +22,7 @@ import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
 import Ript.Univalent.ClassifyingDiagram
+import Ript.Univalent.Localization
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Decision.RationalSeparation
 import Ript.Models.Probability.FiniteKL
@@ -306,6 +307,15 @@ set_option autoImplicit false
 #print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization
 #print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence
 #print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal
+#print axioms Ript.Univalent.UniverseModel.interfaceIdentities_eq_isomorphisms
+#print axioms Ript.Univalent.UniverseModel.interfaceIdentities_isInvertedBy
+#print axioms Ript.Univalent.UniverseModel.interfaceIdentityStrictUniversalProperty
+#print axioms Ript.Univalent.UniverseModel.interfaceIdentityLocalizationUniversal
+#print axioms Ript.Univalent.UniverseModel.toSkeletalCompletionIsEquivalence
+#print axioms Ript.Univalent.UniverseModel.toSkeletalCompletionIsLocalization
+#print axioms Ript.Univalent.UniverseModel.skeletalCompletionLocalizationUniversal
+#print axioms Ript.Univalent.UniverseModel.toYonedaEnvelopeIsLocalization
+#print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeLocalizationUniversal
 #print axioms Ript.Examples.UnivalentPresheaf.swapTransformation_component
 #print axioms Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality
 #print axioms Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality

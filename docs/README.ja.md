@@ -75,6 +75,10 @@ presheaf への道筋にも、コンパイル済みの第一層が加わりま�
 型値 presheaf へ充満忠実に埋め込み、内部同一性と構造同値は、可表 presheaf 間の自然変換と自然同型に
 それぞれ正確に対応します。可表対象の本質像は元の groupoid と圏同値な groupoid を形成します。
 この `YonedaEnvelope` は通常の 1-圏論的包絡であり、Rezk completion ではありません。
+制限 Yoneda 関手と skeleton completion 関手は、すべての内部同一射に関する Mathlib の
+localization でもあることが証明されました。始域はすでに groupoid なので、この正確な普遍性は
+新しい逆射を追加しません。これは 1-圏論的 localization の基礎であり、未解決の資源プロセス双圏
+全体の localization ではありません。
 内部 groupoid には、真正な simplicial nerve も加わりました。各 simplex は合成可能な spine から
 一意に復元されるため、この nerve は strict Segal、quasicategory、2-coskeletal であると証明済みです。
 頂点・辺・合成 2-simplex は、インターフェース・内部同一性・path 合成を正確に復元し、その homotopy
@@ -90,7 +94,7 @@ Rezk への次の基礎もコンパイル済みです。真正な classifying di
 model structure はまだ存在しません。これらの結果は、各水平行の Kan 性と実際の完備性写像の
 圏同値 nerve witness を含む、正確なプロジェクト内 `SSet.GroupoidalCompleteSegal` 構造にまとめられました。
 固定 Mathlib には simplicial set の弱同値や完成した Quillen model API がないため、Mathlib ネイティブな
-標準 complete-Segal-space instance と localization の普遍性は未解決です。
+標準 complete-Segal-space instance と資源プロセス双圏全体の localization の普遍性は未解決です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
@@ -637,7 +641,15 @@ groupoid だからです。内部同一性の合成は自然変換の合成へ�
 ```lean
 yonedaEnvelopeUniversal (E) :
   (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+
+yonedaEnvelopeLocalizationUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌
+    M.InterfaceIdentities.FunctorsInverting E
 ```
+
+第二の同値は Mathlib の標準 localization 普遍性です。`InterfaceIdentities` は `M.Object` 上の
+top 射性質で、その isomorphisms と正確に等しいことが証明済みです。
+`toSkeletalCompletion M` と `toYonedaEnvelope M` は実際の `Functor.IsLocalization` instance を持ちます。
 
 が成り立ちます。Boolean 例は tensor 対称性を自然変換へ写し、それを始域の恒等射で評価して元の内部
 path を復元します。また、元の code が不等なままで、対応する包絡対象が同型であることも構成します。
@@ -646,7 +658,8 @@ path を復元します。また、元の code が不等なままで、対応す
 `Yoneda.fullyFaithful` 自体が `[propext, Classical.choice, Quot.sound]` と監査され、本質像の圏同値も
 可表対象の witness を選択します。その値が実行可能構文や有限モデルへ流入することはありません。
 この包絡は同型な presheaf を外部 Lean 等式にせず、それ自体では complete Segal 条件、高次
-localization、外部 univalence のいずれも与えません。
+localization、外部 univalence のいずれも与えません。上の通常 localization は、すでに groupoid である
+始域の全射を反転するだけで、presheaf・Rezk・資源プロセス localization ではありません。
 
 ### 16. Kan simplicial nerve
 
@@ -1035,6 +1048,10 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | Yoneda 埋め込みは本質像の包絡を経由して分解します。 |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | 内部 groupoid と Yoneda 包絡は圏同値です。 |
 | `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | Yoneda 包絡と元の groupoid から出る関手圏は同値です。 |
+| `Ript.Univalent.UniverseModel.interfaceIdentities_eq_isomorphisms` | すべての内部同一射は interface groupoid の同型射と正確に一致します。 |
+| `Ript.Univalent.UniverseModel.interfaceIdentityLocalizationUniversal` | interface 恒等関手は全内部同一射に関する Mathlib localization 普遍性を満たします。 |
+| `Ript.Univalent.UniverseModel.skeletalCompletionLocalizationUniversal` | skeleton completion との前合成は全内部同一射を反転する関手圏への同値です。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeLocalizationUniversal` | 制限 Yoneda 関手は同じ正確な 1-圏論的 localization 普遍性を満たします。 |
 | `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Boolean tensor 対称性を始域の恒等射で評価すると元の path を復元します。 |
 | `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Yoneda 包絡で同型な表示でも、元の code 構文は不等のままです。 |
 | `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | tensor 対称性はインターフェースの正確な濃度を保存します。 |
@@ -1107,9 +1124,10 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 11 | 公理不要の深いインターフェース/プロセス構文、商 groupoid、内部 univalence、健全性、indiscernibility | **PROVED** |
 | 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
 | 12、presheaf 基礎 | 充満忠実な Yoneda 意味論、可表対象での同一性/同値対応、本質像包絡 | **PROVED** |
+| 12、groupoidal localization 基礎 | 恒等・skeleton completion・制限 Yoneda 関手による全内部同一射の Mathlib localization model と関手圏普遍性 | **PROVED** |
 | 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
 | 12、classifying-diagram 基礎 | Rezk classifying diagram、垂直・水平の groupoid/Kan 構造、厳密な外側 Segal 同値、正確なプロジェクト内 groupoidal complete-Segal パッケージ、自然な simplex-mapping 表示、真正な境界 matching limit と matching-map fibration | **PROVED** |
-| 12、高次拡張 | Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと高次 localization | **OPEN RESEARCH** |
+| 12、高次拡張 | Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと資源プロセス双圏全体の localization | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -1132,11 +1150,11 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
-| Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；代表選択あり；Rezk completion ではない |
+| Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；全内部同一射に関する Mathlib localization；Rezk completion ではない |
 | 内部 presheaf universe | 型値 presheaf 間の自然変換 | 可表対象の作用 | 意味論的証明層 | Yoneda は充満忠実；同一性/同値は可表自然変換/自然同型に対応 |
-| Yoneda 包絡 | 可表対象の本質像から出る関手 | 圏同値を通して構造を継承 | 非計算的な本質像意味論 | 元の groupoid と圏同値；外部 univalence も Rezk 完備性もない |
+| Yoneda 包絡 | 可表対象の本質像から出る関手 | 圏同値を通して構造を継承 | 非計算的な本質像意味論 | 元の groupoid と圏同値で、その既に可逆な全射を localization；外部 univalence も Rezk 完備性もない |
 | Simplicial interface nerve | Simplicial 面・退化写像；homotopy category | Strict Segal spine 合成 | 意味論的証明層 | Kan、quasicategory、2-coskeletal；inner/outer horn filler を明示；complete-Segal/Rezk の主張なし |
-| Rezk classifying diagram | 合成可能な射列の外側 simplicial 圏とレベルごとの nerve | 射列間の自然変換；垂直・水平 Kan；厳密な外側 Segal 同値；真正な境界 matching limit と fibration | 意味論的証明層 | 正確なプロジェクト内 `GroupoidalCompleteSegal` witness は証明済み；Mathlib ネイティブな弱同値・標準 complete-Segal パッケージと localization は未解決 |
+| Rezk classifying diagram | 合成可能な射列の外側 simplicial 圏とレベルごとの nerve | 射列間の自然変換；垂直・水平 Kan；厳密な外側 Segal 同値；真正な境界 matching limit と fibration | 意味論的証明層 | 正確なプロジェクト内 `GroupoidalCompleteSegal` witness は証明済み；Mathlib ネイティブな弱同値・標準 complete-Segal パッケージと資源プロセス双圏全体の localization は未解決 |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
@@ -1150,14 +1168,15 @@ complete-Segal/Rezk-complete な
 ユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
 選択不要の対象 completion と非計算的 skeleton completion は、明示的に監査された 0/1-truncated 基礎だけを
-確立します。可表 presheaf 意味論と Yoneda 本質像包絡も実装済みですが、高次 localization を持たない
-通常の 1-圏論的構成にとどまります。それらの厳密な圏論的 nerve とレベルごとに groupoid 化された Rezk
+確立します。可表 presheaf 意味論と Yoneda 本質像包絡も実装済みで、恒等・skeleton completion・制限 Yoneda
+関手は、既に groupoid である源の全射について通常の Mathlib localization 普遍性を満たします。資源プロセス
+双圏全体の localization は主張しません。それらの厳密な圏論的 nerve とレベルごとに groupoid 化された Rezk
 classifying diagram は真正な simplicial 対象として実装され、完全な Kan horn filling、strict Segal、
 quasicategory、2-coskeletal、homotopy-category 復元が証明済みです。Classifying diagram にはさらに自然な
 垂直頂点比較、可逆垂直変換、全双次数での外側 Segal 同値を持ち、実際の Rezk 完備性比較も圏同値の
 nerve として証明済みです。自然な simplex-mapping 表示、真正な boundary matching limit、fibrant matching
 map も証明済みで、正確なプロジェクト内 groupoidal `GroupoidalCompleteSegal` witness にまとめられています。
-Mathlib ネイティブな弱同値・標準 complete-Segal instance と localization は未証明です。モデル双圏は固定資源型と統一 universe の範囲で実装され、
+Mathlib ネイティブな弱同値・標準 complete-Segal instance と高次 localization は未証明です。モデル双圏は固定資源型と統一 universe の範囲で実装され、
 これらの層は `(∞,1)`-圏や
 Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
@@ -1638,12 +1657,13 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
 - [x] 選択不要の対象 completion、不変量の降下、skeletal groupoid completion
 - [x] 充満忠実な Yoneda 意味論と可表対象の本質像包絡
+- [x] 恒等・skeleton・制限 Yoneda 関手による全内部同一射の Mathlib localization 普遍性
 - [x] 厳密 simplicial nerve、完全な Kan horn filling、正確な Segal 再構成、quasicategory、2-coskeletality、homotopy-category 復元
 - [x] Rezk classifying diagram、レベルごとの groupoid/Kan 構造、厳密な外側 Segal 同値、自然な垂直頂点比較、可逆垂直変換
 - [x] 実際の Rezk 完備性比較は圏同値の nerve
 - [x] 自然な simplex-mapping 表示、真正な境界 matching limit、matching-map fibration
 - [x] 水平 Kan 行を持つ正確なプロジェクト内 groupoidal complete-Segal witness
-- [ ] Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと、明示的高次 coherence を持つ localization
+- [ ] Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと、明示的高次 coherence を持つ資源プロセス双圏全体の localization
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
 破壊的変更を明記する必要があります。
