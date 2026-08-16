@@ -67,8 +67,12 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_withDensity_densityRatio` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_sum_of_absolutelyContinuous` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
 | `Ript.Core.Simulates.trans` | `none` | `Ript/Core/Simulation.lean` |
 | `Ript.Core.SimulatesWithin.trans` | `[propext, Quot.sound]` | `Ript/Core/Simulation.lean` |
@@ -103,6 +107,7 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monotone.lean` |
 | `Ript.Models.Thermal.klAthermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/KLDivergence.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
@@ -245,8 +250,10 @@ field. The separate finite-KL semantic layer now discharges that field rather
 than assuming it: it embeds exact distributions as discrete probability
 measures, specializes Mathlib's extended-nonnegative-real KL divergence, and
 derives full finite stochastic data processing from Mathlib's Markov-kernel
-theorem. This keeps support violations at `∞` and confines logarithms and
-measure-theoretic noncomputability to the semantic boundary. Its audited
+theorem. It also identifies the discrete Radon--Nikodym density with the exact
+rational mass ratio, derives the finite f-divergence and classical logarithmic
+sum formulas, and characterizes `∞` exactly by support violation. This confines
+logarithms and measure-theoretic noncomputability to the semantic boundary. Its audited
 theorems inherit `Classical.choice` and `Quot.sound` from Mathlib's measure,
 integration, finite-sum, category, and nonnegative-rational infrastructure;
 there is no project axiom and no choice-derived data flows back into the exact

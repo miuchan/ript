@@ -417,7 +417,12 @@ rational `FinDist` as its discrete probability measure and specializes
 Mathlib's measure-theoretic `InformationTheory.klDiv`. Its codomain is
 `ℝ≥0∞`: a positive mass against a zero reference mass therefore gives `∞`, and
 distinct point masses are proved to have infinite divergence. The semantic
-embedding is injective, executable pushforward agrees exactly with composition
+embedding is injective. Under support containment, the formalization identifies
+the Radon--Nikodym density pointwise as the exact rational mass ratio, derives
+both the extended-real finite f-divergence sum and the classical real formula
+`sum_x p(x) log (p(x) / q(x))`, and proves that `∞` occurs exactly at a support
+violation. The uniform Boolean thermal example instantiates the real formula
+for every state. Executable pushforward agrees exactly with composition
 by the interpreted Markov kernel, and Mathlib's kernel-level theorem yields
 
 ```text
@@ -800,11 +805,14 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Every divergence with DPI yields a Gibbs-preserving thermal monotone. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | Executable distribution pushforward agrees with measure–kernel composition. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | Finite absolute continuity is exactly nonzero-support containment. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_sum_of_absolutelyContinuous` | Finite KL is the explicit finite f-divergence sum under support containment. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport` | Full-support references give the classical real `sum p log (p / q)` formula. |
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | Finite KL vanishes exactly for equal exact distributions. |
-| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | Positive mass against zero reference mass forces infinite KL. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | Infinite KL is equivalent to a positive mass against zero reference mass. |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Every exact finite stochastic channel satisfies KL data processing. |
 | `Ript.Models.Thermal.klAthermality_monotone` | Concrete finite KL from equilibrium is Gibbs-preserving monotone. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
+| `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality is the explicit two-term logarithmic sum. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Reversible thermal bit flip preserves KL athermality exactly. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Every finite Kraus sum preserves complex operator positivity. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus completeness implies exact trace preservation. |

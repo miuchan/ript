@@ -303,7 +303,11 @@ divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较�
 `Ript.Models.Probability.FiniteKL` 把每个精确有理 `FinDist` 嵌入其离散概率测度，并专门化
 Mathlib 的测度论 `InformationTheory.klDiv`。值域采用 `ℝ≥0∞`，所以第一分布在参考质量为零
 之处具有正质量时，结果严格等于 `∞`；不同点质量的 divergence 也已证明为无限。语义嵌入是
-单射，可执行 pushforward 精确等于解释后 Markov kernel 的测度复合，并由 Mathlib 的
+单射。在支撑包含条件下，形式化把 Radon--Nikodym 密度逐点识别为精确有理质量之比，同时推出
+扩展实数值的有限 f-divergence 求和公式和经典实数公式
+`sum_x p(x) log (p(x) / q(x))`，并证明 KL 等于 `∞` 当且仅当存在支撑违例。均匀 Boolean
+热模型对任意状态实例化了这个实数公式。可执行 pushforward 精确等于解释后 Markov kernel
+的测度复合，并由 Mathlib 的
 kernel 级定理得到对每个精确有限随机信道 `T` 的
 
 ```text
@@ -617,11 +621,14 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | 每个带 DPI 的 divergence 都给出 Gibbs-preserving 热单调量。 |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | 可执行分布 pushforward 与测度—kernel 复合一致。 |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | 有限绝对连续性精确等价于非零支撑包含。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_sum_of_absolutelyContinuous` | 支撑包含时，有限 KL 精确等于显式有限 f-divergence 和。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport` | 满支撑参考分布给出经典实数 `sum p log (p / q)` 公式。 |
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | 有限 KL 为零精确等价于两个精确分布相等。 |
-| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | 正质量面对零参考质量时 KL 必为无限。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | KL 为无限精确等价于正质量面对零参考质量。 |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | 每个精确有限随机信道都满足 KL 数据处理不等式。 |
 | `Ript.Models.Thermal.klAthermality_monotone` | 相对平衡态的具体有限 KL 是 Gibbs-preserving 单调量。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
+| `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL 非平衡度等于显式两项对数和。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆热比特翻转精确保持 KL 非平衡度。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 每个有限 Kraus 和都保持复算子正性。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完备性蕴含精确迹保持。 |
