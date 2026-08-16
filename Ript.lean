@@ -19,6 +19,7 @@ import Ript.Examples.ExplicitBathErasure
 import Ript.Examples.HigherModels
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
+import Ript.Examples.RationalGibbsSpectra
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleDecision
@@ -69,6 +70,7 @@ import Ript.Models.Thermal.GibbsPreserving
 import Ript.Models.Thermal.KLDivergence
 import Ript.Models.Thermal.Monotone
 import Ript.Models.Thermal.Protocol
+import Ript.Models.Thermal.RationalGibbs
 import Ript.Models.Thermal.Work
 import Ript.Resource.Basic
 import Ript.Resource.Budget

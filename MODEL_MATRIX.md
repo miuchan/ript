@@ -29,7 +29,7 @@ Only implemented and compiled capabilities are marked as supported.
     <tr><td>Total computation (<code>Fin 4 → Nat</code> resources)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Partial computation (<code>Option</code> Kleisli)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Finite causal DAG (exact <code>ℚ≥0</code>)</td><td>Topological generation</td><td>Via <code>FinStoch</code> states</td><td>No</td><td>No</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Finite thermal systems (specified and realized Gibbs equilibrium)</td><td>Gibbs-preserving category; finite closed and bath-assisted protocols</td><td>Bifunctor; realized Gibbs tensor at common temperature</td><td>No exported thermal discard</td><td>No</td><td>No generic interface</td><td>Via <code>FinStoch</code></td><td>No</td><td>Yes: closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds</td><td>Exact states/channels/protocol traces/marginals, information-battery, entropy-neutral work-battery, and closed erasure–recharge cycle witnesses executable; Gibbs/KL/free-energy/work accounting analytic layer</td></tr>
+    <tr><td>Finite thermal systems (specified and realized Gibbs equilibrium)</td><td>Gibbs-preserving category; finite closed and bath-assisted protocols</td><td>Bifunctor; realized Gibbs tensor at common temperature</td><td>No exported thermal discard</td><td>No</td><td>No generic interface</td><td>Via <code>FinStoch</code></td><td>No</td><td>Yes: exact rationality classification, irrational counterexample, closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds</td><td>Exact states/channels/protocol traces/marginals, positive-rational weight normalization, information-battery, entropy-neutral work-battery, and closed erasure–recharge witnesses executable; arbitrary real exponential equality and Gibbs/KL/free-energy/work accounting remain analytic</td></tr>
     <tr><td>Finite quantum Kraus channels (<code>ℂ</code>)</td><td>Kraus category</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td><td>No</td><td>No</td><td>Matrix proof layer; basis labels executable</td></tr>
     <tr><td>Classical quantum dephasing subcategory</td><td>Yes; identity is basis dephasing</td><td>Bifunctor</td><td>Via ambient trace discard, not separately packaged</td><td>No exported copy</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Exact <code>FinStoch</code> source; noncomputable complex matrix semantics</td></tr>
   </tbody>
@@ -71,7 +71,15 @@ common-temperature monotonicity of excess Helmholtz free energy, and tensor
 laws: weights/probabilities factor, partition functions multiply, and energy,
 entropy, free energy, and free-energy gaps add on product states. It neither
 assumes arbitrary independently specified exponential weights are rational nor
-equates arbitrary battery free-energy loss with mechanical work. The
+equates arbitrary battery free-energy loss with mechanical work. Instead, it
+classifies the rationality boundary exactly: for any reference microstate, an
+independently specified finite real spectrum has rational normalized Gibbs
+probabilities iff every relative Boltzmann factor is a positive rational
+number. Explicit positive rational weights construct executable exact
+equilibria, including `(2, 1) -> (2/3, 1/3)` and
+`(1, 2, 3) -> (1/6, 1/3, 1/2)`; a relative factor `sqrt 2` gives a proved
+strict counterexample. Equality of arbitrary real exponential expressions is
+not claimed decidable. The
 work-assisted layer proves that a Gibbs-preserving product-endpoint transition
 must pay every system free-energy increase from battery free-energy decrease.
 Only under an explicit entropy-neutral battery hypothesis does this become a
@@ -100,8 +108,7 @@ recharge channel is now executable as well: it randomizes the erased memory
 back to equilibrium and uses the released `log 2 / β` of free energy to raise
 the pure battery from low to high. Erasure followed by recharge has exact trace
 `fair/high → erased/low → fair/high`; signed system and battery changes both
-sum to zero, so the closed cycle is not a net-work source. Classifications for
-broader independently specified spectra remain outside the current row. The
+sum to zero, so the closed cycle is not a net-work source. The
 row also includes executable finite closed same-system protocols, their
 composite channel semantics, a nonconstant two-flip Boolean cycle, and the
 theorem that no such closed protocol can erase the uniform equilibrium exactly.

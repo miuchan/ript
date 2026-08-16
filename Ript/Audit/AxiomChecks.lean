@@ -9,6 +9,7 @@ import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
+import Ript.Examples.RationalGibbsSpectra
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleThermalModel
@@ -146,6 +147,10 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.FiniteGibbsData.sum_probability
 #print axioms Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability
 #print axioms Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction
+#print axioms Ript.Models.Thermal.FiniteGibbsData.probability_ratio
+#print axioms Ript.Models.Thermal.FiniteGibbsData.hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt
+#print axioms Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_probability
+#print axioms Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_hasRationalProbabilities
 #print axioms Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport
 #print axioms Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap
 #print axioms Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_equilibrium
@@ -188,6 +193,9 @@ set_option autoImplicit false
 #print axioms Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant
 #print axioms Ript.Examples.SimpleThermalModel.canonicalGibbsThermalBit_probability
+#print axioms Ript.Examples.RationalGibbsSpectra.twoLevelSpectrum_probability_false
+#print axioms Ript.Examples.RationalGibbsSpectra.threeLevelSpectrum_hasRationalProbabilities
+#print axioms Ript.Examples.RationalGibbsSpectra.irrationalTwoLevelSpectrum_not_hasRationalProbabilities
 #print axioms Ript.Examples.SimpleThermalModel.thermalPair_freeEnergyGap_additive
 #print axioms Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap
 #print axioms Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound

@@ -114,6 +114,10 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Gibbs.lean` |
 | `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Gibbs.lean` |
 | `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Gibbs.lean` |
+| `Ript.Models.Thermal.FiniteGibbsData.probability_ratio` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/RationalGibbs.lean` |
+| `Ript.Models.Thermal.FiniteGibbsData.hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/RationalGibbs.lean` |
+| `Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/RationalGibbs.lean` |
+| `Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_hasRationalProbabilities` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/RationalGibbs.lean` |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Gibbs.lean` |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/FreeEnergy.lean` |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_equilibrium` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/FreeEnergy.lean` |
@@ -158,6 +162,9 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.canonicalGibbsThermalBit_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.RationalGibbsSpectra.twoLevelSpectrum_probability_false` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/RationalGibbsSpectra.lean` |
+| `Ript.Examples.RationalGibbsSpectra.threeLevelSpectrum_hasRationalProbabilities` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/RationalGibbsSpectra.lean` |
+| `Ript.Examples.RationalGibbsSpectra.irrationalTwoLevelSpectrum_not_hasRationalProbabilities` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/RationalGibbsSpectra.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalPair_freeEnergyGap_additive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
@@ -337,7 +344,15 @@ witness; no chosen value becomes executable model data. The KL/free-energy
 identity and free-energy-gap monotonicity inherit precisely the existing
 `[propext, Classical.choice, Quot.sound]` footprint and introduce no new
 assumption. Canonical realization and tensor additivity have the same audited
-footprint. The work-assisted layer derives its Landauer free-energy balance
+footprint. The exact rationality refinement proves that an independently
+specified finite real spectrum has rational normalized Gibbs probabilities iff
+all Boltzmann ratios to any chosen reference state are positive rationals. Its
+explicit positive-rational-weight constructor returns exact executable
+`FinDist` data; only the logarithmic real spectrum remains analytic. The
+two-/three-level checks evaluate exact rational masses, while the `sqrt 2`
+counterexample is a proof-only nonexistence theorem. All audited declarations
+retain `[propext, Classical.choice, Quot.sound]`; no new axiom and no
+choice-derived runtime data are introduced. The work-assisted layer derives its Landauer free-energy balance
 from those two theorems and only identifies battery energy decrease with work
 under an explicit entropy-neutrality hypothesis. Its generic balance, work
 specialization, and Boolean `log 2 / β` bound introduce no additional axiom.
