@@ -117,8 +117,12 @@ flowchart LR
   UnivalentProcess --> UnivalentExample
   UnivalentExample --> UnivalentCompletionExample["Examples.UnivalentCompletion"]
   UnivalentCompletion --> UnivalentCompletionExample
+  UnivalentCompletion --> UnivalentPresheaf["Univalent.Presheaf"]
+  UnivalentCompletionExample --> UnivalentPresheafExample["Examples.UnivalentPresheaf"]
+  UnivalentPresheaf --> UnivalentPresheafExample
   UnivalentExample --> Audit
   UnivalentCompletionExample --> Audit
+  UnivalentPresheafExample --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -142,6 +146,7 @@ Every node in this graph is an existing compiled module.
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
+| 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (higher extension) | Rezk completion and higher-dimensional extension beyond the 1-truncated model | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
@@ -2441,14 +2446,137 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `[propext, Quot.sound]` for the completion/nonreflection theorem.
 - Source: `Ript/Examples/UnivalentCompletion.lean`.
 
+## Stage-12 representable-presheaf flagship records
+
+### `yonedaEmbeddingFullyFaithful` and representable sections
+
+- Natural-language statement: the interpreted internal groupoid embeds in its
+  type-valued presheaf category by Yoneda. A section of the representable at
+  `A`, evaluated at `B`, is exactly an internal identity `B ⟶ A`, and Yoneda
+  gives an equivalence between internal identities `A ⟶ B` and natural
+  transformations between the corresponding representables.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.PresheafUniverse :=
+    M.Objectᵒᵖ ⥤ Type u
+
+  def UniverseModel.representableSectionEquiv (A B : Code Atom) :
+      (M.representablePresheaf A).obj (Opposite.op (⟨B⟩ : M.Object)) ≃
+        M.Identity B A
+
+  def UniverseModel.yonedaEmbeddingFullyFaithful :
+      M.yonedaEmbedding.FullyFaithful
+  ```
+
+- Prerequisites: Mathlib `CategoryTheory.yoneda`, `Yoneda.fullyFaithful`, and
+  the Stage-11 groupoid instance.
+- Status: `PROVED`; reflexivity and path composition are also proved to map to
+  identity and vertical composition of natural transformations.
+- Computable: representable objects and the explicit image of a path are
+  definable data, but this is a downstream semantic layer rather than an
+  executable model API.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`. A direct
+  audit of Mathlib's generic `CategoryTheory.yoneda` and
+  `Yoneda.fullyFaithful` reports this same footprint.
+- Source: `Ript/Univalent/Presheaf.lean`.
+
+### Representable natural transformations and natural isomorphisms
+
+- Natural-language statement: internal identities correspond exactly to
+  natural transformations between representables. Because the source is a
+  groupoid, every such transformation is invertible. Internal identities and,
+  through internal univalence, structural equivalences therefore correspond
+  exactly to natural isomorphisms of representable presheaves.
+- Lean interfaces:
+
+  ```lean
+  def UniverseModel.representableTransformationEquiv (A B : Code Atom) :
+      M.Identity A B ≃
+        (M.representablePresheaf A ⟶ M.representablePresheaf B)
+
+  def UniverseModel.representableNaturalIsoEquiv (A B : Code Atom) :
+      M.Identity A B ≃
+        (M.representablePresheaf A ≅ M.representablePresheaf B)
+
+  def UniverseModel.representableEquivNaturalIsoEquiv (A B : Code Atom) :
+      M.InternalEquiv A B ≃
+        (M.representablePresheaf A ≅ M.representablePresheaf B)
+
+  theorem UniverseModel.representableTransformation_isIso
+      (η : M.representablePresheaf A ⟶ M.representablePresheaf B) :
+      IsIso η
+  ```
+
+- Prerequisites: Yoneda full faithfulness, `Groupoid.isoEquivHom`, and
+  `internalUnivalence`.
+- Status: `PROVED`, with both directions packaged as actual Lean `Equiv`
+  values rather than one-way implications.
+- Computable: proof/semantic layer; no claim is made that arbitrary functor
+  equality is decidable.
+- Kernel assumptions for all audited declarations:
+  `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Presheaf.lean`.
+
+### `YonedaEnvelope`, factorization, and categorical equivalence
+
+- Natural-language statement: the full subcategory of presheaves isomorphic
+  to a representable is the essential-image Yoneda envelope. The original
+  Yoneda functor factors through this envelope, the restricted functor is an
+  equivalence, the envelope is a groupoid, and functor categories from the
+  envelope and original groupoid are equivalent for every target category.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.YonedaEnvelope :=
+    M.yonedaEmbedding.EssImageSubcategory
+
+  def UniverseModel.yonedaEnvelopeFactorization :
+      M.toYonedaEnvelope ⋙ M.yonedaEnvelopeInclusion ≅ M.yonedaEmbedding
+
+  noncomputable def UniverseModel.yonedaEnvelopeEquivalence :
+      M.Object ≌ M.YonedaEnvelope
+
+  noncomputable def UniverseModel.yonedaEnvelopeUniversal
+      (E : Type v) [Category.{w} E] :
+      (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+  ```
+
+- Prerequisites: Mathlib `Functor.EssImageSubcategory`, `toEssImage`,
+  `fullyFaithfulToEssImage`, and `Equivalence.congrLeft`.
+- Status: `PROVED`; the essential-image factorization and transferred groupoid
+  instance compile.
+- Computable: the equivalence and groupoid transfer are noncomputable because
+  essential-image witnesses choose representing objects and isomorphisms.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Presheaf.lean`.
+
+### Boolean tensor symmetry under Yoneda
+
+- Natural-language statement: the natural transformation induced by Boolean
+  tensor symmetry sends the identity section at its source to the original
+  internal path, and full faithfulness recovers that path. The two
+  representables and their Yoneda-envelope objects are isomorphic while the
+  raw code syntax remains unequal. Exact cardinality invariance evaluates to
+  `true` and is separately proved for all structural equivalences.
+- Status: `PROVED`; the executable Boolean result is enforced by
+  `scripts/check-examples.sh`.
+- Kernel assumptions: the component and envelope/nonreflection theorems use
+  `[propext, Classical.choice, Quot.sound]`; cardinality preservation uses
+  `[propext]`.
+- Source: `Ript/Examples/UnivalentPresheaf.lean`.
+
 ### Explicit non-claims for Stage 12
 
 - `ObjectCompletion` is a propositional 0-truncation, not a category and not a
   type of higher paths.
 - `SkeletalCompletion` is an ordinary 1-categorical skeleton. It preserves
   automorphisms, but does not identify its hom-types with Lean equality.
-- Neither layer is a Rezk completion or a complete Segal/presheaf model of the
-  resource-process bicategory.
+- The representable-presheaf envelope is an ordinary essential image. It does
+  not make isomorphic presheaves externally equal and is not a complete Segal
+  or Rezk object.
+- None of the three completion/envelope layers is a Rezk completion or a full
+  presheaf model of the resource-process bicategory.
 - No external univalence axiom, higher inductive type, localization theorem,
   or map `Equiv α β → α = β` is introduced.
 
@@ -2461,9 +2589,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   arbitrary higher identity types or higher inductive types.
 - The quotient groupoid is not advertised as a Rezk completion of the full
   resource-process bicategory.
-- Rezk completion, presheaf semantics, and higher-dimensional identity remain
-  higher-dimensional Stage-12 research targets; the proved truncated
-  completion foundation above does not discharge them.
+- Representable presheaf semantics now has a proved foundation, but Rezk
+  completion, presheaf localization, and higher-dimensional identity remain
+  Stage-12 research targets; the proved foundations above do not discharge
+  them.
 
 ## Design decisions
 
@@ -2624,3 +2753,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     must add a presheaf, simplicial, or other higher-categorical localization
     with explicit coherence and a new audit; the present results are its
     compiled 0/1-truncated foundation, not that future theorem.
+43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
+    than a project-local reimplementation. Its audited
+    `[propext, Classical.choice, Quot.sound]` footprint is inherited and is
+    recorded as part of the downstream semantic trust boundary.
+44. `YonedaEnvelope` means the essential image of representables, not the
+    entire presheaf category and not a Rezk completion. The name prevents an
+    ordinary 1-categorical equivalence from being mistaken for external
+    univalence or higher completeness.
+45. Internal identities correspond to all natural transformations between
+    internal representables, not only to a selected class. Invertibility is a
+    theorem derived from source groupoid structure and Yoneda full
+    faithfulness.
+46. Essential-image equivalence chooses a representing object and isomorphism,
+    so it remains noncomputable. Explicit representables and explicit Yoneda
+    images of internal paths can still be constructed without feeding that
+    choice back into raw syntax or the finite executable models.

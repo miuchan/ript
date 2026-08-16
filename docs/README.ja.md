@@ -43,11 +43,15 @@ Stage 12 は、厳密に範囲を限定した最初の completion を実装し�
 単に存在するときに限り code を同一視し、不変写像と内部述語の普遍的降下を与えます。別の非計算的な
 Mathlib skeleton は全自己同型を保持し、元の groupoid と圏同値です。これは 0/1-truncated な基礎であり、
 Rezk completion の主張ではありません。
+presheaf への道筋にも、コンパイル済みの第一層が加わりました。Yoneda 埋め込みは内部 groupoid を
+型値 presheaf へ充満忠実に埋め込み、内部同一性と構造同値は、可表 presheaf 間の自然変換と自然同型に
+それぞれ正確に対応します。可表対象の本質像は元の groupoid と圏同値な groupoid を形成します。
+この `YonedaEnvelope` は通常の 1-圏論的包絡であり、Rezk completion ではありません。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 12 の truncated 層は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 12 の実装済み基礎層は Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -412,6 +416,55 @@ Mathlib は skeleton の代表を選ぶため、この圏論層は `noncomputabl
 `Classical.choice` を含みます。選択不要の対象商の普遍性には含まれません。どちらも高次 path、complete
 Segal coherence、presheaf localization、外部 univalence、資源プロセス双圏の Rezk completion を与えません。
 
+### 15. 可表 presheaf と Yoneda 包絡
+
+内部 groupoid は、真正な型値 presheaf 意味論を持つようになりました。
+
+```lean
+PresheafUniverse M := M.Objectᵒᵖ ⥤ Type u
+
+yonedaEmbeddingFullyFaithful :
+  M.yonedaEmbedding.FullyFaithful
+```
+
+`A` の可表 presheaf をインターフェース `B` で評価すると、内部同一性型 `M.Identity B A` が正確に
+得られます。充満忠実性は、この点ごとの観察を次の厳密な同値へ持ち上げます。
+
+```lean
+representableTransformationEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ⟶ M.representablePresheaf B)
+
+representableNaturalIsoEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+
+representableEquivNaturalIsoEquiv (A B) :
+  M.InternalEquiv A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+```
+
+これらの可表対象間の自然変換はすべて可逆です。Yoneda 埋め込みが充満忠実で、始域がすでに
+groupoid だからです。内部同一性の合成は自然変換の合成へ写るため、これは単なる対象数の類似ではなく、
+構造を保存する対応です。
+
+`YonedaEnvelope` は、可表 presheaf と同型な presheaf の充満部分圏です。Yoneda はこの部分圏を経由して
+分解し、制限された関手は圏同値となり、包絡は groupoid 構造を継承します。任意の対象圏 `E` について、
+
+```lean
+yonedaEnvelopeUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+が成り立ちます。Boolean 例は tensor 対称性を自然変換へ写し、それを始域の恒等射で評価して元の内部
+path を復元します。また、元の code が不等なままで、対応する包絡対象が同型であることも構成します。
+
+この層の古典的境界は明示されています。固定された Mathlib の `CategoryTheory.yoneda` と
+`Yoneda.fullyFaithful` 自体が `[propext, Classical.choice, Quot.sound]` と監査され、本質像の圏同値も
+可表対象の witness を選択します。その値が実行可能構文や有限モデルへ流入することはありません。
+この包絡は同型な presheaf を外部 Lean 等式にせず、simplicial object、complete Segal 条件、高次
+coherence、localization 定理、外部 univalence のいずれも与えません。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -532,6 +585,17 @@ Segal coherence、presheaf localization、外部 univalence、資源プロセス
 | `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | skeleton と元の groupoid から出る関手圏は同値です。 |
 | `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | 生成された全構造同値が正確なインターフェース濃度を保存します。 |
 | `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | completion 等式と元構文木の不等式が同時に成立します。 |
+| `Ript.Univalent.UniverseModel.yonedaEmbeddingFullyFaithful` | 内部 groupoid は型値 presheaf へ充満忠実に埋め込まれます。 |
+| `Ript.Univalent.UniverseModel.representableTransformationEquiv_trans` | 内部 path の合成は可表自然変換の合成へ写ります。 |
+| `Ript.Univalent.UniverseModel.representableNaturalIsoEquiv` | 内部同一性は可表対象間の自然同型と正確に一致します。 |
+| `Ript.Univalent.UniverseModel.representableEquivNaturalIsoEquiv` | 内部構造同値は可表対象間の自然同型と正確に一致します。 |
+| `Ript.Univalent.UniverseModel.representableTransformation_isIso` | 内部可表対象間の自然変換はすべて可逆です。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | Yoneda 埋め込みは本質像の包絡を経由して分解します。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | 内部 groupoid と Yoneda 包絡は圏同値です。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | Yoneda 包絡と元の groupoid から出る関手圏は同値です。 |
+| `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Boolean tensor 対称性を始域の恒等射で評価すると元の path を復元します。 |
+| `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Yoneda 包絡で同型な表示でも、元の code 構文は不等のままです。 |
+| `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | tensor 対称性はインターフェースの正確な濃度を保存します。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -559,6 +623,7 @@ Segal coherence、presheaf localization、外部 univalence、資源プロセス
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
 | 11 | 公理不要の深いインターフェース/プロセス構文、商 groupoid、内部 univalence、健全性、indiscernibility | **PROVED** |
 | 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
+| 12、presheaf 基礎 | 充満忠実な Yoneda 意味論、可表対象での同一性/同値対応、本質像包絡 | **PROVED** |
 | 12、高次拡張 | Rezk completion または高次元のユニバレント意味論拡張 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
@@ -583,6 +648,8 @@ Segal coherence、presheaf localization、外部 univalence、資源プロセス
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；代表選択あり；Rezk completion ではない |
+| 内部 presheaf universe | 型値 presheaf 間の自然変換 | 可表対象の作用 | 意味論的証明層 | Yoneda は充満忠実；同一性/同値は可表自然変換/自然同型に対応 |
+| Yoneda 包絡 | 可表対象の本質像から出る関手 | 圏同値を通して構造を継承 | 非計算的な本質像意味論 | 元の groupoid と圏同値；外部 univalence も Rezk 完備性もない |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
@@ -592,7 +659,9 @@ Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層に
 エネルギー由来 Gibbs 状態、高次元または Rezk-complete なユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
 選択不要の対象 completion と非計算的 skeleton completion は、明示的に監査された 0/1-truncated 基礎だけを
-確立します。モデル双圏は固定資源型と統一 universe の範囲で実装され、これらの層は `(∞,1)`-圏や
+確立します。可表 presheaf 意味論と Yoneda 本質像包絡も実装済みですが、高次 localization を持たない
+通常の 1-圏論的構成にとどまります。モデル双圏は固定資源型と統一 universe の範囲で実装され、
+これらの層は `(∞,1)`-圏や
 Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
 チャネルコアは実装済みでカーネル検証されています。正式な能力表は
@@ -844,6 +913,8 @@ import Ript.Models.Quantum.Kraus
 import Ript.Univalent.Process
 -- または対象と skeleton の truncated completion：
 import Ript.Univalent.Completion
+-- または可表 presheaf と Yoneda 包絡：
+import Ript.Univalent.Presheaf
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -859,7 +930,7 @@ import Ript.Univalent.Completion
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
 | [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果・有限熱・有限量子モデル |
 | [`Ript/Higher/`](../Ript/Higher/) | 資源添字付きモデル双圏と coherence |
-| [`Ript/Univalent/`](../Ript/Univalent/) | 深いインターフェース/プロセス構文、商 groupoid、内部 univalence、移送、健全性、truncated completion |
+| [`Ript/Univalent/`](../Ript/Univalent/) | 深いインターフェース/プロセス構文、商 groupoid、内部 univalence、移送、truncated completion、可表 presheaf 意味論 |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -896,7 +967,8 @@ import Ript.Univalent.Completion
    因果層、指定平衡を持つ有限熱層、テンソル・破棄・完全正値性を持つ有限 Kraus コアは
    実装済みです。逆表現、一般確率・因果、解析的熱力学、高次ユニバレント層とは明確に分けます。
    古典量子埋め込み、モデル双圏、小さな内部ユニバレント universe とその 0/1-truncated completion は、
-   それぞれの適用範囲を明示して実装済みです。
+   それぞれの適用範囲を明示して実装済みです。0/1-truncated completion と可表 presheaf 包絡も、
+   通常の 1-圏論的限界を明示して実装されています。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
@@ -978,6 +1050,7 @@ import Ript.Univalent.Completion
 - [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
 - [x] 選択不要の対象 completion、不変量の降下、skeletal groupoid completion
+- [x] 充満忠実な Yoneda 意味論と可表対象の本質像包絡
 - [ ] Rezk completion、または明示的高次 coherence を持つ presheaf/simplicial ユニバレントモデル
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な

@@ -7,6 +7,7 @@ import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
 import Ript.Examples.UnivalentCompletion
+import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
@@ -150,3 +151,14 @@ set_option autoImplicit false
 #print axioms Ript.Univalent.UniverseModel.skeletalCompletionUniversal
 #print axioms Ript.Examples.UnivalentCompletion.codeCardinality_equiv
 #print axioms Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality
+#print axioms Ript.Univalent.UniverseModel.yonedaEmbeddingFullyFaithful
+#print axioms Ript.Univalent.UniverseModel.representableTransformationEquiv_trans
+#print axioms Ript.Univalent.UniverseModel.representableNaturalIsoEquiv
+#print axioms Ript.Univalent.UniverseModel.representableEquivNaturalIsoEquiv
+#print axioms Ript.Univalent.UniverseModel.representableTransformation_isIso
+#print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization
+#print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence
+#print axioms Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal
+#print axioms Ript.Examples.UnivalentPresheaf.swapTransformation_component
+#print axioms Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality
+#print axioms Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality

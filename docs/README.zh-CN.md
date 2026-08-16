@@ -39,9 +39,12 @@ univalence，也不会把任意 Lean 类型等价变成 Lean 类型相等。
 Stage 12 现已完成第一步严格限界的补全：无选择的对象商精确按内部恒等是否非空来识别 code，
 并给出不变量映射与内部谓词的普遍下降；另一个独立的、不可计算的 Mathlib 骨架保留全部
 自同构，并与原群胚范畴等价。这些只是 0/1-截断基础，并不是对 Rezk completion 的宣称。
+presheaf 路线也已有第一层经过编译的基础：Yoneda 把内部群胚 fully faithfully 嵌入类型值
+presheaf；内部恒等与结构等价精确对应 representable 之间的自然变换和自然同构；其本质像
+形成与源群胚等价的 `YonedaEnvelope`。它仍是普通 1-范畴 envelope，不是 Rezk completion。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–12 的截断层已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–12 已实现的基础层均通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -379,6 +382,54 @@ Mathlib 会选择骨架代表元，因此该范畴层明确标为 `noncomputable
 `Classical.choice`；无选择的对象商普遍性质不包含它。两者都没有给出高阶路径、complete
 Segal coherence、presheaf localization、外部 univalence 或资源过程双范畴的 Rezk completion。
 
+### 15. Representable presheaf 与 Yoneda envelope
+
+内部群胚现已拥有真正的类型值 presheaf 语义：
+
+```lean
+PresheafUniverse M := M.Objectᵒᵖ ⥤ Type u
+
+yonedaEmbeddingFullyFaithful :
+  M.yonedaEmbedding.FullyFaithful
+```
+
+在接口 `B` 上求 representable `A` 的值，精确得到内部恒等类型 `M.Identity B A`。Fully
+faithful 把这一逐点事实提升为完整等价：
+
+```lean
+representableTransformationEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ⟶ M.representablePresheaf B)
+
+representableNaturalIsoEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+
+representableEquivNaturalIsoEquiv (A B) :
+  M.InternalEquiv A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+```
+
+这些 representable 之间的每个自然变换都可逆，因为 Yoneda fully faithful，而源本身是群胚。
+内部身份复合被证明映射为自然变换复合，因此这不是仅比较对象数量的类比。
+
+`YonedaEnvelope` 是所有与 representable 同构的 presheaf 构成的 full subcategory。Yoneda
+通过它分解，限制后的函子是范畴等价，envelope 继承群胚结构；对任意目标范畴 `E`：
+
+```lean
+yonedaEnvelopeUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+Boolean 示例把 tensor 对称性送入自然变换，在源恒等截面上求值后恢复原内部 path，并构造相应
+envelope 同构，同时保留原始 code 不相等的证明。
+
+该层具有明确的经典边界。固定版本 Mathlib 的 `CategoryTheory.yoneda` 和
+`Yoneda.fullyFaithful` 自身公理审计就是 `[propext, Classical.choice, Quot.sound]`，本质像
+等价还会选择表示 witness。这些值不会流入可执行语法或有限模型。该 envelope 不会令同构
+presheaf 在外部相等，也没有提供 simplicial object、complete Segal 条件、高阶 coherence、
+localization theorem 或外部 univalence。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -498,6 +549,17 @@ Segal coherence、presheaf localization、外部 univalence 或资源过程双�
 | `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | 从骨架群胚与原群胚出发的函子范畴互相等价。 |
 | `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | 每个生成的结构等价都保持精确接口基数。 |
 | `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | 补全相等与原始语法树不相等可以同时成立。 |
+| `Ript.Univalent.UniverseModel.yonedaEmbeddingFullyFaithful` | 内部群胚 fully faithfully 嵌入类型值 presheaf。 |
+| `Ript.Univalent.UniverseModel.representableTransformationEquiv_trans` | 内部 path 复合映射为 representable 自然变换复合。 |
+| `Ript.Univalent.UniverseModel.representableNaturalIsoEquiv` | 内部恒等精确对应 representable 之间的自然同构。 |
+| `Ript.Univalent.UniverseModel.representableEquivNaturalIsoEquiv` | 内部结构等价精确对应 representable 之间的自然同构。 |
+| `Ript.Univalent.UniverseModel.representableTransformation_isIso` | 内部 representable 之间的每个自然变换都可逆。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | Yoneda 嵌入通过其本质像 envelope 分解。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | 内部群胚与 Yoneda envelope 范畴等价。 |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | 从 Yoneda envelope 与原群胚出发的函子范畴等价。 |
+| `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Boolean tensor 对称性在源恒等截面上恢复原 path。 |
+| `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Yoneda-envelope 表示同构，但原始 code 仍不相等。 |
+| `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | tensor 对称性保持精确接口基数。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -524,6 +586,7 @@ Segal coherence、presheaf localization、外部 univalence 或资源过程双�
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
 | 11 | 无公理的深嵌入接口/过程语法、商群胚、内部单值性、soundness 与 indiscernibility | **PROVED** |
 | 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
+| 12，presheaf 基础 | Fully faithful Yoneda 语义、representable 身份/等价对应与本质像 envelope | **PROVED** |
 | 12，高阶扩展 | Rezk completion 或更高维的单值语义扩展 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -548,6 +611,8 @@ Segal coherence、presheaf localization、外部 univalence 或资源过程双�
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；选择代表元；不是 Rezk completion |
+| 内部 presheaf universe | 类型值 presheaf 之间的自然变换 | Representable 作用 | 语义证明层 | Yoneda fully faithful；恒等/等价对应 representable 变换/同构 |
+| Yoneda envelope | 从 representable 本质像出发的函子 | 通过范畴等价继承结构 | 不可计算本质像语义 | 与源群胚等价；无外部 univalence；不是 Rezk completion |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
@@ -556,7 +621,8 @@ Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
 高维或 Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
-0/1-截断基础。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
+0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
+高阶 localization 的普通 1-范畴构造。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
@@ -798,6 +864,8 @@ import Ript.Models.Quantum.Kraus
 import Ript.Univalent.Process
 -- 或者导入对象与骨架截断补全：
 import Ript.Univalent.Completion
+-- 或者导入 representable presheaf 与 Yoneda envelope：
+import Ript.Univalent.Presheaf
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -813,7 +881,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
 | [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果、有限热与有限量子模型 |
 | [`Ript/Higher/`](../Ript/Higher/) | 资源索引模型双范畴与 coherence |
-| [`Ript/Univalent/`](../Ript/Univalent/) | 深嵌入接口/过程语法、商群胚、内部单值性、搬运、soundness 与截断补全 |
+| [`Ript/Univalent/`](../Ript/Univalent/) | 深嵌入接口/过程语法、商群胚、内部单值性、搬运、截断补全与 representable-presheaf 语义 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -849,7 +917,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
    平衡态的有限热层，以及带 tensor、丢弃和完整正性的有限 Kraus 核心已经实现；反向表示、
    一般随机与因果、解析热力学和高阶单值层仍必须清楚标记为开放研究。经典量子嵌入、模型
-   双范畴、小型内部单值 universe 及其 0/1-截断补全已实现，并保留各自明确的适用边界。
+   双范畴、小型内部单值 universe、0/1-截断补全及 representable-presheaf envelope 已实现，
+   并保留各自明确的适用边界。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -929,6 +998,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
 - [x] 无选择对象补全、不变量下降与骨架群胚补全
+- [x] Fully faithful Yoneda 语义与 representable 本质像 envelope
 - [ ] Rezk completion，或带显式高阶 coherence 的 presheaf/simplicial 单值模型
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的

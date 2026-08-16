@@ -61,9 +61,15 @@ merely inhabited and proves universal descent for invariant maps and internal
 predicates. A separate noncomputable Mathlib skeleton retains every
 automorphism and is categorically equivalent to the original groupoid. These
 are 0/1-truncated foundations, not a claimed Rezk completion.
+The presheaf route now has a compiled first layer as well: Yoneda embeds the
+internal groupoid fully faithfully into type-valued presheaves, internal
+identity and structural equivalence correspond exactly to natural
+transformations and natural isomorphisms of representables, and the essential
+image forms a groupoid equivalent to the source. This `YonedaEnvelope` remains
+an ordinary 1-categorical envelope, not a Rezk completion.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. The Stage 1–12 truncated layers, including the
+> Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
 > finite Kraus core, model bicategory, and internally univalent deep universe, are implemented and
 > checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
@@ -523,6 +529,63 @@ choice-free object universal properties do not. Neither construction supplies
 higher paths, complete Segal coherence, presheaf localization, external
 univalence, or a Rezk completion of the resource-process bicategory.
 
+### 15. Representable presheaves and the Yoneda envelope
+
+The internal groupoid now has a genuine type-valued presheaf semantics:
+
+```lean
+PresheafUniverse M := M.Objectᵒᵖ ⥤ Type u
+
+yonedaEmbeddingFullyFaithful :
+  M.yonedaEmbedding.FullyFaithful
+```
+
+Evaluating the representable at `A` on an interface `B` returns precisely the
+internal identity type `M.Identity B A`. Full faithfulness upgrades this
+pointwise observation to exact equivalences:
+
+```lean
+representableTransformationEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ⟶ M.representablePresheaf B)
+
+representableNaturalIsoEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+
+representableEquivNaturalIsoEquiv (A B) :
+  M.InternalEquiv A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+```
+
+Every natural transformation between these representables is invertible: the
+Yoneda embedding is fully faithful and the source is already a groupoid.
+Identity composition maps to natural-transformation composition, so this is a
+structure-preserving correspondence rather than an object-counting analogy.
+
+`YonedaEnvelope` is the full subcategory of presheaves isomorphic to a
+representable. Yoneda factors through it, the restricted functor is an
+equivalence, the envelope inherits a groupoid structure, and for every target
+category `E`:
+
+```lean
+yonedaEnvelopeUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+The Boolean example sends tensor symmetry to a natural transformation,
+evaluates it on the source identity to recover the original internal path,
+and constructs the corresponding envelope isomorphism while retaining the
+proof that the raw codes are unequal.
+
+This layer has an explicit classical boundary. The pinned Mathlib declarations
+`CategoryTheory.yoneda` and `Yoneda.fullyFaithful` themselves audit as
+`[propext, Classical.choice, Quot.sound]`; essential-image equivalence also
+chooses representing witnesses. No such value flows into executable syntax or
+finite models. The envelope does not make isomorphic presheaves externally
+equal and supplies no simplicial object, complete Segal condition, higher
+coherence, localization theorem, or external univalence.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -643,6 +706,17 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | Functor categories out of the skeleton and original groupoid are equivalent. |
 | `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | Every generated structural equivalence preserves exact interface cardinality. |
 | `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | Completion equality coexists with inequality of the original syntax trees. |
+| `Ript.Univalent.UniverseModel.yonedaEmbeddingFullyFaithful` | The internal groupoid embeds fully faithfully into type-valued presheaves. |
+| `Ript.Univalent.UniverseModel.representableTransformationEquiv_trans` | Internal path composition maps to composition of representable natural transformations. |
+| `Ript.Univalent.UniverseModel.representableNaturalIsoEquiv` | Internal identities are exactly natural isomorphisms between representables. |
+| `Ript.Univalent.UniverseModel.representableEquivNaturalIsoEquiv` | Internal structural equivalences are exactly natural isomorphisms between representables. |
+| `Ript.Univalent.UniverseModel.representableTransformation_isIso` | Every natural transformation between internal representables is invertible. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | The Yoneda embedding factors through its essential-image envelope. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | The internal groupoid and its Yoneda envelope are categorically equivalent. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | Functor categories from the Yoneda envelope and original groupoid are equivalent. |
+| `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Evaluating Boolean tensor symmetry at the source identity recovers the original path. |
+| `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Isomorphic Yoneda-envelope presentations retain unequal raw code syntax. |
+| `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensor symmetry preserves exact interface cardinality. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -672,6 +746,7 @@ finished physical theory.
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
 | 11 | Axiom-free deep interface/process syntax, quotient groupoid, internal univalence, soundness, and indiscernibility | **PROVED** |
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
+| 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
 | 12, higher extension | Rezk completion or a higher-dimensional univalent semantic extension | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -696,6 +771,8 @@ Implemented model support is intentionally narrow:
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; chosen representatives; not a Rezk completion |
+| Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
+| Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -709,7 +786,9 @@ and a higher-dimensional/Rezk-complete univalent semantics are **not implemented
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
 object completion and noncomputable skeletal completion establish only the
-explicitly audited 0/1-truncated foundation. The model
+explicitly audited 0/1-truncated foundation. The representable-presheaf
+semantics and Yoneda essential-image envelope are also implemented, but remain
+ordinary 1-categorical constructions without higher localization. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -989,6 +1068,8 @@ import Ript.Models.Quantum.Kraus
 import Ript.Univalent.Process
 -- or, for object and skeletal truncated completions:
 import Ript.Univalent.Completion
+-- or, for representable presheaves and the Yoneda envelope:
+import Ript.Univalent.Presheaf
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -1004,7 +1085,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
 | [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, finite thermal, and finite quantum models |
 | [`Ript/Higher/`](Ript/Higher/) | Resource-indexed model bicategory and coherence |
-| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, transport, soundness, and truncated completions |
+| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, transport, truncated completions, and representable-presheaf semantics |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -1051,8 +1132,8 @@ force-pushes and branch deletion are disabled.
    general stochastic and causal, analytic thermodynamic, and higher univalent
    layers remain visibly marked as open research. The classical quantum
    embedding, model bicategory, small internally univalent universe, and its
-   0/1-truncated completions are implemented with their scope boundaries
-   explicit.
+   0/1-truncated completions and representable-presheaf envelope are
+   implemented with their scope boundaries explicit.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -1144,6 +1225,7 @@ updated assumption audit.
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
+- [x] Fully faithful Yoneda semantics and the essential-image representable envelope
 - [ ] Rezk completion or a presheaf/simplicial higher-dimensional univalent model with explicit coherence
 
 These checkboxes are not promises of a particular release order. Each addition

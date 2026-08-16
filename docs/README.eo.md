@@ -62,11 +62,17 @@ loĝata, kun universala malsuprenigo por invariantaj mapoj kaj internaj
 predikatoj. Aparta nekomputebla Mathlib-skeleto konservas ĉiujn aŭtomorfiojn
 kaj estas kategorie ekvivalenta al la origina grupoido. Tiuj estas
 0/1-tranĉitaj fundamentoj, ne pretendita Rezk-kompletigo.
+La antaŭfaska vojo nun ankaŭ havas kompilitan unuan tavolon: Yoneda enigas la
+internan grupoidon plene fidele en tip-valorajn antaŭfaskojn; interna idento kaj
+struktura ekvivalento respondas precize al naturaj transformoj kaj naturaj
+izomorfioj de reprezenteblaj antaŭfaskoj; kaj la esenca bildo formas grupoidon
+kategorie ekvivalentan al la fonto. Tiu `YonedaEnvelope` restas ordinara
+1-kategoria envolvaĵo, ne Rezk-kompletigo.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. La tranĉitaj tavoloj de etapoj 1–12 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. La realigitaj fundamentoj de etapoj 1–12 estas
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -506,6 +512,62 @@ Neniu konstruo liveras pli-altajn vojojn, kompletan Segal-koheron, antaŭfaskan
 lokalizon, eksteran univalentecon aŭ Rezk-kompletigon de la rimed-proceza
 dukategorio.
 
+### 15. Reprezenteblaj antaŭfaskoj kaj la Yoneda-envolvaĵo
+
+La interna grupoido nun havas veran tip-valoran antaŭfaskan semantikon:
+
+```lean
+PresheafUniverse M := M.Objectᵒᵖ ⥤ Type u
+
+yonedaEmbeddingFullyFaithful :
+  M.yonedaEmbedding.FullyFaithful
+```
+
+Taksi la reprezenteblan antaŭfaskon ĉe `A` sur interfaco `B` donas precize la
+internan identotipon `M.Identity B A`. Plena fideleco levas tiun punktan
+observon al ekzaktaj ekvivalentoj:
+
+```lean
+representableTransformationEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ⟶ M.representablePresheaf B)
+
+representableNaturalIsoEquiv (A B) :
+  M.Identity A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+
+representableEquivNaturalIsoEquiv (A B) :
+  M.InternalEquiv A B ≃
+    (M.representablePresheaf A ≅ M.representablePresheaf B)
+```
+
+Ĉiu natura transformo inter tiuj reprezenteblaj antaŭfaskoj estas inversigebla:
+la Yoneda-enigo estas plene fidela kaj la fonto jam estas grupoido. Kunmeto de
+internaj identoj bildiĝas al kunmeto de naturaj transformoj, do temas pri
+struktur-konserva korespondo, ne nura analogio inter objektaroj.
+
+`YonedaEnvelope` estas la plena subkategorio de antaŭfaskoj izomorfaj al
+reprezentebla antaŭfasko. Yoneda faktoriĝas tra ĝi, la limigita funktoro estas
+ekvivalento, la envolvaĵo heredas grupoidan strukturon, kaj por ĉiu cela
+kategorio `E`:
+
+```lean
+yonedaEnvelopeUniversal (E) :
+  (M.YonedaEnvelope ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+La Bulea ekzemplo sendas tensoran simetrion al natura transformo, taksas ĝin ĉe
+la fonta idento por reakiri la originan internan vojon, kaj konstruas la
+respondan envolvaĵan izomorfion dum la krudaj kodoj restas pruveble malegalaj.
+
+Tiu tavolo havas eksplicitan klasikan limon. La fiksitaj Mathlib-deklaroj
+`CategoryTheory.yoneda` kaj `Yoneda.fullyFaithful` mem reviziiĝas kiel
+`[propext, Classical.choice, Quot.sound]`; la esenc-bilda ekvivalento ankaŭ
+elektas reprezentajn atestantojn. Neniu tia valoro fluas en plenumeblan
+sintakson aŭ finiajn modelojn. La envolvaĵo ne egaligas ekstere izomorfajn
+antaŭfaskojn kaj ne liveras simplician objekton, kompletan Segal-kondiĉon,
+pli-altan koheron, lokalizan teoremon aŭ eksteran univalentecon.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -626,6 +688,17 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | Funktorkategorioj el la skeleto kaj la origina grupoido estas ekvivalentaj. |
 | `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | Ĉiu generita struktura ekvivalento konservas ekzaktan interfacan kardinalon. |
 | `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | Kompletiga egaleco kunekzistas kun malegaleco de la originaj sintaksarboj. |
+| `Ript.Univalent.UniverseModel.yonedaEmbeddingFullyFaithful` | La interna grupoido eniras plene fidele en tip-valorajn antaŭfaskojn. |
+| `Ript.Univalent.UniverseModel.representableTransformationEquiv_trans` | Kunmeto de internaj vojoj bildiĝas al kunmeto de reprezenteblaj naturaj transformoj. |
+| `Ript.Univalent.UniverseModel.representableNaturalIsoEquiv` | Internaj identoj estas precize naturaj izomorfioj inter reprezenteblaj antaŭfaskoj. |
+| `Ript.Univalent.UniverseModel.representableEquivNaturalIsoEquiv` | Internaj strukturaj ekvivalentoj estas precize naturaj izomorfioj inter reprezenteblaj antaŭfaskoj. |
+| `Ript.Univalent.UniverseModel.representableTransformation_isIso` | Ĉiu natura transformo inter internaj reprezenteblaj antaŭfaskoj estas inversigebla. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | La Yoneda-enigo faktoriĝas tra sia esenc-bilda envolvaĵo. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | La interna grupoido kaj ĝia Yoneda-envolvaĵo estas kategorie ekvivalentaj. |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | Funktorkategorioj el la Yoneda-envolvaĵo kaj la origina grupoido estas ekvivalentaj. |
+| `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | Taksi la Bulean tensoran simetrion ĉe la fonta idento reakiras la originan vojon. |
+| `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | Izomorfaj Yoneda-envolvaĵaj prezentoj konservas malegalan krudan kodsintakson. |
+| `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | Tensora simetrio konservas la ekzaktan interfacan kardinalon. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -655,6 +728,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
 | 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
+| 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
 | 12, pli-alta etendaĵo | Rezk-kompletigo aŭ pli-altdimensia univalenta semantika etendaĵo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -679,6 +753,8 @@ La realigita modelsubteno estas intence mallarĝa:
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; ne Rezk-kompletigo |
+| Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
+| Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -693,7 +769,9 @@ Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
 nekomputebla skeletokompletigo establas nur la eksplicite reviziitan
-0/1-tranĉitan fundamenton. La modeldukategorio estas realigita por fiksa
+0/1-tranĉitan fundamenton. La reprezentebla antaŭfaska semantiko kaj la
+Yoneda-esenc-bilda envolvaĵo ankaŭ estas realigitaj, sed restas ordinaraj
+1-kategoriaj konstruoj sen pli-alta lokalizo. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -965,6 +1043,8 @@ import Ript.Models.Quantum.Kraus
 import Ript.Univalent.Process
 -- aŭ, por objektaj kaj skeletaj tranĉitaj kompletigoj:
 import Ript.Univalent.Completion
+-- aŭ, por reprezenteblaj antaŭfaskoj kaj la Yoneda-envolvaĵo:
+import Ript.Univalent.Presheaf
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -981,7 +1061,7 @@ malsupra laboro.
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
 | [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
 | [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio kaj kohero |
-| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, ĝusteco kaj tranĉitaj kompletigoj |
+| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, tranĉitaj kompletigoj kaj reprezentebla antaŭfaska semantiko |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -1029,6 +1109,8 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    univalenta tavolo restas malfermaj. La fidela klasika-kvantuma enigo, la
    modeldukategorio, la malgranda interne univalenta universo kaj ĝiaj
    0/1-tranĉitaj kompletigoj estas realigitaj kun eksplicitaj ampleksolimoj.
+   La reprezentebla antaŭfaska envolvaĵo same estas realigita kun sia ordinara
+   1-kategoria limo klare deklarita.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -1117,6 +1199,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
 - [x] Senelekta objektokompletigo, invarianta malsuprenigo kaj skeleta grupoidokompletigo
+- [x] Plene fidela Yoneda-semantiko kaj la esenc-bilda reprezentebla envolvaĵo
 - [ ] Rezk-kompletigo aŭ antaŭfaska/simplicia univalenta modelo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
