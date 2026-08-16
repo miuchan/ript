@@ -205,8 +205,8 @@ Every node in this graph is an existing compiled module.
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
-| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, and natural recovery of the ordinary nerve from vertical vertices | PROVED |
-| 12 (higher extension) | Outer Segal equivalences, Rezk completeness, and localization beyond the levelwise classifying diagram | OPEN_RESEARCH |
+| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences in every bidegree, and natural recovery of the ordinary nerve from vertical vertices | PROVED |
+| 12 (higher extension) | Rezk completeness and localization beyond the outer-Segal classifying diagram | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4711,6 +4711,46 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   direct checks in `Ript/Audit/AxiomChecks.lean`.
 - Source: `Ript/Univalent/ClassifyingDiagram.lean`.
 
+### Horizontal rows and outer Segal equivalences
+
+- Natural-language statement: evaluating the vertical simplicial direction in
+  any degree `k` gives a horizontal simplicial set naturally isomorphic to the
+  ordinary nerve of `ComposableArrows M.Object k`. Therefore its actual spine
+  map is an equivalence for every horizontal degree `n`.
+- Lean interfaces:
+
+  ```lean
+  def UniverseModel.interfaceClassifyingDiagramHorizontalRowIso (k : ℕ) :
+      M.InterfaceClassifyingDiagramHorizontalRow k ≅
+        CategoryTheory.nerve (ComposableArrows M.Object k)
+
+  def UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal (k : ℕ) :
+      SSet.StrictSegal (M.InterfaceClassifyingDiagramHorizontalRow k)
+
+  def UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv (k n : ℕ) :
+      (M.InterfaceClassifyingDiagramHorizontalRow k) _⦋n⦌ ≃
+        (M.InterfaceClassifyingDiagramHorizontalRow k).Path n
+  ```
+
+- Construction: `Functor.flippingEquiv` swaps the two finite indexing
+  categories in `Fun (Fin (n + 1)) (Fun (Fin (k + 1)) M.Object)`. Its
+  naturality gives an isomorphism of entire simplicial sets, not unrelated
+  degreewise bijections. `SSet.StrictSegal.ofIso` transports the ordinary
+  nerve's canonical reconstruction data across that isomorphism.
+- Strength of comparison: the theorem
+  `interfaceClassifyingDiagramOuterSegalEquiv_apply` identifies the forward
+  map definitionally with the row's spine map. Hence this proves the Segal
+  comparison itself is invertible, not merely that its source and target have
+  equivalent underlying types.
+- Status: `PROVED` for every pair `(k,n)`. This is stronger than the weak
+  equivalence required of a Segal space in the outer direction.
+- Kernel assumptions: `SSet.Path.mapIso`, `SSet.StrictSegal.ofIso`, the row
+  isomorphism, transported strict-Segal structure, outer equivalence, and its
+  forward-map theorem all use exactly `[propext, Classical.choice,
+  Quot.sound]`.
+- Source: `Ript/ForMathlib/AlgebraicTopology/StrictSegalIso.lean` and
+  `Ript/Univalent/ClassifyingDiagram.lean`.
+
 ### Vertical vertices and invertible vertical edges
 
 - Natural-language statement: taking vertical vertices of the entire
@@ -4755,10 +4795,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   by itself establish complete-Segal completeness, Rezk completion, or a
   localization universal property.
 - The Rezk classifying diagram is now constructed as a genuine bisimplicial
-  object and its vertical levels are controlled. The outer Segal comparison
-  equivalences and the Rezk completeness map have not yet been defined and
-  proved, so the object is not yet advertised as a complete Segal space or as
-  a localization of the resource-process bicategory.
+  object, its vertical levels are controlled, and its actual outer Segal maps
+  are equivalences in every bidegree. The Rezk completeness map has not yet
+  been defined and proved, so the object is not yet advertised as a complete
+  Segal space or as a localization of the resource-process bicategory.
 - None of the completion, envelope, nerve, or classifying-diagram layers is a
   full presheaf model or proved localization of the resource-process
   bicategory.
@@ -4776,8 +4816,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   resource-process bicategory.
 - Representable presheaf semantics, a strict Kan simplicial nerve, and the
   levelwise groupoidal Rezk classifying diagram now have proved foundations,
-  but outer Segal equivalences, Rezk completeness, presheaf localization, and
-  genuinely higher identity remain Stage-12 research targets; the proved
+  including outer Segal equivalences, but Rezk completeness, presheaf
+  localization, and genuinely higher identity remain Stage-12 research targets; the proved
   foundations above do not discharge them.
 
 ## Design decisions
@@ -4981,8 +5021,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     Mathlib skeleton construction.
 42. The phrase “truncated completion” is used literally. The Rezk route now
     includes a classifying diagram with a second simplicial direction and a
-    new audit, but still requires outer Segal and completeness equivalences
-    before it can be called a complete Segal space or localization. The object
+    new audit whose outer Segal comparisons are strict equivalences, but still
+    requires the Rezk completeness equivalence before it can be called a
+    complete Segal space or localization. The object
     and skeletal completions remain only the compiled 0/1-truncated
     foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
@@ -5021,6 +5062,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     the ordinary nerve, rather than flattening two simplicial directions into
     one. This preserves the natural-transformation groupoids that the strict
     nerve forgets. The vertical-vertex comparison is a natural isomorphism of
-    simplicial sets, and every vertical level is proved Kan; outer Segal maps
-    and the Rezk completeness map remain named proof obligations rather than
-    implicit consequences of levelwise Kan filling.
+    simplicial sets, and every vertical level is proved Kan. Flipping the two
+    finite indexing categories makes every horizontal row an ordinary nerve,
+    so the actual outer spine maps are equivalences. The Rezk completeness map
+    remains a named proof obligation rather than an implicit consequence of
+    levelwise Kan filling or outer Segal structure.

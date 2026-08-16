@@ -326,6 +326,15 @@ set_option autoImplicit false
 #print axioms Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip
 #print axioms Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality
 #print axioms Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality
+#print axioms SSet.Path.mapIso
+#print axioms SSet.Path.mapIso_spine
+#print axioms SSet.StrictSegal.ofIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalSimplexEquiv
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowIsStrictSegal
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso

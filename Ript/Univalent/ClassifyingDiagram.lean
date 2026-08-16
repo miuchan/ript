@@ -1,3 +1,5 @@
+import Mathlib.CategoryTheory.Functor.Currying
+import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.Univalent.Simplicial
 
 /-!
@@ -15,10 +17,12 @@ so every vertical simplicial set is the nerve of a groupoid and is therefore
 a Kan complex.
 
 This file constructs that genuine two-dimensional object and proves its
-levelwise groupoidal/Kan structure.  It also identifies its vertical vertices
-with the ordinary interface nerve and its vertical edges with invertible
-natural transformations.  It does not yet package or prove the outer Segal
-and Rezk completeness equivalences; those remain the next completion step.
+levelwise groupoidal/Kan structure.  It identifies its vertical vertices with
+the ordinary interface nerve and its vertical edges with invertible natural
+transformations.  By flipping the two finite indexing categories, every
+horizontal row is naturally isomorphic to an ordinary categorical nerve, so
+the actual outer spine maps are equivalences in every bidegree.  The Rezk
+completeness equivalence remains the next completion step.
 -/
 
 set_option autoImplicit false
@@ -52,6 +56,62 @@ simplicial object in simplicial sets.  No completeness claim is built into
 this definition. -/
 def InterfaceClassifyingDiagram : SimplicialObject SSet :=
   interfaceClassifyingDiagramCat M ⋙ CategoryTheory.nerveFunctor
+
+/-- The horizontal simplicial set obtained by evaluating the vertical
+simplicial direction in degree `k`. -/
+def InterfaceClassifyingDiagramHorizontalRow (k : ℕ) : SSet :=
+  InterfaceClassifyingDiagram M ⋙ SSet.evaluation.obj (op ⦋k⦌)
+
+/-- In bidegree `(n,k)`, flipping the two finite indexing categories identifies
+the classifying diagram with the `n`-simplices in the nerve of the category of
+composable `k`-strings. -/
+def interfaceClassifyingDiagramHorizontalSimplexEquiv (k n : ℕ) :
+    (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌ ≃
+      (CategoryTheory.nerve (ComposableArrows M.Object k)) _⦋n⦌ :=
+  Functor.flippingEquiv
+
+/-- Flipping the two finite indexing categories is natural in the horizontal
+simplicial direction.  Thus every horizontal row is an ordinary categorical
+nerve, not merely degreewise equivalent to one. -/
+def interfaceClassifyingDiagramHorizontalRowIso (k : ℕ) :
+    InterfaceClassifyingDiagramHorizontalRow M k ≅
+      CategoryTheory.nerve (ComposableArrows M.Object k) :=
+  NatIso.ofComponents
+    (fun _ ↦ (Functor.flippingEquiv
+      (C := Fin (k + 1)) (D := Fin (_ + 1)) (E := M.Object)).toIso)
+    (fun _ ↦ by
+      ext F
+      rfl)
+
+/-- Every horizontal row has a canonical strict Segal structure, transported
+from the ordinary nerve of the category of composable `k`-strings. -/
+def interfaceClassifyingDiagramHorizontalStrictSegal (k : ℕ) :
+    SSet.StrictSegal (InterfaceClassifyingDiagramHorizontalRow M k) :=
+  SSet.StrictSegal.ofIso
+    (interfaceClassifyingDiagramHorizontalRowIso M k)
+    (CategoryTheory.Nerve.strictSegal (ComposableArrows M.Object k))
+
+/-- Proposition-level strict-Segal instance for every horizontal row. -/
+instance interfaceClassifyingDiagramHorizontalRowIsStrictSegal (k : ℕ) :
+    (InterfaceClassifyingDiagramHorizontalRow M k).IsStrictSegal :=
+  (interfaceClassifyingDiagramHorizontalStrictSegal M k).isStrictSegal
+
+/-- The outer Segal comparison in every vertical degree is an equivalence.
+Its forward map is the actual spine map, so this is stronger than a merely
+chosen equivalence between the two underlying types. -/
+def interfaceClassifyingDiagramOuterSegalEquiv (k n : ℕ) :
+    (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌ ≃
+      (InterfaceClassifyingDiagramHorizontalRow M k).Path n :=
+  (interfaceClassifyingDiagramHorizontalStrictSegal M k).spineEquiv n
+
+/-- The forward direction of the outer Segal equivalence is definitionally
+the outer spine comparison. -/
+@[simp]
+theorem interfaceClassifyingDiagramOuterSegalEquiv_apply (k n : ℕ)
+    (x : (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌) :
+    interfaceClassifyingDiagramOuterSegalEquiv M k n x =
+      (InterfaceClassifyingDiagramHorizontalRow M k).spine n x :=
+  rfl
 
 /-- The outer category at a simplex `Δ` is definitionally the category of
 `Δ`-shaped composable arrows. -/
