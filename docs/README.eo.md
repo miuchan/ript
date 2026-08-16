@@ -56,11 +56,17 @@ idento ekvivalentas al interna struktura ekvivalento; kaj tiphava procezlingvo
 kun reindeksado laŭ ekvivalentoj havas pruvitan ĝustecon. Ĝi estas aro-nivela,
 1-tranĉita modelo: ĝi nek supozas eksteran univalentecon nek transformas
 arbitran Lean-tipekvivalenton en tipegalon.
+Etapo 12 nun liveras sian unuan strikte limigitan kompletigan paŝon. Senelekta
+objektokvociento identigas kodojn precize kiam interna idento estas nure
+loĝata, kun universala malsuprenigo por invariantaj mapoj kaj internaj
+predikatoj. Aparta nekomputebla Mathlib-skeleto konservas ĉiujn aŭtomorfiojn
+kaj estas kategorie ekvivalenta al la origina grupoido. Tiuj estas
+0/1-tranĉitaj fundamentoj, ne pretendita Rezk-kompletigo.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–11 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. La tranĉitaj tavoloj de etapoj 1–12 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -458,6 +464,48 @@ donas `(infinity,1)`-kategorion, pli-altan vojkoheron, antaŭfaskan aŭ simplici
 modelon, Rezk-kompletigon, eksteran strukturidentecon, nek teoremon
 `Equiv α β → α = β`. Tiuj restas apartaj esploraj devoj, ne kaŝitaj supozoj.
 
+### 14. Tranĉita kompletigo kaj universala malsuprenigo
+
+Etapo 12 komenciĝas per du konstruoj kun eksplicite malsamaj fidaj kaj
+komputeblaj limoj. `ObjectCompletion` estas la kvociento de krudaj interfackodoj
+laŭ `Nonempty (M.Identity A B)`, sen elekto de reprezentanto. Egaleco de
+kompletigitaj objektoj ekvivalentas al nura loĝateco de interna idento kaj, per
+`internalUnivalence`, al nura loĝateco de interna struktura ekvivalento. Sumo
+kaj tensoro malsupreniras al la kvociento, kie simetrio, asocieco kaj unuigaj
+leĝoj fariĝas laŭvortaj Lean-egalaĵoj.
+
+La objektokvociento havas kompilitan universalan econ:
+
+```lean
+objectCompletionUniversal (β) :
+  (M.ObjectCompletion → β) ≃ M.InvariantMap β
+
+internalPredicateCompletionEquiv :
+  (M.ObjectCompletion → Prop) ≃ M.InternalPredicate
+```
+
+Do plenumebla datumo povas eliri el la kvociento nur post kiam ĝia krudkoda
+mapo liveras pruvon de intern-identa invarianteco; neniu reprezentanto estas
+elektata. La Bulea ekzemplo malsuprenigas ekzaktan kodan kardinalon kaj taksas
+`bit + (bit tensor bit)` al `6`. Ĝi ankaŭ pruvas, ke tensor-simetriaj prezentoj
+egalas post kompletigo dum la originaj Lean-sintaksarboj restas malegalaj.
+
+`SkeletalCompletion` estas intence aparta. Ĝi reuzas la Mathlib-skeleton de la
+interna grupoido, estas skeleta grupoido, konservas ĉiujn aŭtomorfiojn kaj
+ekvivalentas al la origina grupoido. Limigo laŭ tiu ekvivalento donas:
+
+```lean
+skeletalCompletionUniversal (E) :
+  (M.SkeletalCompletion ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+Mathlib elektas skeletajn reprezentantojn, do tiu kategoria tavolo estas
+eksplicite `noncomputable` kaj ĝiaj reviziitaj teoremoj enhavas
+`Classical.choice`. La senelektaj objektaj universalaj ecoj ne enhavas ĝin.
+Neniu konstruo liveras pli-altajn vojojn, kompletan Segal-koheron, antaŭfaskan
+lokalizon, eksteran univalentecon aŭ Rezk-kompletigon de la rimed-proceza
+dukategorio.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -570,6 +618,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | La du ekzemplaj finpunktoj restas malegalaj kiel ekstera koda sintakso. |
 | `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | Ilia interna idento interpretiĝas kiel la atendata tensora interŝanĝo. |
 | `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Sinsekvaj reindeksadoj de Bulea neo semantike egalas kunmetitan reindeksadon. |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.ofCode_eq_iff_identity` | Egaleco de kompletigitaj kodoj estas precize nura loĝateco de interna idento. |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.tensor_assoc` | Tensoro estas laŭvorte asocieca sur kompletigitaj objektoj. |
+| `Ript.Univalent.UniverseModel.objectCompletionUniversal` | Mapoj el objektokompletigo estas precize intern-ident-invariantaj mapoj sur krudaj kodoj. |
+| `Ript.Univalent.UniverseModel.internalPredicateCompletionEquiv` | Predikatoj sur kompletigitaj objektoj estas precize internaj invariantaj predikatoj. |
+| `Ript.Univalent.UniverseModel.objectCompletionToSkeletal_bijective` | Senelektaj kompletigitaj objektoj kaj skeletaj objektoj bijekcie respondas. |
+| `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | Funktorkategorioj el la skeleto kaj la origina grupoido estas ekvivalentaj. |
+| `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | Ĉiu generita struktura ekvivalento konservas ekzaktan interfacan kardinalon. |
+| `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | Kompletiga egaleco kunekzistas kun malegaleco de la originaj sintaksarboj. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -598,7 +654,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
 | 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
-| 12 | Rezk-kompletigo aŭ pli-altdimensia univalenta semantika etendaĵo | **OPEN RESEARCH** |
+| 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
+| 12, pli-alta etendaĵo | Rezk-kompletigo aŭ pli-altdimensia univalenta semantika etendaĵo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -620,6 +677,8 @@ La realigita modelsubteno estas intence mallarĝa:
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
+| Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
+| Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; ne Rezk-kompletigo |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -632,7 +691,9 @@ decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 KL-datumtraktado, energio-derivitaj Gibbs-statoj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
-kvocientoj interpretiĝas en aroj. La modeldukategorio estas realigita por fiksa
+kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
+nekomputebla skeletokompletigo establas nur la eksplicite reviziitan
+0/1-tranĉitan fundamenton. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -902,6 +963,8 @@ import Ript.Models.Thermal.Monotone
 import Ript.Models.Quantum.Kraus
 -- aŭ, por la senaksioma interne univalenta procezuniverso:
 import Ript.Univalent.Process
+-- aŭ, por objektaj kaj skeletaj tranĉitaj kompletigoj:
+import Ript.Univalent.Completion
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -918,7 +981,7 @@ malsupra laboro.
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
 | [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
 | [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio kaj kohero |
-| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto kaj ĝusteco |
+| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, ĝusteco kaj tranĉitaj kompletigoj |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -964,8 +1027,8 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    forĵeto kaj kompleta pozitiveco estas realigitaj; inversa prezento,
    ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko kaj pli-alta
    univalenta tavolo restas malfermaj. La fidela klasika-kvantuma enigo, la
-   modeldukategorio kaj la malgranda interne univalenta universo estas realigitaj
-   kun eksplicitaj ampleksolimoj.
+   modeldukategorio, la malgranda interne univalenta universo kaj ĝiaj
+   0/1-tranĉitaj kompletigoj estas realigitaj kun eksplicitaj ampleksolimoj.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -1053,6 +1116,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Profundaj interfackodoj kun apartaj sintaksoj de struktura ekvivalento kaj interna idento
 - [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
+- [x] Senelekta objektokompletigo, invarianta malsuprenigo kaj skeleta grupoidokompletigo
 - [ ] Rezk-kompletigo aŭ antaŭfaska/simplicia univalenta modelo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la

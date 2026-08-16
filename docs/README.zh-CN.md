@@ -36,9 +36,12 @@ Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
 带等价重索引的深嵌入过程语言具有 soundness 定理。它是集合层、1-截断模型，不假设外部
 univalence，也不会把任意 Lean 类型等价变成 Lean 类型相等。
+Stage 12 现已完成第一步严格限界的补全：无选择的对象商精确按内部恒等是否非空来识别 code，
+并给出不变量映射与内部谓词的普遍下降；另一个独立的、不可计算的 Mathlib 骨架保留全部
+自同构，并与原群胚范畴等价。这些只是 0/1-截断基础，并不是对 Rezk completion 的宣称。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–11 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–12 的截断层已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -343,6 +346,39 @@ indiscernibility 定理证明内部恒等的接口无法被任何良构内部谓
 coherence、presheaf/simplicial 模型、Rezk completion、外部结构恒等，也没有
 `Equiv α β → α = β` 定理；这些仍是独立、明确的研究义务，而不是隐藏假设。
 
+### 14. 截断补全与普遍下降
+
+Stage 12 首先实现两个信任边界与可计算边界不同的构造。`ObjectCompletion` 按
+`Nonempty (M.Identity A B)` 对原始接口 code 取商，不需要选择代表元。补全对象的相等当且
+仅当存在内部恒等；再由 `internalUnivalence`，也当且仅当存在内部结构等价。sum 与 tensor
+下降到商上，其交换、结合与单位律成为字面 Lean 相等。
+
+该对象商具有经过编译的普遍性质：
+
+```lean
+objectCompletionUniversal (β) :
+  (M.ObjectCompletion → β) ≃ M.InvariantMap β
+
+internalPredicateCompletionEquiv :
+  (M.ObjectCompletion → Prop) ≃ M.InternalPredicate
+```
+
+因此，可执行数据只能在原始 code 上先提供内部恒等不变性证明后才离开商；实现不会选择代表元。
+Boolean 示例把精确 code 基数下降到补全上，并把 `bit + (bit tensor bit)` 求值为 `6`；同时
+证明 tensor 对称的表示在补全后相等，而原始 Lean 语法仍不相等。
+
+`SkeletalCompletion` 刻意与之分离。它复用 Mathlib 的内部群胚骨架，本身是 skeletal 群胚，
+保留全部自同构，并与原群胚等价。沿该等价限制函子可得：
+
+```lean
+skeletalCompletionUniversal (E) :
+  (M.SkeletalCompletion ⥤ E) ≌ (M.Object ⥤ E)
+```
+
+Mathlib 会选择骨架代表元，因此该范畴层明确标为 `noncomputable`，相应公理审计包含
+`Classical.choice`；无选择的对象商普遍性质不包含它。两者都没有给出高阶路径、complete
+Segal coherence、presheaf localization、外部 univalence 或资源过程双范畴的 Rezk completion。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -454,6 +490,14 @@ coherence、presheaf/simplicial 模型、Rezk completion、外部结构恒等，
 | `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | 示例的两个端点仍是外部不相等的 code 语法。 |
 | `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | 它们的内部恒等解释为预期的 tensor 交换。 |
 | `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Boolean 否定的连续重索引与复合重索引语义一致。 |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.ofCode_eq_iff_identity` | 补全 code 相等当且仅当内部恒等非空。 |
+| `Ript.Univalent.UniverseModel.ObjectCompletion.tensor_assoc` | tensor 在补全对象上字面满足结合律。 |
+| `Ript.Univalent.UniverseModel.objectCompletionUniversal` | 补全对象上的映射恰好是原始 code 上的内部恒等不变量。 |
+| `Ript.Univalent.UniverseModel.internalPredicateCompletionEquiv` | 补全对象上的谓词恰好是内部不变谓词。 |
+| `Ript.Univalent.UniverseModel.objectCompletionToSkeletal_bijective` | 无选择的补全对象与骨架对象之间存在双射。 |
+| `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | 从骨架群胚与原群胚出发的函子范畴互相等价。 |
+| `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | 每个生成的结构等价都保持精确接口基数。 |
+| `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | 补全相等与原始语法树不相等可以同时成立。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -479,7 +523,8 @@ coherence、presheaf/simplicial 模型、Rezk completion、外部结构恒等，
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
 | 11 | 无公理的深嵌入接口/过程语法、商群胚、内部单值性、soundness 与 indiscernibility | **PROVED** |
-| 12 | Rezk completion 或更高维的单值语义扩展 | **OPEN RESEARCH** |
+| 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
+| 12，高阶扩展 | Rezk completion 或更高维的单值语义扩展 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -501,6 +546,8 @@ coherence、presheaf/simplicial 模型、Rezk completion、外部结构恒等，
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
+| 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
+| 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；选择代表元；不是 Rezk completion |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
@@ -508,7 +555,8 @@ coherence、presheaf/simplicial 模型、Rezk completion、外部结构恒等，
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
 高维或 Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
-其恒等与等价商解释在集合中。模型双范畴已针对固定资源类型和统一 universe 实现；这两个层都不
+其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
+0/1-截断基础。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
@@ -748,6 +796,8 @@ import Ript.Models.Thermal.Monotone
 import Ript.Models.Quantum.Kraus
 -- 或者导入无公理的内部单值过程 universe：
 import Ript.Univalent.Process
+-- 或者导入对象与骨架截断补全：
+import Ript.Univalent.Completion
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -763,7 +813,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
 | [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果、有限热与有限量子模型 |
 | [`Ript/Higher/`](../Ript/Higher/) | 资源索引模型双范畴与 coherence |
-| [`Ript/Univalent/`](../Ript/Univalent/) | 深嵌入接口/过程语法、商群胚、内部单值性、搬运与 soundness |
+| [`Ript/Univalent/`](../Ript/Univalent/) | 深嵌入接口/过程语法、商群胚、内部单值性、搬运、soundness 与截断补全 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -799,7 +849,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
    平衡态的有限热层，以及带 tensor、丢弃和完整正性的有限 Kraus 核心已经实现；反向表示、
    一般随机与因果、解析热力学和高阶单值层仍必须清楚标记为开放研究。经典量子嵌入、模型
-   双范畴和小型内部单值 universe 已实现，并保留各自明确的适用边界。
+   双范畴、小型内部单值 universe 及其 0/1-截断补全已实现，并保留各自明确的适用边界。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -878,6 +928,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
+- [x] 无选择对象补全、不变量下降与骨架群胚补全
 - [ ] Rezk completion，或带显式高阶 coherence 的 presheaf/simplicial 单值模型
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的

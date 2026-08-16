@@ -112,9 +112,13 @@ flowchart LR
   UnivalentModel --> UnivalentSoundness["Univalent.Soundness"]
   UnivalentSoundness --> UnivalentBoundary["Univalent.Boundary"]
   UnivalentSoundness --> UnivalentProcess["Univalent.Process"]
+  UnivalentSoundness --> UnivalentCompletion["Univalent.Completion"]
   UnivalentBoundary --> UnivalentExample["Examples.UnivalentProcessUniverse"]
   UnivalentProcess --> UnivalentExample
+  UnivalentExample --> UnivalentCompletionExample["Examples.UnivalentCompletion"]
+  UnivalentCompletion --> UnivalentCompletionExample
   UnivalentExample --> Audit
+  UnivalentCompletionExample --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -137,7 +141,8 @@ Every node in this graph is an existing compiled module.
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
-| 12 | Rezk completion and higher-dimensional extension beyond the 1-truncated model | OPEN_RESEARCH |
+| 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
+| 12 (higher extension) | Rezk completion and higher-dimensional extension beyond the 1-truncated model | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -2321,6 +2326,132 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   semantic theorems use `[propext, Quot.sound]`.
 - Source: `Ript/Examples/UnivalentProcessUniverse.lean`.
 
+## Stage-12 truncated-completion flagship records
+
+### `ObjectCompletion` and equality by internal identity
+
+- Natural-language statement: interface codes admit a choice-free
+  0-truncation by mere internal identity. Equality of completed objects is
+  equivalent both to an inhabited internal identity and, through internal
+  univalence, to an inhabited structural equivalence. Sum and tensor descend
+  and their commutativity, associativity, and unit laws become literal Lean
+  equalities on completed objects.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.ObjectCompletion : Type u :=
+    Quotient M.objectIdentitySetoid
+
+  theorem ObjectCompletion.ofCode_eq_iff_identity (A B : Code Atom) :
+      ofCode M A = ofCode M B ↔ Nonempty (M.Identity A B)
+
+  theorem ObjectCompletion.ofCode_eq_iff_equiv (A B : Code Atom) :
+      ofCode M A = ofCode M B ↔ Nonempty (M.InternalEquiv A B)
+  ```
+
+- Prerequisites: the Stage-11 internal groupoid and `internalUnivalence`.
+- Status: `PROVED`, including the eight structural sum/tensor equations.
+- Computable: quotient-valued constructors and invariant eliminators reduce;
+  quotient equality remains proof-layer semantics.
+- Kernel assumptions for the audited identity characterization and tensor
+  associativity: `[propext, Quot.sound]`.
+- Source: `Ript/Univalent/Completion.lean`.
+
+### `objectCompletionUniversal` and `internalPredicateCompletionEquiv`
+
+- Natural-language statement: functions from completed objects are exactly
+  functions on raw codes carrying proof that internal identity preserves
+  their values. Likewise, predicates on completed objects are exactly the
+  equivalence-invariant internal predicates of Stage 11.
+- Lean interfaces:
+
+  ```lean
+  def UniverseModel.objectCompletionUniversal (β : Type w) :
+      (M.ObjectCompletion → β) ≃ M.InvariantMap β
+
+  def UniverseModel.internalPredicateCompletionEquiv :
+      (M.ObjectCompletion → Prop) ≃ M.InternalPredicate
+  ```
+
+- Prerequisites: quotient induction, Stage-11 indiscernibility, and explicit
+  identity invariance in `InvariantMap`.
+- Status: `PROVED`; both equivalences have compiled left and right inverse
+  laws.
+- Computable: an explicitly supplied invariant map descends without selecting
+  representatives. Predicate descent is proposition-level.
+- Kernel assumptions for both audited declarations: `[propext, Quot.sound]`.
+- Source: `Ript/Univalent/Completion.lean`.
+
+### `SkeletalCompletion` and its categorical universal property
+
+- Natural-language statement: Mathlib's skeleton of the Stage-11 internal
+  groupoid is a skeletal groupoid equivalent to the original one. Raw codes
+  have the same skeletal object exactly when their internal identity type is
+  inhabited. The canonical object-completion map is bijective, and for every
+  target category, functors from the skeleton and from the original groupoid
+  form equivalent categories.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.SkeletalCompletion : Type u :=
+    CategoryTheory.Skeleton M.Object
+
+  noncomputable def UniverseModel.skeletalCompletionEquivalence :
+      M.SkeletalCompletion ≌ M.Object
+
+  theorem UniverseModel.objectCompletionToSkeletal_bijective :
+      Function.Bijective (M.objectCompletionToSkeletal)
+
+  noncomputable def UniverseModel.skeletalCompletionUniversal
+      (E : Type v) [Category.{w} E] :
+      (M.SkeletalCompletion ⥤ E) ≌ (M.Object ⥤ E)
+  ```
+
+- Prerequisites: Mathlib `CategoryTheory.Skeletal`, `Skeleton`, the groupoid
+  transfer along a fully faithful functor, and `Equivalence.congrLeft`.
+- Status: `PROVED`; the skeleton is also proved totally disconnected while
+  retaining its possibly nontrivial automorphism groups.
+- Computable: no. Mathlib's skeleton chooses object representatives; every
+  affected declaration is confined to the noncomputable semantic layer.
+- Kernel assumptions for the audited bijection and functor-category
+  equivalence: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Univalent/Completion.lean`.
+
+### Executable completion-cardinality witness
+
+- Natural-language statement: Boolean-atom code cardinality is invariant under
+  every generated structural equivalence, descends through object completion,
+  and evaluates `bit + (bit tensor bit)` to `6`. Tensor-symmetric completed
+  presentations are equal even though their raw syntax trees remain unequal.
+- Lean interfaces:
+
+  ```lean
+  theorem codeCardinality_equiv (equiv : EquivExpr A B) :
+      codeCardinality A = codeCardinality B
+
+  theorem completionDoesNotReflectCodeEquality :
+      ofCode model bitTensorUnit = ofCode model unitTensorBit ∧
+        bitTensorUnit ≠ unitTensorBit
+  ```
+
+- Status: `PROVED`; the executable result is enforced by
+  `scripts/check-examples.sh`.
+- Computable: yes for raw cardinality and its descended quotient eliminator.
+- Kernel assumptions: `[propext]` for structural invariance and
+  `[propext, Quot.sound]` for the completion/nonreflection theorem.
+- Source: `Ript/Examples/UnivalentCompletion.lean`.
+
+### Explicit non-claims for Stage 12
+
+- `ObjectCompletion` is a propositional 0-truncation, not a category and not a
+  type of higher paths.
+- `SkeletalCompletion` is an ordinary 1-categorical skeleton. It preserves
+  automorphisms, but does not identify its hom-types with Lean equality.
+- Neither layer is a Rezk completion or a complete Segal/presheaf model of the
+  resource-process bicategory.
+- No external univalence axiom, higher inductive type, localization theorem,
+  or map `Equiv α β → α = β` is introduced.
+
 ### Explicit non-claims for Stage 11
 
 - No external univalence axiom is declared, and `Ript/Univalent/Axioms.lean`
@@ -2331,7 +2462,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - The quotient groupoid is not advertised as a Rezk completion of the full
   resource-process bicategory.
 - Rezk completion, presheaf semantics, and higher-dimensional identity remain
-  Stage-12 research targets.
+  higher-dimensional Stage-12 research targets; the proved truncated
+  completion foundation above does not discharge them.
 
 ## Design decisions
 
@@ -2474,3 +2606,21 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     invariance. This explicit field is what justifies indiscernibility; the
     implementation does not claim that arbitrary meta-level predicates are
     automatically invariant.
+38. Stage 12 separates the choice-free object quotient from the categorical
+    skeleton. The former is the correct computational elimination boundary;
+    the latter deliberately accepts noncomputable chosen representatives only
+    to recover standard categorical universal properties.
+39. Object completion quotients by `Nonempty (M.Identity A B)`, not by the
+    identity type itself. It therefore identifies isomorphism classes while
+    discarding witness multiplicity at dimension zero.
+40. The skeletal completion does not discard witness multiplicity in its
+    morphisms. All automorphisms of the original internal groupoid survive,
+    even though every morphism has equal source and target objects.
+41. An invariant value or internal predicate must provide its descent law
+    before quotient elimination. No representative is selected to manufacture
+    executable data, and `Classical.choice` remains confined to the separate
+    Mathlib skeleton construction.
+42. The phrase “truncated completion” is used literally. A future Rezk route
+    must add a presheaf, simplicial, or other higher-categorical localization
+    with explicit coherence and a new audit; the present results are its
+    compiled 0/1-truncated foundation, not that future theorem.

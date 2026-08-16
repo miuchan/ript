@@ -69,12 +69,19 @@ or the executable cores.
 | Deep processes | Typed generators, identity, serial composition, tensor, endpoint reindexing | Explicit derivations are sound in every generator interpretation | Evaluation is executable |
 | Structure identity | Conjugation of deterministic function spaces along endpoint identities | Internally identical endpoints have equivalent process spaces | Executable on interpreted values |
 | Indiscernibility | Predicates carrying explicit equivalence invariance | Internally identical/equivalent codes satisfy the same internal proposition | Proposition layer |
+| Object completion | Codes quotiented by mere internal identity | Equality is equivalent to inhabited internal identity/equivalence; sum/tensor coherence becomes literal equality | Quotient proof layer; executable maps descend from explicit invariants |
+| Skeletal completion | Mathlib skeleton of the internal groupoid | Skeletal groupoid equivalent to the original; functor categories are equivalent; all automorphisms are retained | Noncomputable semantic layer using chosen representatives |
 
 The concrete Boolean model proves that `bit tensor unit` and `unit tensor bit`
 are unequal syntax trees in Lean while tensor symmetry makes them internally
 identical. Boolean negation transports across that identity and evaluates
-exactly. The audited layer uses no project axiom and no `Classical.choice`.
+exactly. The original internal-univalence layer and the object-completion
+universal properties use no project axiom and no `Classical.choice`. The
+separate skeletal categorical layer inherits `Classical.choice` from
+Mathlib's chosen skeleton representatives and is marked noncomputable; it does
+not feed data back into any executable model.
 
-This is a small set-level, 1-truncated groupoid model. It is not an
-`(∞,1)`-category, does not add `Equiv α β → α = β`, and is not yet a Rezk
-completion or a presheaf model of the full resource-process bicategory.
+Together these are a 0-truncated object completion and a 1-truncated skeletal
+groupoid model. They are not an `(∞,1)`-category, do not add
+`Equiv α β → α = β`, and are not a Rezk completion or a presheaf model of the
+full resource-process bicategory.

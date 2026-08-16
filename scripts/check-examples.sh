@@ -86,4 +86,13 @@ if [[ "$univalent_output" != "$expected_univalent_output" ]]; then
   exit 1
 fi
 
+univalent_completion_output="$(lake env lean Ript/Examples/UnivalentCompletion.lean)"
+expected_univalent_completion_output='6'
+
+if [[ "$univalent_completion_output" != "$expected_univalent_completion_output" ]]; then
+  printf 'Truncated univalent-completion example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_univalent_completion_output" "$univalent_completion_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'
