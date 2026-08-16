@@ -29,7 +29,7 @@ Only implemented and compiled capabilities are marked as supported.
     <tr><td>Total computation (<code>Fin 4 → Nat</code> resources)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Partial computation (<code>Option</code> Kleisli)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Finite causal DAG (exact <code>ℚ≥0</code>)</td><td>Topological generation</td><td>Via <code>FinStoch</code> states</td><td>No</td><td>No</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Finite thermal systems (specified and realized Gibbs equilibrium)</td><td>Gibbs-preserving category; finite closed and bath-assisted protocols</td><td>Bifunctor; realized Gibbs tensor at common temperature</td><td>No exported thermal discard</td><td>No</td><td>No generic interface</td><td>Via <code>FinStoch</code></td><td>No</td><td>Yes: closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds</td><td>Exact states/channels/protocol traces/marginals, information-battery and entropy-neutral work-battery witnesses executable; Gibbs/KL/free-energy/work accounting analytic layer</td></tr>
+    <tr><td>Finite thermal systems (specified and realized Gibbs equilibrium)</td><td>Gibbs-preserving category; finite closed and bath-assisted protocols</td><td>Bifunctor; realized Gibbs tensor at common temperature</td><td>No exported thermal discard</td><td>No</td><td>No generic interface</td><td>Via <code>FinStoch</code></td><td>No</td><td>Yes: closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds</td><td>Exact states/channels/protocol traces/marginals, information-battery, entropy-neutral work-battery, and closed erasure–recharge cycle witnesses executable; Gibbs/KL/free-energy/work accounting analytic layer</td></tr>
     <tr><td>Finite quantum Kraus channels (<code>ℂ</code>)</td><td>Kraus category</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td><td>No</td><td>No</td><td>Matrix proof layer; basis labels executable</td></tr>
     <tr><td>Classical quantum dephasing subcategory</td><td>Yes; identity is basis dephasing</td><td>Bifunctor</td><td>Via ambient trace discard, not separately packaged</td><td>No exported copy</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Exact <code>FinStoch</code> source; noncomputable complex matrix semantics</td></tr>
   </tbody>
@@ -95,11 +95,16 @@ nondegenerate two-level battery with Gibbs weights `2/3` and `1/3` discharges
 from its pure high state to its pure low state, keeps battery entropy exactly
 zero, erases the fair memory exactly, and supplies precisely `log 2 / β` of
 mean energy. Its certified Gibbs-preserving channel therefore attains the
-mechanical Landauer work bound with equality. Closed recharge cycles and
-classifications for broader spectra remain outside the current row. The row
-also includes executable finite closed same-system protocols, their composite
-channel semantics, a nonconstant two-flip Boolean cycle, and the theorem that
-no such closed protocol can erase the uniform equilibrium exactly.
+mechanical Landauer work bound with equality. A matched
+recharge channel is now executable as well: it randomizes the erased memory
+back to equilibrium and uses the released `log 2 / β` of free energy to raise
+the pure battery from low to high. Erasure followed by recharge has exact trace
+`fair/high → erased/low → fair/high`; signed system and battery changes both
+sum to zero, so the closed cycle is not a net-work source. Classifications for
+broader independently specified spectra remain outside the current row. The
+row also includes executable finite closed same-system protocols, their
+composite channel semantics, a nonconstant two-flip Boolean cycle, and the
+theorem that no such closed protocol can erase the uniform equilibrium exactly.
 
 The classical quantum row is the proved faithful measurement--preparation
 image of `FiniteStochastic`. Its Kraus operators are

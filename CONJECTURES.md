@@ -23,6 +23,9 @@ battery purity, and saturates the free-energy balance. Its battery entropy
 changes, so it is not a mechanical-work witness. A separate two-level
 nondegenerate battery now gives an exact entropy-neutral mechanical-work
 protocol: it discharges pure high to pure low, erases the fair bit, supplies
-`log 2 / β`, and saturates the work bound. Closed battery recharge cycles and
-rational-weight classification for independently specified real spectra
-remain roadmap items rather than formalized-but-unproved propositions.
+`log 2 / β`, and saturates the work bound. A matched exact recharge channel
+randomizes the erased memory back to equilibrium, raises the pure battery from
+low to high by the same `log 2 / β`, and closes the executable three-state
+trace. Both signed balances cancel, so no net work is claimed. Rational-weight
+classification for independently specified real spectra remains a roadmap
+item rather than a formalized-but-unproved proposition.

@@ -115,9 +115,12 @@ flowchart LR
   SimpleThermal --> ExplicitBathErasure
   ThermalWork --> ExactWorkErasure["Examples.ExactWorkErasure"]
   SimpleThermal --> ExactWorkErasure
+  ExactWorkErasure --> ExactWorkCycle["Examples.ExactWorkCycle"]
+  ThermalProtocol --> ExactWorkCycle
   ApproximateErasure --> Audit
   ExplicitBathErasure --> Audit
   ExactWorkErasure --> Audit
+  ExactWorkCycle --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
   QuantumTensor --> QuantumCP["Models.Quantum.CompletePositivity"]
@@ -177,7 +180,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, and an entropy-neutral nondegenerate work-battery saturation witness | PROVED |
+| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1647,8 +1650,12 @@ rational channel preserves the joint Gibbs equilibrium while mapping fair
 memory with pure high battery to erased memory with pure low battery. Both
 battery endpoints have entropy zero, and its mean-energy decrease equals the
 memory free-energy increase at `log 2 / β`. Thus the mechanical Landauer work
-bound is attained exactly. This does not construct a closed recharge cycle or
-classify arbitrary independently supplied spectra.
+bound is attained exactly. A matched executable recharge channel randomizes
+the erased memory back to equilibrium and raises the pure battery from low to
+high by the same `log 2 / β`. Erasure followed by recharge has exact trace
+`fair/high → erased/low → fair/high`; both signed memory and battery balances
+sum to zero, so it is a closed work-storage cycle rather than a net-work
+source. Arbitrary independently supplied spectra are not classified.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2595,14 +2602,145 @@ classify arbitrary independently supplied spectra.
   battery energy gap `log 2 / beta`, exact erasure, and the Boolean memory's
   exact free-energy cost. Both sides are independently proved equal to
   `Real.log 2 / beta`.
-- Status: `PROVED`; this is a one-shot discharge saturation theorem. It does
-  not assert a closed recharge cycle or a classification for arbitrary spectra.
+- Status: `PROVED`; this is the discharge half of the separately audited
+  closed cycle. It does not classify arbitrary spectra.
 - Classical choice: yes, inherited only from the audited finite
   KL/free-energy analytic layer.
 - Computable: the channel and endpoint distributions are executable;
   logarithmic energy/free-energy accounting is noncomputable.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/ExactWorkErasure.lean`.
+
+### `Ript.Models.Thermal.FiniteClosedProtocol.trace_twoSteps`
+
+- Natural-language statement: any certified transition from an initial state
+  to a middle state followed by a certified return has the exact three-state
+  trace `initial, middle, initial` when packaged as a two-step closed protocol.
+- Lean type:
+
+  ```lean
+  theorem trace_twoSteps (first second : GibbsPreserving X X)
+      (initial middle : FinDist X.system)
+      (hFirst : initial.push first.channel = middle)
+      (hSecond : middle.push second.channel = initial) :
+      ({ steps := [first, second] } : FiniteClosedProtocol X).trace initial =
+        [initial, middle, initial]
+  ```
+
+- Prerequisite definitions: exact finite-distribution evolution,
+  Gibbs-preserving endomorphisms, and finite closed-protocol traces.
+- Prerequisite lemmas: only the two supplied transition equalities; the proof
+  unfolds the two list steps and rewrites by them.
+- Status: `PROVED`; `run_twoSteps` separately proves final-state return.
+- Classical choice: inherited only through the generic finite stochastic
+  carriers in the theorem's types.
+- Computable: yes; traces are executable lists of exact distributions.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Protocol.lean`.
+
+### `Ript.Examples.ExactWorkCycle.exactWorkRechargeChannel_recharges`
+
+- Natural-language statement: the executable recharge channel maps erased
+  memory with pure low battery exactly to fair memory with pure high battery.
+- Lean type:
+
+  ```lean
+  theorem exactWorkRechargeChannel_recharges :
+      (erasedBit.tensor batteryLow).push exactWorkRechargeChannel =
+        fairEquilibrium.tensor batteryHigh
+  ```
+
+- Prerequisite definitions: the biased `2/3, 1/3` battery equilibrium and the
+  four-row exact rational recharge channel. A separate audited theorem proves
+  that the channel preserves the joint Gibbs equilibrium.
+- Prerequisite lemmas: Boolean/product finite-sum expansion and exact rational
+  normalization.
+- Status: `PROVED`; this is transition existence, not merely a thermodynamic
+  inequality.
+- Classical choice: theorem audit reports the standard exact finite
+  distribution footprint.
+- Computable: yes; an `#eval decide` check confirms the half-mass recharge row.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkCycle.lean`.
+
+### `Ript.Examples.ExactWorkCycle.exactWorkRecharge_saturates_landauer_work`
+
+- Natural-language statement: at every positive inverse temperature, memory
+  randomization releases exactly the free energy needed to raise the work
+  battery, attaining the signed mechanical Landauer balance.
+- Lean type:
+
+  ```lean
+  theorem exactWorkRecharge_saturates_landauer_work
+      (beta : ℝ) (hbeta : 0 < beta) :
+      (exactWorkRecharge beta hbeta).systemFreeEnergyIncrease =
+        (exactWorkRecharge beta hbeta).batteryEnergyDecrease
+  ```
+
+- Prerequisite definitions: the recharge `WorkAssistedTransition`, degenerate
+  fair memory, and nondegenerate canonical work battery.
+- Prerequisite lemmas: the signed memory free-energy increase and battery
+  energy decrease are each proved equal to `-(Real.log 2 / beta)`; a separate
+  theorem proves entropy-neutral pure battery endpoints.
+- Status: `PROVED`; negative signed decreases express energy invested in
+  recharge, not produced work.
+- Classical choice: inherited only from the audited analytic free-energy
+  layer.
+- Computable: the channel and endpoints are exact; logarithmic accounting is
+  noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkCycle.lean`.
+
+### `Ript.Examples.ExactWorkCycle.exactWorkCycle_trace`
+
+- Natural-language statement: exact work erasure followed by matched recharge
+  traces fair/high, erased/low, and fair/high in that order.
+- Lean type:
+
+  ```lean
+  theorem exactWorkCycle_trace :
+      exactWorkCycle.trace (fairEquilibrium.tensor batteryHigh) =
+        [fairEquilibrium.tensor batteryHigh,
+          erasedBit.tensor batteryLow,
+          fairEquilibrium.tensor batteryHigh]
+  ```
+
+- Prerequisite definitions: the two Gibbs-preserving erasure and recharge
+  processes packaged as `exactWorkCycle`.
+- Prerequisite lemmas: exact erasure, exact recharge, and the reusable generic
+  two-step trace theorem.
+- Status: `PROVED`; `exactWorkCycle_returns` separately states final-state
+  equality. The composite is not claimed to be identity on every microstate.
+- Classical choice: theorem audit reports the standard exact finite
+  distribution footprint.
+- Computable: yes; checks evaluate both the step count and the low-erased mass
+  trace `[0, 1, 0]`.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkCycle.lean`.
+
+### `Ript.Examples.ExactWorkCycle.exactWorkCycle_batteryEnergy_balanced`
+
+- Natural-language statement: the signed battery-energy decrease during
+  erasure plus the signed decrease during recharge is exactly zero.
+- Lean type:
+
+  ```lean
+  theorem exactWorkCycle_batteryEnergy_balanced
+      (beta : ℝ) (hbeta : 0 < beta) :
+      (exactWorkErasure beta hbeta).batteryEnergyDecrease +
+          (exactWorkRecharge beta hbeta).batteryEnergyDecrease = 0
+  ```
+
+- Prerequisite lemmas: erasure supplies `Real.log 2 / beta`; recharge supplies
+  its negation. `exactWorkCycle_systemFreeEnergy_balanced` proves the matching
+  cancellation for memory free energy.
+- Status: `PROVED`; this rules out interpreting the exact state cycle as a
+  net-work source.
+- Classical choice: inherited only from the audited analytic energy layer.
+- Computable: endpoint states are exact; real logarithmic energy accounting
+  is noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ExactWorkCycle.lean`.
 
 ### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
 
@@ -4170,9 +4308,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     battery entropy changes, so it is not an entropy-neutral work-bearing
     protocol. A separate executable two-level witness uses pure entropy-neutral
     battery endpoints, a strict energy gap, and exact `log 2 / β` discharge to
-    saturate the mechanical-work bound. Closed recharge cycles remain open,
-    and no claim is made that arbitrary independently supplied exponential
-    weights are rational.
+    saturate the mechanical-work bound. Its matched recharge channel returns
+    erased/low to fair/high, and the two-step protocol has exact state return
+    with zero signed memory and battery balances. This is not a claim that the
+    composite channel is identity on every microstate, nor that arbitrary
+    independently supplied exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to
