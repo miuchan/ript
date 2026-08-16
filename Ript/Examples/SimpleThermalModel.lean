@@ -1,5 +1,5 @@
 import Mathlib.Tactic.NormNum
-import Ript.Models.Thermal.KLDivergence
+import Ript.Models.Thermal.FreeEnergy
 
 /-!
 # Executable finite thermal example
@@ -36,6 +36,33 @@ def fairEquilibrium : FinDist bitSystem where
 def thermalBit : ThermalObject where
   system := bitSystem
   equilibrium := fairEquilibrium
+
+/-- Degenerate two-level Hamiltonian at inverse temperature one.  Both energy
+levels are zero, so its analytic Gibbs distribution is uniform. -/
+noncomputable def uniformGibbsData : FiniteGibbsData bitSystem where
+  energy _ := 0
+  inverseTemperature := 1
+  inverseTemperature_pos := by norm_num
+  nonempty := ⟨false⟩
+
+/-- The analytic Gibbs probability of either Boolean state is one half. -/
+theorem uniformGibbs_probability (x : bitSystem) :
+    uniformGibbsData.probability x = (1 : ℝ) / 2 := by
+  change Real.exp (-1 * 0) /
+      (∑ _ : Bool, Real.exp (-1 * 0)) = (1 : ℝ) / 2
+  rw [Fintype.sum_bool]
+  norm_num
+
+/-- The exact rational thermal bit realizes the analytic Gibbs distribution. -/
+noncomputable def gibbsThermalBit : GibbsThermalObject where
+  thermal := thermalBit
+  gibbs := uniformGibbsData
+  equilibrium_eq_probability x := by
+    change Bool at x
+    change (((1 : ℚ≥0) / 2 : ℚ≥0) : ℝ) =
+      Real.exp (-1 * 0) / (∑ _ : Bool, Real.exp (-1 * 0))
+    rw [Fintype.sum_bool]
+    norm_num
 
 /-- Deterministic Boolean flip as an exact stochastic channel. -/
 def flipChannel : FinStoch bitSystem bitSystem :=
@@ -108,6 +135,57 @@ theorem thermalFlip_klAthermality_invariant
       (state.push thermalFlip.channel)
     rw [hroundtrip] at h
     exact h
+
+/-- On the zero-energy bit, mean energy vanishes for every exact state. -/
+@[simp]
+theorem thermalBit_meanEnergy (state : FinDist thermalBit.system) :
+    gibbsThermalBit.meanEnergy state = 0 := by
+  simp [GibbsThermalObject.meanEnergy, gibbsThermalBit, uniformGibbsData]
+
+/-- The Boolean partition function is two, so its equilibrium free energy at
+inverse temperature one is `-log 2`. -/
+theorem thermalBit_equilibriumFreeEnergy :
+    gibbsThermalBit.equilibriumFreeEnergy = -Real.log 2 := by
+  change -Real.log (∑ _ : Bool, Real.exp (-1 * 0)) / 1 = -Real.log 2
+  rw [Fintype.sum_bool]
+  norm_num
+
+/-- The general KL/free-energy theorem specializes without a scaling factor
+because the Boolean model has inverse temperature one. -/
+theorem thermalBit_kl_freeEnergy_identity
+    (state : FinDist thermalBit.system) :
+    (klAthermality thermalBit state).toReal =
+      gibbsThermalBit.freeEnergyGap state := by
+  simpa [gibbsThermalBit, uniformGibbsData] using
+    gibbsThermalBit.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap
+      state
+
+/-- Reversible equilibrium-preserving bit flip also leaves the concrete
+free-energy gap invariant. -/
+theorem thermalFlip_freeEnergyGap_invariant
+    (state : FinDist thermalBit.system) :
+    gibbsThermalBit.freeEnergyGap (state.push thermalFlip.channel) =
+      gibbsThermalBit.freeEnergyGap state := by
+  apply le_antisymm
+  · exact GibbsThermalObject.freeEnergyGap_monotone
+      (X := gibbsThermalBit) (Y := gibbsThermalBit) rfl thermalFlip state
+  · have hroundtrip :
+        (state.push thermalFlip.channel).push thermalFlip.channel = state := by
+      rw [← FinDist.push_comp]
+      change state.push
+        (GibbsPreserving.comp thermalFlip thermalFlip).channel = state
+      rw [thermalFlip_involutive]
+      exact FinDist.push_identity state
+    have h := GibbsThermalObject.freeEnergyGap_monotone
+      (X := gibbsThermalBit) (Y := gibbsThermalBit) rfl thermalFlip
+      (state.push thermalFlip.channel)
+    calc
+      gibbsThermalBit.freeEnergyGap state =
+          gibbsThermalBit.freeEnergyGap
+            ((state.push thermalFlip.channel).push thermalFlip.channel) :=
+        congrArg (fun next : FinDist thermalBit.system ↦
+          gibbsThermalBit.freeEnergyGap next) hroundtrip.symm
+      _ ≤ gibbsThermalBit.freeEnergyGap (state.push thermalFlip.channel) := h
 
 /-- The equilibrium distribution of two independent thermal bits assigns
 probability one quarter to every pair. -/

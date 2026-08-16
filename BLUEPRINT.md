@@ -99,7 +99,10 @@ flowchart LR
   GibbsPreserving --> ThermalMonotone["Models.Thermal.Monotone"]
   FiniteKL --> ThermalKL["Models.Thermal.KLDivergence"]
   ThermalMonotone --> ThermalKL
-  ThermalKL --> SimpleThermal["Examples.SimpleThermalModel"]
+  ThermalEquilibrium --> ThermalGibbs["Models.Thermal.Gibbs"]
+  ThermalGibbs --> ThermalFreeEnergy["Models.Thermal.FreeEnergy"]
+  ThermalKL --> ThermalFreeEnergy
+  ThermalFreeEnergy --> SimpleThermal["Examples.SimpleThermalModel"]
   SimpleThermal --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
@@ -160,7 +163,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, Gibbs-preserving processes, generic divergence monotonicity, and concrete finite KL data processing | PROVED |
+| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, Gibbs-preserving monotonicity, and concrete finite KL data processing | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1545,6 +1548,22 @@ finite stochastic channel. Thus KL data processing is a compiled theorem, not
 an axiom or structure premise. Logarithms, integration, and noncomputability
 remain downstream of the exact executable model.
 
+The Gibbs refinement preserves that boundary. `FiniteGibbsData` carries a real
+energy function, strictly positive inverse temperature, a nonempty-carrier
+witness, Boltzmann weights, and the finite partition function. It constructs a
+strictly positive normalized real Gibbs probability. `GibbsThermalObject` then
+certifies that the already executable rational equilibrium agrees with this
+analytic probability after coercion to `ℝ`; generic exponential weights are
+not asserted to be rational.
+
+The free-energy layer defines mean energy, Shannon entropy, nonequilibrium
+Helmholtz free energy, equilibrium free energy, and their difference. It proves
+the exact finite identity `D(p || γ) = β (F(p) - F(γ))`. Because the realized
+equilibrium has full support, the KL value is finite. Combined with the compiled
+KL DPI, the identity proves monotonicity of the free-energy gap under
+Gibbs-preserving channels between realized systems at common inverse
+temperature. Landauer inequalities remain open.
+
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
 - Natural-language statement: evolving a finite distribution through a
@@ -1567,7 +1586,7 @@ remain downstream of the exact executable model.
   distribution and channel calculations use explicit executable data.
 - Computable: yes; both sides reduce to the same finite exact rational sum.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
-- Source: `Ript/Models/Thermal/Equilibrium.lean`.
+- Source: `Ript/Models/FiniteDistribution.lean`.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_tensor`
 
@@ -1591,7 +1610,7 @@ remain downstream of the exact executable model.
   infrastructure; all state and channel entries remain executable.
 - Computable: yes; each side evaluates to exact products of finite sums.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
-- Source: `Ript/Models/Thermal/Equilibrium.lean`.
+- Source: `Ript/Models/FiniteDistribution.lean`.
 
 ### `Ript.Models.Thermal.GibbsPreserving.tensor_id`
 
@@ -1712,6 +1731,29 @@ remain downstream of the exact executable model.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Probability/FiniteKL.lean`.
 
+### `Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport`
+
+- Natural-language statement: when the reference distribution is positive at
+  every outcome, the real value of measure-theoretic finite KL is exactly the
+  classical finite sum of `p(x) log (p(x) / q(x))`.
+- Lean type:
+
+  ```lean
+  theorem finiteKL_toReal_eq_sum_of_fullSupport
+      (h_full : ∀ x, q.prob x ≠ 0) :
+      (finiteKL p q).toReal = ∑ x, finiteKLRealTerm p q x
+  ```
+
+- Prerequisite lemmas: the discrete Radon--Nikodym density formula, the
+  real-valued integral-as-finite-sum bridge, and full support implying absolute
+  continuity.
+- Status: `PROVED` for every exact finite state and full-support reference.
+- Classical choice: proof-only through Mathlib's finite measure integration.
+- Computable: the rational inputs and support check are executable; logarithms
+  and the KL value are analytic semantic data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
 ### `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff`
 
 - Natural-language statement: concrete finite KL divergence is zero exactly
@@ -1750,6 +1792,27 @@ remain downstream of the exact executable model.
 - Classical choice: proof-only at the measure-theoretic boundary.
 - Computable: the support violation witness is executable data; KL evaluation
   itself is noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Probability/FiniteKL.lean`.
+
+### `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation`
+
+- Natural-language statement: finite KL is infinite exactly when the source
+  puts nonzero mass on an outcome with zero reference mass.
+- Lean type:
+
+  ```lean
+  theorem finiteKL_eq_top_iff_support_violation :
+      finiteKL p q = ∞ ↔ ∃ x, p.prob x ≠ 0 ∧ q.prob x = 0
+  ```
+
+- Prerequisite lemmas: the forward support characterization of absolute
+  continuity, finiteness under absolute continuity, and
+  `finiteKL_eq_top_of_support_violation`.
+- Status: `PROVED`; it covers both finite and infinite boundary directions.
+- Classical choice: proof-only at the measure-theoretic boundary.
+- Computable: the support witness is exact finite data; analytic KL evaluation
+  remains noncomputable.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Probability/FiniteKL.lean`.
 
@@ -1831,6 +1894,106 @@ remain downstream of the exact executable model.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/KLDivergence.lean`.
 
+### `Ript.Models.Thermal.FiniteGibbsData.sum_probability`
+
+- Natural-language statement: normalized Boltzmann weights over a nonempty
+  finite carrier sum exactly to one.
+- Lean type:
+
+  ```lean
+  theorem FiniteGibbsData.sum_probability (data : FiniteGibbsData X) :
+      ∑ x, data.probability x = 1
+  ```
+
+- Prerequisite definitions: real energy levels, positive inverse temperature,
+  `weight x = exp (-β E(x))`, and the finite partition function.
+- Prerequisite lemmas: `Real.exp_pos`, positivity of a nonempty finite sum, and
+  division by the nonzero partition function.
+- Status: `PROVED`; `partitionFunction_pos`, `probability_pos`, and
+  `log_probability` provide the positivity and logarithmic companion facts.
+- Classical choice: only to extract a witness from the explicitly stored
+  `Nonempty X` proof for finite-sum positivity.
+- Computable: no; real exponential evaluation belongs to the analytic layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Gibbs.lean`.
+
+### `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport`
+
+- Natural-language statement: if an exact rational equilibrium realizes the
+  analytic finite Gibbs probability, every exact equilibrium mass is nonzero.
+- Lean type:
+
+  ```lean
+  theorem GibbsThermalObject.equilibrium_fullSupport
+      (X : GibbsThermalObject) :
+      ∀ x, X.thermal.equilibrium.prob x ≠ 0
+  ```
+
+- Prerequisite definitions: `GibbsThermalObject.equilibrium_eq_probability`.
+- Prerequisite lemmas: strict positivity of every Gibbs probability and
+  injectivity of the rational-to-real coercion at zero.
+- Status: `PROVED`; this rules out the infinite KL boundary relative to a
+  realized Gibbs equilibrium.
+- Classical choice: inherited from the finite Gibbs positivity proof.
+- Computable: the certified exact equilibrium remains executable; the
+  realization equality and positivity are analytic proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Gibbs.lean`.
+
+### `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap`
+
+- Natural-language statement: KL divergence from a realized Gibbs equilibrium
+  equals inverse temperature times nonequilibrium Helmholtz free energy above
+  the equilibrium value.
+- Lean type:
+
+  ```lean
+  theorem klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap
+      (X : GibbsThermalObject) (state : FinDist X.thermal.system) :
+      (klAthermality X.thermal state).toReal =
+        X.gibbs.inverseTemperature * X.freeEnergyGap state
+  ```
+
+- Prerequisite definitions: mean energy, Shannon entropy,
+  `F(p) = U(p) - S(p) / β`, `F(γ) = -log Z / β`, and full-support finite KL.
+- Prerequisite lemmas: the explicit real finite-KL sum, the logarithmic Gibbs
+  formula, exact probability normalization after coercion to `ℝ`, and
+  `β ≠ 0` from positive inverse temperature.
+- Status: `PROVED` for every exact state of every realized finite Gibbs system.
+- Classical choice: proof-only through the finite-KL analytic layer and finite
+  Gibbs positivity.
+- Computable: exact input states remain executable; logarithms, exponentials,
+  KL, entropy, and free energy are noncomputable semantic values.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/FreeEnergy.lean`.
+
+### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone`
+
+- Natural-language statement: a Gibbs-preserving channel between realized
+  finite systems at the same inverse temperature cannot increase excess
+  Helmholtz free energy.
+- Lean type:
+
+  ```lean
+  theorem freeEnergyGap_monotone
+      (hTemperature : Y.gibbs.inverseTemperature =
+        X.gibbs.inverseTemperature)
+      (process : GibbsPreserving X.thermal Y.thermal)
+      (state : FinDist X.thermal.system) :
+      Y.freeEnergyGap (state.push process.channel) ≤ X.freeEnergyGap state
+  ```
+
+- Prerequisite lemmas: KL athermality monotonicity, finiteness from Gibbs full
+  support, the KL/free-energy identity on source and target, and cancellation
+  by the positive common inverse temperature.
+- Status: `PROVED`; the statement correctly compares free-energy gaps rather
+  than absolute free energies of systems with potentially different partition
+  functions.
+- Classical choice: inherited only from the analytic KL/Gibbs proof layer.
+- Computable: state evolution is executable; the order theorem is semantic.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/FreeEnergy.lean`.
+
 ### `Ript.Examples.SimpleThermalModel.thermalFlip_involutive`
 
 - Natural-language statement: deterministic bit flip is a Gibbs-preserving
@@ -1876,6 +2039,33 @@ remain downstream of the exact executable model.
 - Classical choice: proof-only through the concrete KL theorem.
 - Computable: the state round trip is executable; equality of analytic KL
   values is kernel-checked proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/SimpleThermalModel.lean`.
+
+### `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity`
+
+- Natural-language statement: the exact uniform Boolean equilibrium realizes
+  the Gibbs distribution of two zero-energy levels at inverse temperature one,
+  so KL athermality is exactly the free-energy gap without a scale factor.
+- Lean type:
+
+  ```lean
+  theorem thermalBit_kl_freeEnergy_identity
+      (state : FinDist thermalBit.system) :
+      (klAthermality thermalBit state).toReal =
+        gibbsThermalBit.freeEnergyGap state
+  ```
+
+- Prerequisite definitions: `uniformGibbsData`, its exact rational realization
+  `gibbsThermalBit`, and the generic KL/free-energy identity.
+- Prerequisite lemmas: the Boolean finite sum gives partition function `2` and
+  Gibbs mass `1/2` at each state.
+- Status: `PROVED`; companion theorems show mean energy zero,
+  equilibrium free energy `-log 2`, and invariance of the free-energy gap under
+  reversible bit flip.
+- Classical choice: proof-only through the generic analytic theorem.
+- Computable: exact equilibrium and channel entries execute; real logarithms
+  and free energy remain proof-layer semantics.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleThermalModel.lean`.
 
@@ -3231,7 +3421,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 24. A finite `ThermalObject` carries its equilibrium distribution as explicit
     operational data. The name does not imply that an energy function,
     inverse temperature, or exponential Gibbs formula has already been
-    derived; those are later refinements that can instantiate this interface.
+    derived. `GibbsThermalObject` is the separate refinement that supplies
+    those data and an explicit real-probability realization certificate.
 25. `GibbsPreserving` is a proof-carrying wrapper around `FinStoch`, not a new
     probability theory. Identity and composition make a genuine category, and
     independent product is a proved bifunctor whose equilibrium is the product
@@ -3242,8 +3433,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     instance: exact distributions embed as discrete measures, support
     violations map to `∞`, and full stochastic DPI follows from Mathlib's
     Markov-kernel theorem. This analytic interpretation is deliberately
-    noncomputable and downstream of the exact rational core; energy-derived
-    Gibbs states and free-energy identities remain separate future work.
+    noncomputable and downstream of the exact rational core. The Gibbs/free-
+    energy layer now proves normalized Boltzmann probabilities, the exact
+    KL/free-energy identity, and common-temperature free-energy-gap
+    monotonicity without claiming arbitrary exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to
