@@ -104,6 +104,15 @@ dukategorion. Vertikala kaj horizontala kunmetoj, interchange, asociantoj,
 maldekstraj kaj dekstraj unuigiloj, la kvinangula leĝo kaj la triangula leĝo
 estas pruvitaj. Kost-ekzaktaj modelekvivalentoj konservas procezkostojn kaj la
 kernajn sinsekvajn kaj paralelajn limojn sub eksplicita kost-reflekta hipotezo.
+La unua negrupoida lokaliza vertikala tranĉo ankaŭ nun estas kompilita. Ript
+kvocientigas modelmorfiojn per inversigeblaj monoidaj 2-ĉeloj por formi la
+ordinaran homotopikan 1-kategorion de la modeldukategorio, markas ĉiun klason
+kun kost-reflekta reprezentanto, kaj aplikas la Gabriel--Zisman-konstruon de
+Mathlib. La kanona funktoro havas veran `Functor.IsLocalization`-instancon kaj
+la funktorkategorian universalan econ. Nulkosta diskreta ekzemplo pruvas, ke
+unu markita sago ne jam estas inversigebla, do la konstruo vere aldonas
+formalan inversan sagon. Ĉi tio estas ordinara 1-kategoria lokalizo post
+2-izomorfia tranĉo, ne dukategoria, Dwyer--Kan-a, simplicia aŭ Rezk-lokalizo.
 Etapo 11 aldonas intence malgrandan, senaksioman, interne univalentan procez-
 universon. Profundaj kodoj por malpleno, unuo, sumo, tensoro kaj atomaj
 interfacoj portas apartajn sintaksojn por struktura ekvivalento kaj interna
@@ -1270,6 +1279,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Higher.ModelHom.map_comp_cost_le` | Kost-ekzakta modelmorfismo transportas la sinsekvan kernan limon per la fontaj kostoj. |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | Kost-ekzakta modelmorfismo transportas la paralelan kernan limon per la fontaj kostoj. |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | La antaŭa morfismo de kost-ekzakta dukategoria ekvivalento konservas procezkostojn. |
+| `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | Reprezentita sago inversigebla en la homotopikategorio estas dukategoria ekvivalento. |
+| `Ript.Higher.costExactLocalizationFunctor_inverts` | La kanona Gabriel--Zisman-funktoro formale inversigas ĉiun modelmorfion kun kost-reflekta reprezentanto. |
+| `Ript.Higher.costExactLocalizationFunctorEquivalence` | Funktoroj el la lokalizo ekvivalentas al funktoroj inversigantaj ĉiujn markitajn sagojn. |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | Konkreta nulkosta diskreta markita sago ne estas izomorfio antaŭ lokalizo. |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | Interna idento ekvivalentas al interna struktura ekvivalento en la kvocienta universo. |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | Du internaj identoj egalas precize kiam iliaj interpretitaj ekvivalentoj egalas. |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | Egaleco de krudaj vojoj en la kvocienta modelo implicas egalecon de iliaj eksteraj interpretoj. |
@@ -1370,6 +1383,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
+| 10, ordinara modellokalizo | Homotopika 1-kategorio, multiplika kost-ekzakta marko, Mathlib-lokaliza universala eco kaj vere neinversigebla markita sago | **PROVED** |
 | 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
@@ -1397,6 +1411,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
+| Kost-ekzakta modellokalizo | Modelmorfioj kvocientigitaj per inversigeblaj monoidaj 2-ĉeloj | Formala inversigo de ĉiu klaso kun kost-reflekta reprezentanto | Nekomputebla semantika pruva tavolo | Vera Mathlib-a Gabriel--Zisman-lokalizo kaj funktorkategoria universala eco; tranĉas neinversigeblajn 2-ĉelojn kaj ne estas pli-alta lokalizo |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; Mathlib-lokalizo je ĉiu interna identeco; ne Rezk-kompletigo |
@@ -1805,7 +1820,7 @@ malsupra laboro.
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
 | [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
-| [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio kaj kohero |
+| [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio, kohero, homotopikategorio kaj kost-ekzakta lokalizo |
 | [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, tranĉitaj kompletigoj, reprezentebla antaŭfaska semantiko, la strikta simplicia nervo kaj la Rezk-klasifika-diagrama fundamento |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
@@ -1965,6 +1980,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
 - [x] Modelaj asociantoj, unuigiloj, kvinangulo, triangulo kaj transporto per kost-ekzakta ekvivalento
+- [x] Modela homotopika 1-kategorio kaj Gabriel--Zisman-lokalizo je kost-reflektaj modelmorfioj, kun neinversigebla markita ekzemplo
 - [x] Profundaj interfackodoj kun apartaj sintaksoj de struktura ekvivalento kaj interna idento
 - [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo

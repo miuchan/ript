@@ -37,7 +37,21 @@ class CostReflecting (F : M ⟶ N) : Prop where
 
 namespace ModelHom
 
+variable {P : ProcessModel.{u, v, w} R}
 variable (F : M ⟶ N)
+
+/-- The identity model morphism reflects costs. -/
+instance idCostReflecting (M : ProcessModel.{u, v, w} R) :
+    CostReflecting (ModelHom.id M) :=
+  ⟨fun _ ↦ le_rfl⟩
+
+/-- Cost reflection is closed under composition. -/
+instance compCostReflecting (F : M ⟶ N) (G : N ⟶ P)
+    [CostReflecting F] [CostReflecting G] :
+    CostReflecting (ModelHom.comp F G) where
+  map_cost_ge f :=
+    (CostReflecting.map_cost_ge (F := F) f).trans
+      (CostReflecting.map_cost_ge (F := G) (F.toFunctor.map f))
 
 /-- A resource-nonincreasing, cost-reflecting model morphism preserves every
 process cost exactly. -/

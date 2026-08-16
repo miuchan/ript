@@ -18,6 +18,7 @@ import Ript.Examples.EmptyParameterBoundary
 import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
+import Ript.Examples.HigherLocalization
 import Ript.Examples.HigherModels
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
@@ -37,10 +38,12 @@ import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
 import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
+import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
 import Ript.ForMathlib.CategoryTheory.GroupoidInterval
 import Ript.ForMathlib.RationalConvexHull
 import Ript.Higher.Coherence
 import Ript.Higher.Equivalence
+import Ript.Higher.Localization
 import Ript.Higher.ModelBicategory
 import Ript.Higher.ModelHom
 import Ript.Models.Causal.DAG
