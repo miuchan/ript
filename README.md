@@ -68,6 +68,12 @@ exactly, and leaves the battery fair. The global channel preserves the uniform
 Gibbs state, saturates the free-energy Landauer balance at `log 2 / β`, and
 has a formally proved battery entropy change. It is therefore an information-
 battery witness, not an entropy-neutral mechanical-work cycle.
+An independent finite witness realizes the mechanical-work form itself. Its
+nondegenerate two-level battery has equilibrium weights `2/3` and `1/3`,
+discharges from a pure high-energy state to a pure low-energy state without
+changing entropy, erases the fair bit exactly, and supplies exactly
+`log 2 / β`. The executable joint channel preserves the product Gibbs state,
+so the Landauer work inequality is attained with equality.
 Ript now also has a separate finite-dimensional
 quantum core over `ℂ`: positive-semidefinite trace-one density matrices,
 operational maps certified by finite complete Kraus families, proved positivity
@@ -80,7 +86,7 @@ measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
 stochastic entry are proved. The converse Blackwell representation theorem,
-entropy-neutral work-bearing thermodynamic cycles, and rational-weight
+closed work-battery recharge cycles, and rational-weight
 classification for independently specified real spectra remain research
 directions. The higher-categorical
 layer is now compiled: resource-indexed
@@ -592,8 +598,23 @@ unchanged, the global uniform Gibbs state is preserved, and both the system
 free-energy increase and battery free-energy decrease equal `log 2 / β`.
 Lean also proves that battery entropy changes from `0` to `log 2`, so this
 protocol is deliberately not advertised as an entropy-neutral work-bearing
-cycle. Such cycles and classification of rational Gibbs weights for
-independently specified real spectra remain open.
+protocol.
+
+`Ript.Examples.ExactWorkErasure` supplies the complementary mechanical-work
+witness without a bath. Its biased Boolean Gibbs battery has a strict energy
+gap `E(high) - E(low) = log 2 / β`. A fully executable rational channel maps
+
+```text
+(fair memory, pure high battery) -> (erased memory, pure low battery)
+```
+
+exactly while preserving the joint equilibrium. Both battery endpoints have
+zero Shannon entropy, their mean-energy decrease is `log 2 / β`, and the
+memory free-energy increase is the same quantity. Lean therefore proves exact
+entropy neutrality, strict nondegeneracy, and equality in the mechanical
+Landauer work bound. This is a one-shot discharge protocol; a closed battery
+recharge cycle and classification of rational Gibbs weights for independently
+specified real spectra remain open.
 
 ### 12. Finite complex density matrices and Kraus channels
 
@@ -992,6 +1013,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.ExplicitBathErasure.bathBatterySwap_erases` | The executable three-bit permutation exactly erases the system and returns the bath. |
 | `Ript.Examples.ExplicitBathErasure.explicitBathErasure_saturates` | The information-battery witness saturates the free-energy balance at `log 2 / β`. |
 | `Ript.Examples.ExplicitBathErasure.explicitBathErasure_batteryEntropy_changes` | The witness's battery entropy changes, excluding the mechanical-work interpretation. |
+| `Ript.Models.Thermal.GibbsThermalObject.meanEnergy_pure` | A pure finite state has the energy of its supported microstate. |
+| `Ript.Models.Thermal.GibbsThermalObject.entropy_pure` | Every pure finite state has zero Shannon entropy. |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasureChannel_erases` | The executable two-bit channel exactly erases the memory while discharging the battery. |
+| `Ript.Examples.ExactWorkErasure.workBattery_low_lt_high` | The biased two-level battery is strictly nondegenerate at every positive inverse temperature. |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral` | The pure high and pure low battery endpoints have exactly equal entropy. |
+| `Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work` | Supplied battery energy and memory free-energy increase both equal `log 2 / β`. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | The explicit two-step cycle follows `pure false -> pure true -> pure false`. |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_returns` | The two-flip closed cycle returns every exact Boolean state. |
@@ -1109,7 +1136,7 @@ finished physical theory.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
-| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, and an explicit bath-returning information-battery saturation witness | **PROVED** |
+| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, a bath-returning information-battery witness, and an entropy-neutral nondegenerate work-battery saturation witness | **PROVED** |
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
@@ -1134,7 +1161,7 @@ Implemented model support is intentionally narrow:
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
-| Finite thermal systems | Gibbs-preserving category; finite closed and bath-assisted protocols | Product bifunctor | Exact states/channels/protocol traces/marginals and the three-bit bath witness executable; Gibbs/KL/free-energy/work semantics noncomputable | Closed-protocol no-go, Gibbs/KL/free-energy theory, correlation decomposition, rational-error bounds, bath-resolved accounting, and information-battery saturation |
+| Finite thermal systems | Gibbs-preserving category; finite closed and bath-assisted protocols | Product bifunctor | Exact states/channels/protocol traces/marginals plus information- and work-battery witnesses executable; Gibbs/KL/free-energy/work semantics noncomputable | Closed-protocol no-go, Gibbs/KL/free-energy theory, correlation decomposition, rational-error bounds, bath-resolved accounting, information-battery saturation, and entropy-neutral mechanical-work saturation |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
@@ -1153,7 +1180,7 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, rational Gibbs-weight classification for independently specified
-real energy spectra, entropy-neutral work-bearing cycles,
+real energy spectra, closed work-battery recharge cycles,
 and a complete-Segal/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
@@ -1488,6 +1515,8 @@ import Ript.Models.Thermal.Protocol
 import Ript.Examples.ApproximateErasure
 -- or, for explicit bath accounting and the executable saturation witness:
 import Ript.Examples.ExplicitBathErasure
+-- or, for exact entropy-neutral mechanical-work saturation:
+import Ript.Examples.ExactWorkErasure
 -- or, for complex density matrices and trace-preserving Kraus channels:
 import Ript.Models.Quantum.Kraus
 -- or, for the axiom-free internally univalent process universe:
@@ -1667,7 +1696,8 @@ updated assumption audit.
 - [x] Exact rational-error approximate erasure, binary-entropy cost, and product/correlated work bounds
 - [x] Executable finite closed protocols, exact trace/composition semantics, a two-flip cycle, and closed exact-erasure no-go
 - [x] Bath-resolved Landauer accounting and an executable exact-erasure saturation witness using a returned bath and information battery
-- [ ] Entropy-neutral work-bearing cycles and rational-weight classification for independently specified real spectra
+- [x] Exact entropy-neutral erasure using a nondegenerate two-level work battery, with `log 2 / β` saturation
+- [ ] Closed work-battery recharge cycles and rational-weight classification for independently specified real spectra
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
@@ -1754,8 +1784,10 @@ exact-erasure no-go. It also includes bath-resolved free-energy/work bounds and
 an executable three-bit exact-erasure protocol that returns the bath and
 saturates the free-energy balance using an information battery. Because the
 battery entropy changes, this is not an entropy-neutral work-bearing cycle;
-such cycles and rational Gibbs-weight classification for independently
-specified real spectra remain open.
+the independent two-level work-battery example supplies that missing one-shot
+mechanical witness, with pure entropy-neutral endpoints and exact `log 2 / β`
+saturation. Closed battery recharge cycles and rational Gibbs-weight
+classification for independently specified real spectra remain open.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite

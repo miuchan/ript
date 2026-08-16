@@ -49,6 +49,33 @@ def entropy (X : GibbsThermalObject.{u})
   -∑ x : X.thermal.system,
     (state.prob x : ℝ) * Real.log (state.prob x : ℝ)
 
+/-- A pure finite state has mean energy equal to the energy of its supported
+microstate. -/
+@[simp]
+theorem meanEnergy_pure (X : GibbsThermalObject.{u})
+    (x : X.thermal.system) :
+    X.meanEnergy (FinDist.pure x) = X.gibbs.energy x := by
+  unfold meanEnergy
+  have hcast (y : X.thermal.system) :
+      (((if x = y then 1 else 0 : ℚ≥0) : ℚ≥0) : ℝ) =
+        if x = y then 1 else 0 := by
+    by_cases h : x = y <;> simp [h]
+  simp_rw [FinDist.pure_apply, hcast]
+  simp
+
+/-- Every pure finite state has zero Shannon entropy. -/
+@[simp]
+theorem entropy_pure (X : GibbsThermalObject.{u})
+    (x : X.thermal.system) :
+    X.entropy (FinDist.pure x) = 0 := by
+  unfold entropy
+  have hcast (y : X.thermal.system) :
+      (((if x = y then 1 else 0 : ℚ≥0) : ℚ≥0) : ℝ) =
+        if x = y then 1 else 0 := by
+    by_cases h : x = y <;> simp [h]
+  simp_rw [FinDist.pure_apply, hcast]
+  simp
+
 /-- Nonequilibrium Helmholtz free energy `E - β⁻¹ S`. -/
 def nonequilibriumFreeEnergy (X : GibbsThermalObject.{u})
     (state : FinDist X.thermal.system) : ℝ :=

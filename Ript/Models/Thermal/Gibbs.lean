@@ -232,6 +232,23 @@ def ofFullSupport (thermal : ThermalObject.{u}) (β : ℝ) (hβ : 0 < β)
   equilibrium_eq_probability x :=
     (FiniteGibbsData.ofFullSupport_probability thermal β hβ hfull x).symm
 
+/-- The canonical full-support realization retains the supplied operational
+thermal object definitionally. -/
+@[simp]
+theorem ofFullSupport_thermal (thermal : ThermalObject.{u}) (β : ℝ)
+    (hβ : 0 < β) (hfull : ∀ x, thermal.equilibrium.prob x ≠ 0) :
+    (ofFullSupport thermal β hβ hfull).thermal = thermal := rfl
+
+/-- The canonical full-support realization fixes the energy gauge to
+`-log γ(x) / β`.  Exposing this projection as a theorem keeps downstream
+calculations independent of structure-projection reduction details. -/
+@[simp]
+theorem ofFullSupport_energy (thermal : ThermalObject.{u}) (β : ℝ)
+    (hβ : 0 < β) (hfull : ∀ x, thermal.equilibrium.prob x ≠ 0)
+    (x : thermal.system) :
+    (ofFullSupport thermal β hβ hfull).gibbs.energy x =
+      -Real.log (thermal.equilibrium.prob x : ℝ) / β := rfl
+
 /-- Independent composition of two exact Gibbs realizations at the same
 inverse temperature. -/
 def tensor (left right : GibbsThermalObject.{u})

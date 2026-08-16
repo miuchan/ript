@@ -5,6 +5,7 @@ import Ript.Examples.ClassicalCopy
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
 import Ript.Examples.ExplicitBathErasure
+import Ript.Examples.ExactWorkErasure
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
@@ -160,6 +161,12 @@ set_option autoImplicit false
 #print axioms Ript.Examples.ExplicitBathErasure.bathBatterySwap_erases
 #print axioms Ript.Examples.ExplicitBathErasure.explicitBathErasure_saturates
 #print axioms Ript.Examples.ExplicitBathErasure.explicitBathErasure_batteryEntropy_changes
+#print axioms Ript.Models.Thermal.GibbsThermalObject.meanEnergy_pure
+#print axioms Ript.Models.Thermal.GibbsThermalObject.entropy_pure
+#print axioms Ript.Examples.ExactWorkErasure.exactWorkErasureChannel_erases
+#print axioms Ript.Examples.ExactWorkErasure.workBattery_low_lt_high
+#print axioms Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral
+#print axioms Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_process
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace
