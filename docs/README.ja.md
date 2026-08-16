@@ -44,8 +44,9 @@ bifunctor、自由平衡状態の準備、一般 divergence の単調性も実�
 `0 ≤ ε ≤ 1/2` に対して、実行可能な目標の誤り質量は `ε`、エントロピーは
 `binEntropy ε`、正確な超過自由エネルギー費用は
 `(log 2 - binEntropy ε) / β` です。この費用は非負で許容誤りに対して単調非増加であり、
-積端点および相関補正 Landauer 仕事境界に組み込まれます。一般の可測因果モデルと Blackwell
-逆表現定理は研究課題です。一方、明示的な有限熱浴補助プロトコルは実装済みです。
+積端点および相関補正 Landauer 仕事境界に組み込まれます。決定論的有限実験の Blackwell
+逆表現は全台再構成定理で証明済みです。任意の確率的実験に対する逆定理と一般の可測因果モデルは
+研究課題です。一方、明示的な有限熱浴補助プロトコルは実装済みです。
 `((系, 熱浴), 電池) -> ((電池, 熱浴), 系)` という 3 ビット置換は系を正確に消去し、熱浴を完全に戻し、情報電池で `log 2 / β` を支払います。電池エントロピーの変化も証明されているため、これは機械的仕事循環ではありません。別の熱浴なし有限証人は機械的仕事形式そのものを実現します。非縮退二準位電池を純粋高エネルギー状態から純粋低エネルギー状態へ放電し、エントロピーをゼロのまま保ち、公平なビットを正確に消去して `log 2 / β` を供給するため、Landauer 仕事境界を等号で達成します。対応する充電チャネルは消去済みメモリを平衡へ戻して `log 2 / β` を解放し、純粋低電池を純粋高電池へ戻します。二段階の正確な閉軌跡は `公平/高 → 消去済み/低 → 公平/高` で、符号付き収支はゼロです。
 さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
@@ -281,6 +282,13 @@ Ript は二つの意思決定層を意図的に分離します。
   持ちます。`finiteBayesRisk` は無条件の下限ではなく、実際の `Finset.min'` 有限最小値の
   和です。ランダム化された有限意思決定チャネルもこの値を下回れないため、正確な有理数だけで
   独立したデータ処理証明が得られます。
+
+決定論的有限部分には完全な逆定理もあります。任意の正確な全台事前分布と、決定論的な目標観測を
+再構成する 0--1 損失タスクを固定すると、決定論的な源が目標を Blackwell 支配することと、源の
+最適再構成リスクが目標を直接観測するゼロリスク以下であることは同値です。さらにこれは、目標が
+源の各ファイバー上で一定であることとも同値です。一般の確率的 Blackwell--Sherman--Stein 定理を
+仮定せず、正確な後処理証人を抽出します。実行可能な 4 状態例では、整合する目標のリスクは `0`、
+交差する目標の正確なリスクは `1/2` です。
 
 計算制約には `DecisionResourceModel` を使います。各決定論的ルールへ自然数コストを割り当て、
 コスト 0 のフォールバックを備えます。`resourceBayesRisk` は有限に列挙された実行可能ルール上で
@@ -738,6 +746,9 @@ horn に制限されることも検証します。
 | `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell 支配から Mathlib の Bayes リスク順序が従います。 |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | ランダム化有限ルールは計算済み有限最適値を下回りません。 |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Garbling は正確で実行可能な有限 Bayes リスクを改善しません。 |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le` | 全台の目標再構成リスクが決定論的有限 Blackwell 支配を特徴付けます。 |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines` | 決定論的支配は目標が源ファイバー上で一定であることと同値です。 |
+| `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | 4 状態例の正確な交差リスク `1/2` が全後処理証人を排除します。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | 意思決定予算を増やしても最適リスクは悪化しません。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 認証付き reduction は明示的な加法 overhead とともにリスクを移送します。 |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling はタスク相対的意味価値を増やしません。 |
@@ -917,7 +928,7 @@ horn に制限されることも検証します。
 | 3 | 実行可能な有限確率モデル | **PROVED** |
 | 4 | 有限分布の Kleisli 表現 | **PROVED** |
 | 5 | Mathlib `Stoch` への忠実な有限チャネル橋 | **PROVED** |
-| 6 | Blackwell 順序、有限意思決定リスク、資源予算、タスク相対価値 | **PROVED** |
+| 6 | Blackwell 順序、有限意思決定リスク、決定論的有限逆定理、資源予算、タスク相対価値 | **PROVED** |
 | 7、計算 | 多次元全域モデルと `Option` 部分モデル | **PROVED** |
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
 | 8 | 有限平衡系、有限実スペクトルの正確な有理 Gibbs 分類、閉プロトコルの消去不可能性、Gibbs/KL/自由エネルギー理論、相関分解、正確/有理誤り Landauer 境界、情報電池証人、エントロピー中性な非縮退仕事電池の等号証人、正確な閉消去–充電循環 | **PROVED** |
@@ -941,7 +952,7 @@ horn に制限されることも検証します。
 | 正確な有限確率チャネル | 可 | 可 | 実行可能 | 正規化された `ℚ≥0` 行列、Dirac、コピー、破棄 |
 | 有限分布 Kleisli 圏 | 可 | 不可 | 実行可能 | 正確な `pure`/`bind`、`FinStoch` と圏同値 |
 | Mathlib `Stoch` 橋の有限離散像 | 可 | 可（標準同型を介して） | 意味論層 | 忠実な Markov-kernel 解釈；元の行列は実行可能 |
-| 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | Blackwell 順序は `FinStoch` 積を保存；有限最小値、資源予算、タスク相対価値 |
+| 正確な有限意思決定層 | `FinStoch` を介して可 | ネイティブ tensor なし | 実行可能 | 順方向リスク順序；決定論的逆定理とファイバー特徴付け；有限最小値、資源予算、タスク相対価値、4 状態の正負証人 |
 | 全域計算 | 可 | 積 bifunctor | 実行可能 | ステップ/問い合わせ/記憶域/ゲート；正確な直列・並列会計 |
 | `Option` 部分計算 | 可 | 積 bifunctor | 実行可能 | 失敗伝播 Kleisli 合成；全域計算の埋め込み |
 | 有限因果 DAG | トポロジカル生成 | `FinStoch` 状態を介して | 実行可能 | 同種有限台；親局所正確機構とハード介入 |
@@ -958,8 +969,8 @@ horn に制限されることも検証します。
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
-Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
-有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
+Bayes リスク、資源、意味価値、決定論的逆定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
+決定論的実験を越える一般の確率的 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、任意の実 Boltzmann 因子等式を判定する
 一般手続き、
 complete-Segal/Rezk-complete な
@@ -1008,6 +1019,8 @@ flowchart LR
   CK --> BW["Blackwell garbling 順序"]
   ST --> SB["Mathlib 意味論的 Bayes リスク"]
   BW --> FR["実行可能有限 Bayes リスク"]
+  FR --> DB["決定論的有限逆定理"]
+  DB --> DX["4 状態の整合/交差証人"]
   FR --> RR["資源制約付き意思決定リスク"]
   RR --> SV["タスク相対的意味価値"]
   BW --> SB
@@ -1187,6 +1200,11 @@ CI はこの出力を完全一致で比較するため、意図しない実行�
 無関係タスクでは `0` です。6 個の正確な `#eval decide` 契約はすべて `true` を出力し、CI が
 検査します。
 
+`Ript/Examples/DeterministicBlackwell.lean` は、4 個の等確率な隠れ状態上で証明済みの決定論的
+逆定理を実行します。源の分割と整合する目標は再構成リスク `0` と正確な garbling 証人を持ち、
+交差する目標はリスク `1/2` で源の確率的後処理にはなれません。3 個の通常の `#eval decide`
+契約が両リスクと両ファイバー述語を検査し、すべて `true` を出力します。
+
 `Ript/Examples/SimpleComputation.lean` は同じ型付きプログラムを全域圏と `Option` 部分圏で
 実行し、正確な資源ベクトル `(ステップ, 問い合わせ, 記憶域, ゲート) = (3, 1, 0, 1)`、成功・
 失敗、両モデルの予算を検査します。7 個の `#eval decide` はすべて `true` です。
@@ -1240,6 +1258,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- または Blackwell 順序とタスク相対的意思決定価値を使う場合：
 import Ript.Models.Decision.SemanticValue
+-- または決定論的有限 Blackwell 逆定理：
+import Ript.Models.Decision.DeterministicBlackwell
 -- または資源付き全域・部分計算：
 import Ript.Models.Computation.Partial
 -- または有限 DAG、ハード介入、正確な確率状態：
@@ -1364,6 +1384,7 @@ import Ript.Univalent.Simplicial
 - [x] Mathlib `Stoch` への忠実な有限チャネル関手、決定論的およびテンソル比較定理
 - [x] Blackwell garbling 順序、同値、テンソル互換性、Mathlib Bayes リスクのデータ処理
 - [x] 実行可能な正確有限 Bayes リスク、有限最適決定、ランダム化ルールの下界
+- [x] 決定論的有限 Blackwell 逆定理、ファイバー特徴付け、実行可能な 4 状態の正負証人
 - [x] 資源制約付き意思決定リスク、予算単調性、加法 overhead 付き reduction
 - [x] タスク相対的意味価値の同値・garbling・予算・基準・タスク無関連性の法則
 - [x] 完全観測と無情報観測を比較する実行可能 Boolean 意思決定例
@@ -1394,7 +1415,7 @@ import Ript.Univalent.Simplicial
 - [ ] 一般的な凸・因果能力インターフェース
 - [ ] 異種ノード値域、一般可測因果モデル、条件付け、do-calculus 拡張
 - [ ] 全域・部分計算圏の native モノイダル構造
-- [ ] 有限 Blackwell--Sherman--Stein 逆表現定理
+- [ ] 決定論的実験を越える一般確率的有限 Blackwell--Sherman--Stein 逆定理
 - [ ] 正確な有限データを越える一般可測空間の意思決定問題
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
 - [x] 有限エネルギー、正の逆温度、Gibbs 実現、エントロピー、Helmholtz 自由エネルギー
@@ -1482,8 +1503,9 @@ Ript は指定された正確な
 実行可能な有限閉プロトコル、非定数の二反転循環、閉系での正確消去不可能性も証明済みです。
 熱浴別の自由エネルギー/仕事境界と、熱浴を戻して情報電池で等号を達成する実行可能な 3 ビットプロトコルも証明済みです。この電池のエントロピーが変化するため機械的仕事ではありませんが、独立した二準位仕事電池の例が、純粋でエントロピー中性な端点と正確な `log 2 / β` 等号によって一回の機械的仕事証人を与えます。対応する充電チャネルは消去済みメモリの自由エネルギー解放を消費して純粋高電池を復元し、正確なゼロ正味変化循環を閉じます。別に指定した有限実スペクトルについて、正確な有理 Gibbs 確率は参照状態への全 Boltzmann 比が正の有理数である場合に限ることを証明済みです。正有理重みは実行可能な二・三準位分布を与え、`sqrt 2` 比は厳密な反例になります。任意の実指数等式の一般的なアルゴリズム判定は提供しません。正確な有限
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
-相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
-一般可測意思決定理論はまだ証明していません。
+相対的意味価値も扱い、正方向のデータ処理を証明しています。全台の目標再構成と源ファイバーの
+細分化により、決定論的有限実験の逆定理も証明済みです。一般の確率的逆定理と一般可測意思決定
+理論はまだ証明していません。
 また、共通有限値域を持つトポロジカル番号付き DAG、親局所正確機構、正規化観測同時分布、
 ハード介入、正確な `FinStoch` 状態をサポートします。異種値域、一般可測因果モデル、条件付け API、
 do-calculus の完全性は未実装です。

@@ -97,8 +97,9 @@ proofs. The classical-to-quantum layer is now implemented as a faithful
 measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
-stochastic entry are proved. The converse Blackwell representation theorem
-remains a research direction. The higher-categorical
+stochastic entry are proved. A full-support reconstruction theorem now proves
+the converse for deterministic finite experiments; the converse for arbitrary
+stochastic experiments remains a research direction. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
 monoidal functors, and monoidal natural transformations form a bicategory with
@@ -364,6 +365,16 @@ Ript supplies two deliberately separated decision layers:
   `Finset.min'` minima—not an unconditional infimum—and Ript proves that no
   randomized finite decision channel can beat it. This yields an independent
   exact-rational data-processing proof.
+
+The deterministic finite fragment also has a complete converse. Fix any exact
+full-support prior and the zero-one task of reconstructing a deterministic
+target observation. A deterministic source Blackwell-dominates that target if
+and only if its optimal reconstruction risk is no larger than the zero risk of
+direct target observation. Equivalently, the target is constant on every fiber
+of the source. This extracts an exact post-processing witness without assuming
+the general stochastic Blackwell--Sherman--Stein theorem. An executable
+four-state example distinguishes an aligned target of risk `0` from a crossing
+target of exact risk `1/2`.
 
 For computational constraints, `DecisionResourceModel` assigns a natural-
 number cost to each deterministic decision rule and supplies a zero-cost
@@ -989,6 +1000,9 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell dominance implies Mathlib's Bayes-risk order. |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | No randomized finite rule beats the computed finite optimum. |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Garbling cannot improve exact executable finite Bayes risk. |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le` | Full-support target-reconstruction risk characterizes deterministic finite Blackwell dominance. |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines` | Deterministic dominance is exactly target constancy on source fibers. |
+| `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | Exact crossing risk `1/2` rules out every source-to-target garbling in the four-state example. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | More decision budget cannot worsen optimal risk. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Certified reductions transport risk with explicit additive overhead. |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling cannot increase task-relative semantic value. |
@@ -1175,7 +1189,7 @@ finished physical theory.
 | 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
 | 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
-| 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | **PROVED** |
+| 6 | Blackwell order, finite decision risk, deterministic finite converse, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | **PROVED** |
@@ -1199,7 +1213,7 @@ Implemented model support is intentionally narrow:
 | Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
 | Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
 | Mathlib `Stoch` bridge, finite discrete image | Yes | Yes, up to canonical isomorphism | Semantic layer | Faithful Markov-kernel interpretation; source matrices stay executable |
-| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Blackwell order respects `FinStoch` products; finite minima, resource budgets, task-relative value |
+| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Forward risk order; deterministic converse and fiber characterization; finite minima, resource budgets, task-relative value; four-state positive/negative witness |
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
@@ -1217,8 +1231,9 @@ Implemented model support is intentionally narrow:
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
 in Mathlib `Stoch`, and its exact finite decision layer has compiled Blackwell,
-Bayes-risk, resource, and semantic-value theorems. The converse finite
-Blackwell--Sherman--Stein representation theorem, general measurable decision
+Bayes-risk, resource, semantic-value, and deterministic-converse theorems. The
+general stochastic Blackwell--Sherman--Stein converse beyond deterministic
+experiments, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, a general decision procedure for equality of arbitrary real
@@ -1274,6 +1289,8 @@ flowchart LR
   CK --> BW["Blackwell garbling order"]
   ST --> SB["Mathlib semantic Bayes risk"]
   BW --> FR["Executable finite Bayes risk"]
+  FR --> DB["Deterministic finite converse"]
+  DB --> DX["Four-state aligned/crossing witness"]
   FR --> RR["Resource-bounded decision risk"]
   RR --> SV["Task-relative semantic value"]
   BW --> SB
@@ -1477,6 +1494,13 @@ falls from `1/2` to `0` when the budget grows from `0` to `1`. Its task value is
 exactly `1/2` for guessing and `0` for a zero-loss irrelevant task. Six exact
 `#eval decide` contracts all print `true` and are checked by CI.
 
+`Ript/Examples/DeterministicBlackwell.lean` exercises the proved deterministic
+converse on four equiprobable hidden states. A target aligned with the source
+partition has reconstruction risk `0` and an exact garbling witness; a crossing
+target has risk `1/2` and cannot be any stochastic post-processing of the
+source. Three ordinary `#eval decide` contracts check both risks and both fiber
+predicates, and all print `true`.
+
 `Ript/Examples/SimpleComputation.lean` executes the same typed program in the
 total and `Option`-partial categories. It computes the exact resource vector
 `(steps, queries, storage, gates) = (3, 1, 0, 1)`, exercises success and failure,
@@ -1543,6 +1567,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- or, for Blackwell order and task-relative decision value:
 import Ript.Models.Decision.SemanticValue
+-- or, for the deterministic finite Blackwell converse:
+import Ript.Models.Decision.DeterministicBlackwell
 -- or, for resource-aware total and partial computation:
 import Ript.Models.Computation.Partial
 -- or, for finite DAGs, hard interventions, and exact stochastic states:
@@ -1693,6 +1719,7 @@ updated assumption audit.
 - [x] Faithful finite-channel functor into Mathlib `Stoch`, including deterministic and tensor comparison theorems
 - [x] Blackwell garbling order, equivalence, tensor compatibility, and Mathlib Bayes-risk data processing
 - [x] Executable exact finite Bayes risk, finite optimal decisions, and randomized-rule lower bound
+- [x] Deterministic finite Blackwell converse, fiber characterization, and executable four-state positive/negative witness
 - [x] Resource-bounded decision risk, budget monotonicity, and additive-overhead reductions
 - [x] Task-relative semantic value, equivalence, garbling, budget, baseline, and task-irrelevance laws
 - [x] Executable perfect-versus-uninformative Boolean decision example
@@ -1731,7 +1758,7 @@ updated assumption audit.
 - [ ] Generic convex and causal capability interfaces
 - [ ] Heterogeneous node carriers, general measurable causal models, conditioning, and do-calculus extensions
 - [ ] Native monoidal packaging for the total and partial computation categories
-- [ ] Converse finite Blackwell--Sherman--Stein representation theorem
+- [ ] General stochastic finite Blackwell--Sherman--Stein converse beyond deterministic experiments
 - [ ] General measurable-space decision problems beyond exact finite data
 - [ ] Rich computational cost models and operationally validated reduction costs
 - [x] Finite energies, positive inverse temperature, Gibbs realization, entropy, and Helmholtz free energy
@@ -1844,8 +1871,10 @@ proved strict counterexample. General decision of arbitrary real exponential
 equalities remains outside the executable layer.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
-forward data-processing direction. It does not yet prove the converse finite
-Blackwell representation theorem or a general measurable decision theory.
+forward data-processing direction and the converse for deterministic finite
+experiments through full-support target reconstruction and source-fiber
+refinement. The general stochastic converse and a general measurable decision
+theory remain open.
 It also supports topologically numbered finite DAGs with a common finite value
 carrier, exact parent-local mechanisms, normalized observational joints, hard
 interventions, and exact `FinStoch` states. Heterogeneous carriers, general

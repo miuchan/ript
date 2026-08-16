@@ -68,6 +68,15 @@ if [[ "$decision_output" != "$expected_decision_output" ]]; then
   exit 1
 fi
 
+deterministic_blackwell_output="$(lake env lean Ript/Examples/DeterministicBlackwell.lean)"
+expected_deterministic_blackwell_output=$'true\ntrue\ntrue'
+
+if [[ "$deterministic_blackwell_output" != "$expected_deterministic_blackwell_output" ]]; then
+  printf 'Deterministic Blackwell-converse example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_deterministic_blackwell_output" "$deterministic_blackwell_output" >&2
+  exit 1
+fi
+
 computation_output="$(lake env lean Ript/Examples/SimpleComputation.lean)"
 expected_computation_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue'
 

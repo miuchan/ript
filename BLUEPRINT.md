@@ -74,6 +74,9 @@ flowchart LR
   Simulation --> Blackwell
   FiniteKleisli --> Blackwell
   Blackwell --> FiniteRisk["Models.Decision.FiniteRisk"]
+  FiniteRisk --> DeterministicBlackwell["Models.Decision.DeterministicBlackwell"]
+  DeterministicBlackwell --> DeterministicBlackwellExample["Examples.DeterministicBlackwell"]
+  DeterministicBlackwellExample --> Audit
   FiniteRisk --> ResourceDecision["Models.Decision.ResourceBounded"]
   ResourceDecision --> SemanticValue["Models.Decision.SemanticValue"]
   SemanticValue --> SimpleDecision["Examples.SimpleDecision"]
@@ -180,7 +183,7 @@ Every node in this graph is an existing compiled module.
 | 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | PROVED |
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
-| 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
+| 6 | Blackwell order, finite decision risk, deterministic finite converse, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, exact rational-Gibbs classification of finite real spectra, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
@@ -944,7 +947,10 @@ development based on genuine finite minima and a noncomputable semantic bridge
 to Mathlib's existing measure-theoretic Bayes-risk theorem. Semantic value is
 explicitly relative to a prior, actions, loss, baseline, and optional decision
 budget; it is not presented as Shannon information or as a task-independent
-quantity.
+quantity. For deterministic finite experiments, a full-support zero-one
+target-reconstruction problem also proves the converse: risk comparison
+recovers an exact garbling witness, equivalently a refinement relation on
+source fibers. The arbitrary stochastic converse remains outside this stage.
 
 ### `Ript.Core.Simulates.trans`
 
@@ -1077,6 +1083,60 @@ quantity.
 - Computable: yes; the theorem relates executable exact risks.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Decision/FiniteRisk.lean`.
+
+### `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le`
+
+- Natural-language statement: for deterministic finite experiments and any
+  exact full-support prior, the source Blackwell-dominates the target exactly
+  when it has no larger optimal zero-one target-reconstruction risk than
+  observing the target directly.
+- Lean type:
+
+  ```lean
+  theorem deterministic_dominates_iff_reconstructionRisk_le
+      (prior : FinDist Θ) (fullSupport : ∀ θ, 0 < prior.prob θ)
+      (source : Θ → X) (target : Θ → Y) (reference : Θ) :
+      BlackwellDominates (FinStoch.dirac source) (FinStoch.dirac target) ↔
+        finiteBayesRisk (reconstructionProblem prior target reference)
+            (FinStoch.dirac source) ≤
+          finiteBayesRisk (reconstructionProblem prior target reference)
+            (FinStoch.dirac target)
+  ```
+
+- Prerequisites: exact finite zero-one risk, a full-support prior, existence of
+  an optimal deterministic rule, and zero direct-observation risk.
+- Status: `PROVED`; this is a complete converse for deterministic finite
+  experiments, not a claim about arbitrary stochastic matrices.
+- Classical choice: yes in proof-only finite minimization dependencies; no
+  choice-derived datum is returned by the executable risk evaluator.
+- Computable: yes for all experiment and risk data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/DeterministicBlackwell.lean`.
+
+### `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines`
+
+- Natural-language statement: one deterministic finite experiment
+  Blackwell-dominates another exactly when the target observation is constant
+  on every fiber of the source observation.
+- Lean type:
+
+  ```lean
+  theorem deterministic_dominates_iff_fiber_refines
+      (source : Θ → X) (target : Θ → Y) (reference : Θ) :
+      BlackwellDominates (FinStoch.dirac source) (FinStoch.dirac target) ↔
+        ∀ θ θ', source θ = source θ' → target θ = target θ'
+  ```
+
+- Prerequisites: deterministic channels as `FinStoch.dirac`, exact channel
+  composition, and a reference action to extend the induced map off the source
+  image.
+- Status: `PROVED`.
+- Classical choice: `Classical.choose` is used only inside the existence proof
+  to select a preimage for observations in the source image.
+- Computable: the theorem is proposition-level; the four-state aligned and
+  crossing fiber predicates reduce under ordinary `#eval`.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/DeterministicBlackwell.lean`.
 
 ### `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone`
 
@@ -4340,9 +4400,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 16. Semantic value is task-relative: it names a prior, action carrier, loss,
     experiment, baseline, and optional decision budget. No entropy-like,
     task-independent interpretation is inferred from this definition.
-17. Stage 6 proves the forward finite Blackwell implication. The converse
-    finite Blackwell--Sherman--Stein representation theorem remains open and
-    is not claimed by any current declaration.
+17. Stage 6 proves the forward finite Blackwell implication for arbitrary
+    exact stochastic experiments and the converse for deterministic finite
+    experiments. In the deterministic fragment, full-support zero-one target
+    reconstruction recovers an exact garbling witness, equivalently target
+    constancy on source fibers. The general stochastic
+    Blackwell--Sherman--Stein converse remains open and would require a finite
+    convex-separation or linear-programming duality development.
 18. Computation resources are explicit formal bounds on steps, oracle queries,
     storage, and gates. They are not identified with observed wall-clock time,
     and their pointwise function representation reuses Mathlib's ordered
