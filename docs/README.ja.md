@@ -34,13 +34,16 @@ Blackwell 逆表現定理、有限 KL のデータ処理、エネルギーから
 資源非増加な強 braided monoidal 関手、モノイダル自然変換が双圏をなし、垂直・水平合成、
 interchange、結合子、左右単位子、五角形・三角形 coherence を証明しました。明示的なコスト反映を
 備えたコスト完全なモデル同値は、各過程のコストと直列・並列の中心的資源境界を保存します。
-内部解釈されたユニバレント層は未解決であり、Ript は `(∞,1)`-圏の実装も、Lean の型同値から
-型等式が得られることも主張しません。
+Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
+empty・unit・sum・tensor・原子的インターフェースの深い code は、構造同値の構文と内部同一性の
+構文を別々に持ちます。その意味論的商は実際の Mathlib groupoid をなし、内部同一性と内部構造同値は
+同値であり、同値による再添字付けを持つ深いプロセス言語には健全性定理があります。これは集合レベルの
+1-truncated モデルであり、外部 univalence を仮定せず、任意の Lean 型同値を型等式へ変換しません。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 10 は実装済みで Lean の
+> Ript は初期段階の研究ソフトウェアです。Stage 1 から Stage 11 は実装済みで Lean の
 > カーネルにより検証されていますが、公開 API はまだ安定しておらず、現在の核を完全な
 > 物理的情報理論だと主張するものではありません。
 
@@ -339,6 +342,38 @@ Stage 9 の古典拡張は実装済みです。有限古典確率チャネルを
 `sqrt(P(y | x)) |y><x|` による測定—準備チャネルへ写し、合成とテンソルを忠実に保存します。
 古典恒等は全量子恒等ではなく基底脱位相化へ写るため、対象圏は脱位相化冪等部分圏です。
 
+### 13. 公理不要の内部ユニバレントなプロセス universe
+
+Stage 11 は深い埋め込みであり、境界は意図的に一方向です。`Code Atom` はプロセス・
+インターフェースの小さな文法です。`EquivExpr A B` はその文法が明示的に許す構造同値を表し、
+`PathExpr A B` は明示的な `ua` 構成子を持つ内部同一性 witness を表します。どちらも Lean の
+等式ではなく、端点 code が表す小さな Lean 型の間の通常の同値へ解釈されるだけです。
+
+`UniverseModel` を選ぶと、Ript は同値構文と同一性構文を、それぞれの外部解釈の等しさで商に
+します。得られる `InternalEquiv A B` と `Identity A B` は反射・逆・合成・sum・tensor を持ち、
+ラップされた code オブジェクトは Mathlib `Groupoid` をなします。中心定理は次です。
+
+```lean
+internalUnivalence (A B) : M.Identity A B ≃ M.InternalEquiv A B
+```
+
+両方向の往復則は証明済みです。各商における等しさも、その外部解釈の等しさによって正確に特徴づけ
+られます。`InternalFamily` は内部同値に沿って構造を移送し、`InternalPredicate` は同値不変性を
+明示的に提示しなければなりません。その上で indiscernibility 定理は、内部的に同一なインターフェース
+が良形式の内部述語で区別できないことを示します。決定論的プロセス空間では、始域・終域の解釈同値で
+関数を共役することにより、この構造同一性の移送を具体的に構成します。
+
+付随する深いプロセス言語は、生成子、恒等、直列・並列合成、端点の再添字付けを含みます。明示的導出
+系は圏則、tensor interchange、congruence、再添字付け則を含み、`ProcessDerives.soundness` は導出
+可能なすべての等式がすべての決定論的 universe 解釈で成り立つことを証明します。Boolean 例は境界を
+明確にします。`bit ⊗ unit` と `unit ⊗ bit` は Lean の code 構文として不等であると証明できますが、
+tensor 対称性は内部同一性を与え、Boolean 否定を移送し、期待どおり swap として作用し、同値不変述語
+から区別できません。
+
+これは小さな集合意味論による誠実な 1-truncated 実装です。`(infinity,1)`-圏、高次 path coherence、
+presheaf/simplicial モデル、Rezk completion、外部の structure identity、あるいは
+`Equiv α β → α = β` を提供しません。これらは隠れた仮定ではなく、独立した研究義務です。
+
 ## 証明済みの内容
 
 次の主要結果は現在すべてコンパイルされます。日本語の説明は非形式的な要約であり、Lean の
@@ -442,6 +477,15 @@ Stage 9 の古典拡張は実装済みです。有限古典確率チャネルを
 | `Ript.Higher.ModelHom.map_comp_cost_le` | コスト完全なモデル射は、元モデルのコストによる直列コア境界を移送します。 |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | コスト完全なモデル射は、元モデルのコストによる並列コア境界を移送します。 |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | コスト完全な双圏同値の順方向射は過程コストを保存します。 |
+| `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe の内部同一性は内部構造同値と同値です。 |
+| `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | 二つの内部同一性が等しいことは、その解釈同値が等しいことと同値です。 |
+| `Ript.Univalent.UniverseModel.path_interpretation_sound` | 生の path が商モデルで等しければ、その外部解釈も等しくなります。 |
+| `Ript.Univalent.UniverseModel.InternalPredicate.identity_indistinguishable` | 明示的に同値不変な内部述語は内部同一性を尊重します。 |
+| `Ript.Univalent.UniverseModel.functionProcessStructureIdentity` | 始域・終域の同一性は明示的同値によって決定論的プロセス空間を移送します。 |
+| `Ript.Univalent.ProcessDerives.soundness` | 導出可能な深いプロセス等式はすべての決定論的解釈で成立します。 |
+| `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | 例の二つの端点 code は外部構文として不等のままです。 |
+| `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | その内部同一性は期待される tensor swap として解釈されます。 |
+| `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Boolean 否定の連続再添字付けは合成再添字付けと意味論的に一致します。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) には、各定理の前提・計算可能性・ソースファイル・カーネル
 仮定が記録されています。[AXIOMS.md](../AXIOMS.md) は機械的に照合される仮定一覧です。
@@ -467,7 +511,8 @@ Stage 9 の古典拡張は実装済みです。有限古典確率チャネルを
 | 9、有限量子チャネル | 複素密度行列、TP Kraus チャネル、テンソル/interchange、トレース破棄、因果的一意性、有限完全正値性 | **PROVED** |
 | 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
-| 11 | 内部解釈されたユニバレント層 | **OPEN RESEARCH** |
+| 11 | 公理不要の深いインターフェース/プロセス構文、商 groupoid、内部 univalence、健全性、indiscernibility | **PROVED** |
+| 12 | Rezk completion または高次元のユニバレント意味論拡張 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -488,14 +533,17 @@ Stage 9 の古典拡張は実装済みです。有限古典確率チャネルを
 | 有限量子 Kraus チャネル | Kraus 圏 | 可 | 行列証明層；基底ラベルは実行可能 | 複素 PSD トレース 1 状態、標準テンソル、トレース破棄、任意の有限恒等増幅に対する CP；コピーなし |
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
+| 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、具体的有限 KL のデータ処理、
-エネルギー由来 Gibbs 状態、内部解釈されたユニバレント層は**未実装**です。モデル双圏は固定資源型と
-統一 universe の範囲で実装され、`(∞,1)`-圏や Lean の型同値から型等式への同一視は主張しません。
+エネルギー由来 Gibbs 状態、高次元または Rezk-complete なユニバレント意味論は**未実装**です。
+現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
+モデル双圏は固定資源型と統一 universe の範囲で実装され、どちらの層も `(∞,1)`-圏や
+Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
 チャネルコアは実装済みでカーネル検証されています。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
@@ -742,6 +790,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.Monotone
 -- または複素密度行列とトレース保存 Kraus チャネル：
 import Ript.Models.Quantum.Kraus
+-- または公理不要の内部ユニバレントなプロセス universe：
+import Ript.Univalent.Process
 ```
 
 現在の Lake パッケージバージョンは `0.1.0` ですが、安定 API やタグ付きリリースはまだ保証
@@ -756,6 +806,8 @@ import Ript.Models.Quantum.Kraus
 | [`Ript/Syntax/`](../Ript/Syntax/) | 直列言語と対称モノイダル言語 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 評価、健全性、項モデル、完全性 |
 | [`Ript/Models/`](../Ript/Models/) | 決定論・確率・意思決定・計算・有限因果・有限熱・有限量子モデル |
+| [`Ript/Higher/`](../Ript/Higher/) | 資源添字付きモデル双圏と coherence |
+| [`Ript/Univalent/`](../Ript/Univalent/) | 深いインターフェース/プロセス構文、商 groupoid、内部 univalence、移送、健全性 |
 | [`Ript/Examples/`](../Ript/Examples/) | 実行可能な例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint と仮定監査の入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依存グラフ、Stage、定理記録、設計判断 |
@@ -790,8 +842,9 @@ import Ript.Models.Quantum.Kraus
 6. **仮定をバージョン付き API として扱う。** 新しい公理は後日の注釈ではなく即時のゲート失敗です。
 7. **実装と構想を区別する。** 有限離散 `Stoch` 像、正確な有限意思決定層、同種有限 DAG
    因果層、指定平衡を持つ有限熱層、テンソル・破棄・完全正値性を持つ有限 Kraus コアは
-   実装済みです。逆表現、一般確率・因果、解析的熱力学、ユニバレント層とは明確に分けます。
-   古典量子埋め込みとモデル双圏は、それぞれの適用範囲を明示して実装済みです。
+   実装済みです。逆表現、一般確率・因果、解析的熱力学、高次ユニバレント層とは明確に分けます。
+   古典量子埋め込み、モデル双圏、小さな内部ユニバレント universe は、それぞれの適用範囲を
+   明示して実装済みです。
 8. **価値を主張するときはタスク相対性を保つ。** 意味価値には事前分布、行動、損失、基準、
    資源予算を明記し、タスク非依存のエントロピー主張へ暗黙に拡張しません。
 9. **計算コストを明示的に課す。** 後処理を資源比較に使うには、reduction が意思決定品質の境界と
@@ -806,6 +859,9 @@ import Ript.Models.Quantum.Kraus
 13. **古典構造を量子系へ暗黙に持ち込まない。** 量子基底対象は `FinStoch` と分離し、Kraus 形式と
     完全性を明示的に認証します。テンソル、破棄、有限恒等増幅の完全正値性は個別に証明済みです。
     コピーは意図的に存在せず、古典埋め込みには別の証明が必要です。
+14. **内部同一性を内部に保つ。** 深い universe は内部同一性 witness を解釈された同値へ写すだけで、
+    Lean の型等式を逆向きに生成しません。観測可能な述語は明示的な同値不変性証明を持たなければならず、
+    集合商から高次 coherence を推論しません。
 
 ## ロードマップ
 
@@ -866,7 +922,10 @@ import Ript.Models.Quantum.Kraus
 - [x] 資源添字付きモデル 0-射と資源非増加な強 braided monoidal 1-射
 - [x] モノイダル自然変換 2-射、垂直・水平合成、interchange
 - [x] モデル結合子、単位子、五角形、三角形、コスト完全同値による移送
-- [ ] 厳密に分離された内部解釈ユニバレント層；外部ユニバレンス公理なし
+- [x] 構造同値構文と内部同一性構文を分離した深いインターフェース code
+- [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
+- [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
+- [ ] Rezk completion、または明示的高次 coherence を持つ presheaf/simplicial ユニバレントモデル
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
 破壊的変更を明記する必要があります。

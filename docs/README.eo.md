@@ -48,13 +48,19 @@ dukategorion. Vertikala kaj horizontala kunmetoj, interchange, asociantoj,
 maldekstraj kaj dekstraj unuigiloj, la kvinangula leĝo kaj la triangula leĝo
 estas pruvitaj. Kost-ekzaktaj modelekvivalentoj konservas procezkostojn kaj la
 kernajn sinsekvajn kaj paralelajn limojn sub eksplicita kost-reflekta hipotezo.
-Interne interpretita univalenta tavolo restas malferma; Ript ne pretendas
-realigi `(∞,1)`-kategorion nek identigi Lean-tipekvivalenton kun tipegaleco.
+Etapo 11 aldonas intence malgrandan, senaksioman, interne univalentan procez-
+universon. Profundaj kodoj por malpleno, unuo, sumo, tensoro kaj atomaj
+interfacoj portas apartajn sintaksojn por struktura ekvivalento kaj interna
+idento. Iliaj semantikaj kvocientoj formas veran Mathlib-grupoidon; interna
+idento ekvivalentas al interna struktura ekvivalento; kaj tiphava procezlingvo
+kun reindeksado laŭ ekvivalentoj havas pruvitan ĝustecon. Ĝi estas aro-nivela,
+1-tranĉita modelo: ĝi nek supozas eksteran univalentecon nek transformas
+arbitran Lean-tipekvivalenton en tipegalon.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–10 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–11 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -411,6 +417,47 @@ etapo-9-a etendaĵo nun estas realigita per `sqrt(P(y | x)) |y><x|`-operatoroj.
 malfazigo, ne la plena kvantuma idento, la celo estas precize la malfaziga
 idempotenta subkategorio.
 
+### 13. Senaksioma interne univalenta procezuniverso
+
+La tavolo de etapo 11 estas profunde enigita kaj intence unudirekta.
+`Code Atom` estas malgranda gramatiko de procezinterfacoj. `EquivExpr A B`
+priskribas la strukturajn ekvivalentojn eksplicite permesitajn de tiu gramatiko,
+dum `PathExpr A B` priskribas atestantojn de interna idento kaj havas eksplicitan
+konstruilon `ua`. Neniu el ili estas Lean-egaleco; ambaŭ interpretiĝas nur kiel
+ordinaraj ekvivalentoj inter la malgrandaj Lean-tipoj indikitaj de la finaj kodoj.
+
+Por elektita `UniverseModel`, Ript kvocientigas la ekvivalentan kaj identan
+sintaksojn laŭ egaleco de iliaj eksteraj interpretoj. La rezultaj
+`InternalEquiv A B` kaj `Identity A B` subtenas refleksecon, inverson, kunmeton,
+sumon kaj tensoron. La envolvitaj kodobjektoj formas Mathlib-`Groupoid`, kaj la
+centra teoremo estas:
+
+```lean
+internalUnivalence (A B) : M.Identity A B ≃ M.InternalEquiv A B
+```
+
+Ambaŭ rondiraj leĝoj estas pruvitaj. Egaleco en ĉiu kvociento estas precize
+karakterizita per egaleco de ĝia ekstera interpreto. `InternalFamily` transportas
+strukturon laŭ internaj ekvivalentoj; `InternalPredicate` devas eksplicite doni
+sian ekvivalent-invariantecon; kaj la nedistingebla teoremo tiam pruvas, ke
+interne identaj interfacoj havas la samajn observojn. Por determinismaj
+procezspacoj, tiu struktura-identa transporto estas konkrete konstruita per
+konjugado de funkcio per la interpretitaj fonta kaj cela ekvivalentoj.
+
+La akompana profunda procezlingvo enhavas generilojn, identecon, sinsekvan kaj
+paralelan kunmetojn kaj reindeksadon de finpunktoj. Ĝia eksplicita derivsistemo
+inkluzivas kategoriajn leĝojn, tensoran interchange, kongruecon kaj reindeksajn
+leĝojn; `ProcessDerives.soundness` pruvas ĉiun deriveblan ekvacion valida en ĉiu
+determinisma universinterpreto. La Bulea ekzemplo videbligas la limon:
+`bit ⊗ unit` kaj `unit ⊗ bit` estas pruveble malsamaj Lean-sintaksarboj,
+sed tensora simetrio donas internan identecon, transportas Bulean neon, agas kiel
+la atendata interŝanĝo kaj ne estas distingebla de invarianta predikato.
+
+Tio estas honesta malgranda, aro-nivela, 1-tranĉita semantika modelo. Ĝi **ne**
+donas `(infinity,1)`-kategorion, pli-altan vojkoheron, antaŭfaskan aŭ simplician
+modelon, Rezk-kompletigon, eksteran strukturidentecon, nek teoremon
+`Equiv α β → α = β`. Tiuj restas apartaj esploraj devoj, ne kaŝitaj supozoj.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -514,6 +561,15 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Higher.ModelHom.map_comp_cost_le` | Kost-ekzakta modelmorfismo transportas la sinsekvan kernan limon per la fontaj kostoj. |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | Kost-ekzakta modelmorfismo transportas la paralelan kernan limon per la fontaj kostoj. |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | La antaŭa morfismo de kost-ekzakta dukategoria ekvivalento konservas procezkostojn. |
+| `Ript.Univalent.UniverseModel.internalUnivalence` | Interna idento ekvivalentas al interna struktura ekvivalento en la kvocienta universo. |
+| `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | Du internaj identoj egalas precize kiam iliaj interpretitaj ekvivalentoj egalas. |
+| `Ript.Univalent.UniverseModel.path_interpretation_sound` | Egaleco de krudaj vojoj en la kvocienta modelo implicas egalecon de iliaj eksteraj interpretoj. |
+| `Ript.Univalent.UniverseModel.InternalPredicate.identity_indistinguishable` | Ĉiu eksplicite invarianta interna predikato respektas internan identecon. |
+| `Ript.Univalent.UniverseModel.functionProcessStructureIdentity` | Fontaj kaj celaj identoj transportas determinismajn procezspacojn per eksplicita ekvivalento. |
+| `Ript.Univalent.ProcessDerives.soundness` | Ĉiu derivebla profunda procezekvacio validas en ĉiu determinisma interpreto. |
+| `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | La du ekzemplaj finpunktoj restas malegalaj kiel ekstera koda sintakso. |
+| `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | Ilia interna idento interpretiĝas kiel la atendata tensora interŝanĝo. |
+| `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Sinsekvaj reindeksadoj de Bulea neo semantike egalas kunmetitan reindeksadon. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -541,7 +597,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
-| 11 | Interne interpretita univalenta tavolo | **OPEN RESEARCH** |
+| 11 | Senaksiomaj profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, ĝusteco kaj nedistingeblo | **PROVED** |
+| 12 | Rezk-kompletigo aŭ pli-altdimensia univalenta semantika etendaĵo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -562,6 +619,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
+| Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -571,9 +629,11 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
-KL-datumtraktado, energio-derivitaj Gibbs-statoj kaj interne interpretita
-univalenta tavolo estas **ne realigitaj**. La modeldukategorio estas realigita
-por fiksa rimedtipo kaj unuformaj universoj; ĝi ne pretendas `(∞,1)`-kategorion
+KL-datumtraktado, energio-derivitaj Gibbs-statoj kaj pli-altdimensia aŭ
+Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
+univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
+kvocientoj interpretiĝas en aroj. La modeldukategorio estas realigita por fiksa
+rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
 realigita kaj kernel-kontrolita. Vidu
@@ -840,6 +900,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.Monotone
 -- aŭ, por kompleksaj densmatricoj kaj spurkonservaj Kraus-kanaloj:
 import Ript.Models.Quantum.Kraus
+-- aŭ, por la senaksioma interne univalenta procezuniverso:
+import Ript.Univalent.Process
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -855,6 +917,8 @@ malsupra laboro.
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
 | [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
+| [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio kaj kohero |
+| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto kaj ĝusteco |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -898,9 +962,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    ekzakta finia decidtavolo, la homogena finia DAG-kaŭza tavolo, la
    specif-ekvilibra finia termika tavolo kaj la finia Kraus-kerno kun tensoro,
    forĵeto kaj kompleta pozitiveco estas realigitaj; inversa prezento,
-   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko kaj la
-   univalenta tavolo restas malfermaj. La fidela klasika-kvantuma enigo kaj la
-   modeldukategorio estas realigitaj kun eksplicitaj ampleksolimoj.
+   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko kaj pli-alta
+   univalenta tavolo restas malfermaj. La fidela klasika-kvantuma enigo, la
+   modeldukategorio kaj la malgranda interne univalenta universo estas realigitaj
+   kun eksplicitaj ampleksolimoj.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -920,6 +985,10 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
     estas eksplicitaj atestiloj. Tensoro, forĵeto kaj kompleta pozitiveco de
     finia ident-amplifo havas proprajn pruvojn; kopiado intence forestas kaj la
     klasika enigo ankoraŭ bezonas apartan pruvon.
+14. **Teni internan identecon interna.** La profunda universo mapas siajn
+    intern-identajn atestantojn al interpretitaj ekvivalentoj, neniam inverse al
+    Lean-tipegaleco. Ĉiu observebla predikato devas porti eksplicitan pruvon de
+    ekvivalent-invarianteco, kaj pli-alta kohero ne estas konkludata el aro-kvociento.
 
 ## Vojmapo
 
@@ -981,7 +1050,10 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
 - [x] Modelaj asociantoj, unuigiloj, kvinangulo, triangulo kaj transporto per kost-ekzakta ekvivalento
-- [ ] Zorge izolita interne interpretita univalenta tavolo; neniu ekstera univalenta aksiomo
+- [x] Profundaj interfackodoj kun apartaj sintaksoj de struktura ekvivalento kaj interna idento
+- [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
+- [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
+- [ ] Rezk-kompletigo aŭ antaŭfaska/simplicia univalenta modelo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

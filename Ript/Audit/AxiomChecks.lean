@@ -6,6 +6,7 @@ import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
+import Ript.Examples.UnivalentProcessUniverse
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
@@ -131,3 +132,12 @@ set_option autoImplicit false
 #print axioms Ript.Higher.ModelHom.map_comp_cost_le
 #print axioms Ript.Higher.ModelHom.map_tensor_cost_le
 #print axioms Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq
+#print axioms Ript.Univalent.UniverseModel.internalUnivalence
+#print axioms Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq
+#print axioms Ript.Univalent.UniverseModel.path_interpretation_sound
+#print axioms Ript.Univalent.UniverseModel.InternalPredicate.identity_indistinguishable
+#print axioms Ript.Univalent.UniverseModel.functionProcessStructureIdentity
+#print axioms Ript.Univalent.ProcessDerives.soundness
+#print axioms Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit
+#print axioms Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply
+#print axioms Ript.Examples.UnivalentProcessUniverse.reindex_not_sound

@@ -31,11 +31,14 @@ Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、
 高阶范畴层现已实现并通过编译：固定资源类型后，资源索引的对称幺半群过程模型、资源非增的
 强编织幺半群函子和幺半群自然变换构成一个双范畴。纵向与横向复合、interchange、结合子、
 左右单位子、五边形与三角 coherence 均已证明。带显式成本反射的成本精确模型等价还会保持
-每个过程的成本，并传递串行与并行的核心资源界。内部解释的单值层仍是开放研究；Ript 不把
-`(∞,1)`-范畴冒充为已实现结构，也不把 Lean 类型等价冒充类型相等。
+每个过程的成本，并传递串行与并行的核心资源界。Stage 11 现已加入一个刻意保持小型、无公理
+的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
+等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
+带等价重索引的深嵌入过程语言具有 soundness 定理。它是集合层、1-截断模型，不假设外部
+univalence，也不会把任意 Lean 类型等价变成 Lean 类型相等。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–10 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–11 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -310,6 +313,36 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 `sqrt(P(y | x)) |y><x|` 映射为测量—制备信道，并忠实保持复合与 tensor。经典恒等映射为
 基底退相干，而不是所有量子态上的恒等，因此目标被精确定义为退相干幂等子范畴。
 
+### 13. 无公理的内部单值过程 universe
+
+Stage 11 采用深嵌入，并有意保持单向边界。`Code Atom` 是过程接口的小型文法；
+`EquivExpr A B` 描述该文法明确允许的结构等价，`PathExpr A B` 描述内部恒等 witness，并有
+显式 `ua` 构造子。二者都不是 Lean 相等；它们只被解释为端点 code 所表示的小型 Lean 类型
+之间的普通等价。
+
+给定 `UniverseModel` 后，Ript 按这些外部解释是否相等，分别对等价语法和恒等语法取商。
+所得 `InternalEquiv A B` 与 `Identity A B` 支持自反、逆、复合、sum 和 tensor；包装后的
+code 对象构成 Mathlib `Groupoid`。核心结论为：
+
+```lean
+internalUnivalence (A B) : M.Identity A B ≃ M.InternalEquiv A B
+```
+
+两个方向的往返定律均已证明；两个商中的相等也都被精确刻画为其外部解释相等。
+`InternalFamily` 沿内部等价搬运结构，`InternalPredicate` 必须显式提供等价不变性，随后
+indiscernibility 定理证明内部恒等的接口无法被任何良构内部谓词区分。对于确定性过程空间，
+结构恒等搬运由源、目标等价对函数进行共轭而具体构造出来。
+
+配套的深嵌入过程语言包含生成元、恒等、串行复合、并行复合和端点重索引。显式推导系统覆盖
+范畴律、tensor interchange、congruence 与重索引律；`ProcessDerives.soundness` 证明每条
+可推导等式在每个确定性 universe 解释中都成立。Boolean 示例清楚展示边界：
+`bit ⊗ unit` 与 `unit ⊗ bit` 是可证明不相等的 Lean 语法树，但 tensor 对称性产生内部
+恒等、搬运 Boolean 否定过程、按预期交换端点，并且无法被等价不变谓词区分。
+
+这是一项诚实的小型集合语义、1-截断实现。它**不是** `(infinity,1)`-范畴，不提供高阶路径
+coherence、presheaf/simplicial 模型、Rezk completion、外部结构恒等，也没有
+`Equiv α β → α = β` 定理；这些仍是独立、明确的研究义务，而不是隐藏假设。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -412,6 +445,15 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | `Ript.Higher.ModelHom.map_comp_cost_le` | 成本精确模型态射用源模型成本传递串行核心资源界。 |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | 成本精确模型态射用源模型成本传递并行核心资源界。 |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | 成本精确双范畴等价的正向态射保持过程成本。 |
+| `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe 中的内部恒等等价于内部结构等价。 |
+| `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | 两个内部恒等相等，当且仅当其解释出的等价相等。 |
+| `Ript.Univalent.UniverseModel.path_interpretation_sound` | 原始 path 在商模型中相等会推出其外部解释相等。 |
+| `Ript.Univalent.UniverseModel.InternalPredicate.identity_indistinguishable` | 每个显式满足等价不变性的内部谓词都尊重内部恒等。 |
+| `Ript.Univalent.UniverseModel.functionProcessStructureIdentity` | 源、目标内部恒等通过显式等价搬运确定性过程空间。 |
+| `Ript.Univalent.ProcessDerives.soundness` | 每条可推导的深嵌入过程等式都在全部确定性解释中成立。 |
+| `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | 示例的两个端点仍是外部不相等的 code 语法。 |
+| `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | 它们的内部恒等解释为预期的 tensor 交换。 |
+| `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Boolean 否定的连续重索引与复合重索引语义一致。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -436,7 +478,8 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
-| 11 | 内部解释的单值层 | **OPEN RESEARCH** |
+| 11 | 无公理的深嵌入接口/过程语法、商群胚、内部单值性、soundness 与 indiscernibility | **PROVED** |
+| 12 | Rezk completion 或更高维的单值语义扩展 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -457,13 +500,15 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
+| 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
-内部解释的单值层仍**尚未实现**。模型双范畴已针对固定资源类型和统一 universe 实现；它不
+高维或 Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
+其恒等与等价商解释在集合中。模型双范畴已针对固定资源类型和统一 universe 实现；这两个层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
@@ -701,6 +746,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.Monotone
 -- 或者导入复密度矩阵与迹保持 Kraus 信道：
 import Ript.Models.Quantum.Kraus
+-- 或者导入无公理的内部单值过程 universe：
+import Ript.Univalent.Process
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -715,6 +762,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
 | [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果、有限热与有限量子模型 |
+| [`Ript/Higher/`](../Ript/Higher/) | 资源索引模型双范畴与 coherence |
+| [`Ript/Univalent/`](../Ript/Univalent/) | 深嵌入接口/过程语法、商群胚、内部单值性、搬运与 soundness |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -749,8 +798,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
 7. **区分实现与愿景。**有限离散 `Stoch` 像、精确有限决策层、同质有限 DAG 因果层和指定
    平衡态的有限热层，以及带 tensor、丢弃和完整正性的有限 Kraus 核心已经实现；反向表示、
-   一般随机与因果、解析热力学和单值层仍必须清楚标记为开放研究。经典量子嵌入和模型双范畴
-   已实现，并保留各自明确的适用边界。
+   一般随机与因果、解析热力学和高阶单值层仍必须清楚标记为开放研究。经典量子嵌入、模型
+   双范畴和小型内部单值 universe 已实现，并保留各自明确的适用边界。
 8. **声称价值时必须保持任务相对。**语义价值结论要明确先验、行动、损失、基线与资源预算，
    不能悄然升级为任务无关的熵主张。
 9. **显式计入计算成本。**只有 reduction 同时给出决策质量界与加法成本 overhead，后处理
@@ -763,6 +812,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 13. **不把经典结构偷渡进量子系统。**量子基对象与 `FinStoch` 分离；Kraus 形式和完备性是显式
     证书。tensor、丢弃与有限恒等放大的完整正性已有独立证明；复制仍刻意缺席，经典嵌入仍需
     单独证明。
+14. **让内部恒等始终留在内部。**深嵌入 universe 只把内部恒等 witness 映射为解释出的等价，
+    绝不反向生成 Lean 类型相等。每个可观察谓词都必须携带显式等价不变性证明，也不会从集合
+    商自动推断高阶 coherence。
 
 ## 路线图
 
@@ -823,7 +875,10 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
 - [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
-- [ ] 严格隔离的内部解释单值层；不引入外部单值公理
+- [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
+- [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
+- [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
+- [ ] Rezk completion，或带显式高阶 coherence 的 presheaf/simplicial 单值模型
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。
