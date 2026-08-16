@@ -166,6 +166,29 @@ theorem trace_length (protocol : FiniteClosedProtocol X)
     (protocol.trace state).length = protocol.steps.length + 1 :=
   traceSteps_length protocol.steps state
 
+/-- A certified pair of mutually returning state transitions has the expected
+three-state trace when packaged as a two-step closed protocol. -/
+theorem trace_twoSteps (first second : GibbsPreserving X X)
+    (initial middle : FinDist X.system)
+    (hFirst : initial.push first.channel = middle)
+    (hSecond : middle.push second.channel = initial) :
+    ({ steps := [first, second] } : FiniteClosedProtocol X).trace initial =
+      [initial, middle, initial] := by
+  change initial :: (initial.push first.channel) ::
+    ((initial.push first.channel).push second.channel) :: [] = _
+  rw [hFirst, hSecond]
+
+/-- A certified pair of mutually returning state transitions returns the
+initial state when packaged as a two-step closed protocol. -/
+theorem run_twoSteps (first second : GibbsPreserving X X)
+    (initial middle : FinDist X.system)
+    (hFirst : initial.push first.channel = middle)
+    (hSecond : middle.push second.channel = initial) :
+    ({ steps := [first, second] } : FiniteClosedProtocol X).run initial =
+      initial := by
+  change (initial.push first.channel).push second.channel = initial
+  rw [hFirst, hSecond]
+
 /-- Every finite closed thermal protocol fixes the distinguished equilibrium
 state, regardless of the number or internal ordering of its steps. -/
 theorem run_equilibrium (protocol : FiniteClosedProtocol X) :

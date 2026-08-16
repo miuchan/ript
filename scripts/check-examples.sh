@@ -122,6 +122,15 @@ if [[ "$exact_work_erasure_output" != "$expected_exact_work_erasure_output" ]]; 
   exit 1
 fi
 
+exact_work_cycle_output="$(lake env lean Ript/Examples/ExactWorkCycle.lean)"
+expected_exact_work_cycle_output=$'true\ntrue\ntrue'
+
+if [[ "$exact_work_cycle_output" != "$expected_exact_work_cycle_output" ]]; then
+  printf 'Exact closed work-cycle example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_exact_work_cycle_output" "$exact_work_cycle_output" >&2
+  exit 1
+fi
+
 qubit_output="$(lake env lean Ript/Examples/QubitChannel.lean)"
 expected_qubit_output=$'true\ntrue'
 

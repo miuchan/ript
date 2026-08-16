@@ -138,6 +138,16 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.ExactWorkErasure.workBattery_low_lt_high` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
 | `Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
 | `Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkErasure.lean` |
+| `Ript.Models.Thermal.FiniteClosedProtocol.trace_twoSteps` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Protocol.lean` |
+| `Ript.Models.Thermal.FiniteClosedProtocol.run_twoSteps` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Protocol.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkRechargeChannel_preserves_equilibrium` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkRechargeChannel_recharges` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkRecharge_batteryEntropy_neutral` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkRecharge_saturates_landauer_work` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkCycle_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkCycle_returns` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkCycle_batteryEnergy_balanced` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
+| `Ript.Examples.ExactWorkCycle.exactWorkCycle_systemFreeEnergy_balanced` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ExactWorkCycle.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_process` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
@@ -351,6 +361,14 @@ layer. The audit covers the generic pure-state energy and entropy lemmas, exact
 erasure, strict battery nondegeneracy, endpoint entropy neutrality, and exact
 mechanical Landauer saturation. No new axiom or choice-derived runtime data is
 introduced.
+The exact recharge and closed-cycle extension retains the same footprint. Its
+recharge channel, Gibbs-preservation equation, exact endpoint evolution, and
+three trace checks are exact rational data. The analytic proofs show that
+memory free-energy release recharges the battery by `log 2 / β`, and that the
+signed system and battery changes cancel over the cycle. The generic two-step
+trace/run lemmas and every audited cycle theorem depend only on
+`[propext, Classical.choice, Quot.sound]`; no runtime choice, new axiom, or net
+work assumption is introduced.
 The Boolean thermal example still evaluates its rational channel and protocol
 trace facts by ordinary kernel reduction, while its no-go, KL, and free-energy
 theorems are kernel-checked proof data.

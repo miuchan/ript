@@ -4,8 +4,9 @@ import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ClassicalCopy
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
-import Ript.Examples.ExplicitBathErasure
+import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
+import Ript.Examples.ExplicitBathErasure
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
@@ -137,6 +138,8 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.FiniteClosedProtocol.composeSteps_append
 #print axioms Ript.Models.Thermal.FiniteClosedProtocol.run_equilibrium
 #print axioms Ript.Models.Thermal.FiniteClosedProtocol.cannot_reach_from_equilibrium
+#print axioms Ript.Models.Thermal.FiniteClosedProtocol.trace_twoSteps
+#print axioms Ript.Models.Thermal.FiniteClosedProtocol.run_twoSteps
 #print axioms Ript.Models.Thermal.Divergence.athermality_monotone
 #print axioms Ript.Models.Thermal.klAthermality_monotone
 #print axioms Ript.Models.Thermal.FiniteGibbsData.partitionFunction_pos
@@ -167,6 +170,14 @@ set_option autoImplicit false
 #print axioms Ript.Examples.ExactWorkErasure.workBattery_low_lt_high
 #print axioms Ript.Examples.ExactWorkErasure.exactWorkErasure_batteryEntropy_neutral
 #print axioms Ript.Examples.ExactWorkErasure.exactWorkErasure_saturates_landauer_work
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkRechargeChannel_preserves_equilibrium
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkRechargeChannel_recharges
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkRecharge_batteryEntropy_neutral
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkRecharge_saturates_landauer_work
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkCycle_trace
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkCycle_returns
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkCycle_batteryEnergy_balanced
+#print axioms Ript.Examples.ExactWorkCycle.exactWorkCycle_systemFreeEnergy_balanced
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_process
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlipCycle_erased_trace

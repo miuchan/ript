@@ -13,6 +13,7 @@ import Ript.Examples.ClassicalCopy
 import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
+import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
 import Ript.Examples.HigherModels
