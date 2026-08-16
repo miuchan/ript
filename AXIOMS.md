@@ -130,6 +130,17 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Univalent.UniverseModel.skeletalCompletionUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Completion.lean` |
 | `Ript.Examples.UnivalentCompletion.codeCardinality_equiv` | `[propext]` | `Ript/Examples/UnivalentCompletion.lean` |
 | `Ript.Examples.UnivalentCompletion.completionDoesNotReflectCodeEquality` | `[propext, Quot.sound]` | `Ript/Examples/UnivalentCompletion.lean` |
+| `Ript.Univalent.UniverseModel.yonedaEmbeddingFullyFaithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.representableTransformationEquiv_trans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.representableNaturalIsoEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.representableEquivNaturalIsoEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.representableTransformation_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Univalent.UniverseModel.yonedaEnvelopeUniversal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Presheaf.lean` |
+| `Ript.Examples.UnivalentPresheaf.swapTransformation_component` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentPresheaf.lean` |
+| `Ript.Examples.UnivalentPresheaf.envelopeIsoDoesNotReflectCodeEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentPresheaf.lean` |
+| `Ript.Examples.UnivalentPresheaf.swap_preserves_cardinality` | `[propext]` | `Ript/Examples/UnivalentPresheaf.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -242,6 +253,21 @@ explicitly `noncomputable` and cannot flow back into the executable core.
 Neither construction is advertised as a Rezk completion: they provide only
 0-truncated object identification and a 1-truncated skeletal groupoid, without
 presheaf/simplicial localization or higher coherence.
+The next presheaf layer reuses Mathlib's ordinary Yoneda embedding and its
+essential-image infrastructure. Internal identities correspond exactly to
+natural transformations between representables, all such transformations are
+invertible because the source is a groupoid, and internal structural
+equivalences correspond exactly to natural isomorphisms of representables.
+The `YonedaEnvelope` is the full subcategory of presheaves isomorphic to a
+representable and is categorically equivalent to the internal groupoid. The
+audited footprint `[propext, Classical.choice, Quot.sound]` is already present
+on Mathlib's generic `CategoryTheory.yoneda` and
+`Yoneda.fullyFaithful`; essential-image witness extraction also uses chosen
+representatives. This semantic layer is downstream of the executable syntax,
+and no choice-derived object is returned to the computable core. The envelope
+is still an ordinary 1-category: it is not a Rezk completion, does not make
+isomorphic presheaves externally equal, and supplies no higher path or Segal
+coherence.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that

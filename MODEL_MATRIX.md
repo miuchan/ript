@@ -71,6 +71,8 @@ or the executable cores.
 | Indiscernibility | Predicates carrying explicit equivalence invariance | Internally identical/equivalent codes satisfy the same internal proposition | Proposition layer |
 | Object completion | Codes quotiented by mere internal identity | Equality is equivalent to inhabited internal identity/equivalence; sum/tensor coherence becomes literal equality | Quotient proof layer; executable maps descend from explicit invariants |
 | Skeletal completion | Mathlib skeleton of the internal groupoid | Skeletal groupoid equivalent to the original; functor categories are equivalent; all automorphisms are retained | Noncomputable semantic layer using chosen representatives |
+| Presheaf universe | Type-valued presheaves on the internal groupoid | Yoneda is fully faithful; representable transformations/isomorphisms correspond to internal identity/equivalence | Semantic proof layer; Mathlib Yoneda audits with classical choice |
+| Yoneda envelope | Essential image of representables in the presheaf universe | Groupoid equivalent to the internal groupoid; inclusion factors Yoneda; functor categories are equivalent | Noncomputable essential-image witnesses; not a Rezk completion |
 
 The concrete Boolean model proves that `bit tensor unit` and `unit tensor bit`
 are unequal syntax trees in Lean while tensor symmetry makes them internally
@@ -82,6 +84,7 @@ Mathlib's chosen skeleton representatives and is marked noncomputable; it does
 not feed data back into any executable model.
 
 Together these are a 0-truncated object completion and a 1-truncated skeletal
-groupoid model. They are not an `(∞,1)`-category, do not add
-`Equiv α β → α = β`, and are not a Rezk completion or a presheaf model of the
-full resource-process bicategory.
+groupoid model, plus an ordinary representable-presheaf envelope. They are not
+an `(∞,1)`-category, do not add `Equiv α β → α = β`, and are not a Rezk
+completion or a complete presheaf model of the full resource-process
+bicategory.

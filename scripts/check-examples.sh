@@ -95,4 +95,13 @@ if [[ "$univalent_completion_output" != "$expected_univalent_completion_output" 
   exit 1
 fi
 
+univalent_presheaf_output="$(lake env lean Ript/Examples/UnivalentPresheaf.lean)"
+expected_univalent_presheaf_output='true'
+
+if [[ "$univalent_presheaf_output" != "$expected_univalent_presheaf_output" ]]; then
+  printf 'Univalent-presheaf example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_univalent_presheaf_output" "$univalent_presheaf_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'
