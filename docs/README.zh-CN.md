@@ -25,7 +25,9 @@ Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风
 并由此得到具体 KL 非平衡度单调性。新的实现层为非空有限系统加入实数能量与正逆温度，构造
 严格正且归一化的 Gibbs 概率，并认证精确有理平衡态何时实现该分布；同时定义 Shannon 熵、
 平均能量、非平衡与平衡 Helmholtz 自由能，证明 `D(p ‖ γ) = β (F(p) - F(γ))`，并推出同逆温度
-Gibbs-preserving 信道下的自由能差单调性。一般可测因果模型、Blackwell 反向表示定理与
+Gibbs-preserving 信道下的自由能差单调性。每个满支撑精确平衡态现已在任意正逆温度下获得规范
+Gibbs 实现；同温独立系统的权重与概率分解、配分函数乘法性以及能量、熵和自由能可加性也已证明。
+一般可测因果模型、Blackwell 反向表示定理与
 Landauer 型界仍是研究方向。Ript 现在还
 拥有一个与经典随机模型分离的有限维复数量子核心：正半定、迹为一的密度矩阵；由有限完备
 Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
@@ -325,6 +327,11 @@ KL(Tp ‖ Tq) ≤ KL(p ‖ q)
 每个权重与配分函数严格为正、Gibbs 概率归一化，并给出其对数公式。`GibbsThermalObject` 是
 分析分布与已有精确有理平衡态之间的实现证书；它不会假定任意指数权重都是有理数或可执行数据。
 
+反过来，每个具有满支撑的精确有限平衡态在任意给定的 `β > 0` 下都有规范 Gibbs 实现：Ript 取
+`E(x) = -log γ(x) / β`，证明 Boltzmann 权重精确等于 `γ(x)`、`Z = 1`，并封装实现证书。
+这是满支撑精确分布的能量表示存在性定理，不是对任意另行给定的实数能谱何时产生有理 Gibbs
+权重的判定程序。
+
 对每个已实现系统，自由能层定义平均能量 `U(p)`、Shannon 熵 `S(p)`、
 `F(p) = U(p) - S(p) / β` 与 `F(γ) = -log Z / β`，并由 Lean 证明
 
@@ -333,8 +340,9 @@ D(p ‖ γ) = β (F(p) - F(γ)).
 ```
 
 Gibbs 平衡态具有满支撑，因此此处扩展实数 KL 必为有限值。结合已证明的 KL 数据处理律可得：
-同一逆温度下，Gibbs-preserving 信道不会增加 `F(p) - F(γ)`。Landauer 型不等式与精确有理
-Gibbs 可实现性的通用判据仍是开放研究问题。
+同一逆温度下，Gibbs-preserving 信道不会增加 `F(p) - F(γ)`。同温独立 Gibbs 系统还能精确
+张量复合：权重与概率分解，配分函数相乘，`U`、`S`、`F`、`F(γ)` 与自由能差在乘积态上
+可加。Landauer 型不等式以及另行给定实能谱的有理 Gibbs 权重分类仍是开放研究问题。
 
 ### 12. 有限复密度矩阵与 Kraus 信道
 
@@ -645,9 +653,12 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | 每个精确有限随机信道都满足 KL 数据处理不等式。 |
 | `Ript.Models.Thermal.klAthermality_monotone` | 相对平衡态的具体有限 KL 是 Gibbs-preserving 单调量。 |
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | 归一化有限 Boltzmann 权重之和等于一。 |
+| `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | 每个满支撑精确平衡态在任意正逆温度下都有规范 Gibbs 实现。 |
+| `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | 同温乘积系统的配分函数相乘。 |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | 每个精确实现的 Gibbs 平衡态都具有满支撑。 |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | 有限 KL 非平衡度等于逆温度乘 Helmholtz 超额自由能。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | 同温 Gibbs-preserving 信道不会增加超额自由能。 |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | 同温独立乘积态的超额自由能可加。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL 非平衡度等于显式两项对数和。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆热比特翻转精确保持 KL 非平衡度。 |
@@ -791,7 +802,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
-do-calculus、通用复制/丢弃与凸结构接口、精确有理 Gibbs 可实现性判据与 Landauer 界、
+do-calculus、通用复制/丢弃与凸结构接口、另行给定实能谱的有理 Gibbs 权重分类与 Landauer 界、
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
@@ -1191,7 +1202,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [x] 有限能量、正逆温度、Gibbs 实现、熵与 Helmholtz 自由能
 - [x] 精确有限 KL/自由能恒等式与同温自由能差单调性
-- [ ] Landauer 界与精确有理 Gibbs 可实现性的通用判据
+- [x] 每个满支撑精确平衡态的规范 Gibbs 实现与同温张量可加性
+- [ ] Landauer 界与另行给定实能谱的有理 Gibbs 权重分类
 - [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
@@ -1250,8 +1262,8 @@ Ript 也支持带指定精确平衡分布的有限系统、
 Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence 提供已证明 DPI 时的通用
 热单调性；现在还提供 `ℝ≥0∞` 值的具体有限 KL、完整随机数据处理和 KL 非平衡度单调性；
 分析实现层还从实数能量与正逆温度构造有限 Gibbs 概率，在概率吻合时认证精确有理平衡态，
-并证明 KL/自由能恒等式与同温自由能差单调性；尚未提供 Landauer 不等式或全部精确有理 Gibbs
-族的分类。对于精确有限数据，Ript 还支持 Blackwell
+并证明 KL/自由能恒等式与同温自由能差单调性；它还规范地实现每个满支撑精确平衡态并证明同温
+张量可加性。尚未提供 Landauer 不等式或另行给定实能谱的有理 Gibbs 权重分类。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
 项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与
