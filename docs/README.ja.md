@@ -110,17 +110,17 @@ Ript はこれらの要件を Lean のインターフェースとしてまとめ
 資源型 `R` 上でコストを持つ圏 `C` の基本則は次のとおりです。
 
 ```math
-\operatorname{cost}(\mathrm{id}_X)=0,
+c(\mathrm{id}_X)=0,
 \qquad
-\operatorname{cost}(f \mathbin{\gg} g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g).
+c(f \mathbin{\gg} g)
+\leq c(f)+c(g).
 ```
 
 オプションのモノイダル能力は、さらに次を加えます。
 
 ```math
-\operatorname{cost}(f \otimes g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g).
+c(f \otimes g)
+\leq c(f)+c(g).
 ```
 
 別のオプション能力により、結合子・単位子・対称ブレイディングをコスト 0 の構造的配線変更と
@@ -151,8 +151,8 @@ Ript はこれらの要件を Lean のインターフェースとしてまとめ
 どちらの言語にも構造再帰で計算される `syntaxCost` があります。たとえば、
 
 ```math
-\operatorname{syntaxCost}(f \mathbin{\gg} g)
-=\operatorname{syntaxCost}(f)+\operatorname{syntaxCost}(g).
+c_{\mathrm{syntax}}(f \mathbin{\gg} g)
+=c_{\mathrm{syntax}}(f)+c_{\mathrm{syntax}}(g).
 ```
 
 構文をあらかじめ商にしないことで、構築・評価・検査・有限例を直接実行できます。
@@ -165,8 +165,8 @@ Ript はこれらの要件を Lean のインターフェースとしてまとめ
 中心的な資源定理は次です。
 
 ```math
-\operatorname{cost}(\operatorname{eval}(e))
-\leq \operatorname{syntaxCost}(e).
+c(\mathrm{eval}(e))
+\leq c_{\mathrm{syntax}}(e).
 ```
 
 したがって `syntaxCost e ≤ r` を証明すると、`eval e` が予算 `r` の範囲内にあるという
@@ -267,8 +267,8 @@ Ript は二つの意思決定層を意図的に分離します。
 最後に、
 
 ```math
-\operatorname{value}(P;\text{タスク},\text{基準})
-= \operatorname{risk}(\text{基準})-\operatorname{risk}(P)
+V(P;\text{タスク},\text{基準})
+= R(\text{基準})-R(P)
 ```
 
 として、意味価値を明示的な事前分布、行動空間、損失、基準実験、任意の予算に相対化します。

@@ -99,17 +99,17 @@ Ript 把这些义务编码为 Lean 接口，并一次性证明它们之间的核
 对于资源类型 `R` 上带成本的范畴 `C`，基本定律是：
 
 ```math
-\operatorname{cost}(\mathrm{id}_X)=0,
+c(\mathrm{id}_X)=0,
 \qquad
-\operatorname{cost}(f \mathbin{\gg} g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g).
+c(f \mathbin{\gg} g)
+\leq c(f)+c(g).
 ```
 
 可选的幺半群能力进一步加入：
 
 ```math
-\operatorname{cost}(f \otimes g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g),
+c(f \otimes g)
+\leq c(f)+c(g),
 ```
 
 另一个可选能力则声明结合子、幺元子与对称编织都是零成本的结构性重新布线。
@@ -135,8 +135,8 @@ Ript 把这些义务编码为 Lean 接口，并一次性证明它们之间的核
 两种语言都有按结构递归计算的 `syntaxCost`。例如：
 
 ```math
-\operatorname{syntaxCost}(f \mathbin{\gg} g)
-=\operatorname{syntaxCost}(f)+\operatorname{syntaxCost}(g).
+c_{\mathrm{syntax}}(f \mathbin{\gg} g)
+=c_{\mathrm{syntax}}(f)+c_{\mathrm{syntax}}(g).
 ```
 
 语法不会预先取商，因此构造、求值、检查和有限示例都可以直接执行。
@@ -149,8 +149,8 @@ Ript 把这些义务编码为 Lean 接口，并一次性证明它们之间的核
 核心资源定理是：
 
 ```math
-\operatorname{cost}(\operatorname{eval}(e))
-\leq \operatorname{syntaxCost}(e).
+c(\mathrm{eval}(e))
+\leq c_{\mathrm{syntax}}(e).
 ```
 
 因此，只要证明 `syntaxCost e ≤ r`，就能得到经过检验的语义结论：`eval e` 位于预算 `r`
@@ -238,8 +238,8 @@ Ript 有意分离两层决策理论：
 最后，
 
 ```math
-\operatorname{value}(P;\text{任务},\text{基线})
-= \operatorname{risk}(\text{基线})-\operatorname{risk}(P)
+V(P;\text{任务},\text{基线})
+= R(\text{基线})-R(P)
 ```
 
 把语义价值定义为相对于明确先验、行动空间、损失、基线实验与可选预算的风险改善。因此，

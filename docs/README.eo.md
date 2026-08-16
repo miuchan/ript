@@ -137,17 +137,17 @@ modelo vere bezonos tian pli fortan strukturon.
 Por kosthava kategorio `C` kaj rimedtipo `R`, la bazaj leĝoj estas
 
 ```math
-\operatorname{cost}(\mathrm{id}_X)=0,
+c(\mathrm{id}_X)=0,
 \qquad
-\operatorname{cost}(f \mathbin{\gg} g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g).
+c(f \mathbin{\gg} g)
+\leq c(f)+c(g).
 ```
 
 La nedeviga monoida kapablo aldonas
 
 ```math
-\operatorname{cost}(f \otimes g)
-\leq \operatorname{cost}(f)+\operatorname{cost}(g),
+c(f \otimes g)
+\leq c(f)+c(g),
 ```
 
 kaj la nedeviga struktura-kosta kapablo deklaras asocigilojn, unuigilojn kaj
@@ -183,8 +183,8 @@ inversajn strukturajn mapojn kaj simetrian plektaĵon.
 Ambaŭ lingvoj havas strukture rekursian `syntaxCost`. Ekzemple,
 
 ```math
-\operatorname{syntaxCost}(f \mathbin{\gg} g)
-=\operatorname{syntaxCost}(f)+\operatorname{syntaxCost}(g).
+c_{\mathrm{syntax}}(f \mathbin{\gg} g)
+=c_{\mathrm{syntax}}(f)+c_{\mathrm{syntax}}(g).
 ```
 
 Ĉar la sintakso restas nekvocientigita, konstruado, interpretado, inspektado kaj
@@ -199,8 +199,8 @@ buĝeton. Interpretado estas ordinara struktura rekursio.
 La centra rimedteoremo estas
 
 ```math
-\operatorname{cost}(\operatorname{eval}(e))
-\leq \operatorname{syntaxCost}(e).
+c(\mathrm{eval}(e))
+\leq c_{\mathrm{syntax}}(e).
 ```
 
 Do pruvo de `syntaxCost e ≤ r` liveras kontrolitan semantikan aserton, ke
@@ -318,8 +318,8 @@ rimed-limigitan valoron.
 Fine,
 
 ```math
-\operatorname{value}(P;\text{tasko},\text{bazlinio})
-= \operatorname{risk}(\text{bazlinio})-\operatorname{risk}(P)
+V(P;\text{tasko},\text{bazlinio})
+= R(\text{bazlinio})-R(P)
 ```
 
 difinas semantikan valoron rilate al eksplicitaj antaŭdistribuo, agospaco,

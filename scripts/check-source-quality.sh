@@ -49,6 +49,11 @@ reject_matches \
   '[[:blank:]]+$' \
   '*.lean' '*.md' '*.json' '*.yml' '*.yaml' '*.sh'
 
+reject_matches \
+  'public Markdown must avoid the renderer-blocked operatorname macro' \
+  '\\operatorname' \
+  '*.md'
+
 missing_auto_implicit=0
 while IFS= read -r lean_file; do
   if ! grep -q -E '^set_option autoImplicit false[[:space:]]*$' "$lean_file"; then
