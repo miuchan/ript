@@ -201,6 +201,7 @@ Every node in this graph is an existing compiled module.
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
+| 10 (ordinary model localization) | Homotopy 1-category, multiplicative cost-exact marking, Mathlib Gabriel--Zisman universal property, and a noninvertible marked arrow | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
@@ -4070,6 +4071,61 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - Sources: `Ript/Higher/Equivalence.lean` and
   `Ript/Examples/HigherModels.lean`.
 
+### Model homotopy category and cost-exact localization
+
+- Natural-language statement: quotienting parallel model 1-cells by
+  invertible monoidal 2-cells turns the model bicategory into an ordinary
+  homotopy category. A morphism class is marked when it has a
+  `CostReflecting` representative. These marks contain identities and are
+  closed under composition, so Mathlib's Gabriel--Zisman construction gives a
+  canonical localization with its standard functor-category universal
+  property.
+- Lean interfaces:
+
+  ```lean
+  structure CategoryTheory.Bicategory.HomotopyCategory (B : Type u)
+
+  theorem HomotopyCategory.homMk_eq_iff (f g : X ⟶ Y) :
+      HomotopyCategory.homMk f = HomotopyCategory.homMk g ↔ Nonempty (f ≅ g)
+
+  noncomputable def HomotopyCategory.equivalenceOfIsIso
+      (f : X ⟶ Y) [IsIso (HomotopyCategory.homMk f)] : X ≌ Y
+
+  def costExactMorphisms R : MorphismProperty (ModelHomotopyCategory R)
+
+  abbrev costExactLocalizationFunctor R :
+      ModelHomotopyCategory R ⥤ CostExactLocalization R
+
+  noncomputable def costExactLocalizationFunctorEquivalence (E) :
+      (CostExactLocalization R ⥤ E) ≌
+        (costExactMorphisms R).FunctorsInverting E
+  ```
+
+- Construction: local hom-categories are quotiented by Mathlib's
+  `isIsomorphicSetoid`. Whiskering makes composition well defined, and the
+  bicategorical left/right unitors and associator prove the ordinary category
+  laws. `CostReflecting` is proved stable under identity and composition.
+  Mathlib's canonical `MorphismProperty.Q` then carries an actual
+  `Functor.IsLocalization` instance.
+- Nontriviality witness: `unitToNatModelHom` is a strong braided functor
+  between zero-cost discrete models. It maps the unique source object to
+  additive `0` in `Multiplicative Nat`; target object `1` is not in the
+  essential image. It is cost-reflecting and hence marked, while
+  `unitToNatModelHom_not_isIso` proves its homotopy class is not already an
+  isomorphism.
+- Status: `PROVED` for this ordinary localization of the homotopy 1-category.
+- Computability: the quotient inverse representative and the constructed
+  localization are noncomputable semantic objects. The discrete source data
+  and zero-cost witness are concrete; the noninvertibility proof is
+  proposition-level.
+- Scope boundary: noninvertible 2-cells are discarded before localization.
+  No bicategorical, Dwyer--Kan, simplicial, complete-Segal, or Rezk universal
+  property is claimed.
+- Sources:
+  `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean`,
+  `Ript/Higher/Localization.lean`, and
+  `Ript/Examples/HigherLocalization.lean`.
+
 ### Explicit non-claims for Stage 10
 
 - No `(∞,1)`-category has been defined.
@@ -4078,6 +4134,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - The bicategory is universe-uniform and uses one fixed resource type `R`.
 - A plain bicategorical equivalence is not advertised as cost-exact; exactness
   requires the separately auditable `CostReflecting` fields.
+- The ordinary cost-exact localization is not advertised as a localization of
+  the full bicategory: it first identifies invertibly 2-isomorphic 1-cells and
+  discards all noninvertible 2-cell data.
 
 ## Stage-11 internally univalent flagship records
 
@@ -5305,8 +5364,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     boundary matching fibration are now proved, as are naturality and the
     matching-limit universal property. The project-local groupoidal package is
     proved; Mathlib-native weak-equivalence/standard complete-Segal packaging
-    and localization of the full resource-process bicategory remain distinct
-    open proof obligations.
+    and higher localization of the full resource-process bicategory remain
+    distinct open proof obligations. The ordinary Gabriel--Zisman localization
+    of its homotopy 1-category is now compiled separately.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
     edges, and composition simplices are still constructible explicitly, and
@@ -5329,4 +5389,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     identity, skeleton, and restricted Yoneda models invert the top morphism
     property because `M.Object` is already a groupoid. This gives genuine
     functor-category universal properties while making explicit that no
-    noninvertible resource process has yet been localized.
+    noninvertible resource process has yet been localized in that groupoidal
+    route.
+53. The model-bicategory route now does formally invert a concrete
+    noninvertible cost-exact model morphism, but only after quotienting
+    1-morphisms by invertible 2-cells. Its `Functor.IsLocalization` universal
+    property is therefore genuinely ordinary-categorical. It neither retains
+    noninvertible 2-cells nor supplies the still-open bicategorical,
+    Dwyer--Kan, simplicial, or Rezk localization of the full theory.

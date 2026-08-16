@@ -244,7 +244,14 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.ModelHom.map_cost_eq` | `none` | `Ript/Higher/Equivalence.lean` |
 | `Ript.Higher.ModelHom.map_comp_cost_le` | `none` | `Ript/Higher/Equivalence.lean` |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | `none` | `Ript/Higher/Equivalence.lean` |
+| `Ript.Higher.ModelHom.compCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Equivalence.lean` |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Equivalence.lean` |
+| `CategoryTheory.Bicategory.HomotopyCategory.homMk_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean` |
+| `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean` |
+| `Ript.Higher.costExactMorphisms_isMultiplicative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.costExactLocalizationFunctor_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.costExactLocalizationFunctorEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
@@ -541,6 +548,20 @@ infrastructure. These coherence theorems report the standard
 infrastructure. The cost-exact preservation lemmas themselves use no axioms:
 cost reflection is an explicit hypothesis, never inferred merely from a
 bicategorical equivalence.
+The first ordinary localization of that higher layer is now compiled as a
+separate, explicitly truncated semantic construction. Its homotopy category
+quotients 1-morphisms only by invertible 2-cells; the cost-exact marking is
+closed under identity and composition; and Mathlib's Gabriel--Zisman
+construction supplies a genuine `Functor.IsLocalization` instance and the
+standard functor-category universal property. A zero-cost discrete example
+proves that one marked arrow is not invertible before localization, so this
+construction adds a genuine formal inverse. All seven audited declarations
+for the quotient, multiplicative mark, localization, and example report
+exactly `[propext, Classical.choice, Quot.sound]`. These are the standard
+quotient and chosen-representative dependencies of the ordinary semantic
+layer; they introduce no project axiom and no choice-derived executable data.
+Because noninvertible 2-cells are discarded before localization, this result
+is not a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

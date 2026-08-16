@@ -9,6 +9,7 @@ import Ript.Examples.EmptyParameterBoundary
 import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
+import Ript.Examples.HigherLocalization
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
 import Ript.Examples.RationalGibbsSpectra
@@ -282,6 +283,13 @@ set_option autoImplicit false
 #print axioms Ript.Higher.ModelHom.map_comp_cost_le
 #print axioms Ript.Higher.ModelHom.map_tensor_cost_le
 #print axioms Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq
+#print axioms Ript.Higher.ModelHom.compCostReflecting
+#print axioms CategoryTheory.Bicategory.HomotopyCategory.homMk_eq_iff
+#print axioms CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso
+#print axioms Ript.Higher.costExactMorphisms_isMultiplicative
+#print axioms Ript.Higher.costExactLocalizationFunctor_inverts
+#print axioms Ript.Higher.costExactLocalizationFunctorEquivalence
+#print axioms Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso
 #print axioms Ript.Univalent.UniverseModel.internalUnivalence
 #print axioms Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq
 #print axioms Ript.Univalent.UniverseModel.path_interpretation_sound

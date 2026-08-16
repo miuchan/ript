@@ -63,7 +63,13 @@ Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、
 高阶范畴层现已实现并通过编译：固定资源类型后，资源索引的对称幺半群过程模型、资源非增的
 强编织幺半群函子和幺半群自然变换构成一个双范畴。纵向与横向复合、interchange、结合子、
 左右单位子、五边形与三角 coherence 均已证明。带显式成本反射的成本精确模型等价还会保持
-每个过程的成本，并传递串行与并行的核心资源界。Stage 11 现已加入一个刻意保持小型、无公理
+每个过程的成本，并传递串行与并行的核心资源界。
+第一条非群胚 localization 纵切面也已编译：Ript 先按可逆幺半群 2-胞对模型态射取商，得到
+模型双范畴的普通同伦 1-范畴；再标记所有具有成本反射代表元的态射类，并应用 Mathlib 的
+Gabriel--Zisman 构造。规范函子具有真正的 `Functor.IsLocalization` 实例和函子范畴普遍性质。
+一个零成本离散例子证明某条标记态射在 localization 前并不可逆，因此这里确实加入了形式逆。
+这仍是截去 2-胞后的普通 1-范畴 localization，不是双范畴、Dwyer--Kan、simplicial 或 Rezk
+localization。Stage 11 现已加入一个刻意保持小型、无公理
 的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
 带等价重索引的深嵌入过程语言具有 soundness 定理。它是集合层、1-截断模型，不假设外部
@@ -974,6 +980,10 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Higher.ModelHom.map_comp_cost_le` | 成本精确模型态射用源模型成本传递串行核心资源界。 |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | 成本精确模型态射用源模型成本传递并行核心资源界。 |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | 成本精确双范畴等价的正向态射保持过程成本。 |
+| `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | 代表态射在同伦范畴中可逆时，它必为双范畴等价。 |
+| `Ript.Higher.costExactLocalizationFunctor_inverts` | 规范 Gabriel--Zisman 函子形式反转所有具有成本反射代表元的模型态射。 |
+| `Ript.Higher.costExactLocalizationFunctorEquivalence` | 从 localization 出发的函子等价于反转全部标记态射的函子。 |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | 一个具体零成本离散标记态射在 localization 前并非同构。 |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe 中的内部恒等等价于内部结构等价。 |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | 两个内部恒等相等，当且仅当其解释出的等价相等。 |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | 原始 path 在商模型中相等会推出其外部解释相等。 |
@@ -1071,6 +1081,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
+| 10，普通模型 localization | 同伦 1-范畴、可乘的成本精确标记、Mathlib localization 普遍性质与真正不可逆的标记态射 | **PROVED** |
 | 11 | 无公理的深嵌入接口/过程语法、商群胚、内部单值性、soundness 与 indiscernibility | **PROVED** |
 | 12，截断基础 | 无选择的对象补全、骨架群胚补全、普遍下降与可执行不变量 | **PROVED** |
 | 12，presheaf 基础 | Fully faithful Yoneda 语义、representable 身份/等价对应与本质像 envelope | **PROVED** |
@@ -1098,6 +1109,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
+| 成本精确模型 localization | 按可逆幺半群 2-胞取商的模型态射 | 形式反转每个具有成本反射代表元的态射类 | 不可计算语义证明层 | 真正的 Mathlib Gabriel--Zisman localization 与函子范畴普遍性质；丢弃非可逆 2-胞，不是高阶 localization |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；对所有内部恒等的 Mathlib localization；不是 Rezk completion |
@@ -1446,7 +1458,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
 | [`Ript/Models/`](../Ript/Models/) | 确定性、概率、决策、计算、有限因果、有限热与有限量子模型 |
-| [`Ript/Higher/`](../Ript/Higher/) | 资源索引模型双范畴与 coherence |
+| [`Ript/Higher/`](../Ript/Higher/) | 资源索引模型双范畴、coherence、同伦范畴与成本精确 localization |
 | [`Ript/Univalent/`](../Ript/Univalent/) | 深嵌入接口/过程语法、商群胚、内部单值性、截断补全、representable-presheaf 语义、严格 simplicial nerve 与 Rezk classifying-diagram 基础 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
@@ -1582,6 +1594,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
 - [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
+- [x] 模型同伦 1-范畴与对成本反射模型态射的 Gabriel--Zisman localization，含一个不可逆标记例子
 - [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例

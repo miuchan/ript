@@ -106,6 +106,26 @@ theorem isoMk_hom_toNatTrans (e : F.toFunctor ≅ G.toFunctor)
 theorem isoMk_inv_toNatTrans (e : F.toFunctor ≅ G.toFunctor)
     [NatTrans.IsMonoidal e.hom] : (isoMk e).inv.toNatTrans = e.inv := rfl
 
+/-- Forget the monoidal compatibility of an isomorphism of model morphisms,
+retaining its underlying natural isomorphism. -/
+def toNatIso (e : F ≅ G) : F.toFunctor ≅ G.toFunctor where
+  hom := e.hom.toNatTrans
+  inv := e.inv.toNatTrans
+  hom_inv_id := by
+    rw [← comp_toNatTrans]
+    exact congrArg ModelTransformation.toNatTrans e.hom_inv_id
+  inv_hom_id := by
+    rw [← comp_toNatTrans]
+    exact congrArg ModelTransformation.toNatTrans e.inv_hom_id
+
+@[simp]
+theorem toNatIso_hom (e : F ≅ G) : (toNatIso e).hom = e.hom.toNatTrans :=
+  rfl
+
+@[simp]
+theorem toNatIso_inv (e : F ≅ G) : (toNatIso e).inv = e.inv.toNatTrans :=
+  rfl
+
 end ModelTransformation
 
 set_option backward.defeqAttrib.useBackward true in
