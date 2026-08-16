@@ -107,7 +107,8 @@ flowchart LR
   ThermalCorrelation --> CorrelatedWork["Models.Thermal.CorrelatedWork"]
   ThermalWork --> CorrelatedWork
   CorrelatedWork --> SimpleThermal["Examples.SimpleThermalModel"]
-  SimpleThermal --> Audit
+  SimpleThermal --> ApproximateErasure["Examples.ApproximateErasure"]
+  ApproximateErasure --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
   QuantumTensor --> QuantumCP["Models.Quantum.CompletePositivity"]
@@ -167,7 +168,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and product/correlation-corrected Boolean Landauer bounds | PROVED |
+| 8 | Finite equilibrium systems, Gibbs realizations, KL/free-energy identity, arbitrary-joint correlation decomposition, and exact/rational-error product/correlation-corrected Boolean Landauer bounds | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1593,8 +1594,17 @@ joint excess free energy decomposes into the two marginal gaps plus `I / β`.
 The resulting Landauer theorem charges the battery for the system free-energy
 increase plus the change in correlation free energy, with an entropy-neutral
 battery work form. The correlated fair Boolean pair realizes
-`I = log 2` and correlation free energy `log 2 / β`. Approximate erasure and
-explicit bath/cyclic protocols remain open extensions.
+`I = log 2` and correlation free energy `log 2 / β`.
+
+The exact finite approximate-erasure example then fixes a rational error
+`0 ≤ ε ≤ 1/2`. Its executable target assigns mass `1 - ε` to the intended
+erased value and mass `ε` to the error value. The target entropy is exactly
+Mathlib's `binEntropy ε`, so its excess free energy is
+`(log 2 - binEntropy ε) / β`. This cost is nonnegative, antitone in the
+allowed error, equals `log 2 / β` at zero error, and vanishes at error one
+half. Product-endpoint and correlation-corrected work bounds are proved for
+supplied transition certificates. Explicit bath/cyclic protocols, transition
+existence, and saturation remain open extensions.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -2252,6 +2262,136 @@ explicit bath/cyclic protocols remain open extensions.
   `#eval decide` contracts; logarithms and free energy are analytic semantics.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/SimpleThermalModel.lean`.
+
+### `Ript.Examples.SimpleThermalModel.approximateErasureCost_antitone`
+
+- Natural-language statement: for a positive inverse temperature and exact
+  rational errors between zero and one half, allowing more error cannot
+  increase the binary-entropy-deficit cost of Boolean erasure.
+- Lean type:
+
+  ```lean
+  theorem approximateErasureCost_antitone (β : ℝ) (hβ : 0 < β)
+      {ε₁ ε₂ : ℚ≥0} (hε₁ : ε₁ ≤ (1 : ℚ≥0) / 2)
+      (hε₂ : ε₂ ≤ (1 : ℚ≥0) / 2) (hε : ε₁ ≤ ε₂) :
+      approximateErasureCost β ε₂ ≤ approximateErasureCost β ε₁
+  ```
+
+- Prerequisite definitions: exact rational approximate-erasure targets and
+  `approximateErasureCost β ε =
+  (Real.log 2 - Real.binEntropy (ε : ℝ)) / β`.
+- Prerequisite lemmas: Mathlib's strict monotonicity of binary entropy on
+  `[0, 1/2]` and positivity of the inverse temperature.
+- Status: `PROVED`; companion endpoint theorems identify zero error with the
+  exact Landauer cost and one-half error with zero cost.
+- Classical choice: inherited only from the audited real-analysis layer.
+- Computable: the rational error order and target masses are executable; the
+  logarithmic cost comparison is analytic semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ApproximateErasure.lean`.
+
+### `Ript.Examples.SimpleThermalModel.approximateErasedBit_freeEnergyGap`
+
+- Natural-language statement: the exact Boolean target with rational error
+  `ε ≤ 1/2` has excess free energy equal to its binary-entropy deficit divided
+  by inverse temperature.
+- Lean type:
+
+  ```lean
+  theorem approximateErasedBit_freeEnergyGap (ε : ℚ≥0)
+      (hε : ε ≤ (1 : ℚ≥0) / 2) (β : ℝ) (hβ : 0 < β) :
+      (gibbsThermalBitAt β hβ).freeEnergyGap
+          (approximateErasedBit ε hε) =
+        approximateErasureCost β ε
+  ```
+
+- Prerequisite definitions: the executable target with masses `1 - ε` and
+  `ε`, the zero-energy Boolean Gibbs realization, Shannon entropy, and excess
+  Helmholtz free energy.
+- Prerequisite lemmas: exact target normalization, the two-point entropy sum,
+  Mathlib's binary-entropy formula, zero mean energy, and equilibrium free
+  energy `-log 2 / β`.
+- Status: `PROVED` for every exact rational error at most one half and every
+  positive inverse temperature.
+- Classical choice: inherited only from the audited analytic entropy/Gibbs
+  layer.
+- Computable: zero-, quarter-, and half-error masses have an executable
+  `#eval decide` contract; entropy and free energy are noncomputable semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ApproximateErasure.lean`.
+
+### `Ript.Examples.SimpleThermalModel.thermalBit_approximate_erasure_landauer_work_bound`
+
+- Natural-language statement: any certified product-endpoint transition from
+  a fair degenerate Boolean memory to the exact error-`ε` target, with an
+  entropy-neutral battery, requires at least
+  `(log 2 - binEntropy ε) / β` of battery mean-energy decrease.
+- Lean type:
+
+  ```lean
+  theorem thermalBit_approximate_erasure_landauer_work_bound
+      (ε : ℚ≥0) (hε : ε ≤ (1 : ℚ≥0) / 2)
+      (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+      (transition : WorkAssistedTransition
+        (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+      (hInitial : transition.initialSystem = fairEquilibrium)
+      (hFinal : transition.finalSystem = approximateErasedBit ε hε)
+      (hEntropy : battery.entropy transition.initialBattery =
+        battery.entropy transition.finalBattery) :
+      approximateErasureCost β ε ≤ transition.batteryEnergyDecrease
+  ```
+
+- Prerequisite definitions: a product-endpoint work-assisted transition, the
+  entropy-neutral battery condition, and the exact approximate-erasure target.
+- Prerequisite lemmas: the generic work-assisted Landauer bound, zero excess
+  free energy of the fair state, and the approximate-target free-energy
+  identity.
+- Status: `PROVED` as a necessary bound for supplied transition data. The
+  companion free-energy theorem removes battery entropy neutrality. No
+  transition-existence or saturation claim is made.
+- Classical choice: inherited only through the audited analytic KL/Gibbs
+  layer; exact endpoints and evolution certificates remain explicit data.
+- Computable: target masses and stochastic transitions are executable; the
+  real-valued work account is noncomputable semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ApproximateErasure.lean`.
+
+### `Ript.Examples.SimpleThermalModel.thermalBit_correlated_approximate_erasure_landauer_work_bound`
+
+- Natural-language statement: with arbitrary joint system--battery endpoints,
+  approximate Boolean erasure must pay the binary-entropy-deficit cost plus
+  any increase in correlation free energy.
+- Lean type:
+
+  ```lean
+  theorem thermalBit_correlated_approximate_erasure_landauer_work_bound
+      (ε : ℚ≥0) (hε : ε ≤ (1 : ℚ≥0) / 2)
+      (β : ℝ) (hβ : 0 < β) {battery : GibbsThermalObject}
+      (transition : CorrelatedWorkAssistedTransition
+        (gibbsThermalBitAt β hβ) (gibbsThermalBitAt β hβ) battery)
+      (hInitial : transition.initialSystem = fairEquilibrium)
+      (hFinal : transition.finalSystem = approximateErasedBit ε hε)
+      (hEntropy : battery.entropy transition.initialBattery =
+        battery.entropy transition.finalBattery) :
+      approximateErasureCost β ε +
+          transition.correlationFreeEnergyIncrease ≤
+        transition.batteryEnergyDecrease
+  ```
+
+- Prerequisite definitions: arbitrary exact joint endpoints, executable
+  marginals, correlation free energy, and the entropy-neutral battery margin.
+- Prerequisite lemmas: the generic correlation-corrected work bound, zero
+  excess free energy of the fair source, and the exact target free-energy
+  identity.
+- Status: `PROVED` as a necessary bound. The companion free-energy theorem
+  does not require battery entropy neutrality; neither theorem asserts a
+  realizing protocol or equality case.
+- Classical choice: inherited only through the audited analytic KL/Gibbs
+  layer; all endpoint distributions and channels remain explicit data.
+- Computable: target masses, joint states, marginals, and channels are
+  executable; free-energy accounting is noncomputable real semantics.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/ApproximateErasure.lean`.
 
 ### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
 
@@ -3757,8 +3897,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     erasure. Its correlated extension proves exact marginalization, the
     mutual-information KL identity and nonnegativity, arbitrary-joint free-
     energy decomposition, and correlation-corrected Landauer bounds. It does
-    not claim transition existence or saturation, approximate erasure, or that
-    arbitrary independently supplied exponential weights are rational.
+    not claim transition existence or saturation. The exact rational-error
+    Boolean extension proves the binary-entropy cost, its antitonicity, and
+    product/correlation-corrected necessary bounds, but still does not provide
+    an explicit bath/cyclic protocol or assert that arbitrary independently
+    supplied exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to

@@ -1,3 +1,4 @@
+import Ript.Examples.ApproximateErasure
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ClassicalCopy
@@ -160,6 +161,10 @@ set_option autoImplicit false
 #print axioms Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound
 #print axioms Ript.Examples.SimpleThermalModel.correlatedBits_freeEnergyGap
 #print axioms Ript.Examples.SimpleThermalModel.thermalBit_correlated_erasure_landauer_work_bound
+#print axioms Ript.Examples.SimpleThermalModel.approximateErasureCost_antitone
+#print axioms Ript.Examples.SimpleThermalModel.approximateErasedBit_freeEnergyGap
+#print axioms Ript.Examples.SimpleThermalModel.thermalBit_approximate_erasure_landauer_work_bound
+#print axioms Ript.Examples.SimpleThermalModel.thermalBit_correlated_approximate_erasure_landauer_work_bound
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_posSemidef
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_trace
 #print axioms Ript.Models.Quantum.KrausChannel.map_posSemidef
