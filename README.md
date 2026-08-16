@@ -47,10 +47,18 @@ monoidal functors, and monoidal natural transformations form a bicategory with
 vertical and horizontal composition, interchange, associators, unitors,
 pentagon, and triangle coherence. Cost-exact equivalences preserve budgets and
 the serial/parallel core laws under an explicit cost-reflection hypothesis.
+Stage 11 adds a deliberately small, axiom-free, internally univalent process
+universe. Deep codes for empty, unit, sum, tensor, and atomic interfaces carry
+separate syntax for structural equivalence and internal identity. Their
+semantic quotients form a genuine Mathlib groupoid, internal identity is
+equivalent to internal structural equivalence, and a typed process language
+with equivalence reindexing has a proved soundness theorem. This is a
+1-truncated set-level model: it neither assumes external univalence nor turns
+an arbitrary Lean equivalence into Lean equality.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. The Stage 1–10 layers, including the
-> finite Kraus core and model bicategory, are implemented and
+> Ript is early-stage research software. The Stage 1–11 layers, including the
+> finite Kraus core, model bicategory, and internally univalent deep universe, are implemented and
 > checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
@@ -425,6 +433,47 @@ dephasing-idempotent (Karoubi-style) subcategory of Kraus channels. Its
 categorical identity is dephasing; no incompatible functor into the full
 ambient Kraus category is claimed.
 
+### 13. An axiom-free internally univalent process universe
+
+The Stage-11 layer is deeply embedded and intentionally one-way. `Code Atom`
+is a small grammar of process interfaces. `EquivExpr A B` describes the
+structural equivalences admitted by that grammar, while `PathExpr A B`
+describes internal identity witnesses and has an explicit `ua` constructor.
+Neither type is Lean equality. Both interpret to ordinary equivalences between
+the small Lean types denoted by their endpoint codes.
+
+For a chosen `UniverseModel`, Ript quotients equivalence and identity syntax by
+equality of those interpretations. The resulting `InternalEquiv A B` and
+`Identity A B` support reflexivity, inverse, composition, sum, and tensor. The
+wrapped code objects form a Mathlib `Groupoid`, and the central theorem is
+
+```lean
+internalUnivalence (A B) : M.Identity A B ≃ M.InternalEquiv A B
+```
+
+Both round trips are proved. Equality in either quotient is also characterized
+exactly by equality of its external interpretation. An `InternalFamily`
+transports structure along internal equivalences, an `InternalPredicate` must
+state its equivalence invariance explicitly, and the indiscernibility theorem
+then proves that internally identical interfaces have the same observations.
+For deterministic process spaces this transport is constructed concretely by
+conjugating a function with the interpreted source and target equivalences.
+
+The companion deep process language contains generators, identity, serial and
+parallel composition, and endpoint reindexing. Its explicit derivation system
+includes category laws, tensor interchange, congruence, and reindexing laws;
+`ProcessDerives.soundness` proves every derivable equation valid in every
+deterministic universe interpretation. The Boolean example makes the boundary
+visible: `bit ⊗ unit` and `unit ⊗ bit` are provably unequal Lean syntax
+trees, yet tensor symmetry gives an internal identity, transports negation,
+acts as the expected swap, and is indistinguishable to invariant predicates.
+
+This construction is an honest small, set-level, 1-truncated semantic model.
+It does **not** provide an `(infinity,1)`-category, higher path coherence, a
+presheaf or simplicial model, Rezk completion, external structure identity, or
+a theorem `Equiv α β → α = β`. Those remain separate research
+obligations rather than hidden assumptions.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -528,6 +577,15 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Higher.ModelHom.map_comp_cost_le` | Cost-exact model morphisms transport the serial core bound with the source costs. |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | Cost-exact model morphisms transport the parallel core bound with the source costs. |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | The forward morphism of a cost-exact bicategorical equivalence preserves process costs. |
+| `Ript.Univalent.UniverseModel.internalUnivalence` | Internal identity is equivalent to internal structural equivalence in the quotient universe. |
+| `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | Two internal identities are equal exactly when their interpreted equivalences are equal. |
+| `Ript.Univalent.UniverseModel.path_interpretation_sound` | Equality of raw paths in the quotient model implies equality of their external interpretations. |
+| `Ript.Univalent.UniverseModel.InternalPredicate.identity_indistinguishable` | Every explicitly invariant internal predicate respects internal identity. |
+| `Ript.Univalent.UniverseModel.functionProcessStructureIdentity` | Source and target identities transport deterministic process spaces by an explicit equivalence. |
+| `Ript.Univalent.ProcessDerives.soundness` | Every derivable deep-process equation is valid in every deterministic interpretation. |
+| `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | The example endpoints remain unequal as external code syntax. |
+| `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | Their internal identity interprets as the expected tensor swap. |
+| `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | Successive reindexings of Boolean negation agree with composite reindexing. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -555,7 +613,8 @@ finished physical theory.
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
-| 11 | Internally interpreted univalent layer | **OPEN RESEARCH** |
+| 11 | Axiom-free deep interface/process syntax, quotient groupoid, internal univalence, soundness, and indiscernibility | **PROVED** |
+| 12 | Rezk completion or a higher-dimensional univalent semantic extension | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -576,6 +635,7 @@ Implemented model support is intentionally narrow:
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
+| Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -585,9 +645,11 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
-and an internally interpreted univalent layer are **not implemented**. The
-model bicategory is implemented for a fixed resource type and uniform
-universes; it does not claim an `(infinity,1)`-category or identify Lean type
+and a higher-dimensional/Rezk-complete univalent semantics are **not implemented**.
+The current internally univalent universe is a small deep embedding whose
+identity and equivalence quotients are interpreted in sets. The model
+bicategory is implemented for a fixed resource type and uniform universes;
+neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
 Kraus channel core, including finite complete positivity, is implemented and
 kernel checked.
@@ -861,6 +923,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.Monotone
 -- or, for complex density matrices and trace-preserving Kraus channels:
 import Ript.Models.Quantum.Kraus
+-- or, for the axiom-free internally univalent process universe:
+import Ript.Univalent.Process
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -875,6 +939,8 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
 | [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, finite thermal, and finite quantum models |
+| [`Ript/Higher/`](Ript/Higher/) | Resource-indexed model bicategory and coherence |
+| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, transport, and soundness |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -918,9 +984,10 @@ force-pushes and branch deletion are disabled.
    image, exact finite decision layer, homogeneous finite DAG causal layer, and
    specified-equilibrium finite thermal layer, and tensor/discard/complete-
    positivity finite Kraus core are implemented; converse representation,
-   general stochastic and causal, analytic thermodynamic, and univalent layers
-   remain visibly marked as open research. The classical quantum embedding and
-   model bicategory are implemented with their scope boundaries explicit.
+   general stochastic and causal, analytic thermodynamic, and higher univalent
+   layers remain visibly marked as open research. The classical quantum
+   embedding, model bicategory, and small internally univalent universe are
+   implemented with their scope boundaries explicit.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -941,6 +1008,10 @@ force-pushes and branch deletion are disabled.
     explicit certificates. Tensor, discard, and finite identity-amplification
     complete positivity have their own compiled proofs; copying remains
     deliberately absent, and a classical embedding requires a separate proof.
+14. **Keep internal identity internal.** The deep universe maps its identity
+    witnesses to interpreted equivalences, never the other way into Lean type
+    equality. Every observable predicate must carry an explicit equivalence-
+    invariance proof, and higher coherence is not inferred from a set quotient.
 
 ## Roadmap
 
@@ -989,6 +1060,9 @@ updated assumption audit.
 - [x] Resource-indexed model 0-cells and resource-nonincreasing strong braided monoidal 1-cells
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
+- [x] Deep interface codes with distinct equivalence and internal-identity syntax
+- [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
+- [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -1004,7 +1078,7 @@ updated assumption audit.
 - [ ] Concrete finite KL divergence and a proved data-processing inequality
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
-- [ ] Carefully isolated internally interpreted univalent layer; no external univalence axiom
+- [ ] Rezk completion or a presheaf/simplicial higher-dimensional univalent model with explicit coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

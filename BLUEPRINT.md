@@ -108,6 +108,13 @@ flowchart LR
   MonoidalTermModel --> HigherModels["Examples.HigherModels"]
   ModelEquivalence --> HigherModels
   HigherModels --> Audit
+  UnivalentSyntax["Univalent.Syntax"] --> UnivalentModel["Univalent.Model"]
+  UnivalentModel --> UnivalentSoundness["Univalent.Soundness"]
+  UnivalentSoundness --> UnivalentBoundary["Univalent.Boundary"]
+  UnivalentSoundness --> UnivalentProcess["Univalent.Process"]
+  UnivalentBoundary --> UnivalentExample["Examples.UnivalentProcessUniverse"]
+  UnivalentProcess --> UnivalentExample
+  UnivalentExample --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -129,7 +136,8 @@ Every node in this graph is an existing compiled module.
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
-| 11 | Internally interpreted univalent layer | OPEN_RESEARCH |
+| 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
+| 12 | Rezk completion and higher-dimensional extension beyond the 1-truncated model | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -2143,6 +2151,188 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - A plain bicategorical equivalence is not advertised as cost-exact; exactness
   requires the separately auditable `CostReflecting` fields.
 
+## Stage-11 internally univalent flagship records
+
+### `Code`, `EquivExpr`, `PathExpr`, and `ProcessExpr`
+
+- Natural-language statement: Stage 11 is a deep embedding, not a change to
+  Lean equality. Interface codes are freely generated from atoms, empty/unit,
+  sum, and tensor. Structural equivalences and internal identity witnesses are
+  separate indexed syntax. Typed processes have generators, identity, serial
+  composition, tensor, and explicit endpoint reindexing.
+- Lean interfaces:
+
+  ```lean
+  inductive Code (Atom : Type u)
+    | empty | unit | atom (name : Atom)
+    | sum (left right : Code Atom)
+    | tensor (left right : Code Atom)
+
+  inductive EquivExpr : Code Atom → Code Atom → Type u
+  inductive PathExpr : Code Atom → Code Atom → Type u
+    | ua {A B} (equiv : EquivExpr A B) : PathExpr A B
+
+  inductive ProcessExpr (signature : ProcessSignature Atom) :
+      Code Atom → Code Atom → Type u
+    | generator | id | comp | tensor | reindex
+  ```
+
+- Prerequisites: only Mathlib's ordinary `Equiv` constructions for sums and
+  products. No HoTT or cubical dependency compatible with the pinned toolchain
+  is installed, so the project-owned deep embedding is the audited route.
+- Status: `DEFINED` and compiled.
+- Computable: raw codes, equivalence/path syntax, and process expressions are
+  ordinary inductive data. The small set-level interpretation computes.
+- Trust boundary: `PathExpr A B` is not Lean equality `A = B`.
+- Sources: `Ript/Univalent/Syntax.lean` and
+  `Ript/Univalent/Process.lean`.
+
+### `UniverseModel.objectGroupoid` and `internalUnivalence`
+
+- Natural-language statement: raw equivalence and identity syntax are
+  quotiented by equality of their interpreted Lean equivalences. Internal
+  identities form a groupoid, and the internal identity type is equivalent to
+  the internal structural-equivalence type.
+- Lean interfaces:
+
+  ```lean
+  abbrev UniverseModel.InternalEquiv (M : UniverseModel Atom)
+      (A B : Code Atom) := Quotient (M.equivSetoid A B)
+
+  abbrev UniverseModel.Identity (M : UniverseModel Atom)
+      (A B : Code Atom) := Quotient (M.pathSetoid A B)
+
+  instance UniverseModel.objectGroupoid : Groupoid M.Object
+
+  def UniverseModel.internalUnivalence (A B : Code Atom) :
+      M.Identity A B ≃ M.InternalEquiv A B
+  ```
+
+- Prerequisites: `Equiv.trans`, inverse equivalences, quotient soundness, and
+  Mathlib's `Groupoid` interface.
+- Status: `PROVED`. Both round trips are kernel checked by quotient extensionality.
+- Computable: raw syntax and interpretation compute; quotient equality and the
+  groupoid laws are proof-layer semantics.
+- Kernel assumptions for `internalUnivalence`: `[propext, Quot.sound]`.
+- Sources: `Ript/Univalent/Model.lean` and
+  `Ript/Univalent/Soundness.lean`.
+
+### `identity_eq_iff_interpret_eq` and `path_interpretation_sound`
+
+- Natural-language statement: the quotient model is sound and reflective for
+  its stated semantic equality. Two internal identities are equal exactly when
+  their interpreted type equivalences are equal; equality of embedded raw
+  paths therefore implies equality of their interpretations.
+- Lean interfaces:
+
+  ```lean
+  theorem UniverseModel.identity_eq_iff_interpret_eq
+      (first second : M.Identity A B) :
+      first = second ↔
+        Identity.interpret M first = Identity.interpret M second
+
+  theorem UniverseModel.path_interpretation_sound
+      (h : Identity.mk M first = Identity.mk M second) :
+      first.denote M.atomSemantics = second.denote M.atomSemantics
+  ```
+
+- Prerequisites: the semantic setoid definitions and quotient eliminators.
+- Status: `PROVED`.
+- Computable: proof layer over a computable interpretation.
+- Kernel assumptions: `[propext, Quot.sound]` for each.
+- Source: `Ript/Univalent/Soundness.lean`.
+
+### Internal indiscernibility and deterministic structure identity
+
+- Natural-language statement: every explicitly equivalence-invariant internal
+  predicate gives the same truth value on internally identical codes.
+  Independently, identities of source and target interfaces induce an
+  equivalence between their deterministic process spaces by conjugation.
+- Lean interfaces:
+
+  ```lean
+  theorem InternalPredicate.identity_indistinguishable
+      (predicate : M.InternalPredicate) (path : M.Identity A B) :
+      predicate.holds A ↔ predicate.holds B
+
+  def UniverseModel.functionProcessStructureIdentity
+      (source : M.Identity A B) (target : M.Identity C D) :
+      M.FunctionProcess A C ≃ M.FunctionProcess B D
+  ```
+
+- Prerequisites: `internalUnivalence`, explicit equivalence-respect for an
+  internal proposition, and endpoint-equivalence conjugation.
+- Status: `PROVED`.
+- Scope boundary: arbitrary external predicates are not declared invariant;
+  invariance is part of the well-formed internal-predicate interface.
+- Computable: deterministic process transport computes on interpreted values.
+- Kernel assumptions: `[propext, Quot.sound]` for each audited declaration.
+- Source: `Ript/Univalent/Soundness.lean`.
+
+### `ProcessDerives.soundness`
+
+- Natural-language statement: every equation generated by reflexivity,
+  symmetry, transitivity, congruence, category laws, tensor identity,
+  interchange, and equivalence-reindexing laws is valid under every supplied
+  interpretation of primitive processes.
+- Lean type:
+
+  ```lean
+  theorem ProcessDerives.soundness
+      (interpretation : ProcessInterpretation signature model)
+      (derivation : ProcessDerives first second) :
+      ProcessExpr.eval interpretation first =
+        ProcessExpr.eval interpretation second
+  ```
+
+- Prerequisites: recursive evaluation of deep process expressions and ordinary
+  function extensionality.
+- Status: `PROVED` for all constructors of `ProcessDerives`.
+- Computable: evaluation is executable; soundness is proof-only.
+- Kernel assumptions: `[propext, Quot.sound]` because reindexing passes through
+  the internally univalent quotient boundary.
+- Source: `Ript/Univalent/Process.lean`.
+
+### Nontrivial Boolean tensor-symmetry example
+
+- Natural-language statement: `bit tensor unit` and `unit tensor bit` are
+  unequal Lean syntax trees, yet tensor symmetry gives an internal identity.
+  Its interpretation swaps the pair, transports Boolean negation, and makes
+  two-step reindexing agree with reindexing by the composite equivalence.
+- Audited declarations:
+
+  ```lean
+  theorem bitTensorUnit_ne_unitTensorBit :
+      bitTensorUnit ≠ unitTensorBit
+
+  theorem swapIdentity_apply (bit : Bool) :
+      Identity.interpret model swapIdentity (bit, PUnit.unit) =
+        (PUnit.unit, bit)
+
+  theorem reindex_not_sound :
+      notLeftUnitExpr.eval processInterpretation =
+        (ProcessExpr.reindex composite composite notExpr).eval
+          processInterpretation
+  ```
+
+- Status: `PROVED`, and the transported process reduces on concrete Boolean
+  input to `(PUnit.unit, true)`.
+- Kernel assumptions: the syntactic inequality uses none; the two internal
+  semantic theorems use `[propext, Quot.sound]`.
+- Source: `Ript/Examples/UnivalentProcessUniverse.lean`.
+
+### Explicit non-claims for Stage 11
+
+- No external univalence axiom is declared, and `Ript/Univalent/Axioms.lean`
+  is unnecessary for the current implementation.
+- No term has type `Equiv α β → α = β`.
+- The current model is small, set-level, and 1-truncated. It is not a model of
+  arbitrary higher identity types or higher inductive types.
+- The quotient groupoid is not advertised as a Rezk completion of the full
+  resource-process bicategory.
+- Rezk completion, presheaf semantics, and higher-dimensional identity remain
+  Stage-12 research targets.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -2270,3 +2460,17 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     uniform universes. Any internally interpreted univalent layer must remain
     separate and may not be presented as Lean type equality or external
     univalence without a new, explicit trust-boundary review.
+34. Stage 11 uses a project-owned deep embedding because no compatible HoTT or
+    cubical dependency is present in the pinned build. Internal identity and
+    structural equivalence are separate syntax and become equivalent only
+    after interpretation into an explicit semantic quotient.
+35. The current univalent model is deliberately 1-truncated. Its identities
+    form a groupoid, and process reindexing is ordinary conjugation. This is a
+    compiled semantic layer, not a claim to arbitrary higher paths.
+36. External Lean equality maps into internal identity by reflexivity, but no
+    reverse map is exposed. The Boolean tensor-symmetry example proves why:
+    externally unequal syntax codes may be internally identical.
+37. A proposition counts as internal only when it carries equivalence
+    invariance. This explicit field is what justifies indiscernibility; the
+    implementation does not claim that arbitrary meta-level predicates are
+    automatically invariant.

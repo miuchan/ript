@@ -77,4 +77,13 @@ if [[ "$qubit_output" != "$expected_qubit_output" ]]; then
   exit 1
 fi
 
+univalent_output="$(lake env lean Ript/Examples/UnivalentProcessUniverse.lean)"
+expected_univalent_output='true'
+
+if [[ "$univalent_output" != "$expected_univalent_output" ]]; then
+  printf 'Internally univalent process example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_univalent_output" "$univalent_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'

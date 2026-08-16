@@ -113,6 +113,15 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.ModelHom.map_comp_cost_le` | `none` | `Ript/Higher/Equivalence.lean` |
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | `none` | `Ript/Higher/Equivalence.lean` |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Equivalence.lean` |
+| `Ript.Univalent.UniverseModel.internalUnivalence` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
+| `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
+| `Ript.Univalent.UniverseModel.path_interpretation_sound` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
+| `Ript.Univalent.UniverseModel.InternalPredicate.identity_indistinguishable` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
+| `Ript.Univalent.UniverseModel.functionProcessStructureIdentity` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
+| `Ript.Univalent.ProcessDerives.soundness` | `[propext, Quot.sound]` | `Ript/Univalent/Process.lean` |
+| `Ript.Examples.UnivalentProcessUniverse.bitTensorUnit_ne_unitTensorBit` | `none` | `Ript/Examples/UnivalentProcessUniverse.lean` |
+| `Ript.Examples.UnivalentProcessUniverse.swapIdentity_apply` | `[propext, Quot.sound]` | `Ript/Examples/UnivalentProcessUniverse.lean` |
+| `Ript.Examples.UnivalentProcessUniverse.reindex_not_sound` | `[propext, Quot.sound]` | `Ript/Examples/UnivalentProcessUniverse.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -198,6 +207,18 @@ infrastructure. These coherence theorems report the standard
 infrastructure. The cost-exact preservation lemmas themselves use no axioms:
 cost reflection is an explicit hypothesis, never inferred merely from a
 bicategorical equivalence.
+The internally univalent layer is an axiom-free deep embedding. Interface
+codes, structural equivalences, identity expressions, and typed process
+expressions are syntax. A small set-level model interprets raw paths and
+equivalences as Lean `Equiv` values, then quotients them by equality of that
+interpretation. Internal identities form a genuine Mathlib groupoid and are
+equivalent to the internal structural equivalences. Process reindexing is
+conjugation along those identities, and the explicit process derivation system
+is sound for every supplied generator interpretation. These theorems report
+only `[propext, Quot.sound]`; there is no project axiom, no `Classical.choice`,
+no external univalence assumption, and no map `Equiv α β → α = β`. The
+quotient is confined to proof semantics, while the raw syntax and concrete
+Boolean interpretation remain executable.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that
@@ -205,4 +226,5 @@ dependency from derived coherence lemmas.
 
 No audited theorem uses compiler trust or a placeholder-proof assumption.
 
-The `Ript/Univalent/` boundary does not yet exist and is not imported by the core.
+The `Ript/Univalent/` layer depends on the semantic universe model and is not
+imported by `Ript/Core/`, `Ript/Computable/`, or any finite executable model.
