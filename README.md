@@ -138,8 +138,14 @@ composition 2-simplices recover interfaces, internal identities, and path
 composition exactly. Its homotopy category is isomorphic to the source
 groupoid. A dimension-by-dimension formalization proves that the nerve of
 every groupoid is a Kan complex, including explicit inverse-based outer-horn
-fillers. This remains a strict 1-groupoid nerve: no complete-Segal,
-localization, or Rezk-completion claim is made.
+fillers. The next Rezk-route foundation is also compiled: a genuine
+classifying diagram retains categories of composable strings and natural
+transformations in an outer simplicial direction, then takes their nerves
+vertically. Every vertical level is a groupoid nerve and hence Kan; taking
+vertical vertices naturally recovers the strict interface nerve, while
+vertical edges are invertible natural transformations. The outer Segal
+equivalences and Rezk completeness map remain open, so no complete-Segal or
+localization claim is made.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -967,6 +973,64 @@ chosen filler audit with the same exact footprint. The construction proves no
 complete-Segal condition, presheaf localization, external univalence, or Rezk
 completion.
 
+## The Rezk classifying-diagram foundation
+
+The strict nerve has one simplicial direction and therefore does not retain
+the natural transformations between entire composable strings. The
+classifying diagram adds that missing direction without changing any upstream
+model:
+
+```lean
+interfaceClassifyingDiagramCat M : SimplicialObject Cat
+
+InterfaceClassifyingDiagram M : SimplicialObject SSet
+```
+
+At outer degree `n`, the first object is the category
+`ComposableArrows M.Object n`, whose objects are functors
+`Fin (n + 1) ⥤ M.Object` and whose morphisms are natural transformations.
+Outer faces and degeneracies act by precomposition. Applying
+`CategoryTheory.nerveFunctor` levelwise produces the vertical simplicial
+direction, so this is a genuine bisimplicial classifying diagram rather than
+another alias for the ordinary nerve.
+
+Every component of every natural transformation lies in the internal
+interface groupoid. The transformation is therefore invertible, and every
+vertical level is the nerve of a groupoid. Ript proves, uniformly in the outer
+simplex `Δ`, that it is Kan, strict Segal, a quasicategory, and 2-coskeletal:
+
+```lean
+interfaceClassifyingDiagramLevelStrictSegal M Δ :
+  SSet.StrictSegal ((InterfaceClassifyingDiagram M).obj Δ)
+
+interfaceClassifyingDiagramLevelKan M Δ :
+  SSet.KanComplex ((InterfaceClassifyingDiagram M).obj Δ)
+```
+
+The comparison to the earlier construction is natural, not only degreewise:
+
+```lean
+interfaceClassifyingDiagramVerticalVerticesIso M :
+  InterfaceClassifyingDiagramVerticalVertices M ≅ M.InterfaceNerve
+```
+
+Thus taking vertical 0-simplices commutes with every outer face and degeneracy
+map. In outer degree `n`, vertical edges are exactly natural transformations
+between ordinary `n`-simplices. Their components are internal identities,
+their inverses are constructed explicitly, both cancellation laws are proved,
+and reversing a vertical edge decodes exactly to the inverse natural
+transformation.
+
+This is the standard classifying-diagram construction on the internal
+groupoid and a real step beyond the strict nerve. It is not yet a theorem that
+the resulting object is a complete Segal space: the outer Segal comparison
+equivalences and the Rezk completeness map still need definitions and proofs.
+No localization universal property for the full resource-process bicategory
+is claimed. The audited declarations use exactly
+`[propext, Classical.choice, Quot.sound]`, inherited from quotient semantics
+and generic category/nerve infrastructure; no project axiom or executable
+choice-derived value is introduced.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -1210,6 +1274,15 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strict Segal reconstruction returns the Boolean 2-simplex exactly. |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | An edge connects tensor presentations whose raw code syntax remains unequal. |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | The simplicially connected presentations have equal exact cardinality. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Every vertical level of the classifying diagram has explicit strict-Segal reconstruction data. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Every vertical level of the classifying diagram is a Kan complex. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Taking vertical vertices naturally recovers the ordinary interface nerve. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | Vertical edges are exactly natural transformations between outer simplices. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | Every such natural transformation is invertible. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_comp_inverse` | A vertical transformation followed by its inverse is the identity. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_inverse_comp` | The inverse followed by the vertical transformation is the identity. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeComponent_isIso` | Every component of a vertical edge is an invertible internal identity. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv_inverseEdge` | Reversing a vertical edge decodes exactly to the inverse natural transformation. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -1243,7 +1316,8 @@ finished physical theory.
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
-| 12, higher extension | Complete Segal/Rezk completion and higher localization beyond the strict categorical nerve | **OPEN RESEARCH** |
+| 12, classifying-diagram foundation | Rezk classifying diagram, levelwise groupoid/Kan/strict-Segal structure, natural recovery of the ordinary nerve, and invertible vertical transformations | **PROVED** |
+| 12, higher extension | Outer Segal equivalences, Rezk completeness, and higher localization beyond the levelwise classifying diagram | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -1270,6 +1344,7 @@ Implemented model support is intentionally narrow:
 | Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
 | Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
 | Simplicial interface nerve | Simplicial faces and degeneracies; homotopy category | Strict Segal spine composition | Semantic proof layer | Kan, quasicategory, and 2-coskeletal; explicit inner and outer horn fillers; no complete-Segal or Rezk claim |
+| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; levelwise strict Segal and Kan | Semantic proof layer | Genuine bisimplicial construction; vertical vertices recover the strict nerve; outer Segal and Rezk completeness remain open |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -1290,10 +1365,12 @@ object completion and noncomputable skeletal completion establish only the
 explicitly audited 0/1-truncated foundation. The representable-presheaf
 semantics and Yoneda essential-image envelope are also implemented, but remain
 ordinary 1-categorical constructions without higher localization. Their
-strict categorical nerve is implemented as a genuine simplicial set with
+strict categorical nerve and its levelwise groupoidal Rezk classifying diagram
+are implemented as genuine simplicial objects with
 strict Segal, complete Kan horn filling, quasicategory, 2-coskeletal, and
-homotopy-category recovery theorems, but no complete-Segal, Rezk-completion, or
-localization result is claimed. The model
+homotopy-category recovery theorems. The classifying diagram additionally has
+a natural vertical-vertex comparison and invertible vertical transformations,
+but no outer Segal, Rezk-completeness, or localization result is claimed. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -1661,6 +1738,8 @@ import Ript.Univalent.Completion
 import Ript.Univalent.Presheaf
 -- or, for the strict simplicial nerve and its Segal structure:
 import Ript.Univalent.Simplicial
+-- or, for the two-dimensional Rezk classifying-diagram foundation:
+import Ript.Univalent.ClassifyingDiagram
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -1676,7 +1755,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
 | [`Ript/Models/`](Ript/Models/) | Deterministic, probabilistic, decision, computation, finite causal, finite thermal, and finite quantum models |
 | [`Ript/Higher/`](Ript/Higher/) | Resource-indexed model bicategory and coherence |
-| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, truncated completions, representable-presheaf semantics, and the strict simplicial nerve |
+| [`Ript/Univalent/`](Ript/Univalent/) | Deep interface/process syntax, quotient groupoid, internal univalence, truncated completions, representable-presheaf semantics, the strict simplicial nerve, and the Rezk classifying-diagram foundation |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -1843,7 +1922,8 @@ updated assumption audit.
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
 - [x] Strict simplicial nerve, complete Kan horn filling, exact Segal reconstruction, quasicategory, 2-coskeletality, and homotopy-category recovery
-- [ ] Complete-Segal/Rezk localization with explicit higher coherence
+- [x] Rezk classifying diagram with levelwise groupoid/Kan structure, natural vertical-vertex comparison, and invertible vertical transformations
+- [ ] Outer Segal equivalences, Rezk completeness, and localization with explicit higher coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

@@ -105,6 +105,7 @@ import Ript.Syntax.MonoidalSignature
 import Ript.Syntax.Sequential
 import Ript.Syntax.Signature
 import Ript.Univalent.Boundary
+import Ript.Univalent.ClassifyingDiagram
 import Ript.Univalent.Completion
 import Ript.Univalent.Model
 import Ript.Univalent.Presheaf

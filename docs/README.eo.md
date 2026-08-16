@@ -132,7 +132,14 @@ Segal, kvazaŭkategorio kaj 2-koskeleta; verticoj, eĝoj kaj kunmetaj
 strikta kategoria nervo de 1-grupoido. Dimensio-post-dimensia formaligo nun
 pruvas kompletan Kan-kornplenigon, inkluzive invers-bazitajn plenigilojn de
 eksteraj kornoj; neniu aserto pri kompleta Segal-strukturo, lokalizo aŭ
-Rezk-kompletigo estas farata.
+Rezk-kompletigo estas farata. La sekva fundamento de la Rezk-vojo ankaŭ nun
+kompiliĝas: vera klasifika diagramo konservas kunmeteblajn ĉenojn kaj iliajn
+naturajn transformojn en ekstera simplicia direkto, poste prenas la nervon je
+ĉiu nivelo. Ĉiu vertikala nivelo estas grupoidnervo kaj do Kan-a; vertikalaj
+verticoj nature reakiras la striktan interfacan nervon, kaj vertikalaj eĝoj
+estas precize inversigeblaj naturaj transformoj. La eksteraj Segal-ekvivalentoj
+kaj la Rezk-kompleteca mapo restas nepruvitaj, do neniu kompleta-Segal-a aŭ
+lokaliza aserto estas farata.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -914,6 +921,47 @@ elektita plenigilo havas la saman ekzaktan aksioman spuron. Ĝi ne pruvas
 kompletan Segal-kondiĉon, antaŭfaskan lokalizon, eksteran univalentecon aŭ
 Rezk-kompletigon.
 
+### 17. Fundamento de la Rezk-klasifika diagramo
+
+La strikta nervo havas nur unu simplician direkton kaj ne konservas naturajn
+transformojn inter tutaj kunmeteblaj ĉenoj. La nova konstruo eksplicite
+konservas duan direkton:
+
+```lean
+interfaceClassifyingDiagramCat M : SimplicialObject Cat
+InterfaceClassifyingDiagram M : SimplicialObject SSet
+```
+
+En ekstera grado `n`, la kategorio estas `ComposableArrows M.Object n`: ĝiaj
+objektoj estas funktoroj `Fin (n + 1) ⥤ M.Object`, ĝiaj morfioj estas naturaj
+transformoj, kaj eksteraj facoj kaj degeneroj agas per antaŭkunmeto. Apliki
+`CategoryTheory.nerveFunctor` nivele produktas veran dusimplician klasifikan
+diagramon, ne alian nomon por la ordinara nervo.
+
+Ĉiu komponanto de ĉiu natura transformo kuŝas en la interna interfaca grupoido,
+do la transformo estas inversigebla. Sekve ĉiu vertikala nivelo estas pruvite
+Kan-a, strikta Segal, kvazaŭkategoria kaj 2-koskeleta. La komparo estas natura
+izomorfio de tutaj simpliciaj aroj, ne nur familio de sendependaj bijekcioj:
+
+```lean
+interfaceClassifyingDiagramVerticalVerticesIso M :
+  InterfaceClassifyingDiagramVerticalVertices M ≅ M.InterfaceNerve
+```
+
+Vertikalaj eĝoj estas precize naturaj transformoj inter ordinaraj
+`n`-simplaĵoj; ĉiu komponanto estas inversigebla interna idento. La kodo
+eksplicite konstruas inversajn transformojn kaj eĝojn, pruvas ambaŭ nuligajn
+leĝojn kaj pruvas ke inversigita eĝo malkodiĝas ekzakte al la inversa natura
+transformo.
+
+Tio estas la norma Rezk-klasifika-diagrama konstruo sur la interna grupoido kaj
+reala paŝo preter la strikta nervo. Tamen la eksteraj Segal-komparaj
+ekvivalentoj kaj la Rezk-kompleteca mapo ankoraŭ bezonas difinojn kaj pruvojn;
+do la objekto ankoraŭ ne estas deklarata kompleta Segal-spaco aŭ lokalizo de la
+tuta rimed-proceza dukategorio. La ekzakte reviziita aksioma spuro estas
+`[propext, Classical.choice, Quot.sound]`; neniu projekta aksiomo aŭ
+elekto-derivita plenumebla valoro estas aldonita.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -1152,6 +1200,15 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | Strikta Segal-rekonstruo redonas la Bulean 2-simplaĵon ekzakte. |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | Eĝo ligas tensorajn prezentojn kies kruda kodsintakso restas malegala. |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | La simplicie ligitaj prezentoj havas egalan ekzaktan kardinalon. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Ĉiu vertikala nivelo de la klasifika diagramo havas eksplicitajn strikt-Segal-ajn rekonstruajn datumojn. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Ĉiu vertikala nivelo de la klasifika diagramo estas Kan-komplekso. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Preni vertikalajn verticojn nature reakiras la ordinaran interfacan nervon. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | Vertikalaj eĝoj estas precize naturaj transformoj inter eksteraj simplaĵoj. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | Ĉiu vertikala natura transformo estas inversigebla. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_comp_inverse` | Vertikala transformo sekvata de sia inverso estas la idento. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_inverse_comp` | La inverso sekvata de la vertikala transformo estas la idento. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeComponent_isIso` | Ĉiu komponanto de vertikala eĝo estas inversigebla interna idento. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv_inverseEdge` | Inversigi vertikalan eĝon malkodiĝas ekzakte al la inversa natura transformo. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -1185,7 +1242,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
-| 12, pli-alta etendaĵo | Kompleta Segal/Rezk-kompletigo kaj pli-alta lokalizo preter la strikta kategoria nervo | **OPEN RESEARCH** |
+| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, nivelaj grupoidaj/Kan-aj/strikt-Segal-aj strukturoj, natura reakiro de la ordinara nervo kaj inversigeblaj vertikalaj transformoj | **PROVED** |
+| 12, pli-alta etendaĵo | Eksteraj Segal-ekvivalentoj, Rezk-kompleteco kaj pli-alta lokalizo preter la nivela klasifika diagramo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -1212,6 +1270,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
 | Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
 | Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kan-a, kvazaŭkategoria kaj 2-koskeleta; eksplicitaj internaj kaj eksteraj kornplenigiloj; sen kompleta-Segal- aŭ Rezk-aserto |
+| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; nivele strikta Segal kaj Kan | Semantika pruva tavolo | Vera dusimplicia konstruo; vertikalaj verticoj reakiras la striktan nervon; ekstera Segal kaj Rezk-kompleteco restas malfermitaj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -1231,11 +1290,13 @@ kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
 nekomputebla skeletokompletigo establas nur la eksplicite reviziitan
 0/1-tranĉitan fundamenton. La reprezentebla antaŭfaska semantiko kaj la
 Yoneda-esenc-bilda envolvaĵo ankaŭ estas realigitaj, sed restas ordinaraj
-1-kategoriaj konstruoj sen pli-alta lokalizo. Ilia strikta kategoria nervo estas
-realigita kiel vera simplicia aro kun teoremoj pri strikta Segal,
-kompleta Kan-kornplenigo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la
-homotopikategorio, sed neniu rezulto pri kompleta Segal, Rezk-kompletigo aŭ
-lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
+1-kategoriaj konstruoj sen pli-alta lokalizo. Ilia strikta kategoria nervo kaj
+la nivele grupoida Rezk-klasifika diagramo estas realigitaj kiel veraj
+simpliciaj objektoj kun teoremoj pri strikta Segal, kompleta Kan-kornplenigo,
+kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio. La
+klasifika diagramo aldone havas naturan vertikal-vertican komparon kaj
+inversigeblajn vertikalajn transformojn, sed neniu rezulto pri ekstera Segal,
+Rezk-kompleteco aŭ lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -1587,6 +1648,8 @@ import Ript.Univalent.Completion
 import Ript.Univalent.Presheaf
 -- aŭ, por la strikta simplicia nervo kaj ĝia Segal-strukturo:
 import Ript.Univalent.Simplicial
+-- aŭ, por la dudimensia Rezk-klasifika-diagrama fundamento:
+import Ript.Univalent.ClassifyingDiagram
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -1603,7 +1666,7 @@ malsupra laboro.
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
 | [`Ript/Models/`](../Ript/Models/) | Determinismaj, probablaj, decidaj, komputaj, finiaj kaŭzaj, termikaj kaj kvantumaj modeloj |
 | [`Ript/Higher/`](../Ript/Higher/) | Rimed-indeksita modeldukategorio kaj kohero |
-| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, tranĉitaj kompletigoj, reprezentebla antaŭfaska semantiko kaj la strikta simplicia nervo |
+| [`Ript/Univalent/`](../Ript/Univalent/) | Profundaj interfaca/proceza sintaksoj, kvocienta grupoido, interna univalenteco, transporto, tranĉitaj kompletigoj, reprezentebla antaŭfaska semantiko, la strikta simplicia nervo kaj la Rezk-klasifika-diagrama fundamento |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -1768,7 +1831,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Senelekta objektokompletigo, invarianta malsuprenigo kaj skeleta grupoidokompletigo
 - [x] Plene fidela Yoneda-semantiko kaj la esenc-bilda reprezentebla envolvaĵo
 - [x] Strikta simplicia nervo, kompleta Kan-kornplenigo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
-- [ ] Kompleta-Segal/Rezk-lokalizo kun eksplicita pli-alta kohero
+- [x] Rezk-klasifika diagramo kun nivelaj grupoidaj/Kan-aj strukturoj, natura vertikal-vertica komparo kaj inversigeblaj vertikalaj transformoj
+- [ ] Eksteraj Segal-ekvivalentoj, Rezk-kompleteco kaj lokalizo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

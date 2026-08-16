@@ -171,11 +171,13 @@ flowchart LR
   UnivalentPresheaf --> UnivalentSimplicial["Univalent.Simplicial"]
   UnivalentPresheafExample --> UnivalentSimplicialExample["Examples.UnivalentSimplicial"]
   UnivalentSimplicial --> UnivalentSimplicialExample
+  UnivalentSimplicial --> UnivalentClassifying["Univalent.ClassifyingDiagram"]
   UnivalentExample --> Audit
   UnivalentCompletionExample --> Audit
   UnivalentPresheafExample --> Audit
   GroupoidNerve --> Audit
   UnivalentSimplicialExample --> Audit
+  UnivalentClassifying --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -203,7 +205,8 @@ Every node in this graph is an existing compiled module.
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
-| 12 (higher extension) | Complete Segal or Rezk completion and localization beyond the strict categorical nerve | OPEN_RESEARCH |
+| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, and natural recovery of the ordinary nerve from vertical vertices | PROVED |
+| 12 (higher extension) | Outer Segal equivalences, Rezk completeness, and localization beyond the levelwise classifying diagram | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4649,7 +4652,96 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   cardinality preservation uses `[propext]`.
 - Source: `Ript/Examples/UnivalentSimplicial.lean`.
 
-### Explicit non-claims for Stage 12
+## Stage-12 classifying-diagram flagship records
+
+### `InterfaceClassifyingDiagram`
+
+- Natural-language statement: the internal interface groupoid has its genuine
+  Rezk classifying diagram, represented as a simplicial object in simplicial
+  sets. In outer degree `n`, the vertical simplicial set is the ordinary nerve
+  of `ComposableArrows M.Object n`, the category of functors
+  `Fin (n + 1) ⥤ M.Object` and natural transformations between them.
+- Lean interfaces:
+
+  ```lean
+  def UniverseModel.interfaceClassifyingDiagramCat :
+      SimplicialObject Cat
+
+  def UniverseModel.InterfaceClassifyingDiagram :
+      SimplicialObject SSet
+  ```
+
+- Construction: an outer simplex map acts by precomposition through
+  `ComposableArrows.whiskerLeftFunctor`; composing the resulting
+  category-valued simplicial object with `CategoryTheory.nerveFunctor` creates
+  the second, vertical simplicial direction.
+- Status: `PROVED` as a well-typed bisimplicial construction. The name denotes
+  Rezk's classifying-diagram construction, not a theorem that it has already
+  been packaged as a complete Segal space.
+- Computable: semantic proof layer. The outer maps and inner nerve are explicit
+  categorical data, while later horn-filler witnesses use classical choice.
+- Source: `Ript/Univalent/ClassifyingDiagram.lean`.
+
+### Levelwise groupoid, Kan, strict-Segal, and truncation structure
+
+- Natural-language statement: every natural transformation between
+  `n`-strings in the internal interface groupoid is pointwise invertible.
+  Therefore every outer category is itself a groupoid, and its vertical nerve
+  is Kan. Each such nerve is also strict Segal, a quasicategory, and
+  2-coskeletal.
+- Lean interfaces:
+
+  ```lean
+  instance UniverseModel.interfaceComposableArrowsIsGroupoid (n : ℕ) :
+      IsGroupoid (ComposableArrows M.Object n)
+
+  def UniverseModel.interfaceClassifyingDiagramLevelStrictSegal (Δ) :
+      SSet.StrictSegal ((M.InterfaceClassifyingDiagram).obj Δ)
+
+  instance UniverseModel.interfaceClassifyingDiagramLevelKan (Δ) :
+      SSet.KanComplex ((M.InterfaceClassifyingDiagram).obj Δ)
+  ```
+
+- Proof boundary: invertibility is obtained by
+  `NatIso.isIso_of_isIso_app`; every component lies in `M.Object`, already a
+  groupoid. The Kan result then applies the project-local theorem that every
+  groupoid nerve is Kan.
+- Status: `PROVED` for every outer degree, not just dimensions zero and one.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`, confirmed by
+  direct checks in `Ript/Audit/AxiomChecks.lean`.
+- Source: `Ript/Univalent/ClassifyingDiagram.lean`.
+
+### Vertical vertices and invertible vertical edges
+
+- Natural-language statement: taking vertical vertices of the entire
+  classifying diagram naturally recovers the previously formalized ordinary
+  interface nerve. In outer degree `n`, vertical edges are exactly natural
+  transformations between `n`-simplices; those transformations and each of
+  their components are invertible. Reversing a vertical edge decodes exactly
+  to the inverse natural transformation.
+- Lean interfaces:
+
+  ```lean
+  def UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso :
+      M.InterfaceClassifyingDiagramVerticalVertices ≅ M.InterfaceNerve
+
+  def UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv (n) (F G) :
+      ((M.InterfaceClassifyingDiagram).obj (op ⦋n⦌)).Edge
+          ((M.interfaceClassifyingDiagramVerticalVertexEquiv n).symm F)
+          ((M.interfaceClassifyingDiagramVerticalVertexEquiv n).symm G) ≃
+        (F ⟶ G)
+  ```
+
+- Strength of comparison: the vertex result is a natural isomorphism of
+  simplicial sets, so it commutes with every outer face and degeneracy map; it
+  is not merely a family of unrelated bijections.
+- Status: `PROVED`, including both inverse cancellation laws, pointwise
+  invertibility, a reversed-edge constructor, and its exact decoding theorem.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]` for every
+  audited declaration.
+- Source: `Ript/Univalent/ClassifyingDiagram.lean`.
+
+## Explicit non-claims for Stage 12
 
 - `ObjectCompletion` is a propositional 0-truncation, not a category and not a
   type of higher paths.
@@ -4662,12 +4754,18 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   1-groupoid. Its complete Kan condition is proved, but Kan filling does not
   by itself establish complete-Segal completeness, Rezk completion, or a
   localization universal property.
-- None of the completion, envelope, or nerve layers is a Rezk completion or a
-  full presheaf model of the resource-process bicategory.
+- The Rezk classifying diagram is now constructed as a genuine bisimplicial
+  object and its vertical levels are controlled. The outer Segal comparison
+  equivalences and the Rezk completeness map have not yet been defined and
+  proved, so the object is not yet advertised as a complete Segal space or as
+  a localization of the resource-process bicategory.
+- None of the completion, envelope, nerve, or classifying-diagram layers is a
+  full presheaf model or proved localization of the resource-process
+  bicategory.
 - No external univalence axiom, higher inductive type, localization theorem,
   or map `Equiv α β → α = β` is introduced.
 
-### Explicit non-claims for Stage 11
+## Explicit non-claims for Stage 11
 
 - No external univalence axiom is declared, and `Ript/Univalent/Axioms.lean`
   is unnecessary for the current implementation.
@@ -4676,8 +4774,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   arbitrary higher identity types or higher inductive types.
 - The quotient groupoid is not advertised as a Rezk completion of the full
   resource-process bicategory.
-- Representable presheaf semantics and a strict Kan simplicial nerve now have
-  proved foundations, but Rezk completeness, presheaf localization, and
+- Representable presheaf semantics, a strict Kan simplicial nerve, and the
+  levelwise groupoidal Rezk classifying diagram now have proved foundations,
+  but outer Segal equivalences, Rezk completeness, presheaf localization, and
   genuinely higher identity remain Stage-12 research targets; the proved
   foundations above do not discharge them.
 
@@ -4880,10 +4979,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     before quotient elimination. No representative is selected to manufacture
     executable data, and `Classical.choice` remains confined to the separate
     Mathlib skeleton construction.
-42. The phrase “truncated completion” is used literally. A future Rezk route
-    must add a presheaf, simplicial, or other higher-categorical localization
-    with explicit coherence and a new audit; the present results are its
-    compiled 0/1-truncated foundation, not that future theorem.
+42. The phrase “truncated completion” is used literally. The Rezk route now
+    includes a classifying diagram with a second simplicial direction and a
+    new audit, but still requires outer Segal and completeness equivalences
+    before it can be called a complete Segal space or localization. The object
+    and skeletal completions remain only the compiled 0/1-truncated
+    foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
     than a project-local reimplementation. Its audited
     `[propext, Classical.choice, Quot.sound]` footprint is inherited and is
@@ -4916,3 +5017,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     adjunction counit and remains noncomputable. Low-dimensional vertices,
     edges, and composition simplices are still constructible explicitly, and
     none of this semantic data flows into the executable process core.
+51. The classifying diagram is built as `SimplexCategoryᵒᵖ ⥤ Cat` followed by
+    the ordinary nerve, rather than flattening two simplicial directions into
+    one. This preserves the natural-transformation groupoids that the strict
+    nerve forgets. The vertical-vertex comparison is a natural isomorphism of
+    simplicial sets, and every vertical level is proved Kan; outer Segal maps
+    and the Rezk completeness map remain named proof obligations rather than
+    implicit consequences of levelwise Kan filling.

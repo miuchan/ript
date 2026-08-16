@@ -21,6 +21,7 @@ import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
+import Ript.Univalent.ClassifyingDiagram
 import Ript.Models.Decision.SemanticValue
 import Ript.Models.Decision.RationalSeparation
 import Ript.Models.Probability.FiniteKL
@@ -325,3 +326,12 @@ set_option autoImplicit false
 #print axioms Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip
 #print axioms Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality
 #print axioms Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_comp_inverse
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_inverse_comp
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeComponent_isIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv_inverseEdge

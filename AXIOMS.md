@@ -290,6 +290,15 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.UnivalentSimplicial.swapCancellation_segal_roundTrip` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.simplicialEdgeDoesNotReflectCodeEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/UnivalentSimplicial.lean` |
 | `Ript.Examples.UnivalentSimplicial.swapEdge_preserves_cardinality` | `[propext]` | `Ript/Examples/UnivalentSimplicial.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_comp_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_inverse_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeComponent_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv_inverseEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -547,6 +556,21 @@ restriction theorem audit with the same exact list. This categorical nerve is
 not claimed to be a complete Segal space, presheaf localization, or Rezk
 completion; those require additional completeness or localization results not
 supplied here.
+The classifying-diagram layer retains the extra direction omitted by the
+ordinary nerve. In outer degree `n` it forms the category of functors
+`Fin (n + 1) ⥤ M.Object` and natural transformations, then applies the nerve
+vertically. Every such natural transformation is pointwise invertible because
+`M.Object` is a groupoid, so every vertical level is itself the nerve of a
+groupoid and is proved Kan, strict Segal, quasicategorical, and 2-coskeletal.
+Taking vertical vertices naturally recovers the ordinary interface nerve, and
+vertical edges decode exactly to invertible natural transformations with
+explicit inverse and cancellation laws. All audited declarations in this
+layer report `[propext, Classical.choice, Quot.sound]`, inherited from the
+quotient interface semantics and generic Mathlib nerve/category machinery.
+The construction is downstream of all executable models. It introduces no
+project axiom and no choice-derived runtime data. The outer Segal comparison
+equivalences and Rezk completeness map remain unproved, so the diagram is not
+yet claimed to be a complete Segal space or a localization.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that
