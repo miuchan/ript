@@ -3,9 +3,9 @@ import Ript.Models.Decision.FiniteRisk
 /-!
 # Finite Blackwell decision separation
 
-This module states the unresolved stochastic direction of the finite
-Blackwell--Sherman--Stein theorem exactly and isolates its missing geometric
-content.
+This module states the stochastic direction of the finite
+Blackwell--Sherman--Stein theorem exactly and isolates the finite decision
+certificates used by its proof.
 
 `FiniteDecisionOrder P Q` says that `P` has no larger executable Bayes risk
 than `Q` in every exact finite decision problem.  The already-proved forward
@@ -17,9 +17,9 @@ strictly below the optimal risk available from `P`.  Such a certificate
 refutes both the universal decision order and every putative garbling.
 
 The exact stochastic converse is recorded as the proposition
-`FiniteBlackwellShermanStein`.  It is proved equivalent to completeness of
-these certificates.  What remains is therefore a precise finite convex
-separation problem, rather than an informal or weakened theorem claim.
+`FiniteBlackwellShermanStein`.  It is proved equivalent here to completeness
+of these certificates; `RationalSeparation.lean` proves that completeness via
+finite rational convex separation and closes the full converse.
 -/
 
 set_option autoImplicit false
@@ -55,7 +55,7 @@ structure DecisionSeparationCertificate
   separates :
     deterministicDecisionRisk problem Q decision < finiteBayesRisk problem P
 
-/-- The exact unresolved converse for a particular pair of finite stochastic
+/-- The exact converse property for a particular pair of finite stochastic
 experiments. -/
 def BlackwellShermanSteinConverse
     (P : FinStoch Θ X) (Q : FinStoch Θ Y) : Prop :=
@@ -65,7 +65,8 @@ def BlackwellShermanSteinConverse
 Blackwell--Sherman--Stein converse for a nonempty hidden-state carrier.  The
 nonemptiness hypothesis is necessary: with no hidden states, the decision
 order is vacuous while a garbling between arbitrary observation carriers need
-not exist.  This is a proposition, not a theorem or an assumed axiom. -/
+not exist.  This declaration names the proposition; its theorem is proved in
+`RationalSeparation.lean`, rather than assumed as an axiom. -/
 def FiniteBlackwellShermanStein : Prop :=
   ∀ (Θ X Y : Object.{u}) (_ : Nonempty Θ.carrier)
     (P : FinStoch Θ X) (Q : FinStoch Θ Y),
