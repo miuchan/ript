@@ -27,8 +27,10 @@ Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风
 平均能量、非平衡与平衡 Helmholtz 自由能，证明 `D(p ‖ γ) = β (F(p) - F(γ))`，并推出同逆温度
 Gibbs-preserving 信道下的自由能差单调性。每个满支撑精确平衡态现已在任意正逆温度下获得规范
 Gibbs 实现；同温独立系统的权重与概率分解、配分函数乘法性以及能量、熵和自由能可加性也已证明。
+显式系统—电池层还证明 Gibbs-preserving 联合过程必须用电池自由能下降支付系统自由能上升；
+电池熵不变时这成为供功界，零能 Boolean 存储器的精确擦除至少需要 `log 2 / β`。
 一般可测因果模型、Blackwell 反向表示定理与
-Landauer 型界仍是研究方向。Ript 现在还
+相关或近似擦除以及显式热浴/循环协议仍是研究方向。Ript 现在还
 拥有一个与经典随机模型分离的有限维复数量子核心：正半定、迹为一的密度矩阵；由有限完备
 Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
 Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、基 bra 构造的迹/丢弃信道、
@@ -342,7 +344,15 @@ D(p ‖ γ) = β (F(p) - F(γ)).
 Gibbs 平衡态具有满支撑，因此此处扩展实数 KL 必为有限值。结合已证明的 KL 数据处理律可得：
 同一逆温度下，Gibbs-preserving 信道不会增加 `F(p) - F(γ)`。同温独立 Gibbs 系统还能精确
 张量复合：权重与概率分解，配分函数相乘，`U`、`S`、`F`、`F(γ)` 与自由能差在乘积态上
-可加。Landauer 型不等式以及另行给定实能谱的有理 Gibbs 权重分类仍是开放研究问题。
+可加。
+
+`WorkAssistedTransition` 显式记录系统、目标与电池的精确端点态、共同逆温度、Gibbs-preserving
+联合信道，以及从初始乘积态到最终乘积态的精确演化等式。Ript 证明系统的超额自由能增量不超过
+电池的超额自由能下降。只有额外假设电池初末熵相等时，后者才等于电池平均能量下降并可解释为
+供给功。对每个 `β > 0`，从均匀平衡态擦除零能 Boolean 存储器到 `pure false` 因而至少需要
+`log 2 / β` 的电池平均能量下降。这是所有满足证书条件的过程必须遵守的下界，并不宣称这样的
+信道必然存在或达到等号。相关端点、近似擦除、显式热浴/循环协议以及另行给定实能谱的有理
+Gibbs 权重分类仍是开放研究问题。
 
 ### 12. 有限复密度矩阵与 Kraus 信道
 
@@ -659,11 +669,15 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | 有限 KL 非平衡度等于逆温度乘 Helmholtz 超额自由能。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | 同温 Gibbs-preserving 信道不会增加超额自由能。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | 同温独立乘积态的超额自由能可加。 |
+| `Ript.Models.Thermal.WorkAssistedTransition.landauer_freeEnergy_bound` | 自由的系统—电池联合过程用电池自由能下降支付系统自由能上升。 |
+| `Ript.Models.Thermal.WorkAssistedTransition.landauer_work_bound` | 电池熵不变时，同一结论成为电池平均能量供功界。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL 非平衡度等于显式两项对数和。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆热比特翻转精确保持 KL 非平衡度。 |
 | `Ript.Examples.SimpleThermalModel.thermalBit_kl_freeEnergy_identity` | 零能 Boolean Gibbs 模型在 `β = 1` 时实例化 KL/自由能恒等式。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_freeEnergyGap_invariant` | 可逆热比特翻转精确保持超额自由能。 |
+| `Ript.Examples.SimpleThermalModel.thermalBitAt_erased_freeEnergyGap` | 纯擦除零能比特的超额自由能为 `log 2 / β`。 |
+| `Ript.Examples.SimpleThermalModel.thermalBit_erasure_landauer_work_bound` | 每个具有熵中性电池证书的比特擦除至少供给 `log 2 / β` 的功。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 每个有限 Kraus 和都保持复算子正性。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完备性蕴含精确迹保持。 |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | 每个已认证信道都保持正半定性。 |
@@ -762,7 +776,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
-| 8 | 有限平衡系统、Gibbs 实现、KL/自由能恒等式、Gibbs-preserving 单调性与具体有限 KL 数据处理 | **PROVED** |
+| 8 | 有限平衡系统、Gibbs 实现、KL/自由能恒等式、张量可加性与工作辅助 Boolean Landauer 界 | **PROVED** |
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
@@ -787,7 +801,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
-| 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 精确状态/信道可执行；Gibbs/KL/自由能语义不可计算 | 指定平衡态、认证的实数 Gibbs 实现、KL/自由能恒等式与自由能差单调性 |
+| 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 精确状态/信道可执行；Gibbs/KL/自由能/功语义不可计算 | 认证 Gibbs 实现、具体有限 KL、张量可加性、乘积端点 Landauer 核算与 Boolean `log 2 / β` 界 |
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
@@ -802,7 +816,8 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
-do-calculus、通用复制/丢弃与凸结构接口、另行给定实能谱的有理 Gibbs 权重分类与 Landauer 界、
+do-calculus、通用复制/丢弃与凸结构接口、另行给定实能谱的有理 Gibbs 权重分类、相关/近似擦除与
+显式热浴或循环协议、
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
@@ -868,6 +883,7 @@ flowchart LR
   TE --> GD["实数有限能量与 Gibbs 实现"]
   GD --> FE["KL/自由能恒等式"]
   KTM --> FE
+  FE --> LW["工作辅助 Landauer 界"]
   QB["复 PSD 迹一矩阵"] --> QK["有限完备 Kraus 证书"]
   QK --> QC["迹保持 Kraus 信道范畴"]
   QC --> QT["规范 tensor 与迹丢弃"]
@@ -1026,8 +1042,8 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 可逆翻转精确保持 KL 非平衡度。该精确平衡态还被认证为 `β = 1`、两个零能级的 Gibbs 分布；
 Lean 证明 `Z = 2`、`F(γ) = -log 2`、KL/自由能恒等式的特例，以及可逆翻转保持自由能差。
 示例并执行自由平衡态制备与积平衡态；
-六个 `#eval decide` 契约检查精确归一化、信道条目、演化质量、自由态制备、积质量 `1/4` 和
-双翻转恒等过程。
+七个 `#eval decide` 契约检查精确归一化、信道条目、演化质量、自由态制备、积质量 `1/4`、
+双翻转恒等过程和确定性的擦除比特终态。
 
 `Ript/Examples/QubitChannel.lean` 定义 Boolean 基量子比特、复 Pauli-X 矩阵与计算基纯密度矩阵。
 Lean 证明 `XᴴX = I`，把 Pauli-X 封装成单算子迹保持 Kraus 信道，并证明
@@ -1059,8 +1075,8 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Causal.FinStoch
 -- 或者导入有限 KL 数据处理与具体热单调性：
 import Ript.Models.Thermal.KLDivergence
--- 或者导入能量导出的 Gibbs 分布与有限自由能：
-import Ript.Models.Thermal.FreeEnergy
+-- 或者导入 Gibbs 自由能与工作辅助 Landauer 界：
+import Ript.Models.Thermal.Work
 -- 或者导入复密度矩阵与迹保持 Kraus 信道：
 import Ript.Models.Quantum.Kraus
 -- 或者导入无公理的内部单值过程 universe：
@@ -1203,7 +1219,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 有限能量、正逆温度、Gibbs 实现、熵与 Helmholtz 自由能
 - [x] 精确有限 KL/自由能恒等式与同温自由能差单调性
 - [x] 每个满支撑精确平衡态的规范 Gibbs 实现与同温张量可加性
-- [ ] Landauer 界与另行给定实能谱的有理 Gibbs 权重分类
+- [x] 乘积端点工作辅助 Landauer 核算与 Boolean `log 2 / β` 擦除界
+- [ ] 相关端点、近似擦除、显式热浴/循环协议与另行给定实能谱的有理 Gibbs 权重分类
 - [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
@@ -1263,7 +1280,9 @@ Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence �
 热单调性；现在还提供 `ℝ≥0∞` 值的具体有限 KL、完整随机数据处理和 KL 非平衡度单调性；
 分析实现层还从实数能量与正逆温度构造有限 Gibbs 概率，在概率吻合时认证精确有理平衡态，
 并证明 KL/自由能恒等式与同温自由能差单调性；它还规范地实现每个满支撑精确平衡态并证明同温
-张量可加性。尚未提供 Landauer 不等式或另行给定实能谱的有理 Gibbs 权重分类。对于精确有限数据，Ript 还支持 Blackwell
+张量可加性。工作辅助层已证明乘积端点 Landauer 自由能核算、熵中性电池供功形式和 Boolean
+`log 2 / β` 擦除界；尚未覆盖相关端点、近似擦除、显式热浴/循环协议或另行给定实能谱的有理
+Gibbs 权重分类。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
 项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与

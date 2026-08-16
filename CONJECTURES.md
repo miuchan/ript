@@ -7,6 +7,9 @@ been checked but no kernel proof is available.
 There are currently no registered conjectures. In particular, the canonical
 Gibbs realization of every full-support exact finite equilibrium and the
 common-temperature tensor/additivity laws are proved declarations, not
-conjectural placeholders. Landauer bounds and rational-weight classification
+conjectural placeholders. The exact product-endpoint Landauer free-energy
+balance, its entropy-neutral battery work form, and the Boolean `log 2 / β`
+erasure bound are also proved declarations. Correlated endpoints, approximate
+erasure, explicit bath/cyclic protocols, and rational-weight classification
 for independently specified real spectra remain roadmap items rather than
 formalized-but-unproved propositions.
