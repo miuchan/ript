@@ -27,6 +27,10 @@ flowchart LR
   Eval --> TermModel
   TermModel --> Completeness["Semantics.Completeness"]
   Costed --> FiniteFunction["Models.FiniteFunction"]
+  Capabilities["Core.Capabilities"] --> FiniteFunctionMonoidal["Models.FiniteFunction.Monoidal"]
+  FiniteFunction --> FiniteFunctionMonoidal
+  FiniteFunctionMonoidal --> ClassicalCopy["Examples.ClassicalCopy"]
+  ClassicalCopy --> Audit
   Eval --> BitProcesses["Examples.BitProcesses"]
   FiniteFunction --> BitProcesses["Examples.BitProcesses"]
   Completeness --> Audit["Audit.AxiomChecks"]
@@ -143,6 +147,7 @@ Every node in this graph is an existing compiled module.
 | --- | --- | --- |
 | 0 | Environment, project scaffold, documentation, CI, audit baseline | PROVED |
 | 1 | Sequential resource-process vertical slice | PROVED |
+| 1 (finite deterministic model) | Explicit cartesian tensor, coherent classical copy/discard, causality, and executable Boolean evidence | PROVED |
 | 1 (representation) | Cost functions and attained budget filtrations, with exact round trips and serial/tensor closure | PROVED |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | PROVED |
 | 3 | Executable finite stochastic model | PROVED |
@@ -160,6 +165,111 @@ Every node in this graph is an existing compiled module.
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (higher extension) | Complete Segal or Rezk completion and localization beyond the strict categorical nerve | OPEN_RESEARCH |
+
+## Finite deterministic copy-discard theorem records
+
+Ript keeps discarding outside the common process core. `DiscardingProcess`
+selects coherent discards without granting copy; `ClassicalCopyingProcess` is
+an alias for Mathlib's stronger `CopyDiscardCategory`. The finite deterministic
+model uses explicit `PUnit` and product-type limit cones, after which Mathlib's
+cartesian construction supplies the commutative-comonoid laws. Thus the model
+gets genuine categorical structure without duplicating Mathlib's theory.
+
+### `Ript.Core.CausalProcess.comp`
+
+- Natural-language statement: serial composition of discard-preserving
+  processes is discard-preserving.
+- Lean type:
+
+  ```lean
+  theorem CausalProcess.comp {f : X ⟶ Y} {g : Y ⟶ Z}
+      (hf : CausalProcess f) (hg : CausalProcess g) :
+      CausalProcess (f ≫ g)
+  ```
+
+- Prerequisites: a monoidal category and `DiscardingProcess`.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: the composite and discard maps may compute; causality is proof data.
+- Kernel assumptions: none.
+- Source: `Ript/Core/Capabilities.lean`.
+
+### `Ript.Models.FiniteFunction.tensor_apply`
+
+- Natural-language statement: the cartesian tensor of finite deterministic
+  functions applies each function to its corresponding component.
+- Lean type:
+
+  ```lean
+  theorem tensor_apply (f : W ⟶ X) (g : Y ⟶ Z) (value : W × Y) :
+      (f ⊗ₘ g) value = (f value.1, g value.2)
+  ```
+
+- Prerequisites: explicit `PUnit` terminal cone and product-type binary cones.
+- Status: `PROVED`.
+- Classical choice: present only in Mathlib's generic categorical proof
+  infrastructure; no chosen value enters the componentwise function.
+- Computable: yes; the operation reduces under `#eval`.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteFunction/Monoidal.lean`.
+
+### `Ript.Models.FiniteFunction.copy_natural`
+
+- Natural-language statement: every finite deterministic function commutes
+  with classical diagonal copying.
+- Lean type:
+
+  ```lean
+  theorem copy_natural (f : X ⟶ Y) :
+      f ≫ Δ[Y] = Δ[X] ≫ (f ⊗ₘ f)
+  ```
+
+- Prerequisites: Mathlib cartesian copy-discard structure and deterministic
+  morphisms.
+- Status: `PROVED`.
+- Classical choice: yes in generic categorical proof dependencies only.
+- Computable: copy is the executable diagonal function; equality is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteFunction/Monoidal.lean`.
+
+### `Ript.Models.FiniteFunction.copy_coassociative`
+
+- Natural-language statement: iterated finite copying is coassociative up to
+  the chosen cartesian associator.
+- Lean type:
+
+  ```lean
+  theorem copy_coassociative (X : FintypeCat) :
+      Δ[X] ≫ X ◁ Δ[X] =
+        Δ[X] ≫ (Δ[X] ▷ X) ≫ (α_ X X X).hom
+  ```
+
+- Prerequisites: Mathlib's objectwise commutative comonoid supplied by the
+  cartesian monoidal structure.
+- Status: `PROVED`.
+- Classical choice: yes in generic categorical proof dependencies only.
+- Computable: the diagonal computes; coherence is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteFunction/Monoidal.lean`.
+
+### `Ript.Models.FiniteFunction.causal`
+
+- Natural-language statement: every finite deterministic function preserves
+  discard and is therefore causal.
+- Lean type:
+
+  ```lean
+  theorem causal (f : X ⟶ Y) : CausalProcess f
+  ```
+
+- Prerequisites: the deterministic-to-causal bridge and cartesian
+  copy-discard structure.
+- Status: `PROVED`.
+- Classical choice: yes in the concrete cartesian structure's generic proof
+  dependencies; the generic bridge itself uses no axioms.
+- Computable: discard is executable; causality is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/FiniteFunction/Monoidal.lean`.
 
 ## Cost--filtration representation theorem records
 

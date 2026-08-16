@@ -1,5 +1,6 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
+import Ript.Examples.ClassicalCopy
 import Ript.Examples.CostFiltration
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
@@ -30,6 +31,18 @@ set_option autoImplicit false
 
 #print axioms Ript.Resource.budgeted_id
 #print axioms Ript.Resource.budgeted_comp
+#print axioms Ript.Core.CausalProcess.comp
+#print axioms Ript.Core.causal_of_deterministic
+#print axioms Ript.Models.FiniteFunction.tensor_apply
+#print axioms Ript.Models.FiniteFunction.copy_apply
+#print axioms Ript.Models.FiniteFunction.discard_apply
+#print axioms Ript.Models.FiniteFunction.copy_natural
+#print axioms Ript.Models.FiniteFunction.discard_natural
+#print axioms Ript.Models.FiniteFunction.copy_coassociative
+#print axioms Ript.Models.FiniteFunction.copy_commutative
+#print axioms Ript.Models.FiniteFunction.causal
+#print axioms Ript.Examples.ClassicalCopy.negate_copy_natural
+#print axioms Ript.Examples.ClassicalCopy.negate_causal
 #print axioms Ript.Resource.costToFiltration_toCost
 #print axioms Ript.Resource.filtrationToCost_toFiltration_of_attained
 #print axioms Ript.Resource.filtrationToCost_comp

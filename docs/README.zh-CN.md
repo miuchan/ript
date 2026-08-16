@@ -121,6 +121,12 @@ Ript 把这些义务编码为 Lean 接口，并一次性证明它们之间的核
 `filtrationToCost_toFiltration_of_attained` 恢复原过滤的每一层。把可达到的下确界作为数据
 保存，使构造无需选择公理，也能直接用于 `Nat` 等离散资源，而不强迫资源序成为完备格。
 
+复制与丢弃是可选能力，不会暗中进入这个公共核心。`DiscardingProcess` 只选择相容的丢弃映射，
+并不授予复制；`ClassicalCopyingProcess` 直接复用 Mathlib 的 `CopyDiscardCategory`。零成本有限函数
+模型现在是真正的笛卡尔幺半群范畴：普通乘积类型是张量，`PUnit` 是单位，对角函数执行复制，
+到 `PUnit` 的唯一映射执行丢弃。每个有限函数都已证明保持这两项操作，因而都是 causal。
+这些操作本身保持可执行；通用范畴 coherence 证明则继承 Mathlib 已审计的经典证明基础设施。
+
 ### 2. 带类型、可执行的语法
 
 串行语言包含原始生成元、恒等过程和串行复合。它的类型索引使接口不匹配的复合无法表示。
@@ -514,6 +520,13 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | --- | --- |
 | `Ript.Resource.budgeted_id` | 每个恒等态射都可在零预算下使用。 |
 | `Ript.Resource.budgeted_comp` | 串行复合时预算相加。 |
+| `Ript.Core.CausalProcess.comp` | 因果过程对串行复合封闭。 |
+| `Ript.Models.FiniteFunction.tensor_apply` | 笛卡尔张量逐分量应用有限函数。 |
+| `Ript.Models.FiniteFunction.copy_natural` | 每个有限函数都与对角复制交换。 |
+| `Ript.Models.FiniteFunction.discard_natural` | 每个有限函数都保持丢弃。 |
+| `Ript.Models.FiniteFunction.copy_coassociative` | 对角复制满足范畴余结合律。 |
+| `Ript.Models.FiniteFunction.copy_commutative` | 对角复制在交换两个输出后不变。 |
+| `Ript.Models.FiniteFunction.causal` | 每个有限确定性函数都是因果过程。 |
 | `Ript.Resource.costToFiltration_toCost` | 最小预算重建精确返回原过程成本。 |
 | `Ript.Resource.filtrationToCost_toFiltration_of_attained` | 重建成本的不等式精确恢复可达到过滤的每一层。 |
 | `Ript.Resource.filtrationToCost_comp` | 从过滤重建的成本对串行复合次可加。 |
@@ -670,6 +683,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | --- | --- | --- |
 | 0 | 可复现工程、文档、CI 与审计基线 | **PROVED** |
 | 1 | 串行资源过程核心 | **PROVED** |
+| 1，有限确定性模型 | 笛卡尔张量、相容的经典复制/丢弃、因果性与可执行证据 | **PROVED** |
 | 1，表示 | 成本与可达到预算过滤的双向精确表示，以及串行/张量闭包 | **PROVED** |
 | 2 | 张量、对称性、并行资源与严格自由普遍提升 | **PROVED** |
 | 3 | 可执行的有限随机模型 | **PROVED** |
@@ -692,7 +706,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 
 | 模型 | 串行 | 张量 | 可计算性 | 说明 |
 | --- | --- | --- | --- | --- |
-| 零成本 `FintypeCat` | 是 | 否 | 可执行 | 确定性有限函数 |
+| 零成本 `FintypeCat` | 是 | 是 | 可执行 | 笛卡尔乘积、相容复制/丢弃，所有函数均为因果过程 |
 | `FiniteFunction.Metered` | 是 | 否 | 可执行 | 函数携带显式自然数成本 |
 | 串行项模型 | 是 | 否 | 证明层 | 按显式范畴推导取商 |
 | 对称幺半群项模型 | 是 | 是 | 证明层 | 按显式幺半群推导取商 |
@@ -1049,6 +1063,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 
 - [x] 有序加法资源接口
 - [x] 松弛串行过程成本与检验过的预算
+- [x] 可选丢弃/因果接口与相容的经典复制—丢弃能力
+- [x] 零成本有限函数的可执行笛卡尔张量、复制与丢弃
 - [x] 成本与可达到预算过滤的双向精确表示
 - [x] 带类型的串行语法与可执行求值
 - [x] 显式范畴律推导

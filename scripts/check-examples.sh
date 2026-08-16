@@ -23,6 +23,15 @@ if [[ "$cost_filtration_output" != "$expected_cost_filtration_output" ]]; then
   exit 1
 fi
 
+classical_copy_output="$(lake env lean Ript/Examples/ClassicalCopy.lean)"
+expected_classical_copy_output=$'true\ntrue\ntrue'
+
+if [[ "$classical_copy_output" != "$expected_classical_copy_output" ]]; then
+  printf 'Classical copy-discard example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_classical_copy_output" "$classical_copy_output" >&2
+  exit 1
+fi
+
 stochastic_output="$(lake env lean Ript/Examples/StochasticBits.lean)"
 expected_stochastic_output=$'true\ntrue\ntrue\ntrue\ntrue'
 
