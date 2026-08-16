@@ -163,6 +163,16 @@ ekzaktaj: `costToFiltration_toCost` reakiras la originan koston, kaj
 Konservi la atingitan infimumon kiel datumon evitas elekton kaj funkcias por
 diskretaj rimedoj kiel `Nat` sen postuli kompletan latison.
 
+Kopiado kaj forĵetado estas nedevigaj kapabloj, ne kaŝitaj en la komuna kerno.
+`DiscardingProcess` elektas koherajn forĵetojn sen doni kopiadon;
+`ClassicalCopyingProcess` reuzas la `CopyDiscardCategory` de Mathlib. La
+nulkosta fini-funkcia modelo nun estas vera kartezia monoida kategorio: ordinara
+produktotipo estas tensoro, `PUnit` estas la unuo, la diagonala funkcio kopias,
+kaj la unika mapo al `PUnit` forĵetas. Ĉiu finia funkcio pruvite konservas ambaŭ
+operaciojn kaj do estas kaŭza. La operacioj restas plenumeblaj, kvankam la
+ĝeneralaj kategoriaj koherpruvoj heredas la reviziitan klasikan pruvinfrastrukturon
+de Mathlib.
+
 ### 2. Tiphava plenumebla sintakso
 
 La sinsekva lingvo enhavas primitivajn generilojn, identojn kaj sinsekvan
@@ -670,6 +680,13 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | --- | --- |
 | `Ript.Resource.budgeted_id` | Ĉiu idento haveblas kun nula buĝeto. |
 | `Ript.Resource.budgeted_comp` | Buĝetoj adiciiĝas sub sinsekva kunmeto. |
+| `Ript.Core.CausalProcess.comp` | Kaŭzaj procezoj estas fermitaj sub sinsekva kunmeto. |
+| `Ript.Models.FiniteFunction.tensor_apply` | Kartezia tensoro aplikas finiajn funkciojn komponente. |
+| `Ript.Models.FiniteFunction.copy_natural` | Ĉiu finia funkcio komutas kun diagonala kopiado. |
+| `Ript.Models.FiniteFunction.discard_natural` | Ĉiu finia funkcio konservas forĵetadon. |
+| `Ript.Models.FiniteFunction.copy_coassociative` | Diagonala kopiado plenumas la kategorian kunasociecan leĝon. |
+| `Ript.Models.FiniteFunction.copy_commutative` | Diagonala kopiado estas invarianta sub interŝanĝo de siaj eliroj. |
+| `Ript.Models.FiniteFunction.causal` | Ĉiu finia determinisma funkcio estas kaŭza. |
 | `Ript.Resource.costToFiltration_toCost` | Rekonstruo per la minimuma buĝeto redonas la originan procezkoston. |
 | `Ript.Resource.filtrationToCost_toFiltration_of_attained` | Rekonstruitaj kostmalegalecoj reakiras ĉiun atingitan filtran tavolon. |
 | `Ript.Resource.filtrationToCost_comp` | Rekonstruitaj kostoj estas subadiciaj sub sinsekva kunmeto. |
@@ -829,6 +846,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | --- | --- | --- |
 | 0 | Reproduktebla projekto, dokumentaro, CI kaj revizia bazlinio | **PROVED** |
 | 1 | Sinsekva rimed-proceza kerno | **PROVED** |
+| 1, finia determinisma modelo | Kartezia tensoro, koheraj klasikaj kopiado/forĵetado, kaŭzeco kaj plenumebla evidento | **PROVED** |
 | 1, prezento | Ekzaktaj rondiroj inter kostoj kaj atingitaj buĝetfiltradoj, kun sinsekva/tensora fermo | **PROVED** |
 | 2 | Tensoro, simetrio, paralelaj rimedoj kaj la strikta libera universala levo | **PROVED** |
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
@@ -851,7 +869,7 @@ La realigita modelsubteno estas intence mallarĝa:
 
 | Modelo | Sinsekva | Tensora | Komputebleco | Notoj |
 | --- | --- | --- | --- | --- |
-| `FintypeCat` kun nula kosto | Jes | Ne | Plenumebla | Determinismaj finiaj funkcioj |
+| `FintypeCat` kun nula kosto | Jes | Jes | Plenumebla | Karteziaj produtoj, koheraj kopiado/forĵetado, ĉiuj funkcioj kaŭzaj |
 | `FiniteFunction.Metered` | Jes | Ne | Plenumebla | Funkcioj portas eksplicitajn natur-nombrajn kostojn |
 | Sinsekva termmodelo | Jes | Ne | Pruva tavolo | Kvociento laŭ eksplicitaj kategoriaj derivoj |
 | Simetria monoida termmodelo | Jes | Jes | Pruva tavolo | Kvociento laŭ eksplicitaj monoidaj derivoj |
@@ -1271,6 +1289,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 
 - [x] Ordigita adicia rimedinterfaco
 - [x] Subadiciaj sinsekvaj procezkostoj kaj kontrolitaj buĝetoj
+- [x] Nedevigaj forĵeta/kaŭza interfacoj kaj kohera klasika kopi-forĵeta kapablo
+- [x] Plenumeblaj kartezia tensoro, kopiado kaj forĵetado por nulkostaj finiaj funkcioj
 - [x] Ekzakta dudirekta prezento de kostoj kaj atingitaj buĝetfiltradoj
 - [x] Tiphava sinsekva sintakso kaj plenumebla interpretado
 - [x] Eksplicitaj derivoj de kategoriaj leĝoj

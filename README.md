@@ -163,6 +163,16 @@ process reconstructs a lax additive cost. Both round trips are exact:
 Storing the attained infimum as data keeps this construction choice-free and
 works for discrete resources such as `Nat` without imposing a complete lattice.
 
+Copy and discard are optional rather than hidden in that core.
+`DiscardingProcess` selects coherent discards without granting a copying
+operation; `ClassicalCopyingProcess` reuses Mathlib's
+`CopyDiscardCategory`. The zero-cost finite-function model is now genuinely
+cartesian monoidal: tensor is the ordinary product type, `PUnit` is the unit,
+the diagonal copies, and the unique map to `PUnit` discards. Every finite
+function is proved to preserve both operations and is therefore causal. These
+operations remain executable even though the generic categorical coherence
+proofs inherit Mathlib's audited classical proof infrastructure.
+
 ### 2. Typed executable syntax
 
 The sequential language contains primitive generators, identities, and serial
@@ -689,6 +699,13 @@ informal summaries; the Lean declarations are authoritative.
 | --- | --- |
 | `Ript.Resource.budgeted_id` | Every identity is available at zero budget. |
 | `Ript.Resource.budgeted_comp` | Budgets add under serial composition. |
+| `Ript.Core.CausalProcess.comp` | Causal processes are closed under serial composition. |
+| `Ript.Models.FiniteFunction.tensor_apply` | Cartesian tensor applies finite functions componentwise. |
+| `Ript.Models.FiniteFunction.copy_natural` | Every finite function commutes with diagonal copy. |
+| `Ript.Models.FiniteFunction.discard_natural` | Every finite function commutes with discard. |
+| `Ript.Models.FiniteFunction.copy_coassociative` | Diagonal copy satisfies the categorical coassociativity law. |
+| `Ript.Models.FiniteFunction.copy_commutative` | Diagonal copy is invariant under swapping its outputs. |
+| `Ript.Models.FiniteFunction.causal` | Every finite deterministic function is causal. |
 | `Ript.Resource.costToFiltration_toCost` | Least-budget reconstruction returns the original process cost. |
 | `Ript.Resource.filtrationToCost_toFiltration_of_attained` | Reconstructed cost inequalities recover every attained filtration layer. |
 | `Ript.Resource.filtrationToCost_comp` | Reconstructed costs are subadditive under serial composition. |
@@ -848,6 +865,7 @@ finished physical theory.
 | --- | --- | --- |
 | 0 | Reproducible project, documentation, CI, and audit baseline | **PROVED** |
 | 1 | Sequential resource-process core | **PROVED** |
+| 1, finite deterministic model | Cartesian tensor, coherent classical copy/discard, causality, and executable evidence | **PROVED** |
 | 1, representation | Exact cost/attained-filtration round trips and serial/tensor closure | **PROVED** |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | **PROVED** |
 | 3 | Executable finite stochastic model | **PROVED** |
@@ -870,7 +888,7 @@ Implemented model support is intentionally narrow:
 
 | Model | Sequential | Tensor | Computability | Notes |
 | --- | --- | --- | --- | --- |
-| `FintypeCat` with zero cost | Yes | No | Executable | Deterministic finite functions |
+| `FintypeCat` with zero cost | Yes | Yes | Executable | Cartesian products, coherent copy/discard, every function causal |
 | `FiniteFunction.Metered` | Yes | No | Executable | Functions carry explicit natural-number costs |
 | Sequential term model | Yes | No | Proof layer | Quotient by explicit category derivations |
 | Symmetric monoidal term model | Yes | Yes | Proof layer | Quotient by explicit monoidal derivations |
@@ -1296,6 +1314,8 @@ updated assumption audit.
 
 - [x] Ordered additive resource interface
 - [x] Lax sequential process costs and checked budgets
+- [x] Optional discard/causality interfaces and coherent classical copy-discard capability
+- [x] Executable cartesian tensor, copy, and discard for zero-cost finite functions
 - [x] Exact cost/attained-budget-filtration representation in both directions
 - [x] Typed sequential syntax and executable evaluation
 - [x] Explicit category-law derivations

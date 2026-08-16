@@ -4,7 +4,7 @@ Only implemented and compiled capabilities are marked as supported.
 
 | Model | Sequential | Tensor | Discard | Copy | Convex | Causal | Decision | Thermal | Computable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| FiniteFunction (zero cost) | Yes | No | No | No | No | No | No | No | Yes |
+| FiniteFunction (zero cost) | Yes | Yes | Yes | Yes | No | Yes | No | No | Yes |
 | FiniteFunction.Metered | Yes | No | No | No | No | No | No | No | Yes |
 | Sequential term model | Yes | No | No | No | No | No | No | No | Proof layer |
 | Symmetric monoidal term model | Yes | Yes | No | No | No | No | No | No | Proof layer |
@@ -27,6 +27,14 @@ is the ordinary finite-matrix formulation native to the current model, not an
 unproved bridge to Mathlib's analytic C\*-algebra API. “Copy” remains
 deliberately unsupported: no classical copying structure is inferred from the
 chosen quantum basis.
+
+The zero-cost finite-function row uses an explicit cartesian monoidal structure:
+ordinary product types are tensor, `PUnit` is the unit, diagonal functions copy,
+and the unique map to `PUnit` discards. Mathlib's `CopyDiscardCategory` supplies
+the coherent commutative-comonoid laws, and every function is proved
+deterministic and causal. The separate `Metered` row remains only sequential:
+proof-relevant costs make morphisms with the same function but different units
+distinct, so its category is not cartesian and no copy capability is inferred.
 
 The classical quantum row is the proved faithful measurement--preparation
 image of `FiniteStochastic`. Its Kraus operators are

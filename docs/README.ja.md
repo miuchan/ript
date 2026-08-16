@@ -134,6 +134,14 @@ Ript はこれらの要件を Lean のインターフェースとしてまとめ
 `filtrationToCost_toFiltration_of_attained` は元の各層を復元します。到達下限をデータとして
 保持するため選択公理は不要で、資源順序を完備束にせず `Nat` のような離散資源にも使えます。
 
+コピーと破棄は、この共通核に暗黙に含めずオプション能力として扱います。
+`DiscardingProcess` は整合的な破棄だけを選び、コピー操作を与えません。
+`ClassicalCopyingProcess` は Mathlib の `CopyDiscardCategory` をそのまま再利用します。
+コスト 0 の有限関数モデルは、通常の積型をテンソル、`PUnit` を単位、対角関数をコピー、
+`PUnit` への一意な写像を破棄とする真のデカルトモノイダル圏になりました。すべての有限関数は
+両方の操作を保存し、したがって causal であることが証明されています。操作自体は実行可能で、
+一般の圏論的 coherence 証明だけが Mathlib の監査済み古典証明基盤を継承します。
+
 ### 2. 型付きで実行可能な構文
 
 直列言語は、原始生成子、恒等式、直列合成からなります。型の添字により、インターフェースが
@@ -554,6 +562,13 @@ horn に制限されることも検証します。
 | --- | --- |
 | `Ript.Resource.budgeted_id` | すべての恒等射は予算 0 で利用できます。 |
 | `Ript.Resource.budgeted_comp` | 直列合成では予算が加算されます。 |
+| `Ript.Core.CausalProcess.comp` | 因果的プロセスは直列合成について閉じています。 |
+| `Ript.Models.FiniteFunction.tensor_apply` | デカルトテンソルは有限関数を成分ごとに適用します。 |
+| `Ript.Models.FiniteFunction.copy_natural` | すべての有限関数は対角コピーと可換です。 |
+| `Ript.Models.FiniteFunction.discard_natural` | すべての有限関数は破棄を保存します。 |
+| `Ript.Models.FiniteFunction.copy_coassociative` | 対角コピーは圏論的余結合律を満たします。 |
+| `Ript.Models.FiniteFunction.copy_commutative` | 対角コピーは二出力の交換で不変です。 |
+| `Ript.Models.FiniteFunction.causal` | すべての有限決定論的関数は因果的です。 |
 | `Ript.Resource.costToFiltration_toCost` | 最小予算からの再構成は元のプロセスコストを正確に返します。 |
 | `Ript.Resource.filtrationToCost_toFiltration_of_attained` | 再構成コストの不等式は到達フィルトレーションの各層を復元します。 |
 | `Ript.Resource.filtrationToCost_comp` | フィルトレーションから再構成したコストは直列合成に対して劣加法的です。 |
@@ -711,6 +726,7 @@ horn に制限されることも検証します。
 | --- | --- | --- |
 | 0 | 再現可能なプロジェクト、文書、CI、監査基準 | **PROVED** |
 | 1 | 直列資源プロセスの核 | **PROVED** |
+| 1、有限決定論モデル | デカルトテンソル、整合的な古典コピー/破棄、因果性、実行可能な証拠 | **PROVED** |
 | 1、表現 | コストと到達予算フィルトレーションの厳密な往復、および直列・テンソル閉性 | **PROVED** |
 | 2 | テンソル、対称性、並列資源、厳密な自由普遍リフト | **PROVED** |
 | 3 | 実行可能な有限確率モデル | **PROVED** |
@@ -733,7 +749,7 @@ horn に制限されることも検証します。
 
 | モデル | 直列 | テンソル | 計算可能性 | 備考 |
 | --- | --- | --- | --- | --- |
-| コスト 0 の `FintypeCat` | 可 | 不可 | 実行可能 | 決定論的有限関数 |
+| コスト 0 の `FintypeCat` | 可 | 可 | 実行可能 | デカルト積、整合的コピー/破棄、全関数が因果的 |
 | `FiniteFunction.Metered` | 可 | 不可 | 実行可能 | 関数が自然数コストを明示的に保持 |
 | 直列項モデル | 可 | 不可 | 証明層 | 明示的圏導出による商 |
 | 対称モノイダル項モデル | 可 | 可 | 証明層 | 明示的モノイダル導出による商 |
@@ -1105,6 +1121,8 @@ import Ript.Univalent.Simplicial
 
 - [x] 順序付き加法資源インターフェース
 - [x] 劣加法的な直列プロセスコストと検証済み予算
+- [x] オプションの破棄/因果性インターフェースと整合的な古典コピー・破棄能力
+- [x] コスト 0 の有限関数に対する実行可能なデカルトテンソル、コピー、破棄
 - [x] コストと到達予算フィルトレーションの双方向の厳密な表現
 - [x] 型付き直列構文と実行可能な評価
 - [x] 明示的な圏の法則の導出

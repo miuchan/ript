@@ -7,6 +7,18 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | --- | --- | --- |
 | `Ript.Resource.budgeted_id` | `[propext]` | `Ript/Resource/Budget.lean` |
 | `Ript.Resource.budgeted_comp` | `[propext, Quot.sound]` | `Ript/Resource/Budget.lean` |
+| `Ript.Core.CausalProcess.comp` | `none` | `Ript/Core/Capabilities.lean` |
+| `Ript.Core.causal_of_deterministic` | `none` | `Ript/Core/Capabilities.lean` |
+| `Ript.Models.FiniteFunction.tensor_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.copy_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.discard_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.copy_natural` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.discard_natural` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.copy_coassociative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.copy_commutative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Models.FiniteFunction.causal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteFunction/Monoidal.lean` |
+| `Ript.Examples.ClassicalCopy.negate_copy_natural` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ClassicalCopy.lean` |
+| `Ript.Examples.ClassicalCopy.negate_causal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ClassicalCopy.lean` |
 | `Ript.Resource.costToFiltration_toCost` | `[propext, Quot.sound]` | `Ript/Resource/Filtration.lean` |
 | `Ript.Resource.filtrationToCost_toFiltration_of_attained` | `none` | `Ript/Resource/Filtration.lean` |
 | `Ript.Resource.filtrationToCost_comp` | `none` | `Ript/Resource/Filtration.lean` |
@@ -175,7 +187,14 @@ choice; the reverse round-trip is therefore constructive for discrete resource
 orders such as `Nat` as well as for complete orders. The reported `propext` and
 `Quot.sound` on the forward round-trip arise from the existing process-cost
 category interface, not from choosing a minimizing budget. The finite
-stochastic and finite-distribution representation
+deterministic cartesian layer chooses `PUnit` and ordinary product types
+explicitly, and its tensor, copy, and discard functions reduce under ordinary
+`#eval`. Its audited categorical laws nevertheless report
+`[propext, Classical.choice, Quot.sound]` through Mathlib's generic cartesian
+monoidal and commutative-comonoid proof infrastructure; no choice-derived
+value is consumed by the executable Boolean example. The weaker generic
+causality composition and deterministic-to-causal bridge require no axioms.
+The finite stochastic and finite-distribution representation
 theorems report `Classical.choice` through Mathlib's generic
 `Fintype` and finite-sum proof infrastructure. Runtime channel data instead
 uses explicitly supplied `Fintype` and `DecidableEq` values; no definition in
