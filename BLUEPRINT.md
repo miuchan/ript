@@ -4711,6 +4711,48 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   direct checks in `Ript/Audit/AxiomChecks.lean`.
 - Source: `Ript/Univalent/ClassifyingDiagram.lean`.
 
+### Mapping-space presentation and boundary matching fibrations
+
+- Natural-language statement: outer degree `n` is isomorphic to the internal
+  simplicial mapping space `Map(Δ[n], N(M.Object))`. Under this presentation,
+  the concrete boundary matching map is restriction along
+  `∂Δ[n] ↪ Δ[n]`, and it is a fibration because `N(M.Object)` is Kan.
+- Lean interfaces:
+
+  ```lean
+  def SSet.BoundaryMatchingObject (X : SSet) (n : ℕ) : SSet
+
+  theorem SSet.boundaryMatchingMap_fibration
+      (X : SSet) [X.KanComplex] (n : ℕ) :
+      Fibration (SSet.boundaryMatchingMap X n)
+
+  def UniverseModel.interfaceClassifyingDiagramMappingSpaceIso (n : ℕ) :
+      (M.InterfaceClassifyingDiagram).obj (op ⦋n⦌) ≅
+        (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+
+  theorem UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration
+      (n : ℕ) :
+      Fibration (M.interfaceClassifyingDiagramBoundaryMatchingMap n)
+  ```
+
+- Construction: Mathlib's closed-nerve comparison identifies the nerve of a
+  functor category with an internal Hom. `stdSimplex.isoNerve` uses
+  `ULift (Fin (n + 1))`, so the project proves an explicit strict `Cat`
+  isomorphism between the lifted and unlifted functor categories before
+  composing the comparison. The fibration is then Mathlib's
+  pushout-product theorem for a monomorphism into a Kan complex.
+- Status: `PROVED` for the degreewise mapping-space isomorphism and every
+  transported boundary restriction. This is not yet a complete proof of
+  Reedy fibrancy: the isomorphisms must still be assembled naturally in the
+  outer simplex and the boundary object must be identified by a universal
+  property with the abstract Reedy matching limit. The pinned Mathlib release
+  defines Reedy indexing structures but does not yet construct the Reedy model
+  structure or matching-object API for functor categories.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`; no project
+  axiom is added.
+- Sources: `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` and
+  `Ript/Univalent/ClassifyingDiagram.lean`.
+
 ### Horizontal rows and outer Segal equivalences
 
 - Natural-language statement: evaluating the vertical simplicial direction in
@@ -5104,8 +5146,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     strict categorical nerve. Kan is proved separately, with a named theorem
     covering low-dimensional outer horns rather than being inferred from the
     inner-horn result. The classifying diagram's completeness comparison is a
-    separate theorem; Reedy fibrancy and localization remain distinct open
-    proof obligations.
+    separate theorem. The mapping-space presentation and every concrete
+    boundary matching fibration are now proved; natural identification with
+    the abstract matching limit, full Reedy packaging, and localization remain
+    distinct open proof obligations.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
     edges, and composition simplices are still constructible explicitly, and
@@ -5118,5 +5162,7 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     finite indexing categories makes every horizontal row an ordinary nerve,
     so the actual outer spine maps are equivalences. The Rezk completeness map
     is then defined as the actual outer zero-degeneracy and proved to be the
-    nerve of a category equivalence; this is not inferred implicitly from
-    levelwise Kan filling or outer Segal structure.
+    nerve of a category equivalence. Separately, each outer degree is
+    identified with `Map(Δ[n], N(M.Object))`, and restriction to
+    `Map(∂Δ[n], N(M.Object))` is proved fibrant; this is not inferred
+    implicitly from levelwise Kan filling or outer Segal structure.

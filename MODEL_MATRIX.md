@@ -202,7 +202,7 @@ or the executable cores.
 | Presheaf universe | Type-valued presheaves on the internal groupoid | Yoneda is fully faithful; representable transformations/isomorphisms correspond to internal identity/equivalence | Semantic proof layer; Mathlib Yoneda audits with classical choice |
 | Yoneda envelope | Essential image of representables in the presheaf universe | Groupoid equivalent to the internal groupoid; inclusion factors Yoneda; functor categories are equivalent | Noncomputable essential-image witnesses; not a Rezk completion |
 | Simplicial interface nerve | Ordinary categorical nerve of the internal groupoid | Complete Kan horn filling, strict Segal, quasicategory, 2-coskeletal; vertices/edges/2-simplices encode interfaces, identities, and composition; homotopy category recovers the groupoid | Semantic proof layer; chosen fillers audit with classical choice; no complete-Segal or Rezk claim |
-| Rezk classifying diagram | Outer simplicial category of composable interface strings, followed levelwise by the ordinary nerve | Every vertical level is a groupoid nerve, Kan, strict Segal, quasicategorical, and 2-coskeletal; every horizontal row is naturally an ordinary nerve and hence strict Segal; the actual completeness map is the nerve of a category equivalence | Semantic proof layer; the actual outer spine maps are equivalences in every bidegree; Reedy fibrancy, complete-Segal packaging, and localization remain open |
+| Rezk classifying diagram | Outer simplicial category of composable interface strings, followed levelwise by the ordinary nerve | Every vertical level is a groupoid nerve, Kan, strict Segal, quasicategorical, and 2-coskeletal; every horizontal row is naturally an ordinary nerve and hence strict Segal; outer degree `n` is isomorphic to `Map(Δ[n], N(M.Object))`; every transported boundary restriction to `Map(∂Δ[n], N(M.Object))` is a fibration; the actual completeness map is the nerve of a category equivalence | Semantic proof layer; the actual outer spine maps are equivalences in every bidegree; natural matching-limit identification, full Reedy packaging, complete-Segal packaging, and localization remain open |
 
 The concrete Boolean model proves that `bit tensor unit` and `unit tensor bit`
 are unequal syntax trees in Lean while tensor symmetry makes them internally
@@ -226,12 +226,17 @@ identifies every horizontal row with an ordinary categorical nerve. The
 resulting strict-Segal equivalence has the actual outer spine map as its
 forward direction. Since every horizontal arrow is invertible, outer degree
 one is the equivalence space; the actual outer zero-degeneracy is proved to be
-the nerve of an explicit category equivalence.
+the nerve of an explicit category equivalence. Independently, a strict
+finite-ordinal universe bridge and Mathlib's closed-nerve comparison identify
+outer degree `n` with `Map(Δ[n], N(M.Object))`. The pushout-product theorem then
+proves that restriction to `Map(∂Δ[n], N(M.Object))` is a fibration.
 
 Together these are a 0-truncated object completion and a 1-truncated skeletal
 groupoid model, an ordinary representable-presheaf envelope, the strict
 categorical nerve of that groupoid, and a levelwise controlled Rezk
 classifying diagram with its categorical Rezk completeness comparison.
-Reedy fibrancy, complete-Segal packaging, and localization remain open. These layers do
+Natural identification of the boundary object with the abstract Reedy
+matching limit, full Reedy fibrancy packaging, complete-Segal packaging, and
+localization remain open. These layers do
 not add `Equiv α β → α = β` and are not a complete presheaf model or proved
 localization of the full resource-process bicategory.
