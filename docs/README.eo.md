@@ -18,13 +18,16 @@ eksplicitajn egalecderivojn, kaj relativan kompletecon per kanonaj termmodeloj.
 La projekto konstruas siajn tavolojn laŭ rigora sinsekvo. Ĝi nun inkluzivas
 ekzaktan, plenumeblan finian stokastan modelon, ĝian Kleisli-prezenton per
 finiaj distribuoj, kaj fidelan semantikan ponton al la mezurteoria kategorio
-`Stoch` de Mathlib. Ĝeneralaj modeloj sur mezureblaj spacoj, decidteorio,
-termodinamiko, kvantuma teorio kaj pli altaj kategorioj restas esplorvojoj.
+`Stoch` de Mathlib. Sur tiu ponto Ript nun formaligas Blackwell-komparon,
+ekzaktan plenumeblan finian Bayes-riskon, rimed-limigitan decidriskon kaj
+task-rilatan semantikan valoron. Ĝeneralaj modeloj sur mezureblaj spacoj, la
+inversa Blackwell-prezenta teoremo, termodinamiko, kvantuma teorio kaj pli altaj
+kategorioj restas esplorvojoj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplorprogramaro. Etapoj 1–5 estas realigitaj kaj
+> Ript estas frufaza esplorprogramaro. Etapoj 1–6 estas realigitaj kaj
 > kontrolitaj de la kerno de Lean; la publika API ankoraŭ ne estas stabila, kaj
 > la nuna kerno ne pretendas esti kompleta fizika teorio de informado.
 
@@ -205,6 +208,53 @@ mezureblaj strukturoj restas videbla ĉe la teorema limo. Ĉiu nekomputebleco es
 izolita en ĉi tiu semantika ponto; `FinStoch`, `FinDist`, iliaj kunmetoj kaj
 rultempaj ekzemploj restas plenumeblaj ekzaktaj datumoj en `ℚ≥0`.
 
+### 8. Blackwell-komparo kaj task-rilata decidvaloro
+
+Ekzakta finia eksperimento estas kanalo `P : Θ ⟶ X` de kaŝitaj statoj al
+observoj. Ript diras, ke `P` Blackwell-superas `Q : Θ ⟶ Y` ĝuste kiam ekzistas
+stokasta malprecigilo `κ : X ⟶ Y` kun
+
+```math
+P mathbin{\gg} \kappa = Q.
+```
+
+Tio estas operacia simulado-ordo, ne entropia komparo. Ĝi estas refleksiva kaj
+transitiva, konserviĝas sub komuna antaŭtraktado kaj sendependaj tensoraj
+produktoj, kaj havas rimed-atestitan version kies posttraktaj buĝetoj adiciiĝas.
+
+Ript intence apartigas du decidteoriajn tavolojn:
+
+- La semantika tavolo sendas ekzaktajn finiajn datumojn tra `toStoch` kaj
+  reuzas `bayesRisk_le_bayesRisk_comp` de Mathlib. Tial malprecigo ne povas
+  malpliigi la optimuman mezurteorian Bayes-riskon.
+- La plenumebla tavolo difinas `DecisionProblem` per `FinDist`-antaŭdistribuo,
+  finiaj agoj kaj ekzaktaj `ℚ≥0`-perdoj. `finiteBayesRisk` estas sumo de veraj
+  finiaj minimumoj `Finset.min'`, ne senkondiĉa infimumo. Ript pruvas, ke neniu
+  hazardigita finia decida kanalo povas superi ĝin, donante sendependan
+  ekzakt-racionalan pruvon de datumtraktado.
+
+Por komputaj limigoj, `DecisionResourceModel` atribuas natur-nombran koston al
+ĉiu determinisma decidregulo kaj liveras senkostan rezervan regulon.
+`resourceBayesRisk` minimumigas super la finie listigitaj realigeblaj reguloj;
+pli granda buĝeto ne povas plimalbonigi riskon. `DecisionReduction` devas
+eksplicite pruvi kaj nepligrandiĝon de decida perdo kaj adician supran limon por
+la kosto. La nul-kroma specialigo diras, ke senkosta posttraktado ne povas krei
+rimed-limigitan valoron.
+
+Fine,
+
+```math
+\operatorname{value}(P;\text{tasko},\text{bazlinio})
+= \operatorname{risk}(\text{bazlinio})-\operatorname{risk}(P)
+```
+
+difinas semantikan valoron rilate al eksplicitaj antaŭdistribuo, agospaco,
+perdfunkcio, bazlinia eksperimento kaj nedeviga buĝeto. La sama kanalo do povas
+havi pozitivan valoron por unu tasko kaj nul valoron por alia. Ript pruvas
+monotonecon sub malprecigo, invariadon sub informa ekvivalenteco, nulon ĉe la
+bazlinio, taskan sensignifecon por nula perdo kaj buĝetan monotonecon. Ĝi
+**ne** identigas ĉi tiun task-rilatan kvanton kun Shannon-informo.
+
 ## Kio estas pruvita
 
 La jenaj ĉefaj rezultoj kompiliĝas hodiaŭ. La mallongaj esperantaj frazoj estas
@@ -245,6 +295,16 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | La `Stoch`-interpreto ne perdas informon pri ekzaktaj finiaj kanaloj. |
 | `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | Produto de finiaj diskretaj mezureblaj spacoj estas denove diskreta. |
 | `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | Sendependa tensora kunmeto konserviĝas tra la kanona kompara izomorfio. |
+| `Ript.Core.Simulates.trans` | Posttrakta simulado estas transitiva. |
+| `Ript.Core.SimulatesWithin.trans` | Rimed-atestitaj simuladoj kunmetiĝas kun adiciaj buĝetoj. |
+| `Ript.Models.Decision.Blackwell.dominates_tensor` | Sendependaj produktoj konservas Blackwell-superadon. |
+| `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell-superado implicas la Bayes-riskan ordon de Mathlib. |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | Neniu hazardigita finia regulo superas la kalkulitan finian optimumon. |
+| `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Malprecigo ne plibonigas ekzaktan plenumeblan finian Bayes-riskon. |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | Pli da decidbuĝeto ne povas plimalbonigi optimuman riskon. |
+| `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Atestita redukto transportas riskon kun eksplicita adicia kroma kosto. |
+| `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Malprecigo ne povas pligrandigi task-rilatan semantikan valoron. |
+| `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | Rimeda valoro respektas atestitajn reduktojn kaj ilian kroman koston. |
 
 [BLUEPRINT.md](../BLUEPRINT.md) enhavas detalajn teoremregistrojn kun
 antaŭkondiĉoj, komputebleco, fontdosieroj kaj kernaj dependoj.
@@ -265,7 +325,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
 | 5 | Fidela finia-kanala ponto al Mathlib `Stoch` | **PROVED** |
-| 6–11 | Pliaj semantikaj modeloj kaj pli altaj tavoloj | **OPEN RESEARCH** |
+| 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
+| 7–11 | Kaŭzaj, komputaj, termikaj, kvantumaj kaj pli altaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -278,13 +339,16 @@ La realigita modelsubteno estas intence mallarĝa:
 | Ekzaktaj finiaj stokastaj kanaloj | Jes | Jes | Plenumebla | Normaligitaj `ℚ≥0`-matricoj, Dirac, kopiado, forĵetado |
 | Fini-distribua Kleisli-kategorio | Jes | Ne | Plenumebla | Ekzaktaj `pure`/`bind`; kategorie ekvivalenta al `FinStoch` |
 | Finia diskreta bildo de la Mathlib-`Stoch`-ponto | Jes | Jes, ĝis kanona izomorfio | Semantika tavolo | Fidela Markov-kerna interpreto; la fontaj matricoj restas plenumeblaj |
+| Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | La Blackwell-ordo respektas `FinStoch`-produktojn; finiaj minimumoj, buĝetoj kaj task-rilata valoro |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
-kaj ĝia finia diskreta bildo nun havas kontrolitan mezurteorian semantikon en
-Mathlib `Stoch`. Ĝeneralaj stokastaj modeloj sur arbitraj mezureblaj spacoj,
+kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
+Mathlib `Stoch`. La ekzakta finia decidtavolo ankaŭ havas kompilitajn teoremojn
+pri Blackwell, Bayes-risko, rimedoj kaj semantika valoro. La inversa finia
+Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj decidproblemoj,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, termika strukturo,
-kvantumaj kanaloj, univalenteco kaj pli altkategoria strukturo estas
-**ne realigitaj**. Vidu
+kvantumaj kanaloj, univalenteco kaj pli altkategoria strukturo estas **ne
+realigitaj**. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
 [CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
 Nuntempe neniu konjekto estas registrita.
@@ -317,16 +381,22 @@ flowchart LR
   KL <--> EQ
   CK --> ST["Fidela semantika ponto al Mathlib Stoch"]
   ST --> MT["Finiaj diskretaj Markov-kernoj"]
+  CK --> BW["Blackwell-ordo per malprecigo"]
+  ST --> SB["Semantika Bayes-risko de Mathlib"]
+  BW --> FR["Plenumebla finia Bayes-risko"]
+  FR --> RR["Rimed-limigita decidrisko"]
+  RR --> SV["Task-rilata semantika valoro"]
+  BW --> SB
 ```
 
 | Tavolo | Ĉefaj moduloj | Respondeco |
 | --- | --- | --- |
 | Rimedinterfacoj | `Ript.Resource.*` | Ordigitaj buĝetoj, buĝetitaj morfioj, malfortigo |
-| Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj |
+| Procezkapabloj | `Ript.Core.*` | Sinsekvaj, tensoraj kaj strukturaj kostleĝoj kaj posttrakta simulado |
 | Plenumebla sintakso | `Ript.Syntax.*` | Tiphavaj esprimoj, rekursia kosto, derivoj |
 | Semantiko | `Ript.Semantics.*` | Interpretoj, interpretado, ĝusteco, kompleteco |
-| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, finiaj distribuoj kaj ekzaktaj stokastaj kanaloj |
-| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj kaj buĝetkontroloj |
+| Konkretaj modeloj | `Ript.Models.*` | Finiaj funkcioj, finia probablo, Blackwell-komparo kaj decidrisko |
+| Plenumeblaj ekzemploj | `Ript.Examples.*` | Kalkulitaj kondutoj, buĝetoj, racionalaj probabloj kaj decidvaloroj |
 | Revizia surfaco | `Ript.Audit.*` | Deklar-lintado kaj raportado de kernaj aksiomoj |
 
 La sinsekva kerno restas memstare uzebla. La simetria monoida tavolo etendas ĝin
@@ -350,12 +420,12 @@ Ript estas projektita tiel, ke pruva fido estas inspektebla, ne implicita.
 
 La revizio de la ĉefaj teoremoj de Etapoj 1 kaj 2 raportas nur la normajn
 Lean-principojn `propext` kaj `Quot.sound` kie necesas. La pruvoj pri finiaj
-stokastaj, Kleisli-prezentaj kaj `Stoch`-pontaj teoremoj ankaŭ raportas
+stokastaj, Kleisli-prezentaj, decidaj kaj `Stoch`-teoremoj ankaŭ raportas
 `Classical.choice` tra la ĝenerala infrastrukturo de Mathlib por finiaj sumoj,
-mezuroj kaj kategorioj. Tio ne produktas rultempajn datumojn: stokastaj objektoj
-eksplicite portas enumeradon kaj decideblan egalecon, neniu fini-modela difino
-estas `noncomputable`, kaj CI plenumas ekzaktajn kalkulojn en `ℚ≥0`.
-Nekomputebleco aperas nur en la mezurteoria semantika modulo. `AXIOMS.md` fiksas
+finiaj funkciospacoj, mezuroj kaj kategorioj. Rultempaj datumoj uzas eksplicitajn
+enumeradon kaj decideblan egalecon: finiaj kanaloj, riskoj, buĝetitaj riskoj kaj
+semantikaj valoroj estas plenumeblaj ekzaktaj `ℚ≥0`-datumoj. Nekomputebleco
+aperas nur ĉe la mezurteoria `Stoch`/semantika-Bayes-riska limo. `AXIOMS.md` fiksas
 la efektivan rezulton por ĉiu teoremo per ekzakta komparo.
 
 Por la preciza rezulto de ĉiu teoremo, rulu:
@@ -458,6 +528,15 @@ la justan distribuon, determinisma nego estas determinisma kerno, kaj du justaj
 moneroj plenumas la tensoran kompar-diagramon. Tiuj estas semantikaj pruvekzemploj,
 ne pliaj rultempaj eligoj.
 
+`Ript/Examples/SimpleDecision.lean` kunligas la tavolojn per justa kaŝita bito
+kaj nulo-unu perdo por divenado. Perfekta observo havas riskon `0`; observo
+sendependa de la stato havas riskon `1/2`. Rimedmodelo kostigas konstantajn
+regulojn je `0` kaj observ-dependajn je `1`, do kiam la buĝeto kreskas de `0` al
+`1`, la buĝetita risko de la perfekta eksperimento falas de `1/2` al `0`. Ĝia
+taskvaloro estas ekzakte `1/2` por divenado kaj `0` por sensignifa nul-perda
+tasko. Ses ekzaktaj kontraktoj `#eval decide` ĉiuj eligas `true` kaj estas
+kontrolataj de CI.
+
 ## Uzi Ript kiel Lean-dependaĵon
 
 Ript eksportas la radikan modulon `Ript`. Dum la antaŭeldona fazo, fiksu konatan
@@ -476,6 +555,8 @@ import Ript
 import Ript.Semantics.Eval
 -- aŭ, por la finia mezurteoria ponto:
 import Ript.Models.Probability.StochFunctor
+-- aŭ, por la Blackwell-ordo kaj task-rilata decidvaloro:
+import Ript.Models.Decision.SemanticValue
 ```
 
 La Lake-pakaĵo nun havas version `0.1.0`, sed stabila API aŭ markita eldono
@@ -490,7 +571,7 @@ malsupra laboro.
 | [`Ript/Resource/`](../Ript/Resource/) | Rimed-algebroj kaj kontrolitaj buĝetoj |
 | [`Ript/Syntax/`](../Ript/Syntax/) | Sinsekvaj kaj simetriaj monoidaj lingvoj |
 | [`Ript/Semantics/`](../Ript/Semantics/) | Interpretado, ĝusteco, termmodeloj, kompleteco |
-| [`Ript/Models/`](../Ript/Models/) | Determinismaj modeloj, ekzakta finia probablo kaj la Mathlib-`Stoch`-ponto |
+| [`Ript/Models/`](../Ript/Models/) | Determinismaj modeloj, ekzakta finia probablo, la Mathlib-`Stoch`-ponto kaj finia decidteorio |
 | [`Ript/Examples/`](../Ript/Examples/) | Plenumeblaj ekzemploj |
 | [`Ript/Audit/`](../Ript/Audit/) | Enirejoj por lintado kaj aksiomrevizio |
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
@@ -530,9 +611,14 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    kanonan modelon kaj pruvan limon.
 6. **Trakti aksiomojn kiel versionitan API-surfacon.** Nova aksiomo en teoremo
    estas tuj kontroleraro, ne posta piednoto.
-7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo estas
-   realigita; ĝeneralaj stokastaj, kaŭzaj, termikaj, kvantumaj kaj pli altaj
-   tavoloj restas klare markitaj kiel malfermita esploro.
+7. **Distingi realigon disde aspiro.** La finia diskreta `Stoch`-bildo kaj la
+   ekzakta finia decidtavolo estas realigitaj; inversa prezento kaj ĝeneralaj
+   stokastaj, kaŭzaj, termikaj, kvantumaj kaj pli altaj tavoloj restas malfermaj.
+8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
+   nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
+   silente fariĝas task-sendependa entropia aserto.
+9. **Eksplicite kostigi komputadon.** Posttraktado fariĝas rimedkomparo nur kiam
+   redukto liveras kaj decidkvalitan limon kaj adician kostan supran limon.
 
 ## Vojmapo
 
@@ -554,6 +640,11 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Ekzaktaj plenumeblaj finiaj stokastaj kanaloj, Dirac, tensoro, kopiado kaj forĵetado
 - [x] Ekzaktaj finiaj distribuoj, Kleisli-kategorio, du komparfunktoroj kaj kategoria ekvivalenteco
 - [x] Fidela funktoro de finiaj kanaloj al Mathlib `Stoch`, kun determinismaj kaj tensor-komparaj teoremoj
+- [x] Blackwell-ordo per malprecigo, ekvivalenteco, tensora kongruo kaj Mathlib-a Bayes-riska datumtraktado
+- [x] Plenumebla ekzakta finia Bayes-risko, finiaj optimumaj decidoj kaj malsupra limo por hazardigitaj reguloj
+- [x] Rimed-limigita decidrisko, buĝeta monotoneco kaj reduktoj kun adicia kroma kosto
+- [x] Task-rilata semantika valoro: ekvivalenteco, malprecigo, buĝeto, bazlinio kaj taska sensignifeco
+- [x] Plenumebla Bulea decidekzemplo komparanta perfektan kaj neinformatan observon
 - [x] Reproduktebla CI, deklar-lintado kaj aksioma permeslisto
 
 ### Malfermitaj esplorvojoj
@@ -561,6 +652,9 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Semantike pravigitaj kopi- kaj forĵet-kapabloj ekster la finia stokasta modelo
 - [ ] Ĝenerala stokasta semantiko sur mezureblaj spacoj preter la finia diskreta bildo
 - [ ] Konveksa kaj kaŭza strukturo
+- [ ] Inversa finia Blackwell--Sherman--Stein-prezenta teoremo
+- [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
+- [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [ ] Termikaj kaj rimedteoriaj modeloj
 - [ ] Kvantum-kanalaj modeloj
 - [ ] Zorge izolitaj univalentaj aŭ pli altkategoriaj tavoloj
@@ -602,7 +696,7 @@ Ne en ĉiu semantika modelo. La ĝeneralaj leĝoj estas subadiciaj, do la sintak
 kosto estas fidinda supra limo. La kosto estas pruvita ekzakta en la kanonaj
 sinsekva kaj monoida termmodeloj.
 
-### Ĉu Ript jam subtenas probablon aŭ kvantumajn kanalojn?
+### Ĉu Ript jam subtenas probablon, decidteorion aŭ kvantumajn kanalojn?
 
 Ekzaktaj finiaj stokastaj kanaloj jam estas subtenataj. Probabloj estas valoroj
 en `ℚ≥0`, ĉiuj sumoj estas finiaj kaj plenumeblaj, kaj la ekvivalenteco kun la
@@ -610,7 +704,18 @@ fini-portanta Kleisli-kategorio de ekzaktaj distribuoj estas pruvita. Fidela
 funktoro ankaŭ sendas ilin al la mezurteoria kategorio `Stoch` de Mathlib kaj
 konservas determinismajn kanalojn kaj tensoron ĝis kanona kompara izomorfio.
 Stokastaj modeloj sur arbitraj mezureblaj spacoj, termikaj modeloj kaj kvantumaj
-kanaloj restas vojmapaj eroj.
+kanaloj restas vojmapaj eroj. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
+Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
+task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
+La inversa finia Blackwell-prezenta teoremo kaj ĝenerala mezurebla decidteorio
+ankoraŭ ne estas pruvitaj.
+
+### Ĉu semantika valoro estas la sama kiel reciproka informo?
+
+Ne. La nuna `semanticValue` estas pliboniĝo de decida risko rilate al specifita
+bazlinio. Ŝanĝo de la antaŭdistribuo, agospaco, perdo aŭ buĝeto povas ŝanĝi la
+valoron de la sama eksperimento. Neniu egaleco kun Shannon-a reciproka informo
+estas asertita.
 
 ### Ĉu la monoida tavolo implicas kopiadon aŭ forĵetadon?
 

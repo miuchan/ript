@@ -3,11 +3,17 @@ import Ript.Audit.Lint
 import Ript.Core.CostedProcess
 import Ript.Core.Monotone
 import Ript.Core.ParallelCost
+import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
 import Ript.Examples.KleisliBits
+import Ript.Examples.SimpleDecision
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
+import Ript.Models.Decision.Blackwell
+import Ript.Models.Decision.FiniteRisk
+import Ript.Models.Decision.ResourceBounded
+import Ript.Models.Decision.SemanticValue
 import Ript.Models.FiniteDistribution
 import Ript.Models.FiniteFunction
 import Ript.Models.FiniteStochastic

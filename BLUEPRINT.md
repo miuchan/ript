@@ -59,6 +59,16 @@ flowchart LR
   StochFunctor --> StochBits["Examples.StochBits"]
   StochasticBits --> StochBits
   StochFunctor --> Audit
+  ParallelCost --> Simulation["Core.Simulation"]
+  StochFunctor --> Blackwell["Models.Decision.Blackwell"]
+  Simulation --> Blackwell
+  FiniteKleisli --> Blackwell
+  Blackwell --> FiniteRisk["Models.Decision.FiniteRisk"]
+  FiniteRisk --> ResourceDecision["Models.Decision.ResourceBounded"]
+  ResourceDecision --> SemanticValue["Models.Decision.SemanticValue"]
+  SemanticValue --> SimpleDecision["Examples.SimpleDecision"]
+  SimpleDecision --> Audit
+  SemanticValue --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -73,7 +83,8 @@ Every node in this graph is an existing compiled module.
 | 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | PROVED |
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
-| 6-11 | Decision, thermal, quantum, and higher layers | OPEN_RESEARCH |
+| 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
+| 7-11 | Causal, computational, thermal, quantum, and higher layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -628,6 +639,244 @@ to this semantic module.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Probability/StochFunctor.lean`.
 
+## Stage-6 flagship theorem records
+
+Stage 6 formalizes experiments as exact finite stochastic channels and orders
+them by stochastic post-processing. It supplies both an executable finite-risk
+development based on genuine finite minima and a noncomputable semantic bridge
+to Mathlib's existing measure-theoretic Bayes-risk theorem. Semantic value is
+explicitly relative to a prior, actions, loss, baseline, and optional decision
+budget; it is not presented as Shannon information or as a task-independent
+quantity.
+
+### `Ript.Core.Simulates.trans`
+
+- Natural-language statement: if `g` is a post-processing of `f` and `h` is a
+  post-processing of `g`, then `h` is a post-processing of `f`.
+- Lean type:
+
+  ```lean
+  theorem Simulates.trans {f : W ⟶ X} {g : W ⟶ Y} {h : W ⟶ Z}
+      (hfg : Simulates f g) (hgh : Simulates g h) : Simulates f h
+  ```
+
+- Prerequisites: a category and associativity of composition.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: the witnessing post-processings compose directly.
+- Kernel assumptions: `none`.
+- Source: `Ript/Core/Simulation.lean`.
+
+### `Ript.Core.SimulatesWithin.trans`
+
+- Natural-language statement: resource-certified post-processings compose and
+  their budgets add.
+- Lean type:
+
+  ```lean
+  theorem SimulatesWithin.trans {f : W ⟶ X} {g : W ⟶ Y} {h : W ⟶ Z}
+      [ResourceAlgebra R]
+      (hfg : SimulatesWithin r f g) (hgh : SimulatesWithin s g h) :
+      SimulatesWithin (r + s) f h
+  ```
+
+- Prerequisites: `HasProcessCost`, composition subadditivity, and ordered
+  addition from `ResourceAlgebra`.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes at the certificate boundary; the theorem constructs the
+  composite post-processing and its bound.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Core/Simulation.lean`.
+
+### `Ript.Models.Decision.Blackwell.dominates_tensor`
+
+- Natural-language statement: independent products preserve Blackwell
+  dominance componentwise.
+- Lean type:
+
+  ```lean
+  theorem dominates_tensor
+      {P₁ : FinStoch Θ₁ X₁} {Q₁ : FinStoch Θ₁ Y₁}
+      {P₂ : FinStoch Θ₂ X₂} {Q₂ : FinStoch Θ₂ Y₂}
+      (h₁ : BlackwellDominates P₁ Q₁)
+      (h₂ : BlackwellDominates P₂ Q₂) :
+      BlackwellDominates (tensor P₁ P₂) (tensor Q₁ Q₂)
+  ```
+
+- Prerequisites: exact finite garblings and compatibility of matrix tensor
+  with channel composition.
+- Status: `PROVED`.
+- Classical choice: yes in audited finite/category proof dependencies; the
+  tensor and witness channels remain executable.
+- Computable: yes for channel data; dominance is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/Blackwell.lean`.
+
+### `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono`
+
+- Natural-language statement: a Blackwell-dominating experiment has no larger
+  Mathlib Bayes risk for every exact finite prior and loss.
+- Lean type:
+
+  ```lean
+  theorem semanticBayesRisk_mono {P : FinStoch Θ X} {Q : FinStoch Θ Y}
+      (hPQ : BlackwellDominates P Q) (loss : Θ → A → ℚ≥0)
+      (π : FinDist Θ) :
+      semanticBayesRisk loss π P ≤ semanticBayesRisk loss π Q
+  ```
+
+- Prerequisites: the faithful `FinStoch → Stoch` bridge,
+  `toKernel_comp`, and Mathlib's `bayesRisk_le_bayesRisk_comp`.
+- Status: `PROVED`; this is the forward data-processing direction, not the
+  converse Blackwell representation theorem.
+- Classical choice: yes in Mathlib's measure/category infrastructure.
+- Computable: no; `semanticBayesRisk` is deliberately confined to the
+  measure-theoretic semantic layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/Blackwell.lean`.
+
+### `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk`
+
+- Natural-language statement: no randomized finite decision rule can beat the
+  exact sum of observation-wise finite minima.
+- Lean type:
+
+  ```lean
+  theorem finiteBayesRisk_le_randomizedDecisionRisk
+      (problem : DecisionProblem Θ A) (P : FinStoch Θ X)
+      (δ : FinStoch X A) :
+      finiteBayesRisk problem P ≤ randomizedDecisionRisk problem P δ
+  ```
+
+- Prerequisites: normalized exact decision channels, finite action minima, and
+  exact finite-sum rearrangement over `ℚ≥0`.
+- Status: `PROVED`.
+- Classical choice: yes in audited generic finite-sum proof dependencies; no
+  choice computes the minimum or risk.
+- Computable: yes; both risk definitions reduce to exact rational arithmetic.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/FiniteRisk.lean`.
+
+### `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono`
+
+- Natural-language statement: stochastic garbling cannot improve exact finite
+  optimal decision risk.
+- Lean type:
+
+  ```lean
+  theorem finiteBayesRisk_mono {P : FinStoch Θ X} {Q : FinStoch Θ Y}
+      (hPQ : BlackwellDominates P Q) (problem : DecisionProblem Θ A) :
+      finiteBayesRisk problem P ≤ finiteBayesRisk problem Q
+  ```
+
+- Prerequisites: existence of a finite optimal deterministic rule, randomized
+  rules cannot beat the finite minimum, and associativity of channel
+  composition.
+- Status: `PROVED`; this is an independent executable proof of the forward
+  Blackwell implication.
+- Classical choice: yes in proof dependencies; all optimized finite data are
+  computed using `Finset.min'`.
+- Computable: yes; the theorem relates executable exact risks.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/FiniteRisk.lean`.
+
+### `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone`
+
+- Natural-language statement: increasing the decision budget cannot worsen
+  the minimum achievable exact risk.
+- Lean type:
+
+  ```lean
+  theorem resourceBayesRisk_antitone (problem : DecisionProblem Θ A)
+      (P : FinStoch Θ X) (resources : DecisionResourceModel X A)
+      {small large : Nat} (hbudget : small ≤ large) :
+      resourceBayesRisk problem P resources large ≤
+        resourceBayesRisk problem P resources small
+  ```
+
+- Prerequisites: explicit finite enumeration of decision functions and
+  monotonicity of the feasible set under a natural-number budget.
+- Status: `PROVED`.
+- Classical choice: yes in finite function-space proof infrastructure.
+- Computable: yes; feasible rules and their exact risks are finitely
+  enumerated and minimized.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/ResourceBounded.lean`.
+
+### `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction`
+
+- Natural-language statement: a certified decision reduction transports a
+  target budget to the dominating experiment while paying its stated additive
+  overhead.
+- Lean type:
+
+  ```lean
+  theorem resourceBayesRisk_le_of_reduction
+      (reduction : DecisionReduction problem P Q sourceResources
+        targetResources overhead) :
+      resourceBayesRisk problem P sourceResources (budget + overhead) ≤
+        resourceBayesRisk problem Q targetResources budget
+  ```
+
+- Prerequisites: a rule-lifting map with explicit risk and cost inequalities,
+  plus attainment of the finite budgeted minimum.
+- Status: `PROVED`.
+- Classical choice: yes in finite minimization proof dependencies.
+- Computable: risks and costs are executable; the reduction certificate is
+  proof-carrying data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/ResourceBounded.lean`.
+
+### `Ript.Models.Decision.SemanticValue.semanticValue_mono`
+
+- Natural-language statement: garbling cannot increase task-relative semantic
+  value measured against a fixed baseline.
+- Lean type:
+
+  ```lean
+  theorem semanticValue_mono
+      (problem : DecisionProblem Θ A) (baseline : FinStoch Θ B)
+      {P : FinStoch Θ X} {Q : FinStoch Θ Y}
+      (hPQ : BlackwellDominates P Q) :
+      semanticValue problem baseline Q ≤ semanticValue problem baseline P
+  ```
+
+- Prerequisites: executable finite Bayes-risk monotonicity and truncated
+  subtraction in `ℚ≥0`.
+- Status: `PROVED`.
+- Classical choice: yes through the finite-risk proof dependency.
+- Computable: yes; semantic value is an exact rational difference of
+  executable finite risks.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/SemanticValue.lean`.
+
+### `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction`
+
+- Natural-language statement: a certified rule reduction prevents
+  post-processing from creating resource-bounded task value, after charging
+  the reduction's explicit additive overhead.
+- Lean type:
+
+  ```lean
+  theorem resourceSemanticValue_mono_reduction
+      (baselineRisk : ℚ≥0)
+      (reduction : DecisionReduction problem P Q sourceResources
+        targetResources overhead) :
+      resourceSemanticValue baselineRisk problem Q targetResources budget ≤
+        resourceSemanticValue baselineRisk problem P sourceResources
+          (budget + overhead)
+  ```
+
+- Prerequisites: `resourceBayesRisk_le_of_reduction` and monotonicity of
+  truncated subtraction.
+- Status: `PROVED`; the zero-overhead specialization is
+  `resourceSemanticValue_mono_free_reduction`.
+- Classical choice: yes through the resource-risk proof dependency.
+- Computable: yes; the numerical values use finite exact minimization.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/SemanticValue.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -669,3 +918,20 @@ to this semantic module.
     functor uses `⊤` on every finite carrier. Their equality is proved, and the
     morphism theorem is stated through an explicit deterministic identity
     isomorphism rather than relying on hidden definitional equality.
+13. Blackwell dominance is defined as exact stochastic post-processing and
+    inherits reflexivity, transitivity, preprocessing, tensor compatibility,
+    and an optional resource certificate from the generic simulation layer.
+14. The semantic decision theorem reuses Mathlib's `bayesRisk` and
+    `bayesRisk_le_bayesRisk_comp`; the executable counterpart computes a true
+    finite minimum in `ℚ≥0` and proves directly that randomization cannot beat
+    it. These layers are connected by purpose, not conflated by an unproved
+    equality theorem.
+15. Resource-sensitive decision comparisons require a `DecisionReduction`
+    carrying both a risk inequality and an additive cost bound. Ript makes no
+    automatic claim that every stochastic garbling is computationally free.
+16. Semantic value is task-relative: it names a prior, action carrier, loss,
+    experiment, baseline, and optional decision budget. No entropy-like,
+    task-independent interpretation is inferred from this definition.
+17. Stage 6 proves the forward finite Blackwell implication. The converse
+    finite Blackwell--Sherman--Stein representation theorem remains open and
+    is not claimed by any current declaration.

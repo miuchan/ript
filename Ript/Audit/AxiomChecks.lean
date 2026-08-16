@@ -1,5 +1,6 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.StochasticBits
+import Ript.Models.Decision.SemanticValue
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Resource.ParallelBudget
@@ -52,3 +53,13 @@ set_option autoImplicit false
 #print axioms Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff
 #print axioms Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top
 #print axioms Ript.Models.Probability.StochFunctor.toStoch_map_tensor
+#print axioms Ript.Core.Simulates.trans
+#print axioms Ript.Core.SimulatesWithin.trans
+#print axioms Ript.Models.Decision.Blackwell.dominates_tensor
+#print axioms Ript.Models.Decision.Blackwell.semanticBayesRisk_mono
+#print axioms Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk
+#print axioms Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono
+#print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone
+#print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction
+#print axioms Ript.Models.Decision.SemanticValue.semanticValue_mono
+#print axioms Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction

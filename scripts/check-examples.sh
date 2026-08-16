@@ -32,4 +32,13 @@ if [[ "$kleisli_output" != "$expected_kleisli_output" ]]; then
   exit 1
 fi
 
+decision_output="$(lake env lean Ript/Examples/SimpleDecision.lean)"
+expected_decision_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue'
+
+if [[ "$decision_output" != "$expected_decision_output" ]]; then
+  printf 'Finite-decision example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_decision_output" "$decision_output" >&2
+  exit 1
+fi
+
 printf 'Executable examples produced the expected results.\n'
