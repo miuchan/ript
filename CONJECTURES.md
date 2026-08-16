@@ -27,5 +27,11 @@ protocol: it discharges pure high to pure low, erases the fair bit, supplies
 randomizes the erased memory back to equilibrium, raises the pure battery from
 low to high by the same `log 2 / β`, and closes the executable three-state
 trace. Both signed balances cancel, so no net work is claimed. Rational-weight
-classification for independently specified real spectra remains a roadmap
-item rather than a formalized-but-unproved proposition.
+classification for independently specified finite real spectra is now proved:
+exact rational Gibbs probabilities exist iff every Boltzmann ratio to any
+chosen reference microstate is a positive rational number. Positive rational
+weights construct executable two- and three-level examples, while a spectrum
+with relative factor `sqrt 2` is proved to have no rational Gibbs distribution.
+What remains unsupported is a general algorithm deciding equality of arbitrary
+real exponential expressions; no unproved Lean proposition is registered for
+that algorithmic boundary.

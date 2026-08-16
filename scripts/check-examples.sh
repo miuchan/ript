@@ -131,6 +131,15 @@ if [[ "$exact_work_cycle_output" != "$expected_exact_work_cycle_output" ]]; then
   exit 1
 fi
 
+rational_gibbs_output="$(lake env lean Ript/Examples/RationalGibbsSpectra.lean)"
+expected_rational_gibbs_output=$'true\ntrue\ntrue'
+
+if [[ "$rational_gibbs_output" != "$expected_rational_gibbs_output" ]]; then
+  printf 'Rational Gibbs-spectrum example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_rational_gibbs_output" "$rational_gibbs_output" >&2
+  exit 1
+fi
+
 qubit_output="$(lake env lean Ript/Examples/QubitChannel.lean)"
 expected_qubit_output=$'true\ntrue'
 

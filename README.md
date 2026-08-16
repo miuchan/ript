@@ -43,7 +43,13 @@ nonequilibrium and equilibrium Helmholtz free energies, proves
 `D(p ‖ γ) = β (F(p) - F(γ))`, and derives free-energy-gap monotonicity for
 Gibbs-preserving channels at common inverse temperature. Every full-support
 exact equilibrium now has a canonical Gibbs realization at any chosen positive
-inverse temperature. Independent common-temperature realizations compose, with
+inverse temperature. For an independently specified real spectrum, exact
+rational Gibbs probabilities are now classified precisely: after choosing any
+reference microstate, they exist if and only if every Boltzmann ratio to that
+reference is a positive rational number. Explicit positive rational weights
+generate exact executable equilibria, including `(2, 1) -> (2/3, 1/3)` and
+`(1, 2, 3) -> (1/6, 1/3, 1/2)`; a spectrum with ratio `sqrt 2` is proved not to
+have rational Gibbs probabilities. Independent common-temperature realizations compose, with
 factorized weights and probabilities, multiplicative partition functions, and
 additive energy, entropy, equilibrium/nonequilibrium free energy, and
 free-energy gaps. A work-assisted layer now proves that a Gibbs-preserving
@@ -91,10 +97,8 @@ proofs. The classical-to-quantum layer is now implemented as a faithful
 measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
-stochastic entry are proved. The converse Blackwell representation theorem and
-rational-weight
-classification for independently specified real spectra remain research
-directions. The higher-categorical
+stochastic entry are proved. The converse Blackwell representation theorem
+remains a research direction. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
 monoidal functors, and monoidal natural transformations form a bicategory with
@@ -512,8 +516,16 @@ realization at every chosen `β > 0`: Ript sets
 `E(x) = -log γ(x) / β`, proves that the resulting Boltzmann weight is exactly
 `γ(x)`, proves `Z = 1`, and packages the equality certificate. This is an
 existence theorem for energy representations of full-support exact
-distributions. It is deliberately not a decision procedure classifying which
-independently supplied real energy spectra have rational Gibbs weights.
+distributions. Independently supplied real spectra are now classified by a
+separate exact theorem: for any reference microstate, their normalized Gibbs
+probabilities are rational if and only if every relative Boltzmann factor
+`exp(-β(E(x) - E(reference)))` is a positive rational number. This statement is
+gauge invariant. A constructor from explicit positive rational weights makes
+the rational side executable; it produces exact `(2/3, 1/3)` and
+`(1/6, 1/3, 1/2)` examples. Conversely, a two-level spectrum with relative
+factor `sqrt 2` is proved to have no exact rational Gibbs distribution. Ript
+does not claim a general decision procedure for equality between arbitrary
+real exponential expressions.
 
 For each realized system the free-energy layer defines mean energy `U(p)`,
 Shannon entropy `S(p)`, nonequilibrium Helmholtz free energy
@@ -632,8 +644,9 @@ fair/high -> erased/low -> fair/high.
 Both steps have entropy-neutral pure battery endpoints and individually attain
 the signed Landauer work balance; their system and battery changes sum to zero.
 The result is therefore a closed work-storage cycle, not a net-work source.
-Classification of rational Gibbs weights for independently specified real
-spectra remains open.
+The exact rationality classification above applies to this battery and to
+arbitrary finite real spectra; only algorithmic decision of arbitrary real
+exponential equalities remains outside the executable layer.
 
 ### 12. Finite complex density matrices and Kraus channels
 
@@ -1016,6 +1029,9 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | Normalized finite Boltzmann weights sum to one. |
 | `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | Every full-support exact equilibrium has a canonical Gibbs realization at any positive inverse temperature. |
 | `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | Common-temperature product systems have multiplicative partition functions. |
+| `Ript.Models.Thermal.FiniteGibbsData.hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt` | An independently specified finite real spectrum has exact rational Gibbs probabilities iff all Boltzmann ratios to a reference state are positive rationals. |
+| `Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_probability` | Positive rational Boltzmann weights generate exactly their executable normalized rational equilibrium. |
+| `Ript.Examples.RationalGibbsSpectra.irrationalTwoLevelSpectrum_not_hasRationalProbabilities` | A two-level spectrum with Boltzmann ratio `sqrt 2` has no exact rational Gibbs distribution. |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | Every exactly realized Gibbs equilibrium has full support. |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finite KL athermality equals inverse temperature times excess Helmholtz free energy. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Common-temperature Gibbs-preserving channels cannot increase excess free energy. |
@@ -1187,7 +1203,7 @@ Implemented model support is intentionally narrow:
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
-| Finite thermal systems | Gibbs-preserving category; finite closed and bath-assisted protocols | Product bifunctor | Exact states/channels/protocol traces/marginals plus information-battery, work-battery, and closed recharge-cycle witnesses executable; Gibbs/KL/free-energy/work semantics noncomputable | Closed-protocol no-go, Gibbs/KL/free-energy theory, correlation decomposition, rational-error bounds, bath-resolved accounting, information-battery saturation, entropy-neutral mechanical-work saturation, and balanced erasure–recharge cycling |
+| Finite thermal systems | Gibbs-preserving category; finite closed and bath-assisted protocols | Product bifunctor | Exact states/channels/protocol traces/marginals, rational-weight normalization, and information/work-battery witnesses executable; real exponential equality and Gibbs/KL/free-energy/work semantics noncomputable | Exact rationality iff positive rational Boltzmann ratios, rational-weight spectra, an irrational `sqrt 2` counterexample, closed-protocol no-go, Gibbs/KL/free-energy theory, correlation decomposition, rational-error bounds, bath-resolved accounting, saturation witnesses, and balanced erasure–recharge cycling |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
@@ -1205,9 +1221,9 @@ Bayes-risk, resource, and semantic-value theorems. The converse finite
 Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
-interfaces, rational Gibbs-weight classification for independently specified
-real energy spectra,
-and a complete-Segal/Rezk-complete univalent semantics are **not implemented**.
+interfaces, a general decision procedure for equality of arbitrary real
+Boltzmann factors, and a complete-Segal/Rezk-complete univalent semantics are
+**not implemented**.
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
 object completion and noncomputable skeletal completion establish only the
@@ -1535,6 +1551,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.KLDivergence
 -- or, for Gibbs free energy and correlated Landauer bounds:
 import Ript.Models.Thermal.CorrelatedWork
+-- or, for the exact rationality classification of finite real Gibbs spectra:
+import Ript.Models.Thermal.RationalGibbs
 -- or, for executable finite closed protocols and their no-go theorem:
 import Ript.Models.Thermal.Protocol
 -- or, for executable rational-error Boolean erasure theorems:
@@ -1726,7 +1744,8 @@ updated assumption audit.
 - [x] Bath-resolved Landauer accounting and an executable exact-erasure saturation witness using a returned bath and information battery
 - [x] Exact entropy-neutral erasure using a nondegenerate two-level work battery, with `log 2 / β` saturation
 - [x] Exact closed work-battery recharge cycle with state return and zero signed net balance
-- [ ] Rational-weight classification for independently specified real spectra
+- [x] Exact rational-Gibbs classification for independently specified finite real spectra, constructive rational-weight examples, and an irrational counterexample
+- [ ] General decision procedure for equality of arbitrary real Boltzmann factors
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
@@ -1817,8 +1836,12 @@ the independent two-level work-battery example supplies that missing one-shot
 mechanical witness, with pure entropy-neutral endpoints and exact `log 2 / β`
 saturation. A matched recharge channel consumes the erased memory's free-energy
 release, restores the pure high battery, and closes the exact balanced cycle.
-Rational Gibbs-weight classification for independently specified real spectra
-remains open.
+For independently specified finite real spectra, Ript now proves that exact
+rational Gibbs probabilities exist exactly when all Boltzmann ratios to one
+reference state are positive rationals. Explicit rational weights produce
+executable two- and three-level distributions, while a `sqrt 2` ratio gives a
+proved strict counterexample. General decision of arbitrary real exponential
+equalities remains outside the executable layer.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite

@@ -60,7 +60,12 @@ energion kaj neekvilibran/ekvilibran Helmholtz-liberan energion, pruvas
 `D(p ‖ γ) = β (F(p) - F(γ))`, kaj derivas monotonecon de la liberenergia diferenco
 por Gibbs-konservaj kanaloj je komuna inversa temperaturo. Ĝi ankaŭ kanone
 realigas ĉiun plen-subtenan ekzaktan ekvilibron je ĉiu pozitiva inversa
-temperaturo kaj pruvas faktoradon, multiplikan particifunkcion kaj adiciecon de
+temperaturo. Por aparte donita finia reela spektro ĝi nun ankaŭ donas ekzaktan
+se-kaj-nur-se klasifikon: post elekto de iu referenca mikrostato, raciaj Gibbs-
+probabloj ekzistas precize kiam ĉiuj relativaj Boltzmann-faktoroj estas pozitivaj
+raciaj nombroj. Pozitivaj raciaj pezoj `(2, 1)` kaj `(1, 2, 3)` produktas la
+plenumeblajn distribuojn `(2/3, 1/3)` kaj `(1/6, 1/3, 1/2)`, dum dunivela
+spektro kun proporcio `sqrt 2` estas rigore pruvita neracia. Ĝi ankaŭ pruvas faktoradon, multiplikan particifunkcion kaj adiciecon de
 energio, entropio kaj libera energio por sendependaj samtemperaturaj sistemoj.
 Eksplicita sistem-bateria tavolo ankaŭ pruvas ke Gibbs-konserva kuna procezo
 pagas ĉiun sisteman liberenergian kreskon per bateria liberenergia malkresko.
@@ -489,8 +494,14 @@ Inverse, ĉiu ekzakta finia ekvilibro kun plena subteno havas kanonan Gibbs-
 realigon je ĉiu elektita `β > 0`. Ript metas
 `E(x) = -log γ(x) / β`, pruvas ke la Boltzmann-pezo estas ekzakte `γ(x)` kaj
 ke `Z = 1`, kaj pakas la realigan atestilon. Tio estas ekzistoteoremo pri
-energireprezento de plen-subtenaj ekzaktaj distribuoj, ne decidproceduro por
-racieco de Gibbs-pezoj de aparte donita reela energispektro.
+energireprezento de plen-subtenaj ekzaktaj distribuoj. Aparta ekzakta teoremo
+klasifikas ĉiun aparte donitan finian reelan spektron: por ajna referenca
+mikrostato, la normaligitaj Gibbs-probabloj estas raciaj se kaj nur se ĉiuj
+`exp(-β(E(x) - E(reference)))` estas pozitivaj raciaj nombroj. La kondiĉo estas
+invarianta sub energi-ŝovo. Eksplicitaj pozitivaj raciaj pezoj konstruas
+plenumeblajn du- kaj trinivelajn ekzemplojn; relativa faktoro `sqrt 2` donas
+rigoran kontraŭekzemplon. Neniu ĝenerala decidproceduro por egaleco de arbitraj
+reelaj eksponentaj esprimoj estas asertata.
 
 Por ĉiu realigita sistemo la liberenergia tavolo difinas averaĝan energion
 `U(p)`, Shannon-entropion `S(p)`, `F(p) = U(p) - S(p) / β`, kaj
@@ -590,8 +601,10 @@ dupaŝa protokolo havas la ekzaktan spuron
 `justa/alta → viŝita/malalta → justa/alta`. Ĉiu paŝo atingas la signitan
 Landauer-egalecon, kaj kaj la sistema liberenergia ŝanĝo kaj la bateria
 energia ŝanĝo sumiĝas al ekzakte nul tra la tuta ciklo. Ĝi estas fermita
-laborstoka ciklo, ne fonto de neta laboro. Nur la klasifiko de raciaj
-Gibbs-pezoj por aparte donitaj reelaj energispektroj restas malferma.
+laborstoka ciklo, ne fonto de neta laboro. La ĉi-supra ekzakta racieca klasifiko
+validas por tiu baterio kaj por arbitraj finiaj reelaj spektroj; nur ĝenerala
+algoritma decido de arbitraj reelaj eksponentaj egalecoj restas ekster la
+plenumebla tavolo.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -965,6 +978,9 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | La normaligitaj finiaj Boltzmann-pezoj sumiĝas al unu. |
 | `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | Ĉiu plen-subtena ekzakta ekvilibro havas kanonan Gibbs-realigon je ĉiu pozitiva inversa temperaturo. |
 | `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | Samtemperaturaj produktaj sistemoj havas multiplikajn particifunkciojn. |
+| `Ript.Models.Thermal.FiniteGibbsData.hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt` | Aparte donita finia reela spektro havas ekzaktajn raciajn Gibbs-probablojn se kaj nur se ĉiuj Boltzmann-proporcioj al referenca stato estas pozitivaj raciaj nombroj. |
+| `Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_probability` | Pozitivaj raciaj Boltzmann-pezoj ekzakte generas sian plenumeblan normaligitan racian ekvilibron. |
+| `Ript.Examples.RationalGibbsSpectra.irrationalTwoLevelSpectrum_not_hasRationalProbabilities` | Dunivela spektro kun Boltzmann-proporcio `sqrt 2` ne havas ekzaktan racian Gibbs-distribuon. |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | Ĉiu ekzakte realigita Gibbs-ekvilibro havas plenan subtenon. |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finia KL-atermikeco egalas inversan temperaturon oble la troan Helmholtz-liberan energion. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Samtemperaturaj Gibbs-konservaj kanaloj ne pligrandigas troan liberan energion. |
@@ -1106,7 +1122,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8 | Finiaj ekvilibraj sistemoj, fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, ekzaktaj/raci-eraraj Landauer-limoj, informa-bateria atestilo, entropie neŭtrala nedegenera laborbateria saturiĝo kaj ekzakta fermita viŝa–reŝarga ciklo | **PROVED** |
+| 8 | Finiaj ekvilibraj sistemoj, ekzakta racia Gibbs-klasifiko de finiaj reelaj spektroj, fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, ekzaktaj/raci-eraraj Landauer-limoj, informa-bateria atestilo, entropie neŭtrala nedegenera laborbateria saturiĝo kaj ekzakta fermita viŝa–reŝarga ciklo | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
@@ -1131,7 +1147,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
-| Finiaj termikaj sistemoj | Gibbs-konserva kategorio; finiaj fermitaj kaj ban-helpataj protokoloj | Produkta bifunktoro | Ekzaktaj statoj/kanaloj/spuroj/marĝenoj kaj informa-bateriaj, laborbateriaj kaj fermita-reŝargaj atestiloj plenumeblaj; Gibbs/KL/liberenergia/labora semantiko nekomputebla | Fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, raci-eraraj limoj, ban-aparta kalkulo, informa-bateria kaj entropie neŭtrala mekanik-labora saturiĝo, ekvilibra viŝa–reŝarga ciklo |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio; finiaj fermitaj kaj ban-helpataj protokoloj | Produkta bifunktoro | Ekzaktaj statoj/kanaloj/spuroj/marĝenoj, normaligo de pozitivaj raciaj pezoj kaj inform-/labor-bateriaj atestiloj plenumeblaj; reela eksponenta egaleco kaj Gibbs/KL/liberenergia/labora semantiko nekomputeblaj | Ekzakta racieca se-kaj-nur-se klasifiko, raci-pezaj spektroj, neracia `sqrt 2` kontraŭekzemplo, fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, raci-eraraj limoj, ban-aparta kalkulo kaj saturiĝoj |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
@@ -1149,8 +1165,8 @@ pri Blackwell, Bayes-risko, rimedoj kaj semantika valoro; la homogena finia
 DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
-ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco,
-raci-peza klasifiko por aparte donitaj reelaj energispektroj kaj pli-altdimensia aŭ
+ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, ĝenerala
+decidproceduro por egaleco de arbitraj reelaj Boltzmann-faktoroj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
@@ -1467,6 +1483,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.KLDivergence
 -- aŭ, por Gibbs-libera energio kaj korelaci-korektitaj Landauer-limoj:
 import Ript.Models.Thermal.CorrelatedWork
+-- aŭ, por la ekzakta racieca klasifiko de finiaj reelaj Gibbs-spektroj:
+import Ript.Models.Thermal.RationalGibbs
 -- aŭ, por ekzakta raci-erara proksimuma viŝo kaj ĝiaj Landauer-limoj:
 import Ript.Examples.ApproximateErasure
 -- aŭ, por ekzakta entropie neŭtrala mekanik-labora saturiĝo:
@@ -1647,7 +1665,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Ban-aparta Landauer-kalkulo kaj plenumebla saturiĝ-atestilo kiu redonas la banon kaj pagas per informa baterio
 - [x] Entropie neŭtrala ekzakta viŝo per nedegenera dunivela laborbaterio kun `log 2 / β` saturiĝo
 - [x] Ekzakta fermita laborbateria reŝarga ciklo kun plena statreveno kaj nula signita neta bilanco
-- [ ] Klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
+- [x] Ekzakta racia Gibbs-klasifiko de aparte donitaj finiaj reelaj spektroj, konstruaj raci-pezaj ekzemploj kaj neracia kontraŭekzemplo
+- [ ] Ĝenerala decidproceduro por egaleco de arbitraj reelaj Boltzmann-faktoroj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
@@ -1741,8 +1760,12 @@ tio ne estas mekanika laborprotokolo; la aparta dunivela laborbateria ekzemplo
 donas la mankantan unufojan mekanikan atestilon kun puraj entropie neŭtralaj
 finpunktoj kaj ekzakta `log 2 / β` saturiĝo. La kongrua reŝarga kanalo uzas la
 liberigitan memoran liberan energion por restarigi la puran altan baterion kaj
-fermas ekzaktan ciklon kun nula neta ŝanĝo. Nur la raci-peza klasifiko por
-aparte donitaj reelaj energispektroj restas malferma.
+fermas ekzaktan ciklon kun nula neta ŝanĝo. Por aparte donitaj finiaj reelaj
+spektroj, Ript nun pruvas ke ekzaktaj raciaj Gibbs-probabloj ekzistas precize
+kiam ĉiuj Boltzmann-proporcioj al unu referenca stato estas pozitivaj raciaj
+nombroj. Eksplicitaj raciaj pezoj donas plenumeblajn du- kaj trinivelajn
+distribuojn, dum proporcio `sqrt 2` donas rigoran kontraŭekzemplon. Ĝenerala
+algoritma decido de arbitraj reelaj eksponentaj egalecoj ne estas liverata.
 Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.

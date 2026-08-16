@@ -29,7 +29,10 @@ Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风
 严格正且归一化的 Gibbs 概率，并认证精确有理平衡态何时实现该分布；同时定义 Shannon 熵、
 平均能量、非平衡与平衡 Helmholtz 自由能，证明 `D(p ‖ γ) = β (F(p) - F(γ))`，并推出同逆温度
 Gibbs-preserving 信道下的自由能差单调性。每个满支撑精确平衡态现已在任意正逆温度下获得规范
-Gibbs 实现；同温独立系统的权重与概率分解、配分函数乘法性以及能量、熵和自由能可加性也已证明。
+Gibbs 实现。对另行给定的有限实能谱，精确有理 Gibbs 概率也已有充要分类：选定任一参考微观态后，
+它存在当且仅当所有相对 Boltzmann 因子都是正有理数。正有理权重 `(2, 1)` 与 `(1, 2, 3)` 分别生成
+可执行的 `(2/3, 1/3)` 与 `(1/6, 1/3, 1/2)`，而比值为 `sqrt 2` 的两能级谱被严格证明不可能有
+精确有理 Gibbs 分布。同温独立系统的权重与概率分解、配分函数乘法性以及能量、熵和自由能可加性也已证明。
 显式系统—电池层还证明 Gibbs-preserving 联合过程必须用电池自由能下降支付系统自由能上升；
 电池熵不变时这成为供功界，零能 Boolean 存储器的精确擦除至少需要 `log 2 / β`。任意精确
 相关端点也已覆盖：联合自由能分解为两个边缘自由能与互信息 `I / β`，而相关修正后的
@@ -353,8 +356,11 @@ KL(Tp ‖ Tq) ≤ KL(p ‖ q)
 
 反过来，每个具有满支撑的精确有限平衡态在任意给定的 `β > 0` 下都有规范 Gibbs 实现：Ript 取
 `E(x) = -log γ(x) / β`，证明 Boltzmann 权重精确等于 `γ(x)`、`Z = 1`，并封装实现证书。
-这是满支撑精确分布的能量表示存在性定理，不是对任意另行给定的实数能谱何时产生有理 Gibbs
-权重的判定程序。
+这是满支撑精确分布的能量表示存在性定理。另一个精确定理已经分类任意另行给定的有限实能谱：
+选定参考微观态后，归一化 Gibbs 概率为有理数，当且仅当每个
+`exp(-β(E(x) - E(reference)))` 都是正有理数；该条件不依赖能量零点。显式正有理权重构造使正向
+实例可执行，并给出两能级与三能级精确分布；相对因子为 `sqrt 2` 的两能级谱则给出严格反例。
+项目没有声称能够一般性地判定任意实指数表达式是否相等。
 
 对每个已实现系统，自由能层定义平均能量 `U(p)`、Shannon 熵 `S(p)`、
 `F(p) = U(p) - S(p) / β` 与 `F(γ) = -log Z / β`，并由 Lean 证明
@@ -409,7 +415,7 @@ F(目标 ε) - F(平衡态) = (log 2 - binEntropy ε) / β。
 
 `Ript.Examples.ExactWorkErasure` 给出互补的机械功见证，无需热浴。Boolean 工作电池的 Gibbs 权重为 `2/3` 与 `1/3`，因此在任意正逆温度下都有严格能隙 `E(高)-E(低)=log 2 / β`。一个完全可执行的精确有理信道把 `(公平存储器, 纯高能电池)` 映到 `(已擦除存储器, 纯低能电池)`，同时保持联合平衡态。两个电池端点的 Shannon 熵都严格为零，平均能量下降和存储器自由能上升都严格等于 `log 2 / β`。因此 Lean 已证明非简并性、熵中性和机械 Landauer 等号。
 
-`Ript.Examples.ExactWorkCycle` 给出匹配的反向充电步骤。其 Gibbs-preserving 信道把 `(已擦除存储器, 纯低能电池)` 精确映到 `(公平存储器, 纯高能电池)`；存储器随机化释放的 `log 2 / β` 自由能恰好支付同量电池充能。两步协议的精确轨迹是 `公平/高能 → 已擦除/低能 → 公平/高能`，两个步骤分别达到有符号 Landauer 等号，系统自由能变化与电池能量变化在整个循环上都严格求和为零。它是闭合储功循环而不是净产功源。另行给定实能谱的有理 Gibbs 权重分类仍属开放研究。
+`Ript.Examples.ExactWorkCycle` 给出匹配的反向充电步骤。其 Gibbs-preserving 信道把 `(已擦除存储器, 纯低能电池)` 精确映到 `(公平存储器, 纯高能电池)`；存储器随机化释放的 `log 2 / β` 自由能恰好支付同量电池充能。两步协议的精确轨迹是 `公平/高能 → 已擦除/低能 → 公平/高能`，两个步骤分别达到有符号 Landauer 等号，系统自由能变化与电池能量变化在整个循环上都严格求和为零。它是闭合储功循环而不是净产功源。上述精确有理性分类适用于该电池及任意有限实能谱；只有任意实指数等式的一般算法判定仍不属于可执行层。
 
 ### 12. 有限复密度矩阵与 Kraus 信道
 
@@ -726,6 +732,9 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | 归一化有限 Boltzmann 权重之和等于一。 |
 | `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | 每个满支撑精确平衡态在任意正逆温度下都有规范 Gibbs 实现。 |
 | `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | 同温乘积系统的配分函数相乘。 |
+| `Ript.Models.Thermal.FiniteGibbsData.hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt` | 另行给定的有限实能谱具有精确有理 Gibbs 概率，当且仅当相对参考态的所有 Boltzmann 比值都是正有理数。 |
+| `Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_probability` | 正有理 Boltzmann 权重精确生成其可执行的归一化有理平衡态。 |
+| `Ript.Examples.RationalGibbsSpectra.irrationalTwoLevelSpectrum_not_hasRationalProbabilities` | Boltzmann 比值为 `sqrt 2` 的两能级谱不存在精确有理 Gibbs 分布。 |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | 每个精确实现的 Gibbs 平衡态都具有满支撑。 |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | 有限 KL 非平衡度等于逆温度乘 Helmholtz 超额自由能。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | 同温 Gibbs-preserving 信道不会增加超额自由能。 |
@@ -864,7 +873,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
-| 8 | 有限平衡系统、闭合协议擦除不可能性、Gibbs/KL/自由能理论、相关分解、精确/有理误差 Landauer 界、信息电池见证、熵中性非简并工作电池等号与精确闭合擦除—充电循环 | **PROVED** |
+| 8 | 有限平衡系统、有限实能谱的精确有理 Gibbs 分类、闭合协议擦除不可能性、Gibbs/KL/自由能理论、相关分解、精确/有理误差 Landauer 界、信息电池见证、熵中性非简并工作电池等号与精确闭合擦除—充电循环 | **PROVED** |
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
@@ -889,7 +898,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
-| 有限热系统 | Gibbs-preserving 范畴；有限闭合与热浴辅助协议 | 积 bifunctor | 精确状态/信道/协议轨迹/边缘及信息电池、工作电池、闭合充电循环见证可执行；Gibbs/KL/自由能/功语义不可计算 | 闭合协议不可能性、Gibbs/KL/自由能理论、相关分解、有理误差界、热浴分项记账、信息电池、熵中性机械功等号与平衡擦除—充电循环 |
+| 有限热系统 | Gibbs-preserving 范畴；有限闭合与热浴辅助协议 | 积 bifunctor | 精确状态/信道/协议轨迹/边缘、正有理权重归一化及信息/工作电池见证可执行；实指数等式与 Gibbs/KL/自由能/功语义不可计算 | 精确有理性充要分类、正有理权重能谱、`sqrt 2` 无理反例、闭合协议不可能性、Gibbs/KL/自由能理论、相关分解、有理误差界、热浴分项记账与等号见证 |
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
@@ -904,7 +913,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
-do-calculus、通用复制/丢弃与凸结构接口、另行给定实能谱的有理 Gibbs 权重分类、
+do-calculus、通用复制/丢弃与凸结构接口、任意实 Boltzmann 因子等式的一般判定程序，以及
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
@@ -1175,6 +1184,8 @@ import Ript.Models.Causal.FinStoch
 import Ript.Models.Thermal.KLDivergence
 -- 或者导入 Gibbs 自由能与相关修正的工作辅助 Landauer 界：
 import Ript.Models.Thermal.CorrelatedWork
+-- 或者导入有限实能谱的精确有理 Gibbs 分类：
+import Ript.Models.Thermal.RationalGibbs
 -- 或者导入精确有理误差近似擦除及其 Landauer 界：
 import Ript.Examples.ApproximateErasure
 -- 或者导入熵中性机械功精确等号见证：
@@ -1330,7 +1341,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 热浴分项 Landauer 记账，以及热浴精确返回、信息电池支付的可执行等号见证
 - [x] 非简并两能级工作电池的熵中性精确擦除与 `log 2 / β` 等号见证
 - [x] 精确闭合工作电池充电循环、完整状态返回与零有符号净变化
-- [ ] 另行给定实能谱的有理 Gibbs 权重分类
+- [x] 另行给定有限实能谱的精确有理 Gibbs 分类、构造性正有理权重例子与无理反例
+- [ ] 任意实 Boltzmann 因子等式的一般判定程序
 - [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
@@ -1394,7 +1406,7 @@ Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence �
 `log 2 / β` 擦除界；任意相关端点的互信息/KL 非负性、联合自由能分解、相关修正供功界以及
 完全相关 Boolean 对也已证明。精确有理误差近似擦除的二元熵成本、单调性以及乘积端点和相关
 修正供功界也已证明。可执行有限闭合协议、非恒定两步翻转循环及闭合精确擦除不可能性也已证明。
-热浴分项自由能/供功界与一个精确返回热浴、以信息电池支付并达到等号的可执行三比特协议也已证明。由于该电池熵变化，它不是机械功协议；独立的两能级工作电池例子以纯态熵中性端点补上了这个一次性见证，并精确达到 `log 2 / β`。匹配的充电信道消耗已擦除存储器释放的自由能，恢复纯高能电池并闭合零净变化的精确循环。另行给定实能谱的有理 Gibbs 权重分类仍待完成。
+热浴分项自由能/供功界与一个精确返回热浴、以信息电池支付并达到等号的可执行三比特协议也已证明。由于该电池熵变化，它不是机械功协议；独立的两能级工作电池例子以纯态熵中性端点补上了这个一次性见证，并精确达到 `log 2 / β`。匹配的充电信道消耗已擦除存储器释放的自由能，恢复纯高能电池并闭合零净变化的精确循环。对另行给定的有限实能谱，精确有理 Gibbs 概率现已被分类为“相对参考态的所有 Boltzmann 比值均为正有理数”；正有理权重给出可执行两/三能级分布，`sqrt 2` 比值给出严格反例。任意实指数等式的一般算法判定仍不提供。
 对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。

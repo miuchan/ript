@@ -101,6 +101,8 @@ flowchart LR
   FiniteKL --> ThermalKL["Models.Thermal.KLDivergence"]
   ThermalMonotone --> ThermalKL
   ThermalEquilibrium --> ThermalGibbs["Models.Thermal.Gibbs"]
+  ThermalGibbs --> RationalGibbs["Models.Thermal.RationalGibbs"]
+  RationalGibbs --> RationalGibbsSpectra["Examples.RationalGibbsSpectra"]
   ThermalGibbs --> ThermalFreeEnergy["Models.Thermal.FreeEnergy"]
   ThermalKL --> ThermalFreeEnergy
   ThermalFreeEnergy --> ThermalCorrelation["Models.Thermal.Correlation"]
@@ -121,6 +123,7 @@ flowchart LR
   ExplicitBathErasure --> Audit
   ExactWorkErasure --> Audit
   ExactWorkCycle --> Audit
+  RationalGibbsSpectra --> Audit
   QuantumBasic["Models.Quantum.Basic"] --> QuantumKraus["Models.Quantum.Kraus"]
   QuantumKraus --> QuantumTensor["Models.Quantum.Tensor"]
   QuantumTensor --> QuantumCP["Models.Quantum.CompletePositivity"]
@@ -180,7 +183,7 @@ Every node in this graph is an existing compiled module.
 | 6 | Blackwell order, finite decision risk, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
-| 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
+| 8 | Finite equilibrium systems, exact rational-Gibbs classification of finite real spectra, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
@@ -1589,6 +1592,17 @@ has a canonical realization at every positive inverse temperature by setting
 `E(x) = -log γ(x) / β`; the resulting weight is exactly `γ(x)` and the chosen
 gauge has `Z = 1`.
 
+The rationality boundary for an independently supplied finite real spectrum is
+also exact. After choosing any reference microstate, its normalized Gibbs
+probabilities are rational iff every ratio
+`exp(-β(E(x) - E(reference)))` is a positive rational number. The criterion is
+gauge invariant. Explicit positive rational weights construct their logarithmic
+real spectrum and recover an executable normalized `FinDist`; weights `(2, 1)`
+and `(1, 2, 3)` give `(2/3, 1/3)` and `(1/6, 1/3, 1/2)`. A separately supplied
+two-level spectrum with ratio `sqrt 2` is proved not to have rational Gibbs
+probabilities. This theorem classifies the mathematics but does not make
+equality of arbitrary real exponential expressions algorithmically decidable.
+
 The free-energy layer defines mean energy, Shannon entropy, nonequilibrium
 Helmholtz free energy, equilibrium free energy, and their difference. It proves
 the exact finite identity `D(p || γ) = β (F(p) - F(γ))`. Because the realized
@@ -1655,7 +1669,88 @@ the erased memory back to equilibrium and raises the pure battery from low to
 high by the same `log 2 / β`. Erasure followed by recharge has exact trace
 `fair/high → erased/low → fair/high`; both signed memory and battery balances
 sum to zero, so it is a closed work-storage cycle rather than a net-work
-source. Arbitrary independently supplied spectra are not classified.
+source.
+
+### `Ript.Models.Thermal.FiniteGibbsData.hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt`
+
+- Natural-language statement: for any reference microstate, an independently
+  supplied finite real Gibbs spectrum has exact rational normalized
+  probabilities iff all Boltzmann ratios to that reference are positive
+  rational numbers.
+- Lean type:
+
+  ```lean
+  theorem hasRationalProbabilities_iff_hasRationalBoltzmannRatiosAt
+      {X : Object} (data : FiniteGibbsData X) (reference : X) :
+      data.HasRationalProbabilities ↔
+        data.HasRationalBoltzmannRatiosAt reference
+  ```
+
+- Prerequisite definitions: real finite Gibbs data, exact `FinDist`, normalized
+  Gibbs probability, and positive rational relative Boltzmann factors.
+- Prerequisite lemmas: cancellation of the partition function in probability
+  ratios, the exponential energy-gap formula, and exact coercion between
+  `ℚ≥0` and `ℝ`.
+- Status: `PROVED` for every nonempty finite real spectrum and every reference
+  microstate; the criterion is independent of the energy gauge.
+- Classical choice: inherited through finite-sum and exact-distribution
+  infrastructure; it enters no returned operational data.
+- Computable: the proposition handles arbitrary real exponential equalities
+  and is not generally decidable; explicit rational witnesses remain exact.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/RationalGibbs.lean`.
+
+### `Ript.Models.Thermal.FiniteGibbsData.ofPositiveRationalWeights_probability`
+
+- Natural-language statement: the logarithmic spectrum generated from any
+  finite positive rational weights has analytic Gibbs probabilities exactly
+  equal to the coerced executable rational normalization.
+- Lean type:
+
+  ```lean
+  theorem ofPositiveRationalWeights_probability {X : Object}
+      (weights : X → ℚ≥0) (nonempty : Nonempty X)
+      (positive : ∀ x, 0 < weights x) (β : ℝ) (hβ : 0 < β) (x : X) :
+      (ofPositiveRationalWeights weights nonempty positive β hβ).probability x =
+        ((normalizedRationalWeights weights nonempty positive).prob x : ℝ)
+  ```
+
+- Prerequisite definitions: exact normalization of positive rational weights
+  and the gauge `E(x) = -log(weights x) / β`.
+- Prerequisite lemmas: `exp(log w) = w` for positive weights, exact partition
+  function coercion, and rational division coercion.
+- Status: `PROVED` for every nonempty finite positive rational weight family
+  and every positive inverse temperature.
+- Classical choice: inherited only through finite-sum infrastructure.
+- Computable: the normalized `FinDist` is executable exact rational data; the
+  associated logarithmic real energy is analytic and noncomputable.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/RationalGibbs.lean`.
+
+### `Ript.Examples.RationalGibbsSpectra.irrationalTwoLevelSpectrum_not_hasRationalProbabilities`
+
+- Natural-language statement: the independently specified two-level spectrum
+  whose nontrivial relative Boltzmann factor is `sqrt 2` cannot have an exact
+  rational Gibbs distribution.
+- Lean type:
+
+  ```lean
+  theorem irrationalTwoLevelSpectrum_not_hasRationalProbabilities :
+      ¬irrationalTwoLevelSpectrum.HasRationalProbabilities
+  ```
+
+- Prerequisite definitions: the two-level real spectrum with energies `0` and
+  `-log(sqrt 2)` at inverse temperature one.
+- Prerequisite lemmas: the exact rationality classification, positivity of
+  `sqrt 2`, `exp(log(sqrt 2)) = sqrt 2`, and Mathlib's irrationality theorem
+  for `sqrt 2`.
+- Status: `PROVED`; this is a strict nonexistence result, not a failed search
+  for a rational witness.
+- Classical choice: inherited from the analytic finite infrastructure only.
+- Computable: the nonexistence proof is kernel checked; the real logarithmic
+  spectrum is not executable exact-rational data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/RationalGibbsSpectra.lean`.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -4291,7 +4386,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     energy layer now proves normalized Boltzmann probabilities, the exact
     KL/free-energy identity, and common-temperature free-energy-gap
     monotonicity. It also canonically realizes every full-support exact
-    equilibrium and proves common-temperature tensor additivity. The
+    equilibrium and proves common-temperature tensor additivity. Independently
+    supplied finite real spectra now have an exact rationality classification:
+    rational Gibbs probabilities are equivalent to positive rational
+    Boltzmann ratios to any reference state. Positive rational weights give
+    executable examples, and a `sqrt 2` ratio gives a proved counterexample;
+    arbitrary real exponential equality remains nondecidable in general. The
     work-assisted layer proves a product-endpoint free-energy balance and, for
     entropy-neutral batteries, a work bound including Boolean `log 2 / β`
     erasure. Its correlated extension proves exact marginalization, the
