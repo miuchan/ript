@@ -64,8 +64,11 @@ mean-energy work bound; the degenerate Boolean erasure instance costs at least
 executable; mutual information is proved equal to finite KL from the joint to
 the product of its marginals and is nonnegative; joint free energy decomposes
 into marginal gaps plus `I / β`; and the Landauer bound includes the exact
-correlation free-energy change. Approximate erasure and explicit bath or
-cyclic-protocol models remain outside the current row.
+correlation free-energy change. For every exact rational error
+`0 ≤ ε ≤ 1/2`, the executable approximate-erasure target has binary entropy,
+cost `(log 2 - binEntropy ε) / β`, an antitone cost law, and product-endpoint
+and correlation-corrected work bounds. Explicit bath or cyclic-protocol models
+remain outside the current row.
 
 The classical quantum row is the proved faithful measurement--preparation
 image of `FiniteStochastic`. Its Kraus operators are

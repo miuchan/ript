@@ -95,6 +95,15 @@ if [[ "$thermal_output" != "$expected_thermal_output" ]]; then
   exit 1
 fi
 
+approximate_erasure_output="$(lake env lean Ript/Examples/ApproximateErasure.lean)"
+expected_approximate_erasure_output='true'
+
+if [[ "$approximate_erasure_output" != "$expected_approximate_erasure_output" ]]; then
+  printf 'Approximate-erasure example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_approximate_erasure_output" "$approximate_erasure_output" >&2
+  exit 1
+fi
+
 qubit_output="$(lake env lean Ript/Examples/QubitChannel.lean)"
 expected_qubit_output=$'true\ntrue'
 

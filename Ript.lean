@@ -7,6 +7,7 @@ import Ript.Core.Monotone
 import Ript.Core.ParallelCost
 import Ript.Core.Simulation
 import Ript.Core.StructuralCost
+import Ript.Examples.ApproximateErasure
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalCopy
 import Ript.Examples.ClassicalQuantum

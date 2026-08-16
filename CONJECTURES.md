@@ -12,7 +12,9 @@ balance, its entropy-neutral battery work form, and the Boolean `log 2 / β`
 erasure bound are also proved declarations. The arbitrary-joint marginal
 decomposition, mutual-information KL identity and nonnegativity,
 correlation-corrected Landauer bounds, and correlated Boolean example are
-proved as well. Approximate erasure, explicit bath/cyclic protocols, and
-rational-weight classification
-for independently specified real spectra remain roadmap items rather than
-formalized-but-unproved propositions.
+proved as well. Exact rational-error Boolean approximate erasure, its binary-
+entropy free-energy identity and monotonicity law, and its product-endpoint and
+correlation-corrected Landauer bounds are proved declarations too. Explicit
+bath/cyclic protocols and rational-weight classification for independently
+specified real spectra remain roadmap items rather than formalized-but-unproved
+propositions.
