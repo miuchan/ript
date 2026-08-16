@@ -1,5 +1,5 @@
 import Mathlib.CategoryTheory.Functor.Currying
-import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
+import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.ForMathlib.CategoryTheory.GroupoidInterval
 import Ript.Univalent.Simplicial
@@ -30,7 +30,10 @@ arrow is an equivalence; this file proves that the actual degeneracy is the
 nerve of an equivalence of categories.  It also proves a natural
 simplex-mapping presentation, constructs genuine boundary matching limits,
 and packages their fibrant universal maps in a project-local Reedy witness.
-Complete-Segal packaging and higher localization remain separate.
+An exact project-local groupoidal complete-Segal witness packages all of these
+facts.  A Mathlib-native weak-equivalence formulation and higher localization
+remain separate because the pinned library has no simplicial weak-equivalence
+or completed Quillen-model API.
 -/
 
 set_option autoImplicit false
@@ -205,6 +208,25 @@ theorem interfaceClassifyingDiagramCompletenessMap_eq_nerveMap :
         (interfaceClassifyingDiagramCompletenessEquivalence M).functor :=
   rfl
 
+/-- The actual Rezk completeness map is, up to displayed identity
+isomorphisms, literally the nerve of the explicit equivalence of categories.
+This packages stronger concrete evidence than an unavailable simplicial weak
+equivalence instance. -/
+noncomputable def interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness :
+    SSet.NerveEquivalenceWitness
+      (interfaceClassifyingDiagramCompletenessMap M) where
+  source := Cat.of (ComposableArrows M.Object 0)
+  target := Cat.of (ComposableArrows M.Object 1)
+  equivalence := interfaceClassifyingDiagramCompletenessEquivalence M
+  sourceIso := eqToIso (by rfl)
+  targetIso := eqToIso (by rfl)
+  square := by
+    change interfaceClassifyingDiagramCompletenessMap M ≫ 𝟙 _ =
+      𝟙 _ ≫ CategoryTheory.nerveMap
+        (interfaceClassifyingDiagramCompletenessEquivalence M).functor
+    rw [Category.comp_id, Category.id_comp,
+      interfaceClassifyingDiagramCompletenessMap_eq_nerveMap]
+
 /-- The outer category at a simplex `Δ` is definitionally the category of
 `Δ`-shaped composable arrows. -/
 @[simp]
@@ -329,6 +351,28 @@ theorem interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift (n : ℕ) :
 theorem interfaceClassifyingDiagramBoundaryMatchingMap_fibration (n : ℕ) :
     Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n) := by
   exact (interfaceClassifyingDiagramBoundaryReedyFibrant M).matchingMap_fibration n
+
+/-- Every horizontal row is a Kan complex: after flipping the two finite
+indexing categories it is the nerve of a groupoid. -/
+noncomputable instance interfaceClassifyingDiagramHorizontalRowKan (k : ℕ) :
+    KanComplex (InterfaceClassifyingDiagramHorizontalRow M k) := by
+  exact @SSet.KanComplex.ofIso _ _
+    (interfaceClassifyingDiagramHorizontalRowIso M k)
+    (CategoryTheory.Nerve.kanComplex (ComposableArrows M.Object k))
+
+/-- The interface classifying diagram carries all exact data of a groupoidal
+complete Segal space available in the pinned library: genuine boundary Reedy
+matching limits and fibrations, Kan vertical levels, strict-Segal/Kan
+horizontal rows, and a completeness map presented as the nerve of a category
+equivalence. -/
+noncomputable def interfaceClassifyingDiagramGroupoidalCompleteSegal :
+    SSet.GroupoidalCompleteSegal (InterfaceClassifyingDiagram M) where
+  reedyFibrant := interfaceClassifyingDiagramBoundaryReedyFibrant M
+  levelKan := fun _ ↦ inferInstance
+  horizontalStrictSegal := interfaceClassifyingDiagramHorizontalStrictSegal M
+  horizontalKan := interfaceClassifyingDiagramHorizontalRowKan M
+  completeness :=
+    interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness M
 
 /-- Every vertical level is, in particular, a quasicategory. -/
 instance interfaceClassifyingDiagramLevelQuasicategory

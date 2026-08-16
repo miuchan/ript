@@ -151,8 +151,13 @@ defined as the outer zero-degeneracy and proved to be the nerve of an
 equivalence of categories. The outer diagram is now naturally presented by
 simplex mapping spaces; its
 boundary mapping cones are genuine limits and every matching map is a
-fibration. Complete-Segal packaging in a Mathlib-native Reedy model structure
-and a localization universal property remain open.
+fibration. These results are now bundled in the exact project-local
+`SSet.GroupoidalCompleteSegal` interface: every horizontal row is also Kan,
+and the actual completeness map carries a displayed nerve-of-category-
+equivalence witness. The pinned Mathlib release has no simplicial-set weak-
+equivalence or completed Quillen-model API, so a Mathlib-native standard
+complete-Segal-space instance and a localization universal property remain
+open.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -1085,6 +1090,16 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
   interfaceClassifyingDiagramCompletenessMap M =
     CategoryTheory.nerveMap
       (interfaceClassifyingDiagramCompletenessEquivalence M).functor
+
+interfaceClassifyingDiagramHorizontalRowKan M k :
+  SSet.KanComplex (InterfaceClassifyingDiagramHorizontalRow M k)
+
+interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness M :
+  SSet.NerveEquivalenceWitness
+    (interfaceClassifyingDiagramCompletenessMap M)
+
+interfaceClassifyingDiagramGroupoidalCompleteSegal M :
+  SSet.GroupoidalCompleteSegal (InterfaceClassifyingDiagram M)
 ```
 
 The forward map of the second equivalence is proved to be the actual spine
@@ -1100,9 +1115,16 @@ functor in an explicit equivalence
 Rezk completeness comparison at nerve-of-category-equivalence strength. The
 natural matching-space presentation, matching-limit universal property, and
 matching-map fibrations provide a complete project-local boundary
-Reedy-fibrancy witness. A Mathlib-native complete-Segal-space structure and a
-localization universal property for the full resource-process bicategory are
-not claimed. The audited declarations use exactly
+Reedy-fibrancy witness. Moreover, every horizontal row is the Kan nerve of a
+groupoid. `SSet.GroupoidalCompleteSegal` packages those exact data with the
+strict outer Segal structure and a `SSet.NerveEquivalenceWitness` for the
+actual completeness map. This is a proved project-local groupoidal
+complete-Segal interface, not an alias for a missing library theorem. The
+pinned Mathlib source explicitly leaves the simplicial-set Quillen model
+structure unfinished and provides no weak-equivalence class, so Ript does not
+claim a Mathlib-native standard complete-Segal-space instance. A localization
+universal property for the full resource-process bicategory is also not
+claimed. The audited declarations use exactly
 `[propext, Classical.choice, Quot.sound]`, inherited from quotient semantics
 and generic category/nerve infrastructure; no project axiom or executable
 choice-derived value is introduced.
@@ -1356,8 +1378,11 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | The forward outer Segal equivalence is exactly the spine map. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | The actual outer zero-degeneracy functor is an equivalence of categories. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | The Rezk completeness map is exactly the nerve of that equivalence's forward functor. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness` | The actual completeness map is presented, through explicit source and target isomorphisms, as the nerve of a category equivalence. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Every vertical level of the classifying diagram has explicit strict-Segal reconstruction data. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Every vertical level of the classifying diagram is a Kan complex. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowKan` | Every horizontal row is a Kan complex, so its strict-Segal category is groupoidal. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramGroupoidalCompleteSegal` | Genuine boundary Reedy fibrancy, vertical and horizontal Kan structure, strict outer Segal data, and categorical completeness are bundled in one exact project-local witness. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso` | The entire outer diagram is naturally isomorphic to `n ↦ Map(Δ[n], N(M.Object))`, including every face and degeneracy. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit` | `Map(∂Δ[n], N(M.Object))` is the genuine matching limit, proved from presheaf density. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift` | Boundary restriction is exactly the universal lift into the matching limit. |
@@ -1402,8 +1427,8 @@ finished physical theory.
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
-| 12, classifying-diagram foundation | Rezk classifying diagram, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences, categorical Rezk completeness, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
-| 12, higher extension | Mathlib-native Reedy/complete-Segal packaging and higher localization beyond the complete comparison | **OPEN RESEARCH** |
+| 12, classifying-diagram foundation | Rezk classifying diagram, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
+| 12, higher extension | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and higher localization | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -1430,7 +1455,7 @@ Implemented model support is intentionally narrow:
 | Internal presheaf universe | Natural transformations between type-valued presheaves | Representable action | Semantic proof layer | Yoneda fully faithful; identities/equivalences correspond to representable transformations/isomorphisms |
 | Yoneda envelope | Functors from the essential image of representables | Structure inherited through categorical equivalence | Noncomputable essential-image semantics | Groupoid equivalent to the source; not externally univalent or Rezk complete |
 | Simplicial interface nerve | Simplicial faces and degeneracies; homotopy category | Strict Segal spine composition | Semantic proof layer | Kan, quasicategory, and 2-coskeletal; explicit inner and outer horn fillers; no complete-Segal or Rezk claim |
-| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; levelwise strict Segal and Kan; strict outer Segal equivalences; genuine boundary matching limits and fibrations | Semantic proof layer | Project-local boundary Reedy-fibrancy witness and categorical completeness are proved; Mathlib-native complete-Segal packaging and localization remain open |
+| Rezk classifying diagram | Outer simplicial categories of composable strings; vertical nerves | Natural transformations of strings; vertical and horizontal Kan structure; strict outer Segal equivalences; genuine boundary matching limits and fibrations | Semantic proof layer | Exact project-local `GroupoidalCompleteSegal` witness proved; Mathlib-native weak-equivalence/standard complete-Segal packaging and localization remain open |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -1459,8 +1484,10 @@ a natural vertical-vertex comparison, invertible vertical transformations,
 actual outer Segal equivalences in every bidegree, a natural simplex-mapping
 presentation, genuine boundary matching limits, and fibrant matching maps.
 Its actual Rezk completeness comparison is proved as the nerve of a category
-equivalence. No Mathlib-native complete-Segal packaging or localization result
-is claimed. The model
+equivalence, and an exact project-local groupoidal complete-Segal witness
+bundles both simplicial directions with genuine Reedy matching data. No
+Mathlib-native weak-equivalence/standard complete-Segal instance or
+localization result is claimed. The model
 bicategory is implemented for a fixed resource type and uniform universes;
 neither layer claims an `(infinity,1)`-category or identifies Lean type
 equivalence with type equality. The sequential finite
@@ -2015,7 +2042,8 @@ updated assumption audit.
 - [x] Rezk classifying diagram with levelwise groupoid/Kan structure, strict outer Segal equivalences, natural vertical-vertex comparison, and invertible vertical transformations
 - [x] Actual Rezk completeness comparison as the nerve of a category equivalence
 - [x] Natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations
-- [ ] Mathlib-native Reedy/complete-Segal packaging and localization with explicit higher coherence
+- [x] Exact project-local groupoidal complete-Segal witness with horizontal Kan rows
+- [ ] Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization with explicit higher coherence
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

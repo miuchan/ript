@@ -351,6 +351,10 @@ set_option autoImplicit false
 #print axioms SSet.functorClassifyingDiagramMappingIso
 #print axioms SSet.BoundaryReedyFibrant.matchingMap_eq_limitLift
 #print axioms SSet.BoundaryReedyFibrant.matchingMap_fibration
+#print axioms SSet.NerveEquivalenceWitness.ofEquivalence
+#print axioms SSet.KanComplex.ofIso
+#print axioms SSet.GroupoidalCompleteSegal.matchingConeIsLimit
+#print axioms SSet.GroupoidalCompleteSegal.matchingMap_fibration
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso_naturality
@@ -358,6 +362,9 @@ set_option autoImplicit false
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowKan
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramGroupoidalCompleteSegal
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso

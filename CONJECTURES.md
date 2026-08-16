@@ -20,11 +20,15 @@ obligations. Ript proves a natural isomorphism of the whole outer diagram with
 `Map(∂Δ[n], N(M.Object))` is the genuine boundary matching limit, identifies
 boundary restriction with the universal limit lift, and proves every matching
 map is a fibration. These facts are bundled in the project-local
-`SSet.BoundaryReedyFibrant` interface. Remaining work is broader
-infrastructure: the pinned Mathlib release has no functor-category Reedy model
-structure to instantiate, and complete-Segal packaging and a localization
-universal property remain open research rather than silently assumed
-propositions.
+`SSet.BoundaryReedyFibrant` interface. Ript now also proves every horizontal
+row is the Kan nerve of a groupoid and packages both directions, strict outer
+Segal data, genuine matching fibrations, and the actual completeness map's
+`SSet.NerveEquivalenceWitness` in `SSet.GroupoidalCompleteSegal`. Remaining
+work is broader infrastructure: the pinned Mathlib release has neither a
+simplicial-set weak-equivalence class nor a completed Quillen model structure,
+so a Mathlib-native standard complete-Segal instance cannot yet be stated. A
+localization universal property also remains open research rather than a
+silently assumed proposition.
 
 ## Recently discharged: exact finite stochastic Blackwell converse
 

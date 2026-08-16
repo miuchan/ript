@@ -145,7 +145,13 @@ ekstera nula degenero kaj pruvita esti la nervo de eksplicita kategoria
 ekvivalento. La tuta ekstera objekto ankaŭ estas nature prezentita per
 simplaĵaj mapospacoj; la randaj kongruaj konusoj estas veraj limesoj kaj ĉiu
 kongrua mapo estas fibreco. Mathlib-denaska kompleta-Segal-a pakado en Reedy-a
-modelstrukturo kaj universala eco de lokalizo restas malfermitaj.
+modelstrukturo ankoraŭ ne ekzistas. Tiuj rezultoj nun estas kunigitaj en la
+ekzakta projekt-loka strukturo `SSet.GroupoidalCompleteSegal`, kiu ankaŭ
+pruvas ke ĉiu horizontala vico estas Kan-a kaj donas eksplicitan
+nervon-de-kategoria-ekvivalento-atestilon por la efektiva kompleteca mapo. La
+fiksita Mathlib ne havas malfortajn ekvivalentojn de simpliciaj aroj aŭ
+kompletan Quillen-modelan API-on, do Mathlib-denaska norma kompleta-Segal-a
+instanco kaj la universala eco de lokalizo restas malfermitaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -1016,6 +1022,16 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
   interfaceClassifyingDiagramCompletenessMap M =
     CategoryTheory.nerveMap
       (interfaceClassifyingDiagramCompletenessEquivalence M).functor
+
+interfaceClassifyingDiagramHorizontalRowKan M k :
+  SSet.KanComplex (InterfaceClassifyingDiagramHorizontalRow M k)
+
+interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness M :
+  SSet.NerveEquivalenceWitness
+    (interfaceClassifyingDiagramCompletenessMap M)
+
+interfaceClassifyingDiagramGroupoidalCompleteSegal M :
+  SSet.GroupoidalCompleteSegal (InterfaceClassifyingDiagram M)
 ```
 
 La antaŭena mapo de la dua ekvivalento estas pruvite ĝuste la efektiva spina
@@ -1030,8 +1046,14 @@ ekvivalento `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`.
 Tio pruvas la Rezk-kompletecan komparon je la forto de nervo de kategoria
 ekvivalento. La natura mapospaca prezento, la universala eco de la kongrua
 limeso kaj la kongru-mapaj fibrecoj formas kompletan projekt-lokan randan
-Reedy-fibrecan atestilon. Mathlib-denaska kompleta-Segal-a pakado kaj universala
-lokaliza eco por la tuta rimed-proceza dukategorio ne estas asertataj. La
+Reedy-fibrecan atestilon. Ĉiu horizontala vico estas ankaŭ la Kan-a nervo de
+grupoido. `SSet.GroupoidalCompleteSegal` precize kunigas tion kun la strikta
+ekstera Segal-strukturo kaj `SSet.NerveEquivalenceWitness` por la efektiva
+kompleteca mapo. Tio estas pruvita projekt-loka grupoida kompleta-Segal-a
+interfaco, ne alinomo por mankanta biblioteka teoremo. Ĉar la fiksita Mathlib
+ne havas klason de malfortaj ekvivalentoj por simpliciaj aroj, norma
+Mathlib-denaska kompleta-Segal-a instanco ne estas asertata. Universala
+lokaliza eco por la tuta rimed-proceza dukategorio ankaŭ ne estas asertata. La
 ekzakte reviziita aksioma spuro estas
 `[propext, Classical.choice, Quot.sound]`; neniu projekta aksiomo aŭ
 elekto-derivita plenumebla valoro estas aldonita.
@@ -1280,8 +1302,11 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | La antaŭena ekstera Segal-ekvivalento estas precize la spina mapo. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | La efektiva ekstera nula-degenera funktoro estas kategoria ekvivalento. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | La Rezk-kompleteca mapo estas precize la nervo de la antaŭena funktoro de tiu ekvivalento. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness` | La efektiva kompleteca mapo estas prezentita, per eksplicitaj fonta kaj cela izomorfioj, kiel la nervo de kategoria ekvivalento. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Ĉiu vertikala nivelo de la klasifika diagramo havas eksplicitajn strikt-Segal-ajn rekonstruajn datumojn. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Ĉiu vertikala nivelo de la klasifika diagramo estas Kan-komplekso. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowKan` | Ĉiu horizontala vico estas Kan-komplekso, do ĝia strikta Segal-kategorio estas grupoida. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramGroupoidalCompleteSegal` | Veraj randaj Reedy-fibreco, vertikala kaj horizontala Kan-strukturoj, strikta ekstera Segal-datumaro kaj kategoria kompleteco estas kunigitaj en unu ekzakta projekt-loka atestilo. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso` | La tuta ekstera diagramo estas nature izomorfa al `n ↦ Map(Δ[n], N(M.Object))`, inkluzive de ĉiuj facoj kaj degeneroj. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit` | Antaŭfaska denseco pruvas ke `Map(∂Δ[n], N(M.Object))` estas la vera kongrua limeso. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift` | Randa restrikto estas ĝuste la universala levo al la kongrua limeso. |
@@ -1326,8 +1351,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
-| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, nivelaj grupoidaj/Kan-aj/strikt-Segal-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, kategoria Rezk-kompleteco, natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj | **PROVED** |
-| 12, pli-alta etendaĵo | Mathlib-denaska Reedy/kompleta-Segal-a pakado kaj pli-alta lokalizo preter la kompleteca komparo | **OPEN RESEARCH** |
+| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, vertikalaj kaj horizontalaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, ekzakta projekt-loka grupoida kompleta-Segal-a pakado, natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj | **PROVED** |
+| 12, pli-alta etendaĵo | Mathlib-denaskaj simpliciaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj pli-alta lokalizo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -1354,7 +1379,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
 | Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
 | Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kan-a, kvazaŭkategoria kaj 2-koskeleta; eksplicitaj internaj kaj eksteraj kornplenigiloj; sen kompleta-Segal- aŭ Rezk-aserto |
-| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; nivele strikta Segal kaj Kan; striktaj eksteraj Segal-ekvivalentoj; veraj randaj kongruaj limesoj kaj fibrecoj | Semantika pruva tavolo | Projekt-loka randa Reedy-fibreca atestilo kaj kategoria kompleteco estas pruvitaj; Mathlib-denaska kompleta-Segal-a pakado kaj lokalizo restas malfermitaj |
+| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; vertikala kaj horizontala Kan-strukturoj; striktaj eksteraj Segal-ekvivalentoj; veraj randaj kongruaj limesoj kaj fibrecoj | Semantika pruva tavolo | Ekzakta projekt-loka `GroupoidalCompleteSegal`-atestilo estas pruvita; Mathlib-denaskaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo restas malfermitaj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -1383,7 +1408,9 @@ inversigeblajn vertikalajn transformojn kaj eksterajn Segal-ekvivalentojn en
 ĉiuj dugradoj, naturan simplaĵ-mapospacan prezenton, verajn randajn kongruajn
 limesojn kaj fibrantajn kongruajn mapojn; la efektiva Rezk-kompleteca komparo
 estas ankaŭ pruvita kiel la nervo de kategoria ekvivalento. Neniu Mathlib-denaska
-kompleta-Segal-a pakado aŭ lokaliza rezulto estas asertata. La modeldukategorio estas realigita por fiksa
+malfort-ekvivalenta/norma kompleta-Segal-a instanco aŭ lokaliza rezulto estas
+asertata; la ekzakta projekt-loka grupoida `GroupoidalCompleteSegal`-atestilo
+estas pruvita. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -1921,7 +1948,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Rezk-klasifika diagramo kun nivelaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, natura vertikal-vertica komparo kaj inversigeblaj vertikalaj transformoj
 - [x] La efektiva Rezk-kompleteca komparo estas nervo de kategoria ekvivalento
 - [x] Natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj
-- [ ] Mathlib-denaska Reedy/kompleta-Segal-a pakado kaj lokalizo kun eksplicita pli-alta kohero
+- [x] Ekzakta projekt-loka grupoida kompleta-Segal-a atestilo kun horizontalaj Kan-vicoj
+- [ ] Mathlib-denaskaj simpliciaj malfortaj ekvivalentoj/norma kompleta-Segal-a pakado kaj lokalizo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.
