@@ -27,7 +27,9 @@ Blackwell 逆表現定理、有限 KL のデータ処理、エネルギーから
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
 合成閉包、標準チャネルテンソル、interchange、基底 bra によるトレース/破棄チャネルと因果的一意性、
 チャネル圏、任意の有限補助系に対する完全正値性、正規化 Bell 密度行列、正確な Pauli-X
-一量子ビット・二量子ビット証明を実装しました。古典確率埋め込みと高次圏は未解決です。
+一量子ビット・二量子ビット証明を実装しました。古典から量子への層も実装済みです：
+`sqrt(P(y | x)) |y><x|` を Kraus 演算子として、脱位相化冪等部分圏への忠実な測定—準備
+関手を構成し、恒等・合成・テンソル・対角状態発展・確率の復元を証明しました。高次圏は未解決です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
@@ -326,8 +328,10 @@ Mathlib の行列—テンソル積線形同値で移送し、対ごとの Krone
 量子ビット例は正規化 Bell 密度行列も構成し、正半定値性、トレース 1、`|00⟩`/`|11⟩` 間の
 非対角コヒーレンス成分 `1/2` を証明します。さらに一般増幅定理を用いて、第二量子ビットだけに
 Pauli-X を作用させても正値性が保たれることを示します。これは一般的な同時状態定理の具体例であり、
-有限テストを証明の代用にしたものではありません。非分離性の形式定理はまだ主張しません。Stage 9
-に残る拡張は、有限古典確率チャネルを測定—準備量子チャネルとして埋め込むことです。
+有限テストを証明の代用にしたものではありません。非分離性の形式定理はまだ主張しません。
+Stage 9 の古典拡張は実装済みです。有限古典確率チャネルを
+`sqrt(P(y | x)) |y><x|` による測定—準備チャネルへ写し、合成とテンソルを忠実に保存します。
+古典恒等は全量子恒等ではなく基底脱位相化へ写るため、対象圏は脱位相化冪等部分圏です。
 
 ## 証明済みの内容
 
@@ -413,6 +417,12 @@ Pauli-X を作用させても正値性が保たれることを示します。こ
 | `Ript.Models.Quantum.KrausChannel.eq_discard` | トレースチャネルは単位系への唯一の Kraus チャネルです。 |
 | `Ript.Models.Quantum.KrausChannel.comp_discard` | 全有限 Kraus チャネルが因果的破棄則を満たします。 |
 | `Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive` | 全有限 Kraus チャネルは任意の有限恒等増幅の下で任意の同時行列の正値性を保ちます。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.transitionOperator_complete` | `sqrt(P(y | x)) |y><x|` は厳密な Kraus 完全性方程式を満たします。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_diagonalDensity` | 対角古典状態の量子発展は有限分布の確率的押し出しと厳密に一致します。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_comp` | 測定—準備は確率チャネル合成を保存します。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_tensor` | 測定—準備は同時行列空間全体でテンソルを保存します。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_faithful` | 埋め込みチャネルの等しさから全確率行列要素を復元できます。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor` | 忠実な脱位相化部分圏関手はチャネルテンソルを保存します。 |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X は Kraus 完全性 `XᴴX = I` を満たします。 |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X は二つの計算基底密度行列を交換します。 |
 | `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | 独立な二つの Pauli-X は両方の計算基底状態を正確に反転します。 |
@@ -442,7 +452,7 @@ Pauli-X を作用させても正値性が保たれることを示します。こ
 | 7、因果 | 有限 DAG 機構、正規化同時分布、介入、`FinStoch` 状態 | **PROVED** |
 | 8 | 有限平衡系、Gibbs-preserving プロセス、一般 divergence 単調性 | **PROVED** |
 | 9、有限量子チャネル | 複素密度行列、TP Kraus チャネル、テンソル/interchange、トレース破棄、因果的一意性、有限完全正値性 | **PROVED** |
-| 9、量子拡張 | 有限古典確率チャネルの測定—準備埋め込み | **OPEN RESEARCH** |
+| 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10–11 | 双圏・ユニバレント層 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
@@ -468,8 +478,7 @@ Pauli-X を作用させても正値性が保たれることを示します。こ
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、具体的有限 KL のデータ処理、
-エネルギー由来 Gibbs 状態、古典から量子への埋め込み、
-ユニバレント構造、高次圏構造は**未実装**です。テンソル、破棄、有限完全正値性を備えた Kraus
+エネルギー由来 Gibbs 状態、ユニバレント構造、高次圏構造は**未実装**です。テンソル、破棄、有限完全正値性を備えた Kraus
 チャネルコアは実装済みでカーネル検証されています。正式な能力表は
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)、形式的に追跡する未解決命題は
 [CONJECTURES.md](../CONJECTURES.md) を参照してください。現在、登録された予想はありません。
@@ -835,7 +844,7 @@ import Ript.Models.Quantum.Kraus
 - [ ] 具体的有限 KL divergence と証明済みデータ処理不等式
 - [ ] エネルギー、逆温度、Gibbs 構成、自由エネルギー、Landauer 境界
 - [x] 量子テンソル、破棄/トレースチャネル、恒等/interchange、因果的破棄則
-- [ ] 有限古典確率チャネルの量子層への埋め込み
+- [x] 有限古典確率チャネルの脱位相化冪等量子部分圏への忠実な埋め込み
 - [ ] 厳密に分離されたユニバレント層または高次圏層
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
@@ -882,7 +891,9 @@ import Ript.Models.Quantum.Kraus
 恒等、合成、圏則、標準テンソルと interchange、密度状態発展、因果的一意性を持つトレース破棄、
 Pauli-X 一量子ビット・二量子ビット例を証明済みです。さらに、すべての有限補助系と任意の
 正半定値同時行列に対する完全正値性、および正規化 Bell 密度行列例も証明済みです。これは通常の
-有限行列表現であり、解析的 C\*-代数 API との橋は主張しません。古典確率埋め込みはロードマップです。
+有限行列表現であり、解析的 C\*-代数 API との橋は主張しません。有限古典確率チャネルは
+測定—準備関手により脱位相化冪等部分圏へ忠実に埋め込まれます。この対象境界により、脱位相化を
+全量子恒等と取り違えません。
 Ript は指定された正確な
 平衡分布を持つ有限系、Gibbs-preserving 合成とテンソル、自由平衡状態、および divergence が
 証明済み DPI を持つ場合の一般熱単調性もサポートします。ただしエネルギーからの平衡導出、有限

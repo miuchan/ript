@@ -17,6 +17,7 @@ Only implemented and compiled capabilities are marked as supported.
 | Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
 | Finite thermal systems (specified equilibrium) | Gibbs-preserving category | Bifunctor | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes | Yes |
 | Finite quantum Kraus channels (`ℂ`) | Kraus category | Yes | Yes | No | No | Yes | No | No | Matrix proof layer; basis labels executable |
+| Classical quantum dephasing subcategory | Yes; identity is basis dephasing | Bifunctor | Via ambient trace discard, not separately packaged | No exported copy | No generic interface | Yes | No | No | Exact `FinStoch` source; noncomputable complex matrix semantics |
 
 For the quantum row, “Discard” is the proved trace channel and “Causal” means
 the compiled uniqueness/compatibility laws `eq_discard` and `comp_discard`.
@@ -26,3 +27,9 @@ is the ordinary finite-matrix formulation native to the current model, not an
 unproved bridge to Mathlib's analytic C\*-algebra API. “Copy” remains
 deliberately unsupported: no classical copying structure is inferred from the
 chosen quantum basis.
+
+The classical quantum row is the proved faithful measurement--preparation
+image of `FiniteStochastic`. Its Kraus operators are
+`sqrt(P(y | x)) |y><x|`, and its morphisms are invariant under source and
+target dephasing. The target categorical identity is therefore dephasing,
+which is why this row is listed separately from the full Kraus category.

@@ -1,4 +1,5 @@
 import Ript.Examples.BitProcesses
+import Ript.Examples.ClassicalQuantum
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
@@ -113,3 +114,12 @@ set_option autoImplicit false
 #print axioms Ript.Examples.QubitChannel.bellDensity_trace_one
 #print axioms Ript.Examples.QubitChannel.bellDensity_cross_term
 #print axioms Ript.Examples.QubitChannel.bitFlip_amplification_bell_posSemidef
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.transitionOperator_complete
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_diagonalDensity
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_comp
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_tensor
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_faithful
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.dephase_idempotent
+#print axioms Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor
+#print axioms Ript.Examples.ClassicalQuantum.quantumNoisyNot_false_to_true
+#print axioms Ript.Examples.ClassicalQuantum.dephase_bool_offDiagonal

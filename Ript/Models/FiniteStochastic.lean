@@ -49,8 +49,8 @@ def unit : Object :=
   of PUnit
 
 /-- Cartesian product of finite stochastic objects. -/
-def tensor (X Y : Object) : Object :=
-  of (X × Y)
+abbrev tensor (X Y : Object) : Object :=
+  ⟨X × Y, inferInstance, inferInstance⟩
 
 end Object
 

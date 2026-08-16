@@ -37,7 +37,11 @@ kaj spuro, fermitecon sub idento kaj sinsekva kunmeto, kanalkategorion kaj
 kanonan kanaltensoron, interchange, baz-bra-an spuro/forĵeto-kanalon kun kaŭza
 unikeco, kompletan pozitivecon por ĉiu finia helpa sistemo, normaligitan
 Bell-densmatricon, kaj ekzaktajn unu- kaj du-kvubitajn Pauli-X-pruvojn. La
-klasika stokasta enigo kaj pli altaj kategorioj restas malfermaj.
+klasika-al-kvantuma tavolo nun estas realigita: ĝi uzas
+`sqrt(P(y | x)) |y><x|` kiel Kraus-operatorojn kaj konstruas fidelan
+mezur-preparan funktoron al la malfaziga idempotenta subkategorio, kun pruvitaj
+idento, kunmeto, tensoro, diagonala statevoluo kaj probabloreakiro. Pli altaj
+kategorioj restas malfermaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -393,9 +397,11 @@ pozitivan duondifinitecon kaj spuron unu, kaj kalkulas ĝian eksterdiagonalan
 `|00⟩`/`|11⟩`-koheran elementon kiel `1/2`. Poste la ĝenerala amplifa teoremo
 pruvas, ke Pauli-X sur nur la dua kvubito konservas pozitivecon. La ekzemplo
 ilustras la ĝeneralan kun-statan teoremon; ĝi ne anstataŭas ĝin per finia testo.
-Formala teoremo pri nedisigebleco ankoraŭ ne estas asertata. La restanta
-etapo-9-a etendaĵo estas enigi finiajn klasikajn stokastajn kanalojn kiel
-mezur-preparajn kvantumajn kanalojn.
+Formala teoremo pri nedisigebleco ankoraŭ ne estas asertata. La klasika
+etapo-9-a etendaĵo nun estas realigita per `sqrt(P(y | x)) |y><x|`-operatoroj.
+Ĝi fidele konservas kunmeton kaj tensoron. Ĉar la klasika idento fariĝas baza
+malfazigo, ne la plena kvantuma idento, la celo estas precize la malfaziga
+idempotenta subkategorio.
 
 ## Kio estas pruvita
 
@@ -481,6 +487,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Quantum.KrausChannel.eq_discard` | La spurkanalo estas la unika Kraus-kanalo al la unusistemo. |
 | `Ript.Models.Quantum.KrausChannel.comp_discard` | Ĉiu finia Kraus-kanalo plenumas la kaŭzan forĵetleĝon. |
 | `Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive` | Ĉiu finia Kraus-kanalo konservas pozitivecon sub ĉiu finia ident-amplifo sur arbitraj kunaj matricoj. |
+| `Ript.Models.Quantum.ClassicalEmbedding.transitionOperator_complete` | `sqrt(P(y | x)) |y><x|` plenumas la ekzaktan Kraus-kompletecan ekvacion. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_diagonalDensity` | Kvantuma evoluo de diagonala klasika stato ekzakte egalas stokastan puŝon de finia distribuo. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_comp` | Mezur-preparo konservas stokastan kunmeton. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_tensor` | Mezur-preparo konservas tensoron sur la tuta kuna matrica spaco. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_faithful` | Egaleco de enigitaj kanaloj reakiras ĉiujn stokastajn matricelementojn. |
+| `Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor` | La fidela malfaziga-subkategoria funktoro konservas kanaltensoron. |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X plenumas la Kraus-kompletecon `XᴴX = I`. |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X interŝanĝas la du komputbazajn densmatricojn. |
 | `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | Du sendependaj Pauli-X-kanaloj ekzakte renversas ambaŭ komputbazajn statojn. |
@@ -512,7 +524,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
 | 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj kaj ĝenerala diverĝenca monotoneco | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
-| 9, kvantuma etendaĵo | Mezur-prepara enigo de finiaj klasikaj stokastaj kanaloj | **OPEN RESEARCH** |
+| 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10–11 | Dukategoriaj kaj univalentaj tavoloj | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -541,8 +553,8 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
-KL-datumtraktado, energio-derivitaj Gibbs-statoj, klasika-al-kvantuma enigo,
-univalenteco kaj pli altkategoria strukturo estas **ne realigitaj**. La finia
+KL-datumtraktado, energio-derivitaj Gibbs-statoj, univalenteco kaj pli
+altkategoria strukturo estas **ne realigitaj**. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
 realigita kaj kernel-kontrolita. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
@@ -866,8 +878,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
    ekzakta finia decidtavolo, la homogena finia DAG-kaŭza tavolo, la
    specif-ekvilibra finia termika tavolo kaj la finia Kraus-kerno kun tensoro,
    forĵeto kaj kompleta pozitiveco estas realigitaj; inversa prezento,
-   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko, la klasika
-   kvantuma enigo kaj pli altaj tavoloj restas malfermaj.
+   ĝeneralaj stokastaj kaj kaŭzaj modeloj, analiza termodinamiko kaj pli altaj
+   tavoloj restas malfermaj. La fidela klasika kvantuma enigo en la malfazigan
+   idempotentan subkategorion estas realigita.
 8. **Konservi task-rilatecon kiam oni asertas valoron.** Semantik-valora aserto
    nomas sian antaŭdistribuon, agojn, perdon, bazlinion kaj rimedbuĝeton; ĝi ne
    silente fariĝas task-sendependa entropia aserto.
@@ -944,7 +957,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [ ] Konkreta finia KL-diverĝenco kaj pruvita datumtrakta neegalaĵo
 - [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
-- [ ] Enigo de finiaj klasikaj stokastaj kanaloj en la kvantuman tavolon
+- [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [ ] Zorge izolitaj univalentaj aŭ pli altkategoriaj tavoloj
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
@@ -999,8 +1012,10 @@ interchange, denseca statevoluo, spura forĵeto kun kaŭza unikeco, kaj unu- kaj
 du-kvubitaj Pauli-X-ekzemploj estas pruvitaj. Kompleta pozitiveco por ĉiu finia
 helpa sistemo kaj arbitra pozitiva duondifina kuna matrico estas pruvita, kune
 kun normaligita Bell-densmatrica ekzemplo. Tio estas ordinara fini-matrica
-formulo; neniu analiza C\*-algebra ponto estas asertata. La klasika stokasta
-enigo restas vojmapa.
+formulo; neniu analiza C\*-algebra ponto estas asertata. Ekzaktaj finiaj
+stokastaj kanaloj ankaŭ fidele eniras la malfazigan idempotentan subkategorion
+kiel mezur-preparaj kanaloj; tiel malfazigo ne estas konfuzita kun la plena
+kvantuma idento.
 Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
 ekvilibro, Gibbs-konservan kunmeton kaj tensoron, liberajn ekvilibrajn statojn
 kaj ĝeneralan termikan monotonecon kiam diverĝenco liveras pruvitan DPI. Ĝi

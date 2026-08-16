@@ -96,6 +96,11 @@ flowchart LR
   QuantumCP --> QubitChannel["Examples.QubitChannel"]
   QuantumDiscard --> QubitChannel["Examples.QubitChannel"]
   QubitChannel --> Audit
+  FiniteDistribution --> ClassicalEmbedding["Models.Quantum.ClassicalEmbedding"]
+  FiniteStochastic --> ClassicalEmbedding
+  QuantumCP --> ClassicalEmbedding
+  ClassicalEmbedding --> ClassicalQuantumExample["Examples.ClassicalQuantum"]
+  ClassicalQuantumExample --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -115,7 +120,7 @@ Every node in this graph is an existing compiled module.
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
-| 9 (extension) | Classical finite-stochastic measurement-preparation embedding | OPEN_RESEARCH |
+| 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10-11 | Bicategorical and univalent layers | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
@@ -1835,6 +1840,108 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Examples/QubitChannel.lean`.
 
+## Stage-9 classical-to-quantum embedding records
+
+### `transitionOperator_complete` and `measurementPreparation_diagonalDensity`
+
+- Natural-language statement: for an exact stochastic channel `f`, the
+  operators `sqrt(f(y | x)) |y><x|` satisfy the Kraus completeness equation;
+  the resulting CPTP channel sends a diagonal density matrix to the diagonal
+  density matrix obtained by exact finite-distribution pushforward.
+- Lean types:
+
+  ```lean
+  theorem transitionOperator_complete (f : FinStoch X Y) :
+      ∑ pair : X × Y,
+        (transitionOperator f pair)ᴴ * transitionOperator f pair = 1
+
+  theorem measurementPreparation_diagonalDensity
+      (p : FinDist X) (f : FinStoch X Y) :
+      (measurementPreparation f).applyDensity (diagonalDensity p) =
+        diagonalDensity (p.push f)
+  ```
+
+- Prerequisites: exact normalized `ℚ≥0` stochastic rows, real square roots,
+  single-entry matrices, diagonal positive-semidefinite matrices, and finite
+  Kraus channels.
+- Status: `PROVED` for every finite source and target object.
+- Classical choice: reported only through Mathlib's generic finite-sum,
+  complex-matrix, and category proof infrastructure.
+- Computable: source probabilities and finite-distribution pushforward are
+  executable; square-root complex amplitudes and operator-order certificates
+  live in the noncomputable matrix proof layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/ClassicalEmbedding.lean`.
+
+### `measurementPreparation_comp`, `measurementPreparation_tensor`, and
+`measurementPreparation_faithful`
+
+- Natural-language statement: measurement--preparation preserves
+  Chapman--Kolmogorov composition and independent tensor as equalities of
+  complete Kraus channels, and it is injective on stochastic morphisms.
+  Tensor preservation is proved on the entire joint matrix space, including
+  nonseparable inputs, by extending equality from Kronecker generators.
+- Lean types:
+
+  ```lean
+  theorem measurementPreparation_comp (f : FinStoch X Y)
+      (g : FinStoch Y Z) :
+      measurementPreparation (FinStoch.comp f g) =
+        KrausChannel.comp (measurementPreparation f)
+          (measurementPreparation g)
+
+  theorem measurementPreparation_tensor (f : FinStoch W X)
+      (g : FinStoch Y Z) :
+      measurementPreparation (FinStoch.tensor f g) =
+        KrausChannel.tensor (measurementPreparation f)
+          (measurementPreparation g)
+
+  theorem measurementPreparation_faithful {f g : FinStoch X Y}
+      (h : measurementPreparation f = measurementPreparation g) : f = g
+  ```
+
+- Prerequisites: the operational entry formula, finite-sum rearrangement,
+  Mathlib's matrix/tensor-product linear equivalence, and recovery of each
+  stochastic entry from a basis projector.
+- Status: `PROVED`.
+- Classical choice: reported through generic finite matrix and tensor-product
+  proofs; no channel action is selected by choice.
+- Computable: stochastic data are executable; complex matrix equality is a
+  kernel-checked proof-layer property.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/ClassicalEmbedding.lean`.
+
+### `ClassicalQuantum.embedding` and `embedding_map_tensor`
+
+- Natural-language statement: exact finite stochastic channels embed
+  faithfully into the category of Kraus channels fixed by source and target
+  basis-dephasing idempotents. The functor preserves categorical identities,
+  serial composition, object products, and channel tensor.
+- Lean interface:
+
+  ```lean
+  noncomputable def embedding :
+      FiniteStochastic.Object ⥤ ClassicalQuantum.Object
+
+  instance embedding_faithful : embedding.Faithful
+
+  theorem embedding_map_tensor (f : FinStoch W X) (g : FinStoch Y Z) :
+      embedding.map (FinStoch.tensor f g) =
+        ClassicalQuantum.Channel.tensor (embedding.map f) (embedding.map g)
+  ```
+
+- Prerequisites: `dephase`, `dephase_idempotent`, the Karoubi-style channel
+  wrapper, its category laws and tensor bifunctor, and the three preservation
+  theorems above.
+- Status: `PROVED`. The target identity is dephasing. No claim is made that the
+  same map preserves the identity channel of the full ambient Kraus category.
+- Classical choice: only the audited imported finite-matrix proof dependency.
+- Computable: category structure and equality proofs are semantic; source
+  finite stochastic data remain executable.
+- Kernel assumptions for `embedding_map_tensor`:
+  `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Quantum/ClassicalEmbedding.lean`.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -1938,3 +2045,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     entry, then exercises the general amplification theorem. It does not call
     this a formal entanglement proof; nonseparability would require its own
     definition and theorem.
+29. A measurement--preparation realization sends the classical identity to
+    complete basis dephasing, not to the identity on arbitrary quantum states.
+    Therefore the classical stochastic functor targets the category cut out by
+    source and target dephasing idempotents. Its identity is the idempotent
+    dephasing channel, while every morphism still carries a genuine CPTP Kraus
+    channel. This is the honest Karoubi-style categorical boundary; Ript does
+    not claim a functor with the same morphism action into the full ambient
+    Kraus category.
