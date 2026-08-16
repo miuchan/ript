@@ -37,8 +37,10 @@ povas movi ekvilibron al alia celo. La semantika tavolo
 difinas konkretan finian KL en `ℝ≥0∞`, pruvas ĝian nulvaloron kaj subtenliman
 konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
 konkretan monotonecon de KL-atermikeco. Plensubtena rekonstrua teoremo nun
-pruvas la inversan Blackwell-direkton por determinismaj finiaj eksperimentoj;
-la inverso por arbitraj stokastaj eksperimentoj restas esplorvojo.
+pruvas la inversan Blackwell-direkton por determinismaj finiaj eksperimentoj.
+La inverso por arbitraj stokastaj eksperimentoj nun estas ekzakta Lean-propono,
+reduktita al kompleteco de ĝustaj finiaj decid-apartigaj atestiloj, kaj restas
+esplorvojo.
 Eksplicita finia ban-helpata protokolo nun estas kompilita: la tri-bita
 permutacio `((sistemo, bano), baterio) -> ((baterio, bano), sistemo)` ekzakte
 viŝas la sistemon, redonas la banon senŝanĝe kaj pagas `log 2 / β` per informa
@@ -366,6 +368,17 @@ celobservo. Ekvivalente, la celo estas konstanta sur ĉiu fibro de la fonto.
 Tio eltiras ekzaktan posttraktan atestilon sen supozi la ĝeneralan stokastan
 teoremon Blackwell--Sherman--Stein. En plenumebla kvarstata ekzemplo, vicigita
 celo havas riskon `0`, dum kruca celo havas ekzaktan riskon `1/2`.
+
+Por arbitraj finiaj stokastaj eksperimentoj, la restanta teoremo nun estas
+precize formulita kiel `FiniteBlackwellShermanStein`: universala riskordo por
+ĉiu finia agoportanto, ekzakta antaŭdistribuo kaj ekzakta perdo devus implici
+ekzaktan malprecigon. `DecisionSeparationCertificate` pakas taskon kaj konkretan
+regulon por `Q`, kies risko estas strikte sub la optimuma `P`-risko. Ript pruvas,
+ke ĉiu tia atestilo malebligas superadon, ke malsukceso de la universala riskordo
+ekvivalentas al ekzisto de atestilo, kaj ke la plena stokasta inverso ekvivalentas
+al atestila kompleteco. Vere stokasta Bulea ekzemplo plenumas `1/4 < 1/2`.
+Restas derivi ekzaktajn raciajn atestilojn por ĉiu ne-malprecigebla paro per
+finia konveksa apartigo aŭ lineara-programa dualeco.
 
 Por komputaj limigoj, `DecisionResourceModel` atribuas natur-nombran koston al
 ĉiu determinisma decidregulo kaj liveras senkostan rezervan regulon.
@@ -951,6 +964,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le` | Plensubtena celrekonstrua risko karakterizas determinisman finian Blackwell-superadon. |
 | `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines` | Determinisma superado estas ekzakte celkonstanteco sur fontaj fibroj. |
 | `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | La ekzakta kruca risko `1/2` forigas ĉiun posttraktan atestilon en la kvarstata ekzemplo. |
+| `Ript.Models.Decision.Separation.DecisionSeparationCertificate.not_dominates` | Ĉiu strikta finia decid-atestilo forigas ĉiujn stokastajn malprecigojn. |
+| `Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate` | Malsukceso de universala finia riskordo ekvivalentas al konkreta atestilo. |
+| `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | La plena stokasta inverso estas ekzakte kompleteco de finiaj decid-apartigaj atestiloj. |
+| `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | Ekzaktaj riskoj `1/4 < 1/2` apartigas du vere stokastajn Buleajn eksperimentojn. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | Pli da decidbuĝeto ne povas plimalbonigi optimuman riskon. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Atestita redukto transportas riskon kun eksplicita adicia kroma kosto. |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Malprecigo ne povas pligrandigi task-rilatan semantikan valoron. |
@@ -1132,7 +1149,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
 | 5 | Fidela finia-kanala ponto al Mathlib `Stoch` | **PROVED** |
-| 6 | Blackwell-ordo, finia decidrisko, determinisma finia inverso, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
+| 6 | Blackwell-ordo, finia decidrisko, determinisma inverso, ekzakta stokast-inversa propono kaj atestila redukto, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
 | 8 | Finiaj ekvilibraj sistemoj, ekzakta racia Gibbs-klasifiko de finiaj reelaj spektroj, fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, ekzaktaj/raci-eraraj Landauer-limoj, informa-bateria atestilo, entropie neŭtrala nedegenera laborbateria saturiĝo kaj ekzakta fermita viŝa–reŝarga ciklo | **PROVED** |
@@ -1156,7 +1173,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Ekzaktaj finiaj stokastaj kanaloj | Jes | Jes | Plenumebla | Normaligitaj `ℚ≥0`-matricoj, Dirac, kopiado, forĵetado |
 | Fini-distribua Kleisli-kategorio | Jes | Ne | Plenumebla | Ekzaktaj `pure`/`bind`; kategorie ekvivalenta al `FinStoch` |
 | Finia diskreta bildo de la Mathlib-`Stoch`-ponto | Jes | Jes, ĝis kanona izomorfio | Semantika tavolo | Fidela Markov-kerna interpreto; la fontaj matricoj restas plenumeblaj |
-| Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | Antaŭena riskordo; determinisma inverso kaj fibra karakterizo; finiaj minimumoj, buĝetoj, task-rilata valoro kaj kvarstataj pozitivaj/negativaj atestiloj |
+| Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | Antaŭena riskordo; determinisma inverso; ĝustaj stokastaj apartigaj atestiloj; ĝenerala inversa propono kaj atestila redukto; determinismaj kaj vere stokastaj atestiloj |
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
@@ -1174,10 +1191,11 @@ La realigita modelsubteno estas intence mallarĝa:
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
 Mathlib `Stoch`. La ekzakta finia decidtavolo ankaŭ havas kompilitajn teoremojn
-pri Blackwell, Bayes-risko, rimedoj, semantika valoro kaj la determinisma
-inverso; la homogena finia DAG-tavolo ankaŭ havas pruvitan observan kaj
-intervenan semantikon. La ĝenerala stokasta inversa
-Blackwell--Sherman--Stein-prezenta teoremo preter determinismaj eksperimentoj, ĝeneralaj mezureblaj
+pri Blackwell, Bayes-risko, rimedoj, semantika valoro, la determinisma inverso
+kaj atestila ĝusteco; la homogena finia DAG-tavolo ankaŭ havas pruvitan observan
+kaj intervenan semantikon. La ĝenerala stokasta Blackwell--Sherman--Stein-propono
+kaj ĝia ekvivalenta atestil-kompleteca limo estas precize formaligitaj, sed la
+geometria atestilkonstruo preter determinismaj eksperimentoj, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, ĝenerala
 decidproceduro por egaleco de arbitraj reelaj Boltzmann-faktoroj kaj pli-altdimensia aŭ
@@ -1233,6 +1251,8 @@ flowchart LR
   BW --> FR["Plenumebla finia Bayes-risko"]
   FR --> DB["Determinisma finia inverso"]
   DB --> DX["Kvarstata vicigita/kruca atestilo"]
+  FR --> DS["Stokastaj apartigaj atestiloj"]
+  DS --> SX["Brua 1/4 kontraŭ sendependa 1/2"]
   FR --> RR["Rimed-limigita decidrisko"]
   RR --> SV["Task-rilata semantika valoro"]
   BW --> SB
@@ -1434,6 +1454,13 @@ kruca celo havas riskon `1/2` kaj ne povas esti stokasta posttraktado de la
 fonto. Tri ordinaraj kontraktoj `#eval decide` kontrolas ambaŭ riskojn kaj
 ambaŭ fibrajn predikatojn; ĉiuj eligas `true`.
 
+`Ript/Examples/StochasticSeparation.lean` apartigas du vere stokastajn Buleajn
+eksperimentojn. Rekta uzo de `3/4`-preciza brua observo havas ekzaktan riskon
+`1/4`, dum ĉiu regulo bazita sur sendependa justa observo havas riskon `1/2`.
+La pakita atestilo uzas la ĝeneralan ĝustecan teoremon por forigi ĉiun stokastan
+malprecigon. Tri ordinaraj kontraktoj `#eval decide` kontrolas ambaŭ riskojn kaj
+ilian striktan ordon.
+
 `Ript/Examples/SimpleComputation.lean` rulas la saman tiphavan programon en la
 totala kaj `Option`-parta kategorioj, kalkulas la ekzaktan rimedvektoron
 `(paŝoj, demandoj, memoro, pordegoj) = (3, 1, 0, 1)`, ekzercas sukceson kaj
@@ -1500,6 +1527,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- aŭ, por la determinisma finia Blackwell-inverso:
 import Ript.Models.Decision.DeterministicBlackwell
+-- aŭ, por la ekzakta stokast-inversa propono kaj atestila redukto:
+import Ript.Models.Decision.Separation
 -- aŭ, por rimed-konscia totala kaj parta komputado:
 import Ript.Models.Computation.Partial
 -- aŭ, por finiaj DAG-oj, malmolaj intervenoj kaj ekzaktaj stokastaj statoj:
@@ -1647,6 +1676,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Blackwell-ordo per malprecigo, ekvivalenteco, tensora kongruo kaj Mathlib-a Bayes-riska datumtraktado
 - [x] Plenumebla ekzakta finia Bayes-risko, finiaj optimumaj decidoj kaj malsupra limo por hazardigitaj reguloj
 - [x] Determinisma finia Blackwell-inverso, fibra karakterizo kaj plenumebla kvarstata pozitiva/negativa atestilo
+- [x] Ekzakta stokasta Blackwell-inversa propono, ĝustaj decid-apartigaj atestiloj kaj ekvivalenta redukto al atestila kompleteco
+- [x] Vere stokasta Bulea apartigilo kun ekzaktaj riskoj `1/4 < 1/2`
 - [x] Rimed-limigita decidrisko, buĝeta monotoneco kaj reduktoj kun adicia kroma kosto
 - [x] Task-rilata semantika valoro: ekvivalenteco, malprecigo, buĝeto, bazlinio kaj taska sensignifeco
 - [x] Plenumebla Bulea decidekzemplo komparanta perfektan kaj neinformatan observon
@@ -1678,7 +1709,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Ĝeneralaj konveksaj kaj kaŭzaj kapablo-interfacoj
 - [ ] Heterogenaj nodaj portantoj, ĝeneralaj mezureblaj kaŭzaj modeloj, kondiĉigo kaj do-kalkulaj etendaĵoj
 - [ ] Denaska monoida pakado por la totala kaj parta komputkategorioj
-- [ ] Ĝenerala stokasta finia Blackwell--Sherman--Stein-inverso preter determinismaj eksperimentoj
+- [ ] Pruvi atestilan kompletecon por la ĝenerala stokasta finia Blackwell--Sherman--Stein-inverso
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [x] Finiaj energioj, pozitiva inversa temperaturo, Gibbs-realigo, entropio kaj Helmholtz-libera energio
@@ -1796,8 +1827,10 @@ Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 Per plensubtena celrekonstruo kaj font-fibra rafino ĝi ankaŭ pruvas la inversan
-direkton por determinismaj finiaj eksperimentoj. La ĝenerala stokasta inverso
-kaj ĝenerala mezurebla decidteorio ankoraŭ ne estas pruvitaj.
+direkton por determinismaj finiaj eksperimentoj. Por arbitraj finiaj stokastaj
+eksperimentoj, la ekzakta inversa propono estas formaligita kaj reduktita al
+kompleteco de ĝustaj finiaj decid-apartigaj atestiloj; brua Bulea atestilo estas
+plenumebla. La ĝenerala atestilkonstruo kaj mezurebla decidteorio restas malfermitaj.
 Ript ankaŭ subtenas topologie numeritajn finiajn DAG-ojn kun komuna finia
 valortipo, gepatro-lokajn ekzaktajn mekanismojn, normaligitajn observajn kunajn
 distribuojn, malmolajn intervenojn kaj ekzaktajn `FinStoch`-statojn.

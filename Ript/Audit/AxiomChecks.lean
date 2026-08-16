@@ -13,6 +13,7 @@ import Ript.Examples.QubitChannel
 import Ript.Examples.RationalGibbsSpectra
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
+import Ript.Examples.StochasticSeparation
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
 import Ript.Examples.UnivalentCompletion
@@ -120,6 +121,14 @@ set_option autoImplicit false
 #print axioms Ript.Examples.DeterministicBlackwell.crossing_reconstructionRisk_half
 #print axioms Ript.Examples.DeterministicBlackwell.block_dominates_aligned
 #print axioms Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing
+#print axioms Ript.Models.Decision.Separation.finiteDecisionOrder_of_dominates
+#print axioms Ript.Models.Decision.Separation.DecisionSeparationCertificate.not_dominates
+#print axioms Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate
+#print axioms Ript.Models.Decision.Separation.blackwellShermanSteinConverse_iff_separationComplete
+#print axioms Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete
+#print axioms Ript.Examples.StochasticSeparation.noisy_information_quarter_risk
+#print axioms Ript.Examples.StochasticSeparation.uninformative_information_half_risk
+#print axioms Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy
 #print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone
 #print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction
 #print axioms Ript.Models.Decision.SemanticValue.semanticValue_mono

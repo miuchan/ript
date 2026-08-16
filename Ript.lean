@@ -27,6 +27,7 @@ import Ript.Examples.SimpleDecision
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
+import Ript.Examples.StochasticSeparation
 import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
@@ -48,6 +49,7 @@ import Ript.Models.Decision.DeterministicBlackwell
 import Ript.Models.Decision.FiniteRisk
 import Ript.Models.Decision.ResourceBounded
 import Ript.Models.Decision.SemanticValue
+import Ript.Models.Decision.Separation
 import Ript.Models.FiniteDistribution
 import Ript.Models.FiniteFunction
 import Ript.Models.FiniteFunction.Monoidal

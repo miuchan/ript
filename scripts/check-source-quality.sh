@@ -84,6 +84,46 @@ if [[ "$markdown_table_errors" -ne 0 ]]; then
   exit 1
 fi
 
+# Keep the wide canonical capability matrix in explicit HTML. GitHub's
+# Markdown table parser treats one mismatched separator cell as ordinary text,
+# and this matrix is wide enough that such a regression is hard to spot in a
+# source review. Validate both the rendering boundary and every row width.
+if ! awk '
+  /<thead>/ { in_head = 1 }
+  /<\/thead>/ { in_head = 0 }
+  /<tbody>/ { in_body = 1; next }
+  /<\/tbody>/ { in_body = 0 }
+
+  in_head {
+    line = $0
+    header_cells += gsub(/<th>/, "", line)
+  }
+
+  in_body && /<tr>/ {
+    line = $0
+    cells = gsub(/<td>/, "", line)
+    rows += 1
+    if (cells != 10) {
+      printf "Source quality check failed: MODEL_MATRIX.md row %d has %d cells; expected 10\n", NR, cells
+      failed = 1
+    }
+  }
+
+  END {
+    if (header_cells != 10) {
+      printf "Source quality check failed: MODEL_MATRIX.md header has %d cells; expected 10\n", header_cells
+      failed = 1
+    }
+    if (rows == 0) {
+      printf "Source quality check failed: MODEL_MATRIX.md has no HTML capability rows\n"
+      failed = 1
+    }
+    exit failed
+  }
+' MODEL_MATRIX.md; then
+  exit 1
+fi
+
 missing_auto_implicit=0
 while IFS= read -r lean_file; do
   if ! grep -q -E '^set_option autoImplicit false[[:space:]]*$' "$lean_file"; then

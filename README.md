@@ -99,7 +99,9 @@ Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
 stochastic entry are proved. A full-support reconstruction theorem now proves
 the converse for deterministic finite experiments; the converse for arbitrary
-stochastic experiments remains a research direction. The higher-categorical
+stochastic experiments is now an exact Lean proposition, reduced to
+completeness of sound finite decision-separation certificates, and remains a
+research direction. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
 monoidal functors, and monoidal natural transformations form a bicategory with
@@ -375,6 +377,18 @@ of the source. This extracts an exact post-processing witness without assuming
 the general stochastic Blackwell--Sherman--Stein theorem. An executable
 four-state example distinguishes an aligned target of risk `0` from a crossing
 target of exact risk `1/2`.
+
+For arbitrary finite stochastic experiments, the project now states the exact
+remaining theorem as `FiniteBlackwellShermanStein`: universal risk order over
+every finite action carrier, exact prior, and exact loss should imply an exact
+garbling. `DecisionSeparationCertificate` packages a task and concrete rule for
+`Q` that strictly beats the optimal `P`-risk. Ript proves that every such
+certificate rules out dominance, that failure of universal risk order is
+equivalent to existence of a certificate, and that the full stochastic
+converse is equivalent to certificate completeness. A genuinely stochastic
+Boolean example executes a certificate with risks `1/4 < 1/2`. The remaining
+step is to derive exact rational certificates for every non-garbling pair by
+finite convex separation or linear-programming duality.
 
 For computational constraints, `DecisionResourceModel` assigns a natural-
 number cost to each deterministic decision rule and supplies a zero-cost
@@ -1003,6 +1017,10 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le` | Full-support target-reconstruction risk characterizes deterministic finite Blackwell dominance. |
 | `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines` | Deterministic dominance is exactly target constancy on source fibers. |
 | `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | Exact crossing risk `1/2` rules out every source-to-target garbling in the four-state example. |
+| `Ript.Models.Decision.Separation.DecisionSeparationCertificate.not_dominates` | Any strict finite decision certificate rules out every stochastic garbling. |
+| `Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate` | Failure of universal finite risk order is equivalent to a concrete certificate. |
+| `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | The full stochastic converse is exactly completeness of finite decision-separation certificates. |
+| `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | Exact risks `1/4 < 1/2` separate two genuinely stochastic Boolean experiments. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | More decision budget cannot worsen optimal risk. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Certified reductions transport risk with explicit additive overhead. |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling cannot increase task-relative semantic value. |
@@ -1189,7 +1207,7 @@ finished physical theory.
 | 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
 | 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
-| 6 | Blackwell order, finite decision risk, deterministic finite converse, resource bounds, and task-relative value | **PROVED** |
+| 6 | Blackwell order, finite decision risk, deterministic converse, exact stochastic-converse statement and certificate reduction, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | **PROVED** |
@@ -1213,7 +1231,7 @@ Implemented model support is intentionally narrow:
 | Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
 | Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
 | Mathlib `Stoch` bridge, finite discrete image | Yes | Yes, up to canonical isomorphism | Semantic layer | Faithful Markov-kernel interpretation; source matrices stay executable |
-| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Forward risk order; deterministic converse and fiber characterization; finite minima, resource budgets, task-relative value; four-state positive/negative witness |
+| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Forward risk order; deterministic converse; sound stochastic separation certificates; exact general-converse proposition and certificate reduction; deterministic and genuinely stochastic witnesses |
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
@@ -1231,8 +1249,10 @@ Implemented model support is intentionally narrow:
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
 in Mathlib `Stoch`, and its exact finite decision layer has compiled Blackwell,
-Bayes-risk, resource, semantic-value, and deterministic-converse theorems. The
-general stochastic Blackwell--Sherman--Stein converse beyond deterministic
+Bayes-risk, resource, semantic-value, deterministic-converse, and certificate-
+soundness theorems. The exact general stochastic Blackwell--Sherman--Stein
+proposition and its equivalent certificate-completeness boundary are
+formalized, but the geometric certificate construction beyond deterministic
 experiments, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
@@ -1256,7 +1276,8 @@ Kraus channel core, including finite complete positivity, is implemented and
 kernel checked.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
-statements. There are currently no registered conjectures.
+statements. The exact finite stochastic Blackwell converse is registered there
+as `FORMALIZED_BUT_UNPROVED`.
 
 ## Architecture
 
@@ -1291,6 +1312,8 @@ flowchart LR
   BW --> FR["Executable finite Bayes risk"]
   FR --> DB["Deterministic finite converse"]
   DB --> DX["Four-state aligned/crossing witness"]
+  FR --> DS["Stochastic separation certificates"]
+  DS --> SX["Noisy 1/4 vs independent 1/2 witness"]
   FR --> RR["Resource-bounded decision risk"]
   RR --> SV["Task-relative semantic value"]
   BW --> SB
@@ -1501,6 +1524,13 @@ target has risk `1/2` and cannot be any stochastic post-processing of the
 source. Three ordinary `#eval decide` contracts check both risks and both fiber
 predicates, and all print `true`.
 
+`Ript/Examples/StochasticSeparation.lean` separates two genuinely stochastic
+Boolean experiments. Direct use of a `3/4`-accurate noisy observation has exact
+risk `1/4`, while every rule based on an independent fair observation has risk
+`1/2`. The packaged certificate invokes the generic soundness theorem to rule
+out every stochastic garbling. Three ordinary `#eval decide` contracts check
+both exact risks and their strict order.
+
 `Ript/Examples/SimpleComputation.lean` executes the same typed program in the
 total and `Option`-partial categories. It computes the exact resource vector
 `(steps, queries, storage, gates) = (3, 1, 0, 1)`, exercises success and failure,
@@ -1569,6 +1599,8 @@ import Ript.Models.Probability.StochFunctor
 import Ript.Models.Decision.SemanticValue
 -- or, for the deterministic finite Blackwell converse:
 import Ript.Models.Decision.DeterministicBlackwell
+-- or, for the exact stochastic-converse statement and certificate reduction:
+import Ript.Models.Decision.Separation
 -- or, for resource-aware total and partial computation:
 import Ript.Models.Computation.Partial
 -- or, for finite DAGs, hard interventions, and exact stochastic states:
@@ -1720,6 +1752,8 @@ updated assumption audit.
 - [x] Blackwell garbling order, equivalence, tensor compatibility, and Mathlib Bayes-risk data processing
 - [x] Executable exact finite Bayes risk, finite optimal decisions, and randomized-rule lower bound
 - [x] Deterministic finite Blackwell converse, fiber characterization, and executable four-state positive/negative witness
+- [x] Exact stochastic Blackwell-converse proposition, sound decision-separation certificates, and equivalence to certificate completeness
+- [x] Genuinely stochastic Boolean separation witness with exact risks `1/4 < 1/2`
 - [x] Resource-bounded decision risk, budget monotonicity, and additive-overhead reductions
 - [x] Task-relative semantic value, equivalence, garbling, budget, baseline, and task-irrelevance laws
 - [x] Executable perfect-versus-uninformative Boolean decision example
@@ -1758,7 +1792,7 @@ updated assumption audit.
 - [ ] Generic convex and causal capability interfaces
 - [ ] Heterogeneous node carriers, general measurable causal models, conditioning, and do-calculus extensions
 - [ ] Native monoidal packaging for the total and partial computation categories
-- [ ] General stochastic finite Blackwell--Sherman--Stein converse beyond deterministic experiments
+- [ ] Prove certificate completeness for the general stochastic finite Blackwell--Sherman--Stein converse
 - [ ] General measurable-space decision problems beyond exact finite data
 - [ ] Rich computational cost models and operationally validated reduction costs
 - [x] Finite energies, positive inverse temperature, Gibbs realization, entropy, and Helmholtz free energy
@@ -1873,8 +1907,10 @@ For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction and the converse for deterministic finite
 experiments through full-support target reconstruction and source-fiber
-refinement. The general stochastic converse and a general measurable decision
-theory remain open.
+refinement. For arbitrary finite stochastic experiments, its exact converse is
+formalized and reduced to completeness of sound finite decision-separation
+certificates; a noisy Boolean certificate is executable. The general
+certificate construction and a general measurable decision theory remain open.
 It also supports topologically numbered finite DAGs with a common finite value
 carrier, exact parent-local mechanisms, normalized observational joints, hard
 interventions, and exact `FinStoch` states. Heterogeneous carriers, general

@@ -77,6 +77,9 @@ flowchart LR
   FiniteRisk --> DeterministicBlackwell["Models.Decision.DeterministicBlackwell"]
   DeterministicBlackwell --> DeterministicBlackwellExample["Examples.DeterministicBlackwell"]
   DeterministicBlackwellExample --> Audit
+  FiniteRisk --> DecisionSeparation["Models.Decision.Separation"]
+  DecisionSeparation --> StochasticSeparation["Examples.StochasticSeparation"]
+  StochasticSeparation --> Audit
   FiniteRisk --> ResourceDecision["Models.Decision.ResourceBounded"]
   ResourceDecision --> SemanticValue["Models.Decision.SemanticValue"]
   SemanticValue --> SimpleDecision["Examples.SimpleDecision"]
@@ -183,7 +186,7 @@ Every node in this graph is an existing compiled module.
 | 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | PROVED |
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
-| 6 | Blackwell order, finite decision risk, deterministic finite converse, resource bounds, and task-relative value | PROVED |
+| 6 | Blackwell order, finite decision risk, deterministic finite converse, exact stochastic-converse statement and certificate reduction, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, exact rational-Gibbs classification of finite real spectra, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
@@ -951,6 +954,11 @@ quantity. For deterministic finite experiments, a full-support zero-one
 target-reconstruction problem also proves the converse: risk comparison
 recovers an exact garbling witness, equivalently a refinement relation on
 source fibers. The arbitrary stochastic converse remains outside this stage.
+Its exact universe-polymorphic Lean proposition is nevertheless formalized,
+and the missing implication is reduced bidirectionally to completeness of
+concrete finite decision-separation certificates. Certificate soundness and a
+genuinely stochastic Boolean witness are proved; geometric certificate
+completeness remains open.
 
 ### `Ript.Core.Simulates.trans`
 
@@ -1137,6 +1145,78 @@ source fibers. The arbitrary stochastic converse remains outside this stage.
   crossing fiber predicates reduce under ordinary `#eval`.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Decision/DeterministicBlackwell.lean`.
+
+### `Ript.Models.Decision.Separation.DecisionSeparationCertificate.not_dominates`
+
+- Natural-language statement: if a concrete rule using `Q` has strictly less
+  risk than the optimal risk attainable from `P`, then `Q` cannot be any
+  stochastic post-processing of `P`.
+- Lean type:
+
+  ```lean
+  theorem DecisionSeparationCertificate.not_dominates
+      {P : FinStoch Θ X} {Q : FinStoch Θ Y}
+      (certificate : DecisionSeparationCertificate P Q) :
+      ¬BlackwellDominates P Q
+  ```
+
+- Prerequisites: exact deterministic decision risk, executable finite Bayes
+  risk, and forward Blackwell data processing.
+- Status: `PROVED`.
+- Classical choice: only through the existing forward finite-risk theorem and
+  generic finite/category proof infrastructure.
+- Computable: certificate fields and risk comparisons are exact `ℚ≥0` data;
+  non-dominance is proof data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/Separation.lean`.
+
+### `Ript.Models.Decision.Separation.not_finiteDecisionOrder_iff_certificate`
+
+- Natural-language statement: failure of the universal finite decision-risk
+  order is equivalent to existence of a concrete finite action carrier,
+  decision problem, and `Q`-rule that strictly beats the optimal `P`-risk.
+- Lean type:
+
+  ```lean
+  theorem not_finiteDecisionOrder_iff_certificate
+      (P : FinStoch Θ X) (Q : FinStoch Θ Y) :
+      ¬FiniteDecisionOrder P Q ↔
+        Nonempty (DecisionSeparationCertificate P Q)
+  ```
+
+- Prerequisites: classical negation of a universal quantifier and existence of
+  an optimal deterministic decision rule on every finite carrier.
+- Status: `PROVED`.
+- Classical choice: yes, proof-only, to expose a failed universally quantified
+  task and select an optimal rule for `Q`.
+- Computable: supplied certificates are finite executable data; the theorem is
+  a proposition-level existence equivalence.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/Separation.lean`.
+
+### `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete`
+
+- Natural-language statement: the full exact finite stochastic Blackwell
+  converse holds exactly when every non-garbling pair has a concrete finite
+  decision-separation certificate.
+- Lean type:
+
+  ```lean
+  theorem finiteBlackwellShermanStein_iff_certificateComplete :
+      FiniteBlackwellShermanStein ↔
+        ∀ (Θ X Y : Object) (P : FinStoch Θ X) (Q : FinStoch Θ Y),
+          DecisionSeparationComplete P Q
+  ```
+
+- Prerequisites: forward finite-risk data processing and
+  `not_finiteDecisionOrder_iff_certificate`.
+- Status: `PROVED`; both sides of the equivalence are propositions, while
+  `FiniteBlackwellShermanStein` itself remains `FORMALIZED_BUT_UNPROVED`.
+- Classical choice: yes through the finite decision certificate equivalence.
+- Computable: no global solver is claimed. Individual certificates and the
+  noisy Boolean `1/4 < 1/2` witness execute exactly.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/Separation.lean`.
 
 ### `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone`
 
@@ -4405,8 +4485,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     experiments. In the deterministic fragment, full-support zero-one target
     reconstruction recovers an exact garbling witness, equivalently target
     constancy on source fibers. The general stochastic
-    Blackwell--Sherman--Stein converse remains open and would require a finite
-    convex-separation or linear-programming duality development.
+    Blackwell--Sherman--Stein converse is now an exact Lean proposition and is
+    proved equivalent to completeness of finite decision-separation
+    certificates. Certificate soundness and a genuinely stochastic Boolean
+    certificate are compiled. The remaining open step is a finite
+    convex-separation or linear-programming duality construction that produces
+    exact rational decision data for every non-garbling pair.
 18. Computation resources are explicit formal bounds on steps, oracle queries,
     storage, and gates. They are not identified with observed wall-clock time,
     and their pointwise function representation reuses Mathlib's ordered
