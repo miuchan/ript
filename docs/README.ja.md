@@ -87,7 +87,10 @@ Rezk への次の基礎もコンパイル済みです。真正な classifying di
 実際の外側 spine/Segal 比較が同値です。実際の Rezk 完備性写像は外側の零退化として定義され、明示的な
 圏同値の nerve であることが証明されました。さらに外側の対象全体は simplex mapping space と自然同型で、
 境界 matching cone は真正な極限、各 matching map は fibration です。Mathlib ネイティブな Reedy
-model structure による complete-Segal のパッケージ化と localization の普遍性は未解決です。
+model structure はまだ存在しません。これらの結果は、各水平行の Kan 性と実際の完備性写像の
+圏同値 nerve witness を含む、正確なプロジェクト内 `SSet.GroupoidalCompleteSegal` 構造にまとめられました。
+固定 Mathlib には simplicial set の弱同値や完成した Quillen model API がないため、Mathlib ネイティブな
+標準 complete-Segal-space instance と localization の普遍性は未解決です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
@@ -788,6 +791,16 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
   interfaceClassifyingDiagramCompletenessMap M =
     CategoryTheory.nerveMap
       (interfaceClassifyingDiagramCompletenessEquivalence M).functor
+
+interfaceClassifyingDiagramHorizontalRowKan M k :
+  SSet.KanComplex (InterfaceClassifyingDiagramHorizontalRow M k)
+
+interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness M :
+  SSet.NerveEquivalenceWitness
+    (interfaceClassifyingDiagramCompletenessMap M)
+
+interfaceClassifyingDiagramGroupoidalCompleteSegal M :
+  SSet.GroupoidalCompleteSegal (InterfaceClassifyingDiagram M)
 ```
 
 第二の同値の順方向写像は、実際の spine 写像そのものです。よって外側 Segal 条件は、任意に選んだ
@@ -796,9 +809,11 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
 これは内部 groupoid 上の標準的な Rezk classifying-diagram 構成で、厳密 nerve を越える実質的な一歩です。
 全水平射が可逆なので、同値部分空間は外側次数 1 の全体です。実際の外側零退化は、明示的な圏同値
 `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1` の順方向関手の nerve そのものであり、
-Rezk 完備性比較を nerve-of-category-equivalence の強さで証明します。残る complete-Segal 境界は
-Mathlib ネイティブな complete-Segal-space のパッケージ化です。自然な mapping-space 表示、matching-limit
-の普遍性、matching-map fibration は、完全なプロジェクト内 boundary Reedy-fibrancy witness を構成します。
+Rezk 完備性比較を nerve-of-category-equivalence の強さで証明します。各水平行も groupoid の Kan nerve です。
+`SSet.GroupoidalCompleteSegal` は、この事実、厳密な外側 Segal データ、真正な boundary Reedy-fibrancy、
+実際の完備性写像の `SSet.NerveEquivalenceWitness` を正確に束ねます。これは証明済みのプロジェクト内
+groupoidal complete-Segal interface であり、未実装の上流定理の別名ではありません。固定 Mathlib には
+simplicial set の弱同値 class がないため、Mathlib ネイティブな標準 complete-Segal-space instance は主張しません。
 資源プロセス双圏の localization 普遍性はまだ主張しません。監査済みの正確な公理 footprint は
 `[propext, Classical.choice, Quot.sound]` であり、プロジェクト固有の公理や実行時の選択データは追加しません。
 
@@ -1046,8 +1061,11 @@ Mathlib ネイティブな complete-Segal-space のパッケージ化です。�
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | 外側 Segal 同値の順方向写像は正確に spine 写像です。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | 実際の外側零退化関手は圏同値です。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | Rezk 完備性写像はその圏同値の順方向関手の nerve そのものです。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness` | 実際の完備性写像は明示的な始域・終域同型を通して圏同値の nerve として表示されます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Classifying diagram の各垂直レベルは明示的な strict-Segal 再構成データを持ちます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Classifying diagram の各垂直レベルは Kan complex です。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowKan` | 各水平行は Kan complex であり、対応する strict-Segal 圏は groupoidal です。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramGroupoidalCompleteSegal` | 真正な boundary Reedy-fibrancy、両方向の Kan 構造、厳密な外側 Segal データ、圏論的完備性を一つの正確なプロジェクト内 witness に束ねます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso` | 外側 diagram 全体は、すべての face と degeneracy を含めて `n ↦ Map(Δ[n], N(M.Object))` と自然同型です。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingConeIsLimit` | Presheaf density により `Map(∂Δ[n], N(M.Object))` が真正な matching limit であることを証明します。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift` | 境界制限は matching limit への普遍 lift そのものです。 |
@@ -1090,8 +1108,8 @@ Mathlib ネイティブな complete-Segal-space のパッケージ化です。�
 | 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
 | 12、presheaf 基礎 | 充満忠実な Yoneda 意味論、可表対象での同一性/同値対応、本質像包絡 | **PROVED** |
 | 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
-| 12、classifying-diagram 基礎 | Rezk classifying diagram、レベルごとの groupoid/Kan/strict-Segal 構造、厳密な外側 Segal 同値、圏論的 Rezk 完備性、自然な simplex-mapping 表示、真正な境界 matching limit と matching-map fibration | **PROVED** |
-| 12、高次拡張 | Mathlib ネイティブな Reedy/complete-Segal パッケージ化と、完備性比較を越える高次 localization | **OPEN RESEARCH** |
+| 12、classifying-diagram 基礎 | Rezk classifying diagram、垂直・水平の groupoid/Kan 構造、厳密な外側 Segal 同値、正確なプロジェクト内 groupoidal complete-Segal パッケージ、自然な simplex-mapping 表示、真正な境界 matching limit と matching-map fibration | **PROVED** |
+| 12、高次拡張 | Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと高次 localization | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -1118,7 +1136,7 @@ Mathlib ネイティブな complete-Segal-space のパッケージ化です。�
 | 内部 presheaf universe | 型値 presheaf 間の自然変換 | 可表対象の作用 | 意味論的証明層 | Yoneda は充満忠実；同一性/同値は可表自然変換/自然同型に対応 |
 | Yoneda 包絡 | 可表対象の本質像から出る関手 | 圏同値を通して構造を継承 | 非計算的な本質像意味論 | 元の groupoid と圏同値；外部 univalence も Rezk 完備性もない |
 | Simplicial interface nerve | Simplicial 面・退化写像；homotopy category | Strict Segal spine 合成 | 意味論的証明層 | Kan、quasicategory、2-coskeletal；inner/outer horn filler を明示；complete-Segal/Rezk の主張なし |
-| Rezk classifying diagram | 合成可能な射列の外側 simplicial 圏とレベルごとの nerve | 射列間の自然変換；レベルごとの strict Segal と Kan；厳密な外側 Segal 同値；真正な境界 matching limit と fibration | 意味論的証明層 | プロジェクト内 boundary Reedy-fibrancy witness と圏論的完備性は証明済み；Mathlib ネイティブな complete-Segal パッケージ化と localization は未解決 |
+| Rezk classifying diagram | 合成可能な射列の外側 simplicial 圏とレベルごとの nerve | 射列間の自然変換；垂直・水平 Kan；厳密な外側 Segal 同値；真正な境界 matching limit と fibration | 意味論的証明層 | 正確なプロジェクト内 `GroupoidalCompleteSegal` witness は証明済み；Mathlib ネイティブな弱同値・標準 complete-Segal パッケージと localization は未解決 |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
@@ -1138,7 +1156,8 @@ classifying diagram は真正な simplicial 対象として実装され、完全
 quasicategory、2-coskeletal、homotopy-category 復元が証明済みです。Classifying diagram にはさらに自然な
 垂直頂点比較、可逆垂直変換、全双次数での外側 Segal 同値を持ち、実際の Rezk 完備性比較も圏同値の
 nerve として証明済みです。自然な simplex-mapping 表示、真正な boundary matching limit、fibrant matching
-map も証明済みですが、Mathlib ネイティブな complete-Segal パッケージ化と localization は未証明です。モデル双圏は固定資源型と統一 universe の範囲で実装され、
+map も証明済みで、正確なプロジェクト内 groupoidal `GroupoidalCompleteSegal` witness にまとめられています。
+Mathlib ネイティブな弱同値・標準 complete-Segal instance と localization は未証明です。モデル双圏は固定資源型と統一 universe の範囲で実装され、
 これらの層は `(∞,1)`-圏や
 Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
@@ -1623,7 +1642,8 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] Rezk classifying diagram、レベルごとの groupoid/Kan 構造、厳密な外側 Segal 同値、自然な垂直頂点比較、可逆垂直変換
 - [x] 実際の Rezk 完備性比較は圏同値の nerve
 - [x] 自然な simplex-mapping 表示、真正な境界 matching limit、matching-map fibration
-- [ ] Mathlib ネイティブな Reedy/complete-Segal パッケージ化と、明示的高次 coherence を持つ localization
+- [x] 水平 Kan 行を持つ正確なプロジェクト内 groupoidal complete-Segal witness
+- [ ] Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと、明示的高次 coherence を持つ localization
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
 破壊的変更を明記する必要があります。

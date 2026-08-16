@@ -205,8 +205,8 @@ Every node in this graph is an existing compiled module.
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
-| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, levelwise groupoid/Kan/strict-Segal structure, strict outer Segal equivalences, categorical Rezk completeness, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher extension) | Mathlib-native Reedy/complete-Segal packaging and localization beyond the categorical completeness comparison | OPEN_RESEARCH |
+| 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
+| 12 (higher extension) | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4844,15 +4844,64 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   installed for its underlying category functor.
 - Status: `PROVED`. This discharges the completeness comparison for this
   groupoidal classifying diagram at nerve-of-category-equivalence strength.
-  Project-local boundary Reedy fibrancy is proved separately; a Mathlib-native
-  bundled complete-Segal-space structure and the localization universal
-  property are open obligations.
+  Project-local boundary Reedy fibrancy is proved separately and then bundled
+  in the exact project-local groupoidal complete-Segal witness below. A
+  Mathlib-native weak-equivalence/standard complete-Segal-space instance and
+  the localization universal property are open obligations.
 - Computable: semantic proof layer. The outer degeneracy is explicit; the
   displayed categorical equivalence is noncomputable and remains downstream
   of all executable models.
 - Kernel assumptions: exactly `[propext, Classical.choice, Quot.sound]`,
   confirmed by direct checks in `Ript/Audit/AxiomChecks.lean`.
 - Source: `Ript/ForMathlib/CategoryTheory/GroupoidInterval.lean` and
+  `Ript/Univalent/ClassifyingDiagram.lean`.
+
+### Exact project-local groupoidal complete-Segal package
+
+- Natural-language statement: the interface classifying diagram carries one
+  checked structure combining genuine boundary matching limits and fibrations,
+  Kan vertical levels, strict-Segal and Kan horizontal rows, and the actual
+  completeness map presented as the nerve of a category equivalence.
+- Lean interfaces:
+
+  ```lean
+  structure SSet.NerveEquivalenceWitness {X Y : SSet} (f : X ⟶ Y)
+
+  structure SSet.GroupoidalCompleteSegal
+      (W : SimplicialObject SSet)
+
+  instance UniverseModel.interfaceClassifyingDiagramHorizontalRowKan (k : ℕ) :
+      SSet.KanComplex (M.InterfaceClassifyingDiagramHorizontalRow k)
+
+  def UniverseModel.interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness :
+      SSet.NerveEquivalenceWitness
+        M.interfaceClassifyingDiagramCompletenessMap
+
+  def UniverseModel.interfaceClassifyingDiagramGroupoidalCompleteSegal :
+      SSet.GroupoidalCompleteSegal M.InterfaceClassifyingDiagram
+  ```
+
+- Strength: the completeness field is not an opaque proposition. Its source
+  and target are explicitly identified with categorical nerves, a displayed
+  category equivalence is supplied, and a commuting square identifies the
+  real outer degeneracy with that nerve map. Horizontal Kan fibrancy proves
+  that every strict-Segal horizontal row is groupoidal.
+- Library boundary: the pinned Mathlib file defining simplicial-set
+  cofibrations and Kan fibrations explicitly leaves the Quillen model
+  structure unfinished and supplies no `CategoryWithWeakEquivalences SSet`.
+  Ript therefore cannot honestly instantiate a Mathlib-native standard
+  complete-Segal predicate. `GroupoidalCompleteSegal` records the strongest
+  exact data available; it is not a replacement definition of weak
+  equivalence.
+- Status: `PROVED`. A future bridge to an upstream weak-equivalence interface
+  and a localization universal property remain open.
+- Computable: noncomputable semantic proof layer; no chosen value enters any
+  executable model.
+- Kernel assumptions: exactly `[propext, Classical.choice, Quot.sound]` for
+  the constructor, transported Kan instances, completeness witness, and
+  bundled instance, confirmed in `Ript/Audit/AxiomChecks.lean`.
+- Sources:
+  `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` and
   `Ript/Univalent/ClassifyingDiagram.lean`.
 
 ### Vertical vertices and invertible vertical edges
@@ -4903,8 +4952,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   are equivalences in every bidegree. Its actual completeness map is the nerve
   of a category equivalence. Its natural simplex-mapping presentation,
   genuine boundary matching limits, and matching fibrations provide a
-  project-local Reedy-fibrancy witness. Mathlib-native complete-Segal
-  packaging has not been proved, so the object is not yet advertised as a
+  project-local Reedy-fibrancy witness. Its horizontal rows are Kan, and these
+  facts are now bundled in an exact project-local groupoidal complete-Segal
+  witness. Because the pinned library has no simplicial weak-equivalence
+  interface, the object is not advertised as a Mathlib-native standard
   complete Segal space or as a localization of the resource-process
   bicategory.
 - None of the completion, envelope, nerve, or classifying-diagram layers is a
@@ -4926,7 +4977,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   levelwise groupoidal Rezk classifying diagram now have proved foundations,
   including outer Segal equivalences and the categorical completeness
   comparison, natural boundary matching limits, and matching fibrations, but
-  Mathlib-native complete-Segal packaging, presheaf localization, and
+  only the exact project-local groupoidal complete-Segal package is proved;
+  Mathlib-native weak-equivalence/standard complete-Segal packaging,
+  presheaf localization, and
   genuinely higher identity remain Stage-12 research targets; the proved
   foundations above do not discharge them.
 
@@ -5133,9 +5186,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     includes a classifying diagram with a second simplicial direction and a
     new audit whose outer Segal comparisons are strict equivalences and whose
     actual completeness map is the nerve of a category equivalence. Its
-    boundary matching limits and fibrations are also proved, but it still
-    requires Mathlib-native complete-Segal packaging before it can be called a
-    complete Segal space or localization. The object
+    boundary matching limits and fibrations are also proved and are bundled
+    with horizontal Kan structure in an exact project-local groupoidal
+    complete-Segal witness. A Mathlib-native standard complete Segal space
+    claim still requires the missing simplicial weak-equivalence API; a
+    localization claim requires a separate universal property. The object
     and skeletal completions remain only the compiled 0/1-truncated
     foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather
@@ -5167,7 +5222,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     inner-horn result. The classifying diagram's completeness comparison is a
     separate theorem. The mapping-space presentation and every concrete
     boundary matching fibration are now proved, as are naturality and the
-    matching-limit universal property. Mathlib-native complete-Segal packaging
+    matching-limit universal property. The project-local groupoidal package is
+    proved; Mathlib-native weak-equivalence/standard complete-Segal packaging
     and localization remain distinct open proof obligations.
 50. The homotopy-category recovery theorem uses Mathlib's fully faithful nerve
     adjunction counit and remains noncomputable. Low-dimensional vertices,
