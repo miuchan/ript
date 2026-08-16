@@ -344,6 +344,10 @@ set_option autoImplicit false
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan
+#print axioms SSet.boundaryMatchingMap_fibration
+#print axioms SSet.nerveFunctorSimplexMappingIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso
+#print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso

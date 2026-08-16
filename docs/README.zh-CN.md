@@ -678,8 +678,26 @@ InterfaceClassifyingDiagram M : SimplicialObject SSet
 `CategoryTheory.nerveFunctor`，得到真正的双单纯 classifying diagram，而不是普通 nerve 的别名。
 
 由于所有自然变换分量都位于内部接口群胚中，每个自然变换都可逆。因此每个纵向层级都已证明
-为 Kan、strict Segal、quasicategory 与 2-coskeletal。比较定理是整个 simplicial set 的自然
-同构，而非互不相关的逐维双射：
+为 Kan、strict Segal、quasicategory 与 2-coskeletal。每个外层次数现在还有经内核检验的
+映射空间表示，并且限制到标准单形边界的映射是 fibration：
+
+```lean
+interfaceClassifyingDiagramMappingSpaceIso M n :
+  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
+    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
+  Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
+```
+
+证明把 `nerve (Fin (n + 1) ⥤ M.Object)` 识别为
+`Map(Δ[n], N(M.Object))`，显式处理有限序数所需的 universe lift，然后把 simplicial
+pushout-product 定理应用到 `∂Δ[n] ↪ Δ[n]`。这已经比逐层 Kan 更强，并给出了具体边界匹配
+映射所需的模型范畴提升性质；但还不能称为完整 Reedy fibrancy。剩余工作是证明该逐层表示对
+外层单形自然，并把 `Map(∂Δ[n], N(M.Object))` 与抽象 Reedy matching limit 识别。当前 Mathlib
+提供 Reedy 索引结构，但尚无这个函子范畴 matching-object API。
+
+与普通 nerve 的比较定理是整个 simplicial set 的自然同构，而非互不相关的逐维双射：
 
 ```lean
 interfaceClassifyingDiagramVerticalVerticesIso M :
@@ -719,7 +737,7 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
 横向箭头都可逆，所以等价子空间就是整个外层一次空间。实际外层零退化在定义上是明确范畴等价
 `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1` 的正向函子之 nerve；这以
 nerve-of-category-equivalence 强度证明了 Rezk 完备性比较。剩余 complete-Segal 边界是
-Reedy fibrancy 及其封装；也没有声称它给出完整资源过程双范畴的 localization。相关声明的精确公理足迹为
+自然 matching-limit 识别与完整 Reedy-fibrancy 封装；也没有声称它给出完整资源过程双范畴的 localization。相关声明的精确公理足迹为
 `[propext, Classical.choice, Quot.sound]`；没有新增项目公理，也没有把选择产生的数据送入可执行层。
 
 ## 已经证明的结果
@@ -967,6 +985,8 @@ Reedy fibrancy 及其封装；也没有声称它给出完整资源过程双范�
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | Rezk 完备性映射精确等于该等价正向函子的 nerve。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Classifying diagram 的每个纵向层级都有显式 strict-Segal 重建数据。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Classifying diagram 的每个纵向层级都是 Kan complex。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | 外层次数 `n` 同构于 `Map(Δ[n], N(M.Object))`，并显式处理有限序数的 universe bridge。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | 从所传输的次数 `n` 映射空间限制到 `Map(∂Δ[n], N(M.Object))` 是 fibration。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | 取纵向顶点会自然恢复普通 interface nerve。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | 纵向边精确对应外层单形之间的自然变换。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | 每个纵向自然变换都可逆。 |

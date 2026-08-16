@@ -726,8 +726,27 @@ InterfaceClassifyingDiagram M : SimplicialObject SSet
 真正な双 simplicial classifying diagram です。
 
 自然変換の各成分は内部 interface groupoid にあるので、すべて可逆です。したがって各垂直レベルは
-Kan、strict Segal、quasicategory、2-coskeletal であると証明されます。比較は単なる次数ごとの全単射
-ではなく、simplicial set の自然同型です。
+Kan、strict Segal、quasicategory、2-coskeletal であると証明されます。さらに各外側次数は、内核で
+検査された mapping-space 表示を持ち、標準 simplex の境界への制限は fibration です。
+
+```lean
+interfaceClassifyingDiagramMappingSpaceIso M n :
+  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
+    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
+  Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
+```
+
+証明は `nerve (Fin (n + 1) ⥤ M.Object)` を `Map(Δ[n], N(M.Object))` と同一視し、有限順序数に
+必要な universe lift を明示的に処理したうえで、`∂Δ[n] ↪ Δ[n]` に simplicial
+pushout-product 定理を適用します。これは levelwise Kan より強く、具体的な境界 matching map に必要な
+model-category の lifting 性質を与えます。ただし、まだ完全な Reedy fibrancy ではありません。残るのは、
+この次数ごとの表示の外側 simplex に関する自然性と、`Map(∂Δ[n], N(M.Object))` を抽象 Reedy matching
+limit と同一視する普遍性です。現在の Mathlib には Reedy indexing structure はありますが、この
+functor-category matching-object API はありません。
+
+通常の nerve との比較は、単なる次数ごとの全単射ではなく、simplicial set の自然同型です。
 
 ```lean
 interfaceClassifyingDiagramVerticalVerticesIso M :
@@ -767,7 +786,7 @@ interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
 全水平射が可逆なので、同値部分空間は外側次数 1 の全体です。実際の外側零退化は、明示的な圏同値
 `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1` の順方向関手の nerve そのものであり、
 Rezk 完備性比較を nerve-of-category-equivalence の強さで証明します。残る complete-Segal 境界は
-Reedy fibrancy とそのパッケージ化であり、資源プロセス双圏の localization 普遍性はまだ主張しません。監査済みの正確な公理 footprint は
+自然な matching-limit の同一視と完全な Reedy-fibrancy のパッケージ化であり、資源プロセス双圏の localization 普遍性はまだ主張しません。監査済みの正確な公理 footprint は
 `[propext, Classical.choice, Quot.sound]` であり、プロジェクト固有の公理や実行時の選択データは追加しません。
 
 ## 証明済みの内容
@@ -1016,6 +1035,8 @@ Reedy fibrancy とそのパッケージ化であり、資源プロセス双圏�
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | Rezk 完備性写像はその圏同値の順方向関手の nerve そのものです。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Classifying diagram の各垂直レベルは明示的な strict-Segal 再構成データを持ちます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Classifying diagram の各垂直レベルは Kan complex です。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | 外側次数 `n` は `Map(Δ[n], N(M.Object))` と同型で、有限順序数の universe bridge も明示されます。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | 移送された次数 `n` mapping space から `Map(∂Δ[n], N(M.Object))` への制限は fibration です。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | 垂直頂点を取ると通常の interface nerve が自然に復元されます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | 垂直辺は外側 simplex 間の自然変換と正確に対応します。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | 各垂直自然変換は可逆です。 |

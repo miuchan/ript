@@ -944,8 +944,31 @@ diagramon, ne alian nomon por la ordinara nervo.
 
 Ĉiu komponanto de ĉiu natura transformo kuŝas en la interna interfaca grupoido,
 do la transformo estas inversigebla. Sekve ĉiu vertikala nivelo estas pruvite
-Kan-a, strikta Segal, kvazaŭkategoria kaj 2-koskeleta. La komparo estas natura
-izomorfio de tutaj simpliciaj aroj, ne nur familio de sendependaj bijekcioj:
+Kan-a, strikta Segal, kvazaŭkategoria kaj 2-koskeleta. Ĉiu ekstera grado nun
+ankaŭ havas kerne kontrolitan prezenton kiel mapospaco, kaj restrikto al la
+rando de la norma simplaĵo estas fibreco:
+
+```lean
+interfaceClassifyingDiagramMappingSpaceIso M n :
+  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
+    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
+  Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
+```
+
+La pruvo identigas `nerve (Fin (n + 1) ⥤ M.Object)` kun
+`Map(Δ[n], N(M.Object))`, eksplicite traktas la universan levon de la finia
+orda kategorio, kaj poste aplikas la simplician puŝproduktan teoremon al
+`∂Δ[n] ↪ Δ[n]`. Tio estas pli forta ol nura nivela Kan-eco kaj liveras la
+modelkategorian levopropon bezonatan de la konkretaj randaj kongruaj mapoj.
+Tamen ĝi ankoraŭ ne estas plena Reedy-fibreco: restas pruvi naturecon laŭ la
+ekstera simplaĵo kaj identigi `Map(∂Δ[n], N(M.Object))` kun la abstrakta Reedy-a
+kongrua limeso. Mathlib nun havas la Reedy-an indeksan strukturon sed ne tiun
+API por kongruaj objektoj en funktorkategorioj.
+
+La komparo kun la ordinara nervo estas natura izomorfio de tutaj simpliciaj
+aroj, ne nur familio de sendependaj bijekcioj:
 
 ```lean
 interfaceClassifyingDiagramVerticalVerticesIso M :
@@ -992,8 +1015,9 @@ la ekvivalentospaco estas la tuta ekstera unua grado. La efektiva ekstera nula
 degenero estas laŭdifine la nervo de la antaŭena funktoro en la eksplicita
 ekvivalento `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`.
 Tio pruvas la Rezk-kompletecan komparon je la forto de nervo de kategoria
-ekvivalento. Restas Reedy-fibreco kaj kompleta-Segal-a pakado; neniu universala
-lokaliza eco por la tuta rimed-proceza dukategorio estas asertata. La ekzakte reviziita aksioma spuro estas
+ekvivalento. Restas la natura identigo kun la kongrua limeso kaj la plena Reedy-fibreca
+pakado; neniu universala lokaliza eco por la tuta rimed-proceza dukategorio
+estas asertata. La ekzakte reviziita aksioma spuro estas
 `[propext, Classical.choice, Quot.sound]`; neniu projekta aksiomo aŭ
 elekto-derivita plenumebla valoro estas aldonita.
 
@@ -1243,6 +1267,8 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | La Rezk-kompleteca mapo estas precize la nervo de la antaŭena funktoro de tiu ekvivalento. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Ĉiu vertikala nivelo de la klasifika diagramo havas eksplicitajn strikt-Segal-ajn rekonstruajn datumojn. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Ĉiu vertikala nivelo de la klasifika diagramo estas Kan-komplekso. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | Ekstera grado `n` estas izomorfa al `Map(Δ[n], N(M.Object))`, kun eksplicita universa ponto por la finia ordo. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | Restrikto de la transportita grada `n` mapospaco al `Map(∂Δ[n], N(M.Object))` estas fibreco. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Preni vertikalajn verticojn nature reakiras la ordinaran interfacan nervon. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | Vertikalaj eĝoj estas precize naturaj transformoj inter eksteraj simplaĵoj. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | Ĉiu vertikala natura transformo estas inversigebla. |

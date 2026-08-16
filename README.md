@@ -1011,6 +1011,29 @@ interfaceClassifyingDiagramLevelKan M Δ :
   SSet.KanComplex ((InterfaceClassifyingDiagram M).obj Δ)
 ```
 
+Each outer level now also has a kernel-checked mapping-space presentation, and
+the associated restriction to the simplex boundary is a fibration:
+
+```lean
+interfaceClassifyingDiagramMappingSpaceIso M n :
+  (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
+    (ihom (Δ[n] : SSet)).obj M.InterfaceNerve
+
+interfaceClassifyingDiagramBoundaryMatchingMap_fibration M n :
+  Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n)
+```
+
+The proof identifies `nerve (Fin (n + 1) ⥤ M.Object)` with
+`Map(Δ[n], N(M.Object))`, including the necessary universe-lift isomorphism,
+then applies the simplicial pushout-product theorem to
+`∂Δ[n] ↪ Δ[n]`. This is the model-categorical lifting theorem required of the
+concrete boundary matching maps. It is stronger than levelwise Kan fibrancy,
+but it is not yet packaged as full Reedy fibrancy: the remaining step is to
+make the degreewise presentation natural in the outer simplex and identify
+`Map(∂Δ[n], N(M.Object))` with Mathlib's abstract Reedy matching limit. Mathlib
+currently provides the Reedy indexing structure but not that functor-category
+matching-object API.
+
 The comparison to the earlier construction is natural, not only degreewise:
 
 ```lean
@@ -1060,7 +1083,8 @@ The actual outer zero-degeneracy is definitionally the nerve of the forward
 functor in an explicit equivalence
 `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`. This proves the
 Rezk completeness comparison at nerve-of-category-equivalence strength. The
-remaining complete-Segal boundary is Reedy fibrancy and its packaging; no
+remaining complete-Segal boundary is the natural matching-limit
+identification and full Reedy-fibrancy packaging; no
 localization universal property for the full resource-process bicategory is
 claimed. The audited declarations use exactly
 `[propext, Classical.choice, Quot.sound]`, inherited from quotient semantics
@@ -1318,6 +1342,8 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | The Rezk completeness map is exactly the nerve of that equivalence's forward functor. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Every vertical level of the classifying diagram has explicit strict-Segal reconstruction data. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Every vertical level of the classifying diagram is a Kan complex. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso` | Outer degree `n` is isomorphic to `Map(Δ[n], N(M.Object))`, with the finite-ordinal universe bridge made explicit. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | Restriction from the transported degree-`n` mapping space to `Map(∂Δ[n], N(M.Object))` is a fibration. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Taking vertical vertices naturally recovers the ordinary interface nerve. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalEdgeEquiv` | Vertical edges are exactly natural transformations between outer simplices. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalTransformation_isIso` | Every such natural transformation is invertible. |

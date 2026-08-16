@@ -1,4 +1,5 @@
 import Mathlib.CategoryTheory.Functor.Currying
+import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.ForMathlib.CategoryTheory.GroupoidInterval
 import Ript.Univalent.Simplicial
@@ -34,9 +35,11 @@ set_option autoImplicit false
 namespace Ript.Univalent
 
 open CategoryTheory
+open HomotopicalAlgebra
 open Opposite
 open Simplicial
 open SSet
+open scoped SSet.modelCategoryQuillen
 
 universe u
 
@@ -244,6 +247,44 @@ instance interfaceClassifyingDiagramLevelKan
     (ComposableArrows M.Object (Δ.unop.len)))
   exact CategoryTheory.Nerve.kanComplex
     (ComposableArrows M.Object (Δ.unop.len))
+
+/-- Outer degree `n` of the categorical classifying diagram is isomorphic to
+the simplicial mapping space `Map(Δ[n], N(M.Object))`.  The construction uses
+the closed-nerve comparison and a strict universe-lift bridge for the finite
+ordinal indexing category. -/
+noncomputable def interfaceClassifyingDiagramMappingSpaceIso (n : ℕ) :
+    (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
+      (ihom (Δ[n] : SSet.{u})).obj M.InterfaceNerve := by
+  change CategoryTheory.nerve (Fin (n + 1) ⥤ M.Object) ≅ _
+  exact SSet.nerveFunctorSimplexMappingIso M.Object n
+
+/-- The concrete degree-`n` boundary-matching object in the mapping-space
+presentation of the interface classifying diagram. -/
+abbrev InterfaceClassifyingDiagramBoundaryMatchingObject (n : ℕ) : SSet.{u} :=
+  SSet.BoundaryMatchingObject M.InterfaceNerve n
+
+/-- Transport the standard boundary-restriction matching map through the
+categorical classifying diagram's degreewise mapping-space presentation. -/
+noncomputable def interfaceClassifyingDiagramBoundaryMatchingMap (n : ℕ) :
+    (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ⟶
+      InterfaceClassifyingDiagramBoundaryMatchingObject M n :=
+  (interfaceClassifyingDiagramMappingSpaceIso M n).hom ≫
+    SSet.boundaryMatchingMap M.InterfaceNerve n
+
+/-- Every transported boundary-matching map is a fibration.  This proves the
+model-categorical lifting statement needed for Reedy fibrancy once the
+degreewise presentation is upgraded to a natural identification with the
+abstract Reedy matching limit. -/
+theorem interfaceClassifyingDiagramBoundaryMatchingMap_fibration (n : ℕ) :
+    Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n) := by
+  change Fibration ((interfaceClassifyingDiagramMappingSpaceIso M n).hom ≫
+    SSet.boundaryMatchingMap M.InterfaceNerve n)
+  rw [fibration_iff]
+  apply (fibrations SSet).comp_mem
+  · rw [← fibration_iff]
+    infer_instance
+  · rw [← fibration_iff]
+    exact SSet.boundaryMatchingMap_fibration M.InterfaceNerve n
 
 /-- Every vertical level is, in particular, a quasicategory. -/
 instance interfaceClassifyingDiagramLevelQuasicategory
