@@ -1,91 +1,70 @@
 # Conjectures and Unproved Research Statements
 
-Only unresolved mathematical statements are listed here. Each entry uses the
-required marker `FORMALIZED_BUT_UNPROVED` once its exact Lean proposition has
-been checked but no kernel proof is available.
+This register contains exact Lean propositions whose statements compile but
+whose proofs are not yet kernel checked. An active entry must carry the marker
+`FORMALIZED_BUT_UNPROVED` and identify the declaration that states it.
 
-## Exact finite stochastic Blackwell converse
+## Current register
 
-Status: `FORMALIZED_BUT_UNPROVED`.
+There are currently no active `FORMALIZED_BUT_UNPROVED` propositions.
 
-The exact proposition is now checked by Lean as
-`Ript.Models.Decision.Separation.FiniteBlackwellShermanStein`:
+This does **not** mean that Ript's research program is complete. The open tracks
+in the README and blueprint include broader measurable models, heterogeneous
+causal systems, generic capability interfaces, richer cost models, and higher
+localization. They are design and formalization work, not silently assumed
+mathematical propositions.
+
+## Recently discharged: exact finite stochastic Blackwell converse
+
+Status: `PROVED`.
+
+The universe-polymorphic theorem is kernel checked as
+`Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein`:
 
 ```lean
-universe u
-
-def FiniteBlackwellShermanStein : Prop :=
-  ∀ (Θ X Y : Object.{u}) (_ : Nonempty Θ.carrier)
-    (P : FinStoch Θ X) (Q : FinStoch Θ Y),
-    FiniteDecisionOrder P Q → BlackwellDominates P Q
+theorem finiteBlackwellShermanStein :
+    FiniteBlackwellShermanStein.{u}
 ```
 
-The nonempty-hidden-state hypothesis is necessary, not cosmetic. The compiled
-`EmptyParameterBoundary` example proves that when `Θ` is empty the universal
-decision order is vacuous (there is no normalized prior), while a garbling
-from a nonempty observation carrier to an empty one need not exist. Thus the
-unrestricted statement is false.
+It proves that, for every **nonempty** finite hidden-state carrier, universal
+order over exact finite decision problems implies exact stochastic garbling.
+The nonempty hypothesis is necessary: the compiled `EmptyParameterBoundary`
+example proves that with no hidden states the decision order is vacuous while a
+garbling from a unit observation carrier to an empty one need not exist.
 
-Here `FiniteDecisionOrder P Q` quantifies over every finite action carrier,
-exact prior, and exact nonnegative-rational loss. The compiled theorem
-`finiteBlackwellShermanStein_iff_certificateComplete` reduces this conjecture
-exactly to the claim that every non-garbling pair admits a concrete finite
-decision-separation certificate. Certificates are already proved sound, and a
-genuinely stochastic Boolean pair has an executable certificate with risks
-`1/4 < 1/2`.
+The completed proof has four explicit bridges:
 
-The finite garbling polytope is now compiled exactly over `ℚ≥0`. Every
-stochastic garbling is reconstructed as a distribution over deterministic
-post-processings, using the product of its row probabilities, and
-`deterministicMixtureDominates_iff` identifies Blackwell dominance with exact
-rational-simplex feasibility. A `RationalGarblingSeparator` is a signed
-rational matrix score strictly separating `Q` from every deterministic vertex.
-On nonempty hidden-state carriers, row shifts and the exact uniform prior turn
-such a score into nonnegative-rational decision data; conversely, every
-decision certificate yields a rational separator. The compiled theorem
-`finiteBlackwellShermanStein_iff_rationalSeparationComplete` therefore reduces
-the conjecture exactly to rational strict-separation completeness.
+1. `deterministicMixtureDominates_iff` represents every finite stochastic
+   garbling as an exact rational simplex mixture of deterministic
+   post-processings.
+2. `mem_convexHull_of_ratCastVector_mem_convexHull` reflects a rational point
+   from the real convex hull of finitely many rational vertices back into their
+   rational convex hull. The proof uses a minimum-support Carathéodory
+   representation, affine-span reflection, and uniqueness of barycentric
+   coordinates.
+3. `exists_rational_strictSeparator_of_not_mem_convexHull` applies real
+   Hahn--Banach separation and then uses density of rational coefficient vectors
+   to preserve all finitely many strict inequalities.
+4. `rationalGarblingSeparator_nonempty_iff_certificate` converts the resulting
+   signed rational separator into exact nonnegative-rational decision data by
+   row shifts and a uniform prior.
 
-The remaining implication is geometric: prove that every rational point
-outside this rational simplex admits such a rational strict separator. Mathlib
-supplies real locally convex Hahn--Banach/Farkas separation, but the project
-still needs the exact bridge: reflect real simplex feasibility back to rational
-weights and rationalize a real strict separator while preserving the finitely
-many strict inequalities. No linear-programming duality theorem is assumed.
+The proof is proposition-level and uses standard classical infrastructure; it
+does not claim an extracted linear-programming solver. The axiom audit for the
+new geometric bridge, separation completeness, pairwise converse, and global
+theorem reports exactly `[propext, Classical.choice, Quot.sound]`.
 
-The deterministic finite Blackwell converse is proved, not conjectural: under
-any exact full-support prior, target-reconstruction risk recovers an exact
-post-processing witness, equivalently the target is constant on every source
-fiber.
+The deterministic finite Blackwell converse remains available as a more direct
+constructive fragment: under any exact full-support prior, reconstruction risk
+extracts a post-processing witness precisely when the target is constant on
+every source fiber.
 
-Apart from that registered converse, the canonical
-Gibbs realization of every full-support exact finite equilibrium and the
-common-temperature tensor/additivity laws are proved declarations, not
-conjectural placeholders. The exact product-endpoint Landauer free-energy
-balance, its entropy-neutral battery work form, and the Boolean `log 2 / β`
-erasure bound are also proved declarations. The arbitrary-joint marginal
-decomposition, mutual-information KL identity and nonnegativity,
-correlation-corrected Landauer bounds, and correlated Boolean example are
-proved as well. Exact rational-error Boolean approximate erasure, its binary-
-entropy free-energy identity and monotonicity law, and its product-endpoint and
-correlation-corrected Landauer bounds are proved declarations too. Explicit
-finite closed protocols, their composite semantics, the two-flip Boolean
-cycle, and the closed exact-erasure no-go are now proved declarations too.
-Bath-resolved Landauer accounting and an executable exact-erasure protocol are
-also proved: the three-bit permutation returns the bath, consumes information-
-battery purity, and saturates the free-energy balance. Its battery entropy
-changes, so it is not a mechanical-work witness. A separate two-level
-nondegenerate battery now gives an exact entropy-neutral mechanical-work
-protocol: it discharges pure high to pure low, erases the fair bit, supplies
-`log 2 / β`, and saturates the work bound. A matched exact recharge channel
-randomizes the erased memory back to equilibrium, raises the pure battery from
-low to high by the same `log 2 / β`, and closes the executable three-state
-trace. Both signed balances cancel, so no net work is claimed. Rational-weight
-classification for independently specified finite real spectra is now proved:
-exact rational Gibbs probabilities exist iff every Boltzmann ratio to any
-chosen reference microstate is a positive rational number. Positive rational
-weights construct executable two- and three-level examples, while a spectrum
-with relative factor `sqrt 2` is proved to have no rational Gibbs distribution.
-What remains unsupported is a general algorithm deciding equality of arbitrary
-real exponential expressions; no unproved Lean proposition is registered for
-that algorithmic boundary.
+## Algorithmic boundary
+
+For independently specified finite real energy spectra, the project proves
+that exact rational Gibbs probabilities exist exactly when all Boltzmann ratios
+to a reference state are positive rationals. It also supplies executable
+rational-weight examples and a proved `sqrt 2` obstruction. What remains
+unsupported is a general algorithm deciding equality of arbitrary real
+exponential expressions; no unproved Lean proposition is registered for that
+algorithmic boundary.

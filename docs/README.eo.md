@@ -39,11 +39,11 @@ konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
 konkretan monotonecon de KL-atermikeco. Plensubtena rekonstrua teoremo nun
 pruvas la inversan Blackwell-direkton por determinismaj finiaj eksperimentoj.
 La inverso por arbitraj stokastaj eksperimentoj kun nevaka kaŝit-stata portanto
-nun estas ekzakta Lean-propono. Ĉiu ekzakta malprecigilo havas kompilitan racian
-simpleksan prezenton per determinismaj posttraktadoj, kaj raciaj striktaj
-apartigiloj estas pruvite ekvivalentaj al ĝustaj finiaj decid-apartigaj
-atestiloj. Kernel-kontrolita vak-stata kontraŭekzemplo montras, ke la
-nevakeco estas necesa. Kompleteco de racia strikta apartigo restas esplorvojo.
+nun estas kernel-pruvita Lean-teoremo. Ĉiu ekzakta malprecigilo havas kompilitan
+racian simpleksan prezenton per determinismaj posttraktadoj; reflektado al la
+racia konveksa envolvaĵo, kompleteco de racia strikta apartigo kaj la ekvivalento
+inter apartigiloj kaj ĝustaj finiaj decid-atestiloj estas pruvitaj. Kernel-
+kontrolita vak-stata kontraŭekzemplo montras, ke la nevakeco estas necesa.
 Eksplicita finia ban-helpata protokolo nun estas kompilita: la tri-bita
 permutacio `((sistemo, bano), baterio) -> ((baterio, bano), sistemo)` ekzakte
 viŝas la sistemon, redonas la banon senŝanĝe kaj pagas `log 2 / β` per informa
@@ -373,9 +373,8 @@ teoremon Blackwell--Sherman--Stein. En plenumebla kvarstata ekzemplo, vicigita
 celo havas riskon `0`, dum kruca celo havas ekzaktan riskon `1/2`.
 
 Por arbitraj finiaj stokastaj eksperimentoj kun **nevaka** kaŝit-stata portanto,
-la restanta teoremo estas precize formulita kiel
-`FiniteBlackwellShermanStein`: universala riskordo por ĉiu finia agoportanto,
-ekzakta antaŭdistribuo kaj ekzakta perdo devus implici ekzaktan malprecigon. La
+`FiniteBlackwellShermanStein` estas pruvita: universala riskordo por ĉiu finia
+agoportanto, ekzakta antaŭdistribuo kaj ekzakta perdo implicas ekzaktan malprecigon. La
 nevakeco estas necesa. En kompilita kontraŭekzemplo la kaŝita portanto estas
 vaka, do neniu normaligita antaŭdistribuo ekzistas kaj la riskordo estas vakue
 vera; tamen unueca observado ne povas esti malprecigita al vaka observado.
@@ -387,11 +386,14 @@ racia-simpleksa realigebleco. `RationalGarblingSeparator` estas signita racia
 poentaro kiu metas `Q` strikte sub ĉiun determinisman verticon. Laŭvica ŝovo
 por ĉiu kaŝita stato kaj la ekzakta uniforma antaŭdistribuo transformas ĝin al
 nenegativa-racia `DecisionSeparationCertificate`; inverse, ĉiu decid-atestilo
-donas racian apartigilon. Tial la plena stokasta inverso ekvivalentas al
-kompleteco de racia strikta apartigo. Vere stokasta Bulea ekzemplo plenumas
-`1/4 < 1/2`. La sola restanta paŝo estas pruvi, ke ĉiu racia punkto ekster la
-racia malpreciga simplekso havas racian striktan apartigilon; neniu teoremo pri
-lineara-programa dualeco estas supozata.
+donas racian apartigilon. La geometria ponto ankaŭ estas kernel-kontrolita:
+racia punkto en finia reela konveksa envolvaĵo reflektiĝas al la racia
+envolvaĵo; reela disigo de Hahn--Banach donas striktan reelan funkciaĵon; kaj la
+denseco de raciaj koeficientvektoroj konservas la finie multajn striktajn
+neegalaĵojn. Tio pruvas kaj kompletecon de racia strikta apartigo kaj la plenan
+stokastan inverson. Vere stokasta Bulea ekzemplo plenumas `1/4 < 1/2`. La pruvo
+estas klasika ekzistopruvo je propona nivelo; ĝi nek supozas aksiomon pri
+lineara-programa dualeco nek pretendas eltiritan optimumigilon.
 
 Por komputaj limigoj, `DecisionResourceModel` atribuas natur-nombran koston al
 ĉiu determinisma decidregulo kaj liveras senkostan rezervan regulon.
@@ -982,8 +984,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | La plena stokasta inverso estas ekzakte kompleteco de finiaj decid-apartigaj atestiloj. |
 | `Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty` | Kun vakaj kaŝitaj statoj la riskordo povas esti vakue vera sen malprecigilo, do nevakeco estas necesa. |
 | `Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff` | Blackwell-superado estas ekzakte racia-simpleksa realigebleco de determinismaj posttraktaj verticoj. |
+| `Ript.ForMathlib.RationalConvexHull.mem_convexHull_of_ratCastVector_mem_convexHull` | Racia membreco en finia reela konveksa envolvaĵo reflektiĝas al la racia envolvaĵo. |
+| `Ript.ForMathlib.RationalConvexHull.exists_rational_strictSeparator_of_not_mem_convexHull` | Ĉiu racia punkto ekster finia racia konveksa envolvaĵo havas ekzaktan racian striktan apartigilon. |
+| `Ript.Models.Decision.RationalSeparation.channelVector_mem_convexHull_iff` | Blackwell-superado estas ekzakte membreco de la cela kanalvektoro en la konveksa envolvaĵo de determinismaj posttraktadoj. |
+| `Ript.Models.Decision.RationalSeparation.rationalSeparationComplete` | Ĉiu finia eksperimentparo sen malprecigo havas ekzaktan racian striktan apartigilon. |
 | `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate` | Sur nevaka kaŝit-stata portanto, racia strikta apartigilo ekzistas se kaj nur se finia decid-atestilo ekzistas. |
 | `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete` | La plena stokasta inverso estas ekzakte kompleteco de racia strikta apartigo. |
+| `Ript.Models.Decision.RationalSeparation.blackwellShermanSteinConverse` | Sur nevakaj kaŝitaj statoj, universala finia decidordo implicas ekzaktan malprecigon por ĉiu eksperimentparo. |
+| `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein` | La plena univers-polimorfa finia stokasta inverso de Blackwell--Sherman--Stein estas pruvita. |
 | `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | Ekzaktaj riskoj `1/4 < 1/2` apartigas du vere stokastajn Buleajn eksperimentojn. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | Pli da decidbuĝeto ne povas plimalbonigi optimuman riskon. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Atestita redukto transportas riskon kun eksplicita adicia kroma kosto. |
@@ -1166,7 +1174,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
 | 5 | Fidela finia-kanala ponto al Mathlib `Stoch` | **PROVED** |
-| 6 | Blackwell-ordo, finia decidrisko, determinisma inverso, necesa nevaka-stateca limo, ekzakta racia malpreciga simplekso, racia apartigilo/atestila redukto, rimedbuĝetoj kaj task-rilata valoro | **PROVED**; ĝenerala stokasta apartig-kompleteco restas `FORMALIZED_BUT_UNPROVED` |
+| 6 | Blackwell-ordo, finia decidrisko, determinisma kaj plena stokasta finia inversoj, necesa nevaka-stateca limo, ekzakta racia malpreciga simplekso, racia konveks-envolvaĵa reflektado kaj strikta apartigo, decid-atestiloj, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
 | 8 | Finiaj ekvilibraj sistemoj, ekzakta racia Gibbs-klasifiko de finiaj reelaj spektroj, fermita viŝ-neebleco, Gibbs/KL/liberenergia teorio, korelacia malkompono, ekzaktaj/raci-eraraj Landauer-limoj, informa-bateria atestilo, entropie neŭtrala nedegenera laborbateria saturiĝo kaj ekzakta fermita viŝa–reŝarga ciklo | **PROVED** |
@@ -1190,7 +1198,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Ekzaktaj finiaj stokastaj kanaloj | Jes | Jes | Plenumebla | Normaligitaj `ℚ≥0`-matricoj, Dirac, kopiado, forĵetado |
 | Fini-distribua Kleisli-kategorio | Jes | Ne | Plenumebla | Ekzaktaj `pure`/`bind`; kategorie ekvivalenta al `FinStoch` |
 | Finia diskreta bildo de la Mathlib-`Stoch`-ponto | Jes | Jes, ĝis kanona izomorfio | Semantika tavolo | Fidela Markov-kerna interpreto; la fontaj matricoj restas plenumeblaj |
-| Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | Antaŭena riskordo; determinisma inverso; necesa nevaka-stateca limo; ekzakta racia malpreciga simplekso; racia apartigilo/decid-atestila ekvivalento; ĝenerala strikta apartig-kompleteco ankoraŭ malferma |
+| Ekzakta finia decidtavolo | Per `FinStoch` | Neniu propra tensoro | Plenumebla | Antaŭena riskordo; determinisma kaj plena stokasta finia inversoj; necesa nevaka-stateca limo; ekzakta racia malpreciga simplekso; racia konveks-envolvaĵa reflektado kaj strikta apartigo; racia apartigilo/decid-atestila ekvivalento |
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
@@ -1209,12 +1217,12 @@ Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
 Mathlib `Stoch`. La ekzakta finia decidtavolo ankaŭ havas kompilitajn teoremojn
 pri Blackwell, Bayes-risko, rimedoj, semantika valoro, la determinisma inverso
-kaj atestila ĝusteco. La ekzakta racia malpreciga simplekso, la ekvivalento
-inter raciaj apartigiloj kaj decid-atestiloj, kaj la vak-stata limo ankaŭ estas
-kompilitaj; la homogena finia DAG-tavolo havas pruvitan observan kaj intervenan
-semantikon. La ĝenerala stokasta Blackwell--Sherman--Stein-propono estas precize
-formaligita por nevaka kaŝit-stata portanto, sed racia strikta apartig-kompleteco, ĝeneralaj mezureblaj
-decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
+kaj atestila ĝusteco. La ekzakta racia malpreciga simplekso, racia konveks-
+envolvaĵa reflektado, strikta apartigo, la ekvivalento inter raciaj apartigiloj
+kaj decid-atestiloj, la plena stokasta Blackwell--Sherman--Stein-inverso kaj la
+vak-stata limo estas kompilitaj; la homogena finia DAG-tavolo havas pruvitan
+observan kaj intervenan semantikon. Ĝeneralaj mezureblaj decidproblemoj,
+heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, ĝenerala
 decidproceduro por egaleco de arbitraj reelaj Boltzmann-faktoroj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
@@ -1234,7 +1242,8 @@ Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
 realigita kaj kernel-kontrolita. Vidu
 [MODEL_MATRIX.md](../MODEL_MATRIX.md) por la aŭtoritata kapablomatrico kaj
 [CONJECTURES.md](../CONJECTURES.md) por formale registritaj malfermitaj asertoj.
-Nuntempe neniu konjekto estas registrita.
+Nuntempe neniu nepruvita propono estas aktiva; la registro ankaŭ dokumentas la
+lastatempe solvitan finian stokastan Blackwell-inverson kaj ĝian pruvlimon.
 
 ## Arkitekturo
 
@@ -1271,7 +1280,9 @@ flowchart LR
   DB --> DX["Kvarstata vicigita/kruca atestilo"]
   FR --> DS["Stokastaj apartigaj atestiloj"]
   DS --> GP["Ekzakta racia malpreciga simplekso"]
-  GP --> RS["Raciaj striktaj apartigiloj"]
+  GP --> RH["Reflektado al racia konveksa envolvaĵo"]
+  RH --> RS["Racia strikta apartigo"]
+  RS --> BSS["Finia stokasta inverso"]
   DS --> EB["Necesa nevaka-stateca limo"]
   DS --> SX["Brua 1/4 kontraŭ sendependa 1/2"]
   FR --> RR["Rimed-limigita decidrisko"]
@@ -1598,7 +1609,7 @@ malsupra laboro.
 | [BLUEPRINT.md](../BLUEPRINT.md) | Dependografeo, etapoj, teoremregistroj, projektaj decidoj |
 | [AXIOMS.md](../AXIOMS.md) | Nuna inventaro de kernaj aksiomoj |
 | [MODEL_MATRIX.md](../MODEL_MATRIX.md) | Realigitaj kaj planataj modelkapabloj |
-| [CONJECTURES.md](../CONJECTURES.md) | Formala registro de nesolvitaj esploraj asertoj |
+| [CONJECTURES.md](../CONJECTURES.md) | Formala registro de nepruvitaj proponoj kaj lastatempe solvitaj asertoj |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | Deviga evoluiga kaj pruva politiko |
 
 ## Kvalita kontrolpordo
@@ -1699,6 +1710,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Determinisma finia Blackwell-inverso, fibra karakterizo kaj plenumebla kvarstata pozitiva/negativa atestilo
 - [x] La nevaka limo de la ekzakta stokasta Blackwell-inversa propono, vak-stata kontraŭekzemplo, ĝustaj decid-apartigaj atestiloj kaj redukto al atestila kompleteco
 - [x] Ekzakta racia malpreciga simplekso kaj dudirekta konverto inter raciaj striktaj apartigiloj kaj decid-atestiloj
+- [x] Reflektado de racia konveksa envolvaĵo, kompleteco de racia strikta apartigo kaj la plena finia stokasta Blackwell--Sherman--Stein-inverso
 - [x] Vere stokasta Bulea apartigilo kun ekzaktaj riskoj `1/4 < 1/2`
 - [x] Rimed-limigita decidrisko, buĝeta monotoneco kaj reduktoj kun adicia kroma kosto
 - [x] Task-rilata semantika valoro: ekvivalenteco, malprecigo, buĝeto, bazlinio kaj taska sensignifeco
@@ -1731,7 +1743,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Ĝeneralaj konveksaj kaj kaŭzaj kapablo-interfacoj
 - [ ] Heterogenaj nodaj portantoj, ĝeneralaj mezureblaj kaŭzaj modeloj, kondiĉigo kaj do-kalkulaj etendaĵoj
 - [ ] Denaska monoida pakado por la totala kaj parta komputkategorioj
-- [ ] Pruvi racian striktan apartig-kompletecon por ĉiu racia punkto ekster la malpreciga simplekso, kompletigante la ĝeneralan stokastan finian Blackwell--Sherman--Stein-inverso
+- [x] Pruvi racian striktan apartig-kompletecon por ĉiu racia punkto ekster la malpreciga simplekso, kompletigante la ĝeneralan stokastan finian Blackwell--Sherman--Stein-inverson
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [x] Finiaj energioj, pozitiva inversa temperaturo, Gibbs-realigo, entropio kaj Helmholtz-libera energio
@@ -1850,11 +1862,12 @@ Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 Per plensubtena celrekonstruo kaj font-fibra rafino ĝi ankaŭ pruvas la inversan
 direkton por determinismaj finiaj eksperimentoj. Por arbitraj finiaj stokastaj
-eksperimentoj, la ekzakta inversa propono estas formaligita kun la necesa
-nevaka kaŝit-stata hipotezo. Ekzaktaj malprecigiloj estas raciaj miksaĵoj de
-determinismaj posttraktadoj, kaj raciaj striktaj apartigiloj estas ekvivalentaj
-al ĝustaj decid-atestiloj; brua Bulea atestilo estas
-plenumebla. Racia apartig-kompleteco kaj mezurebla decidteorio restas malfermitaj.
+eksperimentoj, la ekzakta inversa teoremo estas pruvita kun la necesa nevaka
+kaŝit-stata hipotezo. Ekzaktaj malprecigiloj estas raciaj miksaĵoj de
+determinismaj posttraktadoj; racia konveks-envolvaĵa reflektado kaj strikta
+apartig-kompleteco estas kernel-kontrolitaj; kaj raciaj striktaj apartigiloj
+estas ekvivalentaj al ĝustaj decid-atestiloj. Brua Bulea atestilo estas
+plenumebla. Mezurebla decidteorio restas malferma.
 Ript ankaŭ subtenas topologie numeritajn finiajn DAG-ojn kun komuna finia
 valortipo, gepatro-lokajn ekzaktajn mekanismojn, normaligitajn observajn kunajn
 distribuojn, malmolajn intervenojn kaj ekzaktajn `FinStoch`-statojn.

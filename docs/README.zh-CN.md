@@ -40,9 +40,10 @@ Landauer 界会同时核算系统自由能和相关自由能的变化。精确�
 有理数 `0 ≤ ε ≤ 1/2`，可执行目标的错误质量为 `ε`，熵为 `binEntropy ε`，精确超额
 自由能成本为 `(log 2 - binEntropy ε) / β`；该成本非负并随允许误差单调不增，且已进入
 乘积端点与相关修正的 Landauer 供功界。确定性有限实验的 Blackwell 反向表示已经由满支撑
-重构定理证明；非空隐藏状态上的一般随机反向定理现已成为精确 Lean 命题。每个精确 garbling
-都已有确定性后处理的有理 simplex 表示，有理严格分离子与可靠有限决策分离证书也已证明等价。
-内核检验的空状态反例说明非空假设不可省略；有理严格分离完备性与一般可测因果模型仍是研究方向。
+重构定理证明；非空隐藏状态上的一般随机反向定理也已通过 Lean 内核检验。每个精确 garbling
+都有确定性后处理的有理 simplex 表示；有理凸包反射、有理严格分离完备性，以及分离子与可靠
+有限决策分离证书的等价均已证明。内核检验的空状态反例说明非空假设不可省略；一般可测因果
+模型仍是研究方向。
 一个显式的有限热浴
 辅助协议现已通过编译：三比特置换
 `((系统, 热浴), 电池) -> ((电池, 热浴), 系统)` 精确擦除系统、原样返回热浴，
@@ -267,19 +268,20 @@ Ript 有意分离两层决策理论：
 假设一般随机 Blackwell--Sherman--Stein 定理。可执行四状态例子中，对齐目标的风险为 `0`，
 交叉目标的精确风险为 `1/2`。
 
-对于隐藏状态载体**非空**的任意有限随机实验，项目现用
-`FiniteBlackwellShermanStein` 精确陈述剩余定理：在每个有限行动载体、精确先验和精确损失上的
-普遍风险序，应推出精确 garbling。非空条件是必要的。已编译的反例中隐藏状态为空，因此不存在
+对于隐藏状态载体**非空**的任意有限随机实验，项目现已证明
+`FiniteBlackwellShermanStein`：在每个有限行动载体、精确先验和精确损失上的普遍风险序会推出
+精确 garbling。非空条件是必要的。已编译的反例中隐藏状态为空，因此不存在
 归一化先验、决策序变成真空命题；但单位观测仍不可能经随机信道变成空观测。
 
 有限几何结构现在已经显式化。`independentGarblingLaw` 把任意随机 garbling 精确表示成确定性
 后处理上的 `ℚ≥0` 分布，`deterministicMixtureDominates_iff` 因而把支配等同于有理 simplex
 可行性。`RationalGarblingSeparator` 是把 `Q` 严格置于所有确定性顶点之下的带符号有理评分。
 逐隐藏状态行平移并使用精确均匀先验，可把它变成非负有理
-`DecisionSeparationCertificate`；反过来，每个决策证书都给出有理分离子。因此完整随机反向
-定理等价于有理严格分离完备性。一个真正随机的 Boolean 例子执行了 `1/4 < 1/2` 的证书。
-唯一剩余步骤是证明每个处于有理 garbling simplex 外的有理点都有有理严格分离子；项目没有
-假设线性规划对偶定理。
+`DecisionSeparationCertificate`；反过来，每个决策证书都给出有理分离子。几何桥接也已经内核
+检验：有限实凸包中的有理点可反射回有理凸包；实 Hahn--Banach 分离给出严格实线性泛函；有理
+系数向量的稠密性则保持有限多个严格不等式。因此有理严格分离完备性与完整随机反向定理都已
+证明。一个真正随机的 Boolean 例子执行了 `1/4 < 1/2` 的证书。这个证明是经典、命题层的存在性
+证明；它既不假设线性规划对偶公理，也不声称提取了优化器。
 
 计算约束由 `DecisionResourceModel` 表示：它给每个确定性决策规则赋予自然数成本，并提供
 零成本后备规则。`resourceBayesRisk` 在有限枚举的可行规则中取最小值；增加预算不会使风险
@@ -724,8 +726,14 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | 完整随机反向定理精确等价于有限决策分离证书完备性。 |
 | `Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty` | 空隐藏状态使风险序真空成立，却不保证 garbling，证明全局命题必须要求非空。 |
 | `Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff` | Blackwell 支配精确等价于确定性后处理顶点的有理 simplex 可行性。 |
+| `Ript.ForMathlib.RationalConvexHull.mem_convexHull_of_ratCastVector_mem_convexHull` | 有限实凸包中的有理成员关系可反射回有理凸包。 |
+| `Ript.ForMathlib.RationalConvexHull.exists_rational_strictSeparator_of_not_mem_convexHull` | 有限有理凸包外的每个有理点都有精确有理严格分离子。 |
+| `Ript.Models.Decision.RationalSeparation.channelVector_mem_convexHull_iff` | Blackwell 支配精确等价于目标信道向量属于确定性后处理的凸包。 |
+| `Ript.Models.Decision.RationalSeparation.rationalSeparationComplete` | 每一对不存在 garbling 的有限实验都有精确有理严格分离子。 |
 | `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate` | 非空隐藏状态上，有理严格分离子存在当且仅当有限决策分离证书存在。 |
 | `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete` | 完整随机反向定理精确等价于有理严格分离完备性。 |
+| `Ript.Models.Decision.RationalSeparation.blackwellShermanSteinConverse` | 非空隐藏状态上，任意给定实验对的普遍有限决策序推出精确 garbling。 |
+| `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein` | 宇宙多态的完整有限随机 Blackwell--Sherman--Stein 反向定理已证明。 |
 | `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | 精确风险 `1/4 < 1/2` 分离两个真正随机的 Boolean 实验。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | 更多决策预算不会使最优风险变差。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 认证 reduction 按显式加法 overhead 传递风险。 |
@@ -905,7 +913,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 3 | 可执行的有限随机模型 | **PROVED** |
 | 4 | 有限分布的 Kleisli 表示 | **PROVED** |
 | 5 | 到 Mathlib `Stoch` 的 faithful 有限信道桥 | **PROVED** |
-| 6 | Blackwell 序、有限决策风险、确定性反向定理、必要的非空状态边界、精确有理 garbling simplex、有理分离子/证书归约、资源预算与任务相对价值 | **PROVED**；一般随机分离完备性仍为 `FORMALIZED_BUT_UNPROVED` |
+| 6 | Blackwell 序、有限决策风险、确定性与完整随机有限反向定理、必要的非空状态边界、精确有理 garbling simplex、有理凸包反射与严格分离、决策证书、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
 | 8 | 有限平衡系统、有限实能谱的精确有理 Gibbs 分类、闭合协议擦除不可能性、Gibbs/KL/自由能理论、相关分解、精确/有理误差 Landauer 界、信息电池见证、熵中性非简并工作电池等号与精确闭合擦除—充电循环 | **PROVED** |
@@ -929,7 +937,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 精确有限随机信道 | 是 | 是 | 可执行 | 归一化 `ℚ≥0` 矩阵、Dirac、复制与丢弃 |
 | 有限分布 Kleisli 范畴 | 是 | 否 | 可执行 | 精确 `pure`/`bind`，与 `FinStoch` 范畴等价 |
 | Mathlib `Stoch` 桥的有限离散像 | 是 | 是，在规范同构意义下 | 语义层 | faithful Markov-kernel 解释；源矩阵保持可执行 |
-| 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | 正向风险序；确定性反向定理；必要的非空状态边界；精确有理 garbling simplex；有理分离子/决策证书等价；一般严格分离完备性仍开放 |
+| 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | 正向风险序；确定性与完整随机有限反向定理；必要的非空状态边界；精确有理 garbling simplex；有理凸包反射与严格分离；有理分离子/决策证书等价 |
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
@@ -946,10 +954,9 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
-资源、语义价值、确定性反向定理与证书可靠性；精确有理 garbling simplex、有理分离子/决策
-证书等价及空状态边界也已通过编译；同质有限 DAG 层也已具有经过证明的观测与干预语义。
-一般随机 Blackwell--Sherman--Stein 命题已针对非空隐藏状态精确形式化，但有理严格分离完备性、
-一般可测决策问题、异构或
+资源、语义价值、确定性反向定理与证书可靠性；精确有理 garbling simplex、有理凸包反射、严格
+分离、有理分离子/决策证书等价、完整随机 Blackwell--Sherman--Stein 反向定理及其空状态边界
+也已通过编译；同质有限 DAG 层也已具有经过证明的观测与干预语义。一般可测决策问题、异构或
 可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、任意实 Boltzmann 因子等式的一般判定程序，以及
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
@@ -960,9 +967,9 @@ complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部�
 complete-Segal、Rezk completion 或 localization 结果。模型双范畴已针对固定资源类型和统一 universe 实现；这些层都不
 宣称已实现 `(∞,1)`-范畴，也不从 Lean 类型等价推出类型相等。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
-[MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
-命题见 [CONJECTURES.md](../CONJECTURES.md)。当前登记项是非空有限隐藏状态上的一般随机
-Blackwell--Sherman--Stein 反向定理。
+[MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放命题见
+[CONJECTURES.md](../CONJECTURES.md)。当前没有活跃的未证明命题；登记册同时记录了最近完成的
+有限随机 Blackwell--Sherman--Stein 反向定理及其证明边界。
 
 ## 架构
 
@@ -999,7 +1006,9 @@ flowchart LR
   DB --> DX["四状态对齐/交叉见证"]
   FR --> DS["随机分离证书"]
   DS --> GP["精确有理 garbling simplex"]
-  GP --> RS["有理严格分离子"]
+  GP --> RH["有理凸包反射"]
+  RH --> RS["有理严格分离"]
+  RS --> BSS["有限随机反向定理"]
   DS --> EB["必要的非空状态边界"]
   DS --> SX["带噪 1/4 对独立 1/2 见证"]
   FR --> RR["资源受限决策风险"]
@@ -1283,7 +1292,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
 | [AXIOMS.md](../AXIOMS.md) | 当前内核假设清单 |
 | [MODEL_MATRIX.md](../MODEL_MATRIX.md) | 已实现和计划中的模型能力 |
-| [CONJECTURES.md](../CONJECTURES.md) | 未解决研究命题的正式登记册 |
+| [CONJECTURES.md](../CONJECTURES.md) | 未证明命题与近期已解决命题的正式登记册 |
 | [CONTRIBUTING.md](../CONTRIBUTING.md) | 强制执行的开发与证明政策 |
 
 ## 代码质量门禁
@@ -1359,6 +1368,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 确定性有限 Blackwell 反向定理、纤维刻画与可执行四状态正反见证
 - [x] 随机 Blackwell 反向定理的非空边界、空状态反例、可靠决策分离证书及其证书完备性归约
 - [x] 精确有理 garbling simplex 以及有理严格分离子与决策证书的双向转换
+- [x] 有理凸包反射、有理严格分离完备性与完整有限随机 Blackwell--Sherman--Stein 反向定理
 - [x] 精确风险 `1/4 < 1/2` 的真正随机 Boolean 分离见证
 - [x] 资源受限决策风险、预算单调性与带加法 overhead 的 reduction
 - [x] 任务相对语义价值的等价、garbling、预算、基线与任务无关性定律
@@ -1392,7 +1402,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 通用凸结构与因果能力接口
 - [ ] 异构节点值域、一般可测因果模型、条件化与 do-calculus 扩展
 - [ ] 总计算和部分计算范畴的原生幺半群封装
-- [ ] 证明有理 garbling simplex 外每个有理点的有理严格分离完备性，从而完成一般随机有限 Blackwell--Sherman--Stein 反向定理
+- [x] 证明有理 garbling simplex 外每个有理点的有理严格分离完备性，从而完成一般随机有限 Blackwell--Sherman--Stein 反向定理
 - [ ] 超出精确有限数据的一般可测空间决策问题
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [x] 有限能量、正逆温度、Gibbs 实现、熵与 Helmholtz 自由能
@@ -1474,9 +1484,9 @@ Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence �
 对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 通过满支撑目标重构与源纤维细化，还证明了确定性有限实验的反向定理。对于一般随机有限实验，
-精确反向命题现已带必要的非空隐藏状态假设形式化。精确 garbling 已表示为确定性后处理的有理
-混合，有理严格分离子也已证明等价于可靠决策证书；带噪 Boolean 证书可直接执行。有理分离
-完备性和一般可测决策论仍未完成。
+带必要非空隐藏状态假设的精确反向定理也已证明。精确 garbling 已表示为确定性后处理的有理
+混合；有理凸包反射与严格分离完备性已经内核检验，有理分离子也已证明等价于可靠决策证书；
+带噪 Boolean 证书可直接执行。一般可测决策论仍未完成。
 项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与
 精确 `FinStoch` 状态。异构值域、一般可测因果模型、条件化 API 和 do-calculus 完备性尚未实现。
 

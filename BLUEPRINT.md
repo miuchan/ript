@@ -79,7 +79,8 @@ flowchart LR
   DeterministicBlackwellExample --> Audit
   FiniteRisk --> DecisionSeparation["Models.Decision.Separation"]
   DecisionSeparation --> GarblingPolytope["Models.Decision.GarblingPolytope"]
-  GarblingPolytope --> RationalSeparation["Models.Decision.RationalSeparation"]
+  RationalConvexHull["ForMathlib.RationalConvexHull"] --> RationalSeparation["Models.Decision.RationalSeparation"]
+  GarblingPolytope --> RationalSeparation
   RationalSeparation --> Audit
   DecisionSeparation --> EmptyParameterBoundary["Examples.EmptyParameterBoundary"]
   EmptyParameterBoundary --> Audit
@@ -191,7 +192,7 @@ Every node in this graph is an existing compiled module.
 | 3 | Executable finite stochastic model | PROVED |
 | 4 | Finite-distribution Kleisli representation | PROVED |
 | 5 | Exact finite stochastic channels to Mathlib `Stoch` | PROVED |
-| 6 | Blackwell order, finite decision risk, deterministic finite converse, necessary nonempty-state boundary, exact rational garbling simplex, rational-separator/certificate reduction, resource bounds, and task-relative value | PROVED; general stochastic separation completeness remains `FORMALIZED_BUT_UNPROVED` |
+| 6 | Blackwell order, finite decision risk, deterministic and full stochastic finite converses, necessary nonempty-state boundary, exact rational garbling simplex, rational convex-hull reflection and strict separation, decision certificates, resource bounds, and task-relative value | PROVED |
 | 7 (computation) | Multidimensional total and `Option`-partial computation models | PROVED |
 | 7 (causal) | Finite DAG mechanisms, normalized joint distributions, interventions, and `FinStoch` semantics | PROVED |
 | 8 | Finite equilibrium systems, exact rational-Gibbs classification of finite real spectra, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, bath-resolved accounting, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | PROVED |
@@ -956,14 +957,14 @@ to Mathlib's existing measure-theoretic Bayes-risk theorem. Semantic value is
 explicitly relative to a prior, actions, loss, baseline, and optional decision
 budget; it is not presented as Shannon information or as a task-independent
 quantity. For deterministic finite experiments, a full-support zero-one
-target-reconstruction problem also proves the converse: risk comparison
-recovers an exact garbling witness, equivalently a refinement relation on
-source fibers. The arbitrary stochastic converse remains outside this stage.
-Its exact universe-polymorphic Lean proposition is nevertheless formalized,
-and the missing implication is reduced bidirectionally to completeness of
-concrete finite decision-separation certificates. Certificate soundness and a
-genuinely stochastic Boolean witness are proved; geometric certificate
-completeness remains open.
+target-reconstruction problem gives a direct converse: risk comparison recovers
+an exact garbling witness, equivalently a refinement relation on source fibers.
+For arbitrary finite stochastic experiments with nonempty hidden states, the
+universe-polymorphic converse is also proved. Exact garblings are rational
+mixtures of deterministic post-processings; rational convex-hull reflection,
+real strict separation followed by rationalization, and the separator-to-
+decision-certificate conversion close the reverse implication. Certificate
+soundness and a genuinely stochastic Boolean witness remain executable.
 
 ### `Ript.Core.Simulates.trans`
 
@@ -1216,8 +1217,9 @@ completeness remains open.
 
 - Prerequisites: forward finite-risk data processing and
   `not_finiteDecisionOrder_iff_certificate`.
-- Status: `PROVED`; both sides of the equivalence are propositions, while
-  `FiniteBlackwellShermanStein` itself remains `FORMALIZED_BUT_UNPROVED`.
+- Status: `PROVED`; the certificate completeness condition and
+  `FiniteBlackwellShermanStein` are both proved downstream by rational strict
+  separation.
 - Classical choice: yes through the finite decision certificate equivalence.
 - Computable: no global solver is claimed. Individual certificates and the
   noisy Boolean `1/4 < 1/2` witness execute exactly.
@@ -1239,7 +1241,7 @@ completeness remains open.
 
 - Prerequisites: the absence of a normalized distribution on `Empty` and the
   fact that a normalized channel row has nonempty support.
-- Status: `PROVED`; this is why the global conjecture explicitly requires
+- Status: `PROVED`; this is why the global theorem explicitly requires
   `Nonempty Θ.carrier`.
 - Classical choice: inherited only from generic finite/category proof
   infrastructure; no state is chosen from the empty carrier.
@@ -1271,6 +1273,109 @@ completeness remains open.
   `ℚ≥0` arithmetic over finite carriers.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Decision/GarblingPolytope.lean`.
+
+### `Ript.ForMathlib.RationalConvexHull.mem_convexHull_of_ratCastVector_mem_convexHull`
+
+- Natural-language statement: if a rational vector lies in the real convex
+  hull of a finite family of rational vectors after coordinatewise casting,
+  then it already lies in their convex hull over `ℚ`.
+- Lean type:
+
+  ```lean
+  theorem mem_convexHull_of_ratCastVector_mem_convexHull
+      (vertex : ι → κ → ℚ) (point : κ → ℚ)
+      (hmem : ratCastVector point ∈
+        convexHull ℝ (Set.range fun i => ratCastVector (vertex i))) :
+      point ∈ convexHull ℚ (Set.range vertex)
+  ```
+
+- Prerequisites: finite same-index convex weights, Carathéodory minimum support,
+  rational affine-span reflection, and uniqueness of barycentric coordinates
+  for an affinely independent support.
+- Status: `PROVED`.
+- Classical choice: yes, proof-only, for the minimum-support representation and
+  finite-dimensional affine-algebra infrastructure.
+- Computable: proposition-level existence proof; no convex-hull solver is
+  extracted.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/ForMathlib/RationalConvexHull.lean`.
+
+### `Ript.ForMathlib.RationalConvexHull.exists_rational_strictSeparator_of_not_mem_convexHull`
+
+- Natural-language statement: every rational vector outside the rational
+  convex hull of finitely many rational vertices admits a rational linear score
+  that is strictly smaller at the point than at every vertex.
+- Lean type:
+
+  ```lean
+  theorem exists_rational_strictSeparator_of_not_mem_convexHull
+      (vertex : ι → κ → ℚ) (point : κ → ℚ)
+      (hnotMem : point ∉ convexHull ℚ (Set.range vertex)) :
+      ∃ coefficient : κ → ℚ,
+        ∀ i, rationalDot coefficient point <
+          rationalDot coefficient (vertex i)
+  ```
+
+- Prerequisites: rational-to-real convex-hull reflection, real strict
+  Hahn--Banach separation of a point from a compact finite convex hull, and
+  density of rational coefficient vectors in the finite real coefficient
+  space.
+- Status: `PROVED`.
+- Classical choice: yes, proof-only, through Hahn--Banach separation and dense
+  range selection.
+- Computable: no separator algorithm is claimed; the returned witness is an
+  exact rational vector at the proposition boundary.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/ForMathlib/RationalConvexHull.lean`.
+
+### `Ript.Models.Decision.RationalSeparation.channelVector_mem_convexHull_iff`
+
+- Natural-language statement: finite Blackwell dominance is exactly membership
+  of the target channel vector in the rational convex hull of all deterministic
+  post-processings of the source.
+- Lean type:
+
+  ```lean
+  theorem channelVector_mem_convexHull_iff
+      (P : FinStoch Θ X) (Q : FinStoch Θ Y) :
+      channelVector Q ∈ convexHull ℚ
+        (Set.range fun decision : X.carrier → Y.carrier =>
+          channelVector (deterministicPostprocessing P decision)) ↔
+      BlackwellDominates P Q
+  ```
+
+- Prerequisites: explicit finite convex weights and
+  `deterministicMixtureDominates_iff`.
+- Status: `PROVED`.
+- Classical choice: only finite function-space and convex-hull proof
+  infrastructure; each converted `FinDist` is explicit exact data.
+- Computable: channel vectors, mixtures, and equality checks are executable;
+  the equivalence itself is proposition-level.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/RationalSeparation.lean`.
+
+### `Ript.Models.Decision.RationalSeparation.rationalSeparationComplete`
+
+- Natural-language statement: every finite target experiment that is not a
+  garbling of the source has an exact signed rational score strictly separating
+  it from every deterministic post-processing vertex.
+- Lean type:
+
+  ```lean
+  theorem rationalSeparationComplete
+      (P : FinStoch Θ X) (Q : FinStoch Θ Y) :
+      RationalSeparationComplete P Q
+  ```
+
+- Prerequisites: `channelVector_mem_convexHull_iff` and finite rational strict
+  separation.
+- Status: `PROVED`.
+- Classical choice: inherited from the proposition-level convex separation
+  proof.
+- Computable: a supplied rational separator is exact finite data, but this
+  theorem does not expose a solver that computes it.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/RationalSeparation.lean`.
 
 ### `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate`
 
@@ -1316,10 +1421,56 @@ completeness remains open.
 
 - Prerequisites: exact garbling-simplex representation, decision-certificate
   completeness reduction, and separator/certificate equivalence.
-- Status: `PROVED`; `FiniteBlackwellShermanStein` and uniform rational
-  separation completeness remain `FORMALIZED_BUT_UNPROVED`.
-- Classical choice: inherited from the finite certificate conversion.
+- Status: `PROVED`; both sides are independently discharged by
+  `rationalSeparationComplete` and `finiteBlackwellShermanStein`.
+- Classical choice: inherited from the finite certificate conversion and
+  rational separation proof.
 - Computable: no global separator constructor is claimed.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/RationalSeparation.lean`.
+
+### `Ript.Models.Decision.RationalSeparation.blackwellShermanSteinConverse`
+
+- Natural-language statement: for a fixed pair of finite experiments with a
+  nonempty hidden-state carrier, being no worse in every exact finite decision
+  problem forces exact stochastic garbling.
+- Lean type:
+
+  ```lean
+  theorem blackwellShermanSteinConverse [Nonempty Θ.carrier]
+      (P : FinStoch Θ X) (Q : FinStoch Θ Y) :
+      BlackwellShermanSteinConverse P Q
+  ```
+
+- Prerequisites: rational separation completeness and the exact two-way
+  conversion between rational separators and decision certificates.
+- Status: `PROVED`.
+- Classical choice: inherited from those proof-only existence conversions.
+- Computable: theorem-level implication; any displayed experiment, garbling,
+  score, or certificate remains exact finite data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Decision/RationalSeparation.lean`.
+
+### `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein`
+
+- Natural-language statement: uniformly over every universe-polymorphic finite
+  hidden-state, source-observation, and target-observation carrier, with the
+  necessary nonempty hidden-state hypothesis, universal exact finite decision
+  order implies Blackwell dominance.
+- Lean type:
+
+  ```lean
+  theorem finiteBlackwellShermanStein :
+      FiniteBlackwellShermanStein.{u}
+  ```
+
+- Prerequisites: the pairwise converse above. The compiled empty-hidden-state
+  counterexample proves that its nonemptiness hypothesis cannot be removed.
+- Status: `PROVED`.
+- Classical choice: inherited from rational convex reflection, real separation,
+  rational coefficient selection, and finite decision-certificate conversion.
+- Computable: proposition-level theorem, not an extracted optimizer or
+  post-processing synthesis algorithm.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Decision/RationalSeparation.lean`.
 
@@ -4585,21 +4736,20 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 16. Semantic value is task-relative: it names a prior, action carrier, loss,
     experiment, baseline, and optional decision budget. No entropy-like,
     task-independent interpretation is inferred from this definition.
-17. Stage 6 proves the forward finite Blackwell implication for arbitrary
-    exact stochastic experiments and the converse for deterministic finite
-    experiments. In the deterministic fragment, full-support zero-one target
-    reconstruction recovers an exact garbling witness, equivalently target
-    constancy on source fibers. The general stochastic
-    Blackwell--Sherman--Stein converse is now an exact Lean proposition for
-    nonempty hidden-state carriers. The hypothesis is necessary: a compiled
-    empty-state example makes the universal risk order vacuous while a unit-to-
-    empty garbling is impossible. Every exact stochastic garbling is now an
-    explicit rational simplex mixture of deterministic post-processings, and
-    signed rational strict separators exist exactly when finite decision-
-    separation certificates do. Certificate soundness and a genuinely
-    stochastic Boolean certificate are compiled. The remaining open step is
-    rational strict-separation completeness for points outside that simplex;
-    no linear-programming duality theorem is assumed.
+17. Stage 6 proves both the forward finite Blackwell implication and the full
+    finite stochastic converse for nonempty hidden-state carriers. In the
+    deterministic fragment, full-support zero-one target reconstruction gives
+    a direct exact garbling witness, equivalently target constancy on source
+    fibers. The nonempty hypothesis in the general theorem is necessary: a
+    compiled empty-state example makes the universal risk order vacuous while
+    a unit-to-empty garbling is impossible. Every exact stochastic garbling is
+    an explicit rational simplex mixture of deterministic post-processings.
+    For the converse, rational points reflect from the real convex hull back to
+    the rational hull; real Hahn--Banach separation and density of rational
+    coefficient vectors then produce an exact rational strict separator. Row
+    shifts and a uniform prior turn that separator into a finite decision
+    certificate. This is a classical existence proof, not an assumed
+    linear-programming duality axiom or an extracted optimizer.
 18. Computation resources are explicit formal bounds on steps, oracle queries,
     storage, and gates. They are not identified with observed wall-clock time,
     and their pointwise function representation reuses Mathlib's ordered

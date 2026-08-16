@@ -99,13 +99,12 @@ Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
 stochastic entry are proved. A full-support reconstruction theorem now proves
 the converse for deterministic finite experiments; the converse for arbitrary
-stochastic experiments on a nonempty hidden-state carrier is now an exact Lean
-proposition. Every exact garbling has a compiled rational-simplex
-representation by deterministic post-processings, and signed rational strict
-separators are proved equivalent to sound finite decision-separation
-certificates. A kernel-checked empty-state counterexample shows the nonempty
-hypothesis is necessary. Rational strict-separation completeness remains a
-research direction. The higher-categorical
+stochastic experiments on a nonempty hidden-state carrier is also kernel
+proved. Every exact garbling has a compiled rational-simplex representation by
+deterministic post-processings. Rational convex-hull reflection, rational strict
+separation, and the equivalence between separators and sound finite decision-
+separation certificates are proved. A kernel-checked empty-state counterexample
+shows the nonempty hypothesis is necessary. The higher-categorical
 layer is now compiled: resource-indexed
 symmetric monoidal process models, resource-nonincreasing strong braided
 monoidal functors, and monoidal natural transformations form a bicategory with
@@ -383,12 +382,12 @@ four-state example distinguishes an aligned target of risk `0` from a crossing
 target of exact risk `1/2`.
 
 For arbitrary finite stochastic experiments on a **nonempty** hidden-state
-carrier, the project states the exact remaining theorem as
-`FiniteBlackwellShermanStein`: universal risk order over every finite action
-carrier, exact prior, and exact loss should imply an exact garbling. The
-nonempty hypothesis is necessary. A compiled counterexample with no hidden
-states makes the decision order vacuous—there is no normalized prior—while a
-unit observation still cannot be garbled into an empty observation carrier.
+carrier, Ript proves the exact `FiniteBlackwellShermanStein` theorem: universal
+risk order over every finite action carrier, exact prior, and exact loss implies
+an exact garbling. The nonempty hypothesis is necessary. A compiled
+counterexample with no hidden states makes the decision order vacuous—there is
+no normalized prior—while a unit observation still cannot be garbled into an
+empty observation carrier.
 
 The finite geometry is now explicit. `independentGarblingLaw` represents every
 stochastic garbling exactly as an `ℚ≥0` distribution over deterministic
@@ -397,12 +396,14 @@ with rational-simplex feasibility. `RationalGarblingSeparator` packages a
 signed rational score placing `Q` strictly below every deterministic vertex.
 Row-wise shifts plus the uniform exact prior turn any such score into a
 nonnegative-rational `DecisionSeparationCertificate`; every decision
-certificate conversely produces a rational separator. Hence the full converse
-is equivalent to rational strict-separation completeness. A genuinely
-stochastic Boolean certificate executes with risks `1/4 < 1/2`. The one open
-step is proving that every rational point outside the rational garbling simplex
-has a rational strict separator; no linear-programming duality theorem is
-assumed.
+certificate conversely produces a rational separator. The geometric bridge is
+now kernel checked: a rational point in a finite real convex hull reflects to
+the rational convex hull; real Hahn--Banach separation gives a strict real
+functional; and density of rational coefficient vectors preserves the finitely
+many strict inequalities. This proves rational separation completeness and the
+full converse. A genuinely stochastic Boolean certificate executes with risks
+`1/4 < 1/2`. The proof is classical and proposition-level; it does not assume a
+linear-programming duality axiom or claim an extracted optimizer.
 
 For computational constraints, `DecisionResourceModel` assigns a natural-
 number cost to each deterministic decision rule and supplies a zero-cost
@@ -1036,8 +1037,14 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | The full stochastic converse is exactly completeness of finite decision-separation certificates. |
 | `Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty` | Empty hidden states make risk order vacuous without guaranteeing a garbling, so the nonempty hypothesis is necessary. |
 | `Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff` | Blackwell dominance is exactly rational-simplex feasibility over deterministic post-processing vertices. |
+| `Ript.ForMathlib.RationalConvexHull.mem_convexHull_of_ratCastVector_mem_convexHull` | Rational membership reflects from a finite real convex hull back to the rational convex hull. |
+| `Ript.ForMathlib.RationalConvexHull.exists_rational_strictSeparator_of_not_mem_convexHull` | Every rational point outside a finite rational convex hull has an exact rational strict separator. |
+| `Ript.Models.Decision.RationalSeparation.channelVector_mem_convexHull_iff` | Blackwell dominance is exactly convex-hull membership of the target channel vector among deterministic post-processings. |
+| `Ript.Models.Decision.RationalSeparation.rationalSeparationComplete` | Every non-garbling finite experiment pair has an exact rational strict separator. |
 | `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate` | On nonempty hidden states, a rational strict separator exists exactly when a finite decision certificate exists. |
 | `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete` | The full stochastic converse is exactly rational strict-separation completeness. |
+| `Ript.Models.Decision.RationalSeparation.blackwellShermanSteinConverse` | Universal finite decision order implies exact garbling for each pair with nonempty hidden states. |
+| `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein` | The full universe-polymorphic finite stochastic Blackwell--Sherman--Stein converse is proved. |
 | `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | Exact risks `1/4 < 1/2` separate two genuinely stochastic Boolean experiments. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | More decision budget cannot worsen optimal risk. |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | Certified reductions transport risk with explicit additive overhead. |
@@ -1225,7 +1232,7 @@ finished physical theory.
 | 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
 | 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
-| 6 | Blackwell order, finite decision risk, deterministic converse, necessary nonempty-state boundary, exact rational garbling simplex, rational-separator/certificate reduction, resource bounds, and task-relative value | **PROVED**; general stochastic separation completeness remains `FORMALIZED_BUT_UNPROVED` |
+| 6 | Blackwell order, finite decision risk, deterministic and full stochastic finite converses, necessary nonempty-state boundary, exact rational garbling simplex, rational convex-hull reflection and strict separation, decision certificates, resource bounds, and task-relative value | **PROVED** |
 | 7, computation | Multidimensional total and `Option`-partial models | **PROVED** |
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8 | Finite equilibrium systems, closed-protocol exact-erasure no-go, Gibbs/KL/free-energy theory, correlation decomposition, exact/rational-error Landauer bounds, a bath-returning information-battery witness, entropy-neutral nondegenerate work-battery saturation, and an exact closed erasure–recharge cycle | **PROVED** |
@@ -1249,7 +1256,7 @@ Implemented model support is intentionally narrow:
 | Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
 | Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
 | Mathlib `Stoch` bridge, finite discrete image | Yes | Yes, up to canonical isomorphism | Semantic layer | Faithful Markov-kernel interpretation; source matrices stay executable |
-| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Forward risk order; deterministic converse; necessary nonempty-state boundary; exact rational garbling simplex; rational-separator/certificate equivalence; general strict-separation completeness remains open |
+| Exact finite decision layer | Via `FinStoch` | No native tensor | Executable | Forward risk order; deterministic and full finite stochastic converses; necessary nonempty-state boundary; exact rational garbling simplex; rational convex reflection and strict separation; rational-separator/certificate equivalence |
 | Total computation | Yes | Product bifunctor | Executable | Formal step/query/storage/gate vectors; exact serial and parallel accounting |
 | `Option` partial computation | Yes | Product bifunctor | Executable | Failure-propagating Kleisli composition; total embedding |
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
@@ -1268,12 +1275,11 @@ The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
 in Mathlib `Stoch`, and its exact finite decision layer has compiled Blackwell,
 Bayes-risk, resource, semantic-value, deterministic-converse, and certificate-
-soundness theorems. The exact rational garbling-simplex representation and
-rational-separator/certificate equivalence are compiled, and the empty-state
-boundary is proved. The corrected general stochastic
-Blackwell--Sherman--Stein proposition is formalized for nonempty hidden-state
-carriers, but rational strict-separation completeness, general measurable decision
-problems, heterogeneous or measurable causal models, complete do-calculus,
+soundness theorems. The exact rational garbling-simplex representation,
+rational convex-hull reflection, strict separation, separator/certificate
+equivalence, and full finite stochastic Blackwell--Sherman--Stein converse are
+compiled; the empty-state counterexample proves the theorem's nonempty boundary.
+General measurable decision problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, a general decision procedure for equality of arbitrary real
 Boltzmann factors, and a complete-Segal/Rezk-complete univalent semantics are
@@ -1295,8 +1301,8 @@ Kraus channel core, including finite complete positivity, is implemented and
 kernel checked.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
-statements. The exact finite stochastic Blackwell converse is registered there
-as `FORMALIZED_BUT_UNPROVED`.
+statements. The conjecture register is currently empty; it also records the
+recently discharged finite stochastic Blackwell converse and its proof boundary.
 
 ## Architecture
 
@@ -1333,7 +1339,9 @@ flowchart LR
   DB --> DX["Four-state aligned/crossing witness"]
   FR --> DS["Stochastic separation certificates"]
   DS --> GP["Exact rational garbling simplex"]
-  GP --> RS["Rational strict separators"]
+  GP --> RH["Rational convex-hull reflection"]
+  RH --> RS["Rational strict separation"]
+  RS --> BSS["Finite stochastic converse"]
   DS --> EB["Necessary nonempty-state boundary"]
   DS --> SX["Noisy 1/4 vs independent 1/2 witness"]
   FR --> RR["Resource-bounded decision risk"]
@@ -1674,7 +1682,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
 | [AXIOMS.md](AXIOMS.md) | Current kernel-assumption inventory |
 | [MODEL_MATRIX.md](MODEL_MATRIX.md) | Implemented versus planned model capabilities |
-| [CONJECTURES.md](CONJECTURES.md) | Formal register of unresolved research statements |
+| [CONJECTURES.md](CONJECTURES.md) | Formal register of unproved propositions and recently discharged statements |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Required development and proof policy |
 
 ## Quality gate
@@ -1776,6 +1784,7 @@ updated assumption audit.
 - [x] Deterministic finite Blackwell converse, fiber characterization, and executable four-state positive/negative witness
 - [x] Nonempty boundary for the exact stochastic Blackwell-converse proposition, empty-state counterexample, sound decision-separation certificates, and certificate-completeness reduction
 - [x] Exact rational garbling simplex and two-way conversion between rational strict separators and decision certificates
+- [x] Rational convex-hull reflection, rational strict-separation completeness, and the full finite stochastic Blackwell--Sherman--Stein converse
 - [x] Genuinely stochastic Boolean separation witness with exact risks `1/4 < 1/2`
 - [x] Resource-bounded decision risk, budget monotonicity, and additive-overhead reductions
 - [x] Task-relative semantic value, equivalence, garbling, budget, baseline, and task-irrelevance laws
@@ -1815,7 +1824,7 @@ updated assumption audit.
 - [ ] Generic convex and causal capability interfaces
 - [ ] Heterogeneous node carriers, general measurable causal models, conditioning, and do-calculus extensions
 - [ ] Native monoidal packaging for the total and partial computation categories
-- [ ] Prove rational strict-separation completeness for every rational point outside the garbling simplex, completing the general stochastic finite Blackwell--Sherman--Stein converse
+- [x] Prove rational strict-separation completeness for every rational point outside the garbling simplex, completing the general stochastic finite Blackwell--Sherman--Stein converse
 - [ ] General measurable-space decision problems beyond exact finite data
 - [ ] Rich computational cost models and operationally validated reduction costs
 - [x] Finite energies, positive inverse temperature, Gibbs realization, entropy, and Helmholtz free energy
@@ -1931,11 +1940,12 @@ risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction and the converse for deterministic finite
 experiments through full-support target reconstruction and source-fiber
 refinement. For arbitrary finite stochastic experiments, its exact converse is
-formalized with the necessary nonempty hidden-state hypothesis. Exact
-garblings are rational mixtures of deterministic post-processings, and
-rational strict separators are equivalent to sound decision certificates; a
-noisy Boolean certificate is executable. Rational separation completeness and
-a general measurable decision theory remain open.
+proved with the necessary nonempty hidden-state hypothesis. Exact garblings are
+rational mixtures of deterministic post-processings; rational convex-hull
+reflection and strict-separation completeness are kernel checked; and rational
+strict separators are equivalent to sound decision certificates. A noisy
+Boolean certificate is executable. A general measurable decision theory
+remains open.
 It also supports topologically numbered finite DAGs with a common finite value
 carrier, exact parent-local mechanisms, normalized observational joints, hard
 interventions, and exact `FinStoch` states. Heterogeneous carriers, general

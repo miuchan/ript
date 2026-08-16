@@ -95,13 +95,19 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Decision.Separation.finiteBlackwellShermanStein_iff_certificateComplete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Separation.lean` |
 | `Ript.Models.Decision.GarblingPolytope.mixedGarbling_independentGarblingLaw` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/GarblingPolytope.lean` |
 | `Ript.Models.Decision.GarblingPolytope.deterministicMixtureDominates_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/GarblingPolytope.lean` |
+| `Ript.ForMathlib.RationalConvexHull.mem_convexHull_of_ratCastVector_mem_convexHull` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/RationalConvexHull.lean` |
+| `Ript.ForMathlib.RationalConvexHull.exists_rational_strictSeparator_of_not_mem_convexHull` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/RationalConvexHull.lean` |
 | `Ript.Examples.EmptyParameterBoundary.unit_not_dominates_empty` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/EmptyParameterBoundary.lean` |
 | `Ript.Examples.EmptyParameterBoundary.vacuous_finiteDecisionOrder` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/EmptyParameterBoundary.lean` |
 | `Ript.Examples.EmptyParameterBoundary.converse_fails_without_nonempty` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/EmptyParameterBoundary.lean` |
 | `Ript.Models.Decision.RationalSeparation.RationalGarblingSeparator.toDecisionSeparationCertificate` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
 | `Ript.Models.Decision.RationalSeparation.DecisionSeparationCertificate.toRationalGarblingSeparator` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
 | `Ript.Models.Decision.RationalSeparation.rationalGarblingSeparator_nonempty_iff_certificate` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
+| `Ript.Models.Decision.RationalSeparation.channelVector_mem_convexHull_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
+| `Ript.Models.Decision.RationalSeparation.rationalSeparationComplete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
+| `Ript.Models.Decision.RationalSeparation.blackwellShermanSteinConverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
 | `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein_iff_rationalSeparationComplete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
+| `Ript.Models.Decision.RationalSeparation.finiteBlackwellShermanStein` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/RationalSeparation.lean` |
 | `Ript.Examples.StochasticSeparation.noisy_information_quarter_risk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/StochasticSeparation.lean` |
 | `Ript.Examples.StochasticSeparation.uninformative_information_half_risk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/StochasticSeparation.lean` |
 | `Ript.Examples.StochasticSeparation.uninformative_not_dominates_noisy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/StochasticSeparation.lean` |
@@ -321,26 +327,28 @@ The deterministic finite converse adds one proof-only use of
 observation to its whole finite observation carrier. The extracted Blackwell
 witness, all reconstruction risks, and the four-state aligned/crossing example
 remain exact executable data; no choice-derived value is returned by an
-evaluator. The converse for arbitrary stochastic experiments is not assumed.
-The stochastic separation layer gives that missing converse an exact Lean
-proposition and proves it equivalent to completeness of concrete finite
-decision certificates. Constructing a certificate from failure of the
-universal risk order uses an optimal deterministic rule and hence proof-only
-finite choice. Certificate checking and the noisy Boolean example remain
-exact `ℚ≥0` computations; the unproved geometric certificate-completeness
-proposition is neither an axiom nor a theorem.
+evaluator. The converse for arbitrary finite stochastic experiments is proved,
+not assumed, for the necessary nonempty hidden-state boundary. The stochastic
+separation layer proves it via completeness of concrete finite decision
+certificates. Constructing a certificate from failure of the universal risk
+order uses an optimal deterministic rule and hence proof-only finite choice.
+Certificate checking and the noisy Boolean example remain exact `ℚ≥0`
+computations.
 The garbling-polytope refinement remains in the same audited footprint. It
 constructs an exact product distribution over deterministic post-processings
 and proves that its marginals recover the original stochastic channel; this is
 executable `ℚ≥0` data, not a chosen convex decomposition. The empty-hidden-state
 example is kernel-checked proof data showing why the global converse requires
 `Nonempty Θ.carrier`. The rational-separation layer uses proof-only
-`Classical.choice` only to select a target default action and an optimal finite
+`Classical.choice` to select a target default action and an optimal finite
 decision rule when converting a signed rational separator into a decision
-certificate. The reverse conversion is an explicit definition from the
-certificate's prior and loss. All audited declarations report exactly
-`[propext, Classical.choice, Quot.sound]`; the still-unproved rational
-strict-separation completeness statement is not introduced as an axiom.
+certificate, and in the finite-dimensional geometric proof. That proof reflects
+rational points from real convex hulls, applies real Hahn--Banach separation,
+and uses density to choose rational coefficients while preserving finitely many
+strict inequalities. It is proposition-level and does not expose a separator
+algorithm. The reverse certificate conversion is explicit from the prior and
+loss. All audited declarations report exactly
+`[propext, Classical.choice, Quot.sound]`; no separation axiom is introduced.
 The Stage-7 computation slice uses a pointwise `Fin 4 → Nat` resource vector
 and executable total and `Option`-partial functions. Its category, tensor
 bifunctor, total-to-partial embedding, and resource data are computational.
