@@ -25,7 +25,7 @@ Only implemented and compiled capabilities are marked as supported.
     <tr><td>FiniteStochastic (exact <code>ℚ≥0</code>)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Finite-distribution Kleisli</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Mathlib <code>Stoch</code> bridge (finite discrete image)</td><td>Yes</td><td>Yes</td><td>Via <code>Stoch</code></td><td>Via <code>Stoch</code></td><td>No</td><td>Via <code>Stoch</code></td><td>Via Mathlib Bayes risk</td><td>No</td><td>Semantic layer</td></tr>
-    <tr><td>Exact finite decision layer</td><td>Via <code>FinStoch</code></td><td>No</td><td>No</td><td>No</td><td>No</td><td>Via <code>FinStoch</code></td><td>Yes</td><td>No</td><td>Yes</td></tr>
+    <tr><td>Exact finite decision layer</td><td>Via <code>FinStoch</code></td><td>No</td><td>No</td><td>No</td><td>No</td><td>Via <code>FinStoch</code></td><td>Yes: forward data processing plus deterministic finite converse and fiber characterization</td><td>No</td><td>Exact finite minima and four-state positive/negative converse witnesses executable</td></tr>
     <tr><td>Total computation (<code>Fin 4 → Nat</code> resources)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Partial computation (<code>Option</code> Kleisli)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
     <tr><td>Finite causal DAG (exact <code>ℚ≥0</code>)</td><td>Topological generation</td><td>Via <code>FinStoch</code> states</td><td>No</td><td>No</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
@@ -58,6 +58,16 @@ mixtures are normalized and satisfy endpoint, idempotence, branch-symmetry,
 precomposition, postcomposition, and left/right tensor distribution laws. No
 convex structure is inferred for another model unless that model exports its
 own compiled instance.
+
+The exact finite decision layer proves both the forward Blackwell risk order
+for arbitrary exact finite stochastic experiments and a complete converse for
+deterministic experiments. With any full-support exact prior, a deterministic
+source dominates a deterministic target exactly when its optimal zero-one
+target-reconstruction risk is no larger than direct target observation;
+equivalently, the target is constant on every source fiber. The executable
+four-state example has risk `0` for an aligned partition and exactly `1/2` for
+a crossing partition, ruling out every post-processing in the latter case.
+The general stochastic Blackwell--Sherman--Stein converse remains unsupported.
 
 The thermal row separates executable operational data from analytic
 thermodynamics. `ThermalObject` stores an exact rational equilibrium and

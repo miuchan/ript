@@ -4,7 +4,16 @@ Only unresolved mathematical statements are listed here. Each entry uses the
 required marker `FORMALIZED_BUT_UNPROVED` once its exact Lean proposition has
 been checked but no kernel proof is available.
 
-There are currently no registered conjectures. In particular, the canonical
+There are currently no registered conjectures. The deterministic finite
+Blackwell converse is now proved, not conjectural: under any exact full-support
+prior, comparison on the zero-one target-reconstruction task recovers an exact
+post-processing witness, equivalently the target is constant on every source
+fiber. The general converse for arbitrary finite stochastic experiments still
+requires a finite-dimensional convex-separation or linear-programming duality
+development. Its exact Lean proposition has not yet been registered, so it is
+a documented research boundary rather than a `FORMALIZED_BUT_UNPROVED` entry.
+
+In particular, the canonical
 Gibbs realization of every full-support exact finite equilibrium and the
 common-temperature tensor/additivity laws are proved declarations, not
 conjectural placeholders. The exact product-endpoint Landauer free-energy

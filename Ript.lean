@@ -13,6 +13,7 @@ import Ript.Examples.ClassicalCopy
 import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
+import Ript.Examples.DeterministicBlackwell
 import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
@@ -43,6 +44,7 @@ import Ript.Models.Computation.Partial
 import Ript.Models.Computation.Resource
 import Ript.Models.Computation.Total
 import Ript.Models.Decision.Blackwell
+import Ript.Models.Decision.DeterministicBlackwell
 import Ript.Models.Decision.FiniteRisk
 import Ript.Models.Decision.ResourceBounded
 import Ript.Models.Decision.SemanticValue

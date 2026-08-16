@@ -39,8 +39,9 @@ Gibbs 实现。对另行给定的有限实能谱，精确有理 Gibbs 概率也�
 Landauer 界会同时核算系统自由能和相关自由能的变化。精确有限近似擦除也已覆盖：对于
 有理数 `0 ≤ ε ≤ 1/2`，可执行目标的错误质量为 `ε`，熵为 `binEntropy ε`，精确超额
 自由能成本为 `(log 2 - binEntropy ε) / β`；该成本非负并随允许误差单调不增，且已进入
-乘积端点与相关修正的 Landauer 供功界。一般可测因果模型与 Blackwell 反向表示定理仍是
-研究方向。一个显式的有限热浴辅助协议现已通过编译：三比特置换
+乘积端点与相关修正的 Landauer 供功界。确定性有限实验的 Blackwell 反向表示已经由满支撑
+重构定理证明；一般随机实验的反向定理与一般可测因果模型仍是研究方向。一个显式的有限热浴
+辅助协议现已通过编译：三比特置换
 `((系统, 热浴), 电池) -> ((电池, 热浴), 系统)` 精确擦除系统、原样返回热浴，
 并以信息电池支付 `log 2 / β`。证明同时显示电池熵发生变化，因此它不是机械功循环。另一个
 无需热浴的有限见证实现了机械功形式：非简并两能级电池从纯高能态放电到纯低能态，熵保持为
@@ -256,6 +257,12 @@ Ript 有意分离两层决策理论：
 - 可执行层用 `FinDist` 先验、有限行动和精确 `ℚ≥0` 损失定义 `DecisionProblem`。
   `finiteBayesRisk` 是一组真正 `Finset.min'` 有限最小值的和，不是无条件下确界；Ript
   还证明任何随机化有限决策信道都不能优于这个值，由此得到独立的精确有理数数据处理证明。
+
+确定性有限片段还有完整的反向定理。固定任意精确满支撑先验，并取“重构确定性目标观察”的
+零一损失任务，则确定性源 Blackwell 支配目标，当且仅当源的最优重构风险不大于直接观察目标
+时的零风险；等价地，目标在源的每条纤维上都为常量。这个结论直接抽取精确后处理见证，而不
+假设一般随机 Blackwell--Sherman--Stein 定理。可执行四状态例子中，对齐目标的风险为 `0`，
+交叉目标的精确风险为 `1/2`。
 
 计算约束由 `DecisionResourceModel` 表示：它给每个确定性决策规则赋予自然数成本，并提供
 零成本后备规则。`resourceBayesRisk` 在有限枚举的可行规则中取最小值；增加预算不会使风险
@@ -692,6 +699,9 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | Blackwell 支配蕴含 Mathlib Bayes 风险序。 |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | 随机化有限规则不能优于计算出的有限最优值。 |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | Garbling 不能改善精确可执行的有限 Bayes 风险。 |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le` | 满支撑目标重构风险刻画确定性有限 Blackwell 支配。 |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines` | 确定性支配等价于目标在源纤维上保持常量。 |
+| `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | 四状态例子的精确交叉风险 `1/2` 排除了所有后处理见证。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | 更多决策预算不会使最优风险变差。 |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | 认证 reduction 按显式加法 overhead 传递风险。 |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | Garbling 不能增加任务相对语义价值。 |
@@ -870,7 +880,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 3 | 可执行的有限随机模型 | **PROVED** |
 | 4 | 有限分布的 Kleisli 表示 | **PROVED** |
 | 5 | 到 Mathlib `Stoch` 的 faithful 有限信道桥 | **PROVED** |
-| 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
+| 6 | Blackwell 序、有限决策风险、确定性有限反向定理、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
 | 8 | 有限平衡系统、有限实能谱的精确有理 Gibbs 分类、闭合协议擦除不可能性、Gibbs/KL/自由能理论、相关分解、精确/有理误差 Landauer 界、信息电池见证、熵中性非简并工作电池等号与精确闭合擦除—充电循环 | **PROVED** |
@@ -894,7 +904,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 精确有限随机信道 | 是 | 是 | 可执行 | 归一化 `ℚ≥0` 矩阵、Dirac、复制与丢弃 |
 | 有限分布 Kleisli 范畴 | 是 | 否 | 可执行 | 精确 `pure`/`bind`，与 `FinStoch` 范畴等价 |
 | Mathlib `Stoch` 桥的有限离散像 | 是 | 是，在规范同构意义下 | 语义层 | faithful Markov-kernel 解释；源矩阵保持可执行 |
-| 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | Blackwell 序保持 `FinStoch` 积；有限最小值、资源预算与任务相对价值 |
+| 精确有限决策层 | 通过 `FinStoch` | 无原生 tensor | 可执行 | 正向风险序；确定性反向定理与纤维刻画；有限最小值、资源预算、任务相对价值及四状态正反见证 |
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
@@ -911,8 +921,9 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 
 有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像具有经过检验
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
-资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
-Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
+资源、语义价值与确定性反向定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。超出
+确定性实验的一般随机 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或
+可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、任意实 Boltzmann 因子等式的一般判定程序，以及
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
@@ -956,6 +967,8 @@ flowchart LR
   CK --> BW["Blackwell garbling 序"]
   ST --> SB["Mathlib 语义 Bayes 风险"]
   BW --> FR["可执行有限 Bayes 风险"]
+  FR --> DB["确定性有限反向定理"]
+  DB --> DX["四状态对齐/交叉见证"]
   FR --> RR["资源受限决策风险"]
   RR --> SV["任务相对语义价值"]
   BW --> SB
@@ -1128,6 +1141,11 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 价值恰为 `1/2`，对零损失无关任务则为 `0`。六个精确 `#eval decide` 契约全部输出 `true`，
 并由 CI 检查。
 
+`Ript/Examples/DeterministicBlackwell.lean` 在四个等概率隐藏状态上执行已证明的确定性反向
+定理。与源划分对齐的目标具有重构风险 `0` 和精确 garbling 见证；交叉目标的风险为 `1/2`，
+不可能是源的任何随机后处理。三个普通 `#eval decide` 契约检查两项风险和两组纤维谓词，均
+输出 `true`。
+
 `Ript/Examples/SimpleComputation.lean` 在总计算与 `Option` 部分计算范畴中执行同一个带类型
 程序，得到精确资源向量 `(步数, 查询, 存储, 门) = (3, 1, 0, 1)`，覆盖成功与失败，并检查两个
 模型的预算。七个 `#eval decide` 契约全部输出 `true`。
@@ -1176,6 +1194,8 @@ import Ript.Semantics.Eval
 import Ript.Models.Probability.StochFunctor
 -- 或者导入 Blackwell 序与任务相对决策价值：
 import Ript.Models.Decision.SemanticValue
+-- 或者导入确定性有限 Blackwell 反向定理：
+import Ript.Models.Decision.DeterministicBlackwell
 -- 或者导入资源感知的总计算与部分计算：
 import Ript.Models.Computation.Partial
 -- 或者导入有限 DAG、硬干预与精确随机状态：
@@ -1296,6 +1316,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 到 Mathlib `Stoch` 的 faithful 有限信道函子，以及确定性与 tensor 比较定理
 - [x] Blackwell garbling 序、等价、tensor 相容性与 Mathlib Bayes 风险数据处理
 - [x] 可执行精确有限 Bayes 风险、有限最优决策与随机规则下界
+- [x] 确定性有限 Blackwell 反向定理、纤维刻画与可执行四状态正反见证
 - [x] 资源受限决策风险、预算单调性与带加法 overhead 的 reduction
 - [x] 任务相对语义价值的等价、garbling、预算、基线与任务无关性定律
 - [x] 完美观察对比无信息观察的可执行布尔决策示例
@@ -1328,7 +1349,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 通用凸结构与因果能力接口
 - [ ] 异构节点值域、一般可测因果模型、条件化与 do-calculus 扩展
 - [ ] 总计算和部分计算范畴的原生幺半群封装
-- [ ] 有限 Blackwell--Sherman--Stein 反向表示定理
+- [ ] 超出确定性实验的一般随机有限 Blackwell--Sherman--Stein 反向定理
 - [ ] 超出精确有限数据的一般可测空间决策问题
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [x] 有限能量、正逆温度、Gibbs 实现、熵与 Helmholtz 自由能
@@ -1409,7 +1430,8 @@ Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence �
 热浴分项自由能/供功界与一个精确返回热浴、以信息电池支付并达到等号的可执行三比特协议也已证明。由于该电池熵变化，它不是机械功协议；独立的两能级工作电池例子以纯态熵中性端点补上了这个一次性见证，并精确达到 `log 2 / β`。匹配的充电信道消耗已擦除存储器释放的自由能，恢复纯高能电池并闭合零净变化的精确循环。对另行给定的有限实能谱，精确有理 Gibbs 概率现已被分类为“相对参考态的所有 Boltzmann 比值均为正有理数”；正有理权重给出可执行两/三能级分布，`sqrt 2` 比值给出严格反例。任意实指数等式的一般算法判定仍不提供。
 对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
-反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
+通过满支撑目标重构与源纤维细化，还证明了确定性有限实验的反向定理。一般随机反向定理和一般
+可测决策论仍未完成。
 项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与
 精确 `FinStoch` 状态。异构值域、一般可测因果模型、条件化 API 和 do-calculus 完备性尚未实现。
 

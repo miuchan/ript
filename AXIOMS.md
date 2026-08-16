@@ -80,6 +80,14 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Decision.Blackwell.semanticBayesRisk_mono` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Blackwell.lean` |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/FiniteRisk.lean` |
 | `Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/FiniteRisk.lean` |
+| `Ript.Models.Decision.DeterministicBlackwell.reconstruction_deterministicDecisionRisk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/DeterministicBlackwell.lean` |
+| `Ript.Models.Decision.DeterministicBlackwell.target_reconstructionRisk_zero` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/DeterministicBlackwell.lean` |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/DeterministicBlackwell.lean` |
+| `Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/DeterministicBlackwell.lean` |
+| `Ript.Examples.DeterministicBlackwell.aligned_reconstructionRisk_zero` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
+| `Ript.Examples.DeterministicBlackwell.crossing_reconstructionRisk_half` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
+| `Ript.Examples.DeterministicBlackwell.block_dominates_aligned` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
+| `Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DeterministicBlackwell.lean` |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/ResourceBounded.lean` |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/ResourceBounded.lean` |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
@@ -291,6 +299,12 @@ enumerated deterministic decision rules. Its definitions remain computable;
 finite-set and category proof infrastructure and, for existence of an optimal
 rule, proof-only finite choice. The separate semantic Bayes-risk theorem reuses
 Mathlib's noncomputable `bayesRisk` exactly at the measure-theoretic boundary.
+The deterministic finite converse adds one proof-only use of
+`Classical.choose` to extend a fiber-constant target from the image of a source
+observation to its whole finite observation carrier. The extracted Blackwell
+witness, all reconstruction risks, and the four-state aligned/crossing example
+remain exact executable data; no choice-derived value is returned by an
+evaluator. The converse for arbitrary stochastic experiments is not assumed.
 The Stage-7 computation slice uses a pointwise `Fin 4 → Nat` resource vector
 and executable total and `Option`-partial functions. Its category, tensor
 bifunctor, total-to-partial embedding, and resource data are computational.

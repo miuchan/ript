@@ -4,6 +4,7 @@ import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ClassicalCopy
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
+import Ript.Examples.DeterministicBlackwell
 import Ript.Examples.ExactWorkCycle
 import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
@@ -111,6 +112,14 @@ set_option autoImplicit false
 #print axioms Ript.Models.Decision.Blackwell.semanticBayesRisk_mono
 #print axioms Ript.Models.Decision.FiniteRisk.finiteBayesRisk_le_randomizedDecisionRisk
 #print axioms Ript.Models.Decision.FiniteRisk.finiteBayesRisk_mono
+#print axioms Ript.Models.Decision.DeterministicBlackwell.reconstruction_deterministicDecisionRisk
+#print axioms Ript.Models.Decision.DeterministicBlackwell.target_reconstructionRisk_zero
+#print axioms Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_reconstructionRisk_le
+#print axioms Ript.Models.Decision.DeterministicBlackwell.deterministic_dominates_iff_fiber_refines
+#print axioms Ript.Examples.DeterministicBlackwell.aligned_reconstructionRisk_zero
+#print axioms Ript.Examples.DeterministicBlackwell.crossing_reconstructionRisk_half
+#print axioms Ript.Examples.DeterministicBlackwell.block_dominates_aligned
+#print axioms Ript.Examples.DeterministicBlackwell.block_not_dominates_crossing
 #print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone
 #print axioms Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction
 #print axioms Ript.Models.Decision.SemanticValue.semanticValue_mono
