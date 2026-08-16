@@ -14,14 +14,17 @@ causal systems, generic capability interfaces, richer cost models, and higher
 localization. They are design and formalization work, not silently assumed
 mathematical propositions.
 
-The classifying-diagram track is at the same explicit boundary. Ript now
-proves the degreewise identification with `Map(Δ[n], N(M.Object))` and proves
-that every transported boundary restriction to
-`Map(∂Δ[n], N(M.Object))` is a fibration. What remains is infrastructure and
-proof work: assemble those degreewise isomorphisms naturally, identify the
-boundary mapping space with the abstract Reedy matching limit by its universal
-property, and package the result as Reedy fibrancy. No theorem asserting that
-unfinished identification is declared here or in Lean.
+The classifying-diagram track has discharged its former explicit matching
+obligations. Ript proves a natural isomorphism of the whole outer diagram with
+`n ↦ Map(Δ[n], N(M.Object))`, proves by presheaf density that
+`Map(∂Δ[n], N(M.Object))` is the genuine boundary matching limit, identifies
+boundary restriction with the universal limit lift, and proves every matching
+map is a fibration. These facts are bundled in the project-local
+`SSet.BoundaryReedyFibrant` interface. Remaining work is broader
+infrastructure: the pinned Mathlib release has no functor-category Reedy model
+structure to instantiate, and complete-Segal packaging and a localization
+universal property remain open research rather than silently assumed
+propositions.
 
 ## Recently discharged: exact finite stochastic Blackwell converse
 

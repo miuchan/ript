@@ -1,5 +1,7 @@
 import Mathlib.AlgebraicTopology.SimplicialSet.AnodyneExtensions.PushoutProduct
 import Mathlib.AlgebraicTopology.SimplicialSet.NerveAdjunction
+import Mathlib.CategoryTheory.Limits.Presheaf
+import Mathlib.CategoryTheory.Monoidal.Closed.Braided
 import Mathlib.CategoryTheory.Monoidal.Closed.Functor
 
 /-!
@@ -19,6 +21,7 @@ that bridge here makes the construction reusable and auditable.
 set_option autoImplicit false
 
 open CategoryTheory MonoidalCategory MonoidalClosed Simplicial HomotopicalAlgebra
+open CategoryTheory.Limits
 open scoped SSet.modelCategoryQuillen
 
 noncomputable section
@@ -46,6 +49,79 @@ theorem boundaryMatchingMap_fibration (X : SSet.{u}) [KanComplex X] (n : ℕ) :
   exact (by infer_instance :
     Fibration ((MonoidalClosed.pre (boundary.{u} n).ι).app X))
 
+/-- The outer simplicial mapping-space diagram represented by `X`.  A
+morphism of finite ordinals acts by precomposition on the representing
+standard simplex. -/
+def simplexMappingDiagram (X : SSet.{u}) : SimplicialObject SSet.{u} :=
+  SSet.stdSimplex.{u}.op ⋙ MonoidalClosed.internalHom ⋙
+    (evaluation SSet SSet).obj X
+
+@[simp]
+theorem simplexMappingDiagram_obj (X : SSet.{u})
+    (n : SimplexCategoryᵒᵖ) :
+    (simplexMappingDiagram X).obj n =
+      (ihom (SSet.stdSimplex.obj n.unop)).obj X :=
+  rfl
+
+@[simp]
+theorem simplexMappingDiagram_map (X : SSet.{u})
+    {n m : SimplexCategoryᵒᵖ} (f : n ⟶ m) :
+    (simplexMappingDiagram X).map f =
+      (MonoidalClosed.pre (SSet.stdSimplex.map f.unop)).app X :=
+  rfl
+
+/-- The indexing category of the representable boundary presentation.  Its
+objects are simplices of `∂Δ[n]`; the double opposite is the orientation
+obtained by turning the density colimit into a matching limit. -/
+abbrev BoundaryMatchingIndex (n : ℕ) :=
+  (((boundary.{u} n : SSet.{u}).Elements)ᵒᵖ)ᵒᵖ
+
+/-- The genuine boundary matching diagram, indexed by all simplices of the
+boundary and valued in their represented mapping spaces. -/
+def boundaryMatchingDiagram (X : SSet.{u}) (n : ℕ) :
+    BoundaryMatchingIndex.{u} n ⥤ SSet.{u} :=
+  (CategoryTheory.Presheaf.functorToRepresentables
+      (boundary.{u} n : SSet.{u})).op ⋙
+    MonoidalClosed.internalHom.flip.obj X
+
+/-- The canonical cone from maps out of the boundary to maps out of every
+representable boundary simplex. -/
+noncomputable def boundaryMatchingCone (X : SSet.{u}) (n : ℕ) :
+    Cone (boundaryMatchingDiagram X n) :=
+  (MonoidalClosed.internalHom.flip.obj X).mapCone
+    (CategoryTheory.Presheaf.coconeOfRepresentable
+      (boundary.{u} n : SSet.{u})).op
+
+/-- The canonical boundary matching cone is limiting.  This is the abstract
+matching-object universal property: presheaf density presents the boundary as
+a colimit of representables, and the contravariant internal Hom turns that
+colimit into a limit. -/
+noncomputable def boundaryMatchingConeIsLimit (X : SSet.{u}) (n : ℕ) :
+    IsLimit (boundaryMatchingCone X n) :=
+  isLimitOfPreserves (MonoidalClosed.internalHom.flip.obj X)
+    (IsColimit.op (CategoryTheory.Presheaf.colimitOfRepresentable
+      (boundary.{u} n : SSet.{u})))
+
+@[simp]
+theorem boundaryMatchingCone_pt (X : SSet.{u}) (n : ℕ) :
+    (boundaryMatchingCone X n).pt = BoundaryMatchingObject X n :=
+  rfl
+
+/-- The cone obtained by restricting maps on the standard simplex to every
+simplex of its boundary. -/
+noncomputable def boundaryRestrictionCone (X : SSet.{u}) (n : ℕ) :
+    Cone (boundaryMatchingDiagram X n) :=
+  (boundaryMatchingCone X n).extend (boundaryMatchingMap X n)
+
+/-- The concrete boundary restriction is exactly the universal morphism into
+the boundary matching limit. -/
+theorem boundaryMatchingMap_eq_limitLift (X : SSet.{u}) (n : ℕ) :
+    (boundaryMatchingConeIsLimit X n).lift (boundaryRestrictionCone X n) =
+      boundaryMatchingMap X n := by
+  symm
+  exact (boundaryMatchingConeIsLimit X n).uniq
+    (boundaryRestrictionCone X n) (boundaryMatchingMap X n) (fun _ ↦ rfl)
+
 /-- An isomorphism in the contravariant argument of internal Hom induces an
 isomorphism of internal-Hom functors. -/
 def internalHomPreIso {A B : SSet.{u}} (e : A ≅ B) : ihom B ≅ ihom A where
@@ -59,6 +135,62 @@ def internalHomPreIso {A B : SSet.{u}} (e : A ≅ B) : ihom B ≅ ihom A where
 end SSet
 
 namespace CategoryTheory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- In the cartesian closed category of categories, the abstract internal-Hom
+precomposition map is the ordinary functor-category precomposition functor.
+The closed structure is defined through an adjunction, so this equality is
+proved by uncurrying rather than by reflexivity. -/
+theorem cat_pre_eq_whiskeringLeft
+    {A B C : Type u} [Category.{u} A] [Category.{u} B] [Category.{u} C]
+    (f : Cat.of B ⟶ Cat.of A) :
+    (MonoidalClosed.pre f).app (Cat.of C) =
+      ((Functor.whiskeringLeft B A C).obj f.toFunctor).toCatHom := by
+  apply MonoidalClosed.uncurry_injective
+  rw [MonoidalClosed.uncurry_pre]
+  rfl
+
+/-- The finite ordinal underlying a simplex, lifted into the ambient
+universe.  The explicit definition makes its action strictly transparent
+enough to prove naturality of functor-category universe lifting. -/
+def uliftSimplexCategoryToCat : SimplexCategory ⥤ Cat.{u, u} where
+  obj n := Cat.of (ULift.{u} (Fin (n.len + 1)))
+  map := fun {n m} f ↦
+    ({ obj := fun X ↦ ULift.up (f.toOrderHom X.down)
+       map := fun g ↦ homOfLE (f.toOrderHom.monotone g.down.down)
+       map_id := by intros; apply Subsingleton.elim
+       map_comp := by intros; apply Subsingleton.elim } :
+      ULift.{u} (Fin (n.len + 1)) ⥤
+        ULift.{u} (Fin (m.len + 1))).toCatHom
+  map_id n := by
+    apply Cat.Hom.ext
+    refine Functor.ext (fun X ↦ ?_) ?_
+    · cases X
+      rfl
+    · intros X Y g
+      apply ULift.ext
+      apply Subsingleton.elim
+  map_comp f g := by
+    apply Cat.Hom.ext
+    refine Functor.ext (fun X ↦ ?_) ?_
+    · cases X
+      rfl
+    · intros X Y h
+      apply ULift.ext
+      apply Subsingleton.elim
+
+@[simp]
+theorem uliftSimplexCategoryToCat_obj (n : SimplexCategory) :
+    (uliftSimplexCategoryToCat.{u}).obj n =
+      Cat.of (ULift.{u} (Fin (n.len + 1))) :=
+  rfl
+
+/-- The lifted string-category diagram, built functorially from internal Hom
+in `Cat`. -/
+def uliftFunctorClassifyingDiagramCat (C : Type u) [Category.{u} C] :
+    SimplicialObject Cat.{u, u} :=
+  uliftSimplexCategoryToCat.{u}.op ⋙ MonoidalClosed.internalHom ⋙
+    (evaluation Cat Cat).obj (Cat.of C)
 
 /-- The finite ordinal and its universe lift are equivalent as their preorder
 categories, even though their hom types live in different universes. -/
@@ -132,6 +264,53 @@ def functorFinULiftIso (C : Type u) [Category.{u} C] (n : ℕ) :
       change F.map (𝟙 _) = 𝟙 _
       simp)
 
+/-- The simplicial category of finite strings in `C`. -/
+def functorClassifyingDiagramCat (C : Type u) [Category.{u} C] :
+    SimplicialObject Cat where
+  obj Δ := Cat.of (ComposableArrows C Δ.unop.len)
+  map f := (ComposableArrows.whiskerLeftFunctor
+    (SimplexCategory.toCat.map f.unop).toFunctor).toCatHom
+  map_id _ := rfl
+  map_comp _ _ := rfl
+
+/-- The bisimplicial nerve of finite strings in a category. -/
+def functorClassifyingDiagram (C : Type u) [Category.{u} C] :
+    SimplicialObject SSet :=
+  functorClassifyingDiagramCat C ⋙ nerveFunctor
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Precomposition along `Fin → ULift Fin` is natural in every simplex
+morphism, not only an equivalence separately in each degree. -/
+noncomputable def functorClassifyingDiagramCatUliftIso
+    (C : Type u) [Category.{u} C] :
+    functorClassifyingDiagramCat C ≅ uliftFunctorClassifyingDiagramCat C :=
+  NatIso.ofComponents
+    (fun Δ ↦ functorFinULiftIso C Δ.unop.len)
+    (fun {n m} f ↦ by
+      dsimp [uliftFunctorClassifyingDiagramCat]
+      change _ = _ ≫ (MonoidalClosed.pre
+        (uliftSimplexCategoryToCat.map f.unop)).app (Cat.of C)
+      rw [cat_pre_eq_whiskeringLeft
+        (uliftSimplexCategoryToCat.map f.unop)]
+      apply Cat.Hom.ext
+      refine Functor.ext (fun F ↦ ?_) ?_
+      · refine Functor.ext (fun X ↦ ?_) ?_
+        · cases X
+          rfl
+        · intros X Y g
+          dsimp [functorClassifyingDiagramCat,
+            uliftSimplexCategoryToCat, functorFinULiftIso,
+            Equivalence.congrLeft, finULiftPreorderEquivalence]
+          simp only [Category.comp_id, Category.id_comp]
+          exact congrArg F.map (Subsingleton.elim _ _)
+      · intros F G η
+        apply NatTrans.ext
+        funext X
+        dsimp [functorClassifyingDiagramCat, functorFinULiftIso,
+          Equivalence.congrLeft, finULiftPreorderEquivalence]
+        simp only [Category.comp_id, Category.id_comp]
+        rfl)
+
 end CategoryTheory
 
 namespace SSet
@@ -159,5 +338,152 @@ def nerveFunctorSimplexMappingIso (C : Type u) [Category.{u} C] (n : ℕ) :
   CategoryTheory.nerveFunctor.mapIso
       (CategoryTheory.functorFinULiftIso C n) ≪≫
     nerveFunctorInternalHomIso C n
+
+/-- Mapping spaces whose representing simplex is the nerve of the lifted
+finite ordinal. -/
+def uliftNerveSimplexMappingDiagram (X : SSet.{u}) :
+    SimplicialObject SSet.{u} :=
+  CategoryTheory.uliftSimplexCategoryToCat.{u}.op ⋙
+    CategoryTheory.nerveFunctor.op ⋙ MonoidalClosed.internalHom ⋙
+      (evaluation SSet SSet).obj X
+
+/-- The closed-nerve comparison is natural in the lifted finite ordinal. -/
+noncomputable def uliftFunctorClassifyingDiagramNerveIso
+    (C : Type u) [Category.{u} C] :
+    CategoryTheory.uliftFunctorClassifyingDiagramCat C ⋙
+        CategoryTheory.nerveFunctor ≅
+      uliftNerveSimplexMappingDiagram (CategoryTheory.nerve C) :=
+  NatIso.ofComponents
+    (fun Δ ↦ (asIso (CategoryTheory.expComparison
+      CategoryTheory.nerveFunctor.{u, u}
+      ((CategoryTheory.uliftSimplexCategoryToCat.{u}).obj Δ.unop)).natTrans).app
+        (Cat.of C))
+    (fun {n m} f ↦ by
+      have h := CategoryTheory.expComparison_whiskerLeft
+        CategoryTheory.nerveFunctor.{u, u}
+        ((CategoryTheory.uliftSimplexCategoryToCat.{u}).map f.unop)
+      have h' := congrArg (fun w ↦ w.natTrans.app (Cat.of C)) h
+      change
+        ((CategoryTheory.expComparison CategoryTheory.nerveFunctor.{u, u}
+            ((CategoryTheory.uliftSimplexCategoryToCat.{u}).obj m.unop)).whiskerTop
+          (MonoidalClosed.pre
+            ((CategoryTheory.uliftSimplexCategoryToCat.{u}).map f.unop))).natTrans.app
+              (Cat.of C) =
+        ((CategoryTheory.expComparison CategoryTheory.nerveFunctor.{u, u}
+            ((CategoryTheory.uliftSimplexCategoryToCat.{u}).obj n.unop)).whiskerBottom
+          (MonoidalClosed.pre (CategoryTheory.nerveFunctor.map
+            ((CategoryTheory.uliftSimplexCategoryToCat.{u}).map f.unop)))).natTrans.app
+              (Cat.of C)
+      exact h'.symm)
+
+/-- The standard simplex is naturally the nerve of the lifted finite ordinal. -/
+noncomputable def stdSimplexUliftNerveIso :
+    SSet.stdSimplex.{u} ≅
+      CategoryTheory.uliftSimplexCategoryToCat.{u} ⋙
+        CategoryTheory.nerveFunctor :=
+  NatIso.ofComponents
+    (fun Δ ↦ SSet.stdSimplex.isoNerve.{u} Δ.len)
+    (fun {n m} f ↦ by
+      ext d F
+      rfl)
+
+/-- Replacing the lifted ordinal nerve by the standard simplex is natural in
+the represented mapping-space diagram. -/
+noncomputable def uliftNerveSimplexMappingDiagramIso (X : SSet.{u}) :
+    uliftNerveSimplexMappingDiagram X ≅ simplexMappingDiagram X :=
+  NatIso.ofComponents
+    (fun Δ ↦ (internalHomPreIso
+      ((stdSimplexUliftNerveIso.{u}).app Δ.unop)).app X)
+    (fun {n m} f ↦ by
+      change
+        (MonoidalClosed.pre (CategoryTheory.nerveFunctor.map
+          ((CategoryTheory.uliftSimplexCategoryToCat.{u}).map f.unop))).app X ≫
+            (MonoidalClosed.pre
+              ((stdSimplexUliftNerveIso.{u}).hom.app m.unop)).app X =
+          (MonoidalClosed.pre
+              ((stdSimplexUliftNerveIso.{u}).hom.app n.unop)).app X ≫
+            (MonoidalClosed.pre (SSet.stdSimplex.map f.unop)).app X
+      rw [← NatTrans.comp_app, ← NatTrans.comp_app,
+        ← MonoidalClosed.pre_map, ← MonoidalClosed.pre_map,
+        (stdSimplexUliftNerveIso.{u}).hom.naturality f.unop]
+      rfl)
+
+/-- The classifying diagram of strings in `C` is naturally the simplicial
+mapping-space diagram represented by the categorical nerve of `C`. -/
+noncomputable def functorClassifyingDiagramMappingIso
+    (C : Type u) [Category.{u} C] :
+    CategoryTheory.functorClassifyingDiagram C ≅
+      simplexMappingDiagram (CategoryTheory.nerve C) :=
+  CategoryTheory.Functor.isoWhiskerRight
+      (CategoryTheory.functorClassifyingDiagramCatUliftIso C)
+      CategoryTheory.nerveFunctor ≪≫
+    uliftFunctorClassifyingDiagramNerveIso C ≪≫
+    uliftNerveSimplexMappingDiagramIso (CategoryTheory.nerve C)
+
+/-- A project-local, fully explicit Reedy-fibrancy witness for a simplicial
+object naturally presented as `n ↦ Map(Δ[n], X)` with `X` Kan.  Mathlib does
+not yet package the Reedy model structure, so this structure records precisely
+the presentation from which the genuine matching limits and matching-map
+fibrations below are derived. -/
+structure BoundaryReedyFibrant (W : SimplicialObject SSet.{u}) where
+  /-- The Kan complex represented by the outer mapping diagram. -/
+  representingObject : SSet.{u}
+  /-- Natural, rather than merely degreewise, mapping-space presentation. -/
+  presentation : W ≅ simplexMappingDiagram representingObject
+  /-- Fibrancy of the representing simplicial set. -/
+  kanComplex : KanComplex representingObject
+
+namespace BoundaryReedyFibrant
+
+variable {W : SimplicialObject SSet.{u}} (h : BoundaryReedyFibrant W)
+
+/-- The degree-`n` matching object associated to a boundary Reedy witness. -/
+abbrev matchingObject (n : ℕ) : SSet.{u} :=
+  BoundaryMatchingObject h.representingObject n
+
+/-- The genuine degree-`n` matching cone. -/
+noncomputable def matchingCone (n : ℕ) :
+    Cone (boundaryMatchingDiagram h.representingObject n) :=
+  boundaryMatchingCone h.representingObject n
+
+/-- The matching cone satisfies its universal property. -/
+noncomputable def matchingConeIsLimit (n : ℕ) :
+    IsLimit (h.matchingCone n) :=
+  boundaryMatchingConeIsLimit h.representingObject n
+
+/-- The matching map, transported through the natural mapping-space
+presentation. -/
+noncomputable def matchingMap (n : ℕ) :
+    W.obj (Opposite.op (SimplexCategory.mk n)) ⟶ h.matchingObject n :=
+  (h.presentation.app (Opposite.op (SimplexCategory.mk n))).hom ≫
+    boundaryMatchingMap h.representingObject n
+
+/-- The source cone whose universal map is the transported matching map. -/
+noncomputable def restrictionCone (n : ℕ) :
+    Cone (boundaryMatchingDiagram h.representingObject n) :=
+  (boundaryRestrictionCone h.representingObject n).extend
+    (h.presentation.app (Opposite.op (SimplexCategory.mk n))).hom
+
+/-- The transported matching map is exactly the universal lift into the
+matching limit. -/
+theorem matchingMap_eq_limitLift (n : ℕ) :
+    (h.matchingConeIsLimit n).lift (h.restrictionCone n) = h.matchingMap n := by
+  symm
+  exact (h.matchingConeIsLimit n).uniq
+    (h.restrictionCone n) (h.matchingMap n) (fun _ ↦ rfl)
+
+/-- Every matching map of a represented Kan mapping diagram is a fibration. -/
+theorem matchingMap_fibration (n : ℕ) : Fibration (h.matchingMap n) := by
+  change Fibration
+    ((h.presentation.app (Opposite.op (SimplexCategory.mk n))).hom ≫
+      boundaryMatchingMap h.representingObject n)
+  rw [fibration_iff]
+  apply (fibrations SSet).comp_mem
+  · rw [← fibration_iff]
+    infer_instance
+  · exact (fibration_iff (boundaryMatchingMap h.representingObject n)).mp
+      (@boundaryMatchingMap_fibration h.representingObject h.kanComplex n)
+
+end BoundaryReedyFibrant
 
 end SSet

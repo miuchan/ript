@@ -27,7 +27,10 @@ the actual outer spine maps are equivalences in every bidegree.  The Rezk
 completeness comparison is the outer degeneracy from degree zero to the space
 of horizontal equivalences.  Since the source is a groupoid, every horizontal
 arrow is an equivalence; this file proves that the actual degeneracy is the
-nerve of an equivalence of categories.  Higher localization remains separate.
+nerve of an equivalence of categories.  It also proves a natural
+simplex-mapping presentation, constructs genuine boundary matching limits,
+and packages their fibrant universal maps in a project-local Reedy witness.
+Complete-Segal packaging and higher localization remain separate.
 -/
 
 set_option autoImplicit false
@@ -248,15 +251,42 @@ instance interfaceClassifyingDiagramLevelKan
   exact CategoryTheory.Nerve.kanComplex
     (ComposableArrows M.Object (Δ.unop.len))
 
-/-- Outer degree `n` of the categorical classifying diagram is isomorphic to
-the simplicial mapping space `Map(Δ[n], N(M.Object))`.  The construction uses
-the closed-nerve comparison and a strict universe-lift bridge for the finite
-ordinal indexing category. -/
+/-- The entire categorical classifying diagram is naturally isomorphic to
+the outer simplicial mapping-space diagram `n ↦ Map(Δ[n], N(M.Object))`.
+This upgrades the former degreewise comparison to compatibility with every
+face and degeneracy map. -/
+noncomputable def interfaceClassifyingDiagramMappingSpaceNaturalIso :
+    InterfaceClassifyingDiagram M ≅
+      SSet.simplexMappingDiagram M.InterfaceNerve := by
+  change CategoryTheory.functorClassifyingDiagram M.Object ≅
+    SSet.simplexMappingDiagram (CategoryTheory.nerve M.Object)
+  exact SSet.functorClassifyingDiagramMappingIso M.Object
+
+/-- Outer degree `n` of the natural mapping-space presentation. -/
 noncomputable def interfaceClassifyingDiagramMappingSpaceIso (n : ℕ) :
     (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ≅
-      (ihom (Δ[n] : SSet.{u})).obj M.InterfaceNerve := by
-  change CategoryTheory.nerve (Fin (n + 1) ⥤ M.Object) ≅ _
-  exact SSet.nerveFunctorSimplexMappingIso M.Object n
+      (ihom (Δ[n] : SSet.{u})).obj M.InterfaceNerve :=
+  (interfaceClassifyingDiagramMappingSpaceNaturalIso M).app (op ⦋n⦌)
+
+/-- Naturality of the mapping-space comparison under an arbitrary simplex
+morphism.  Thus the comparison is not a family of unrelated degreewise
+isomorphisms. -/
+theorem interfaceClassifyingDiagramMappingSpaceIso_naturality
+    {m n : ℕ} (f : SimplexCategory.mk m ⟶ SimplexCategory.mk n) :
+    (InterfaceClassifyingDiagram M).map f.op ≫
+        (interfaceClassifyingDiagramMappingSpaceIso M m).hom =
+      (interfaceClassifyingDiagramMappingSpaceIso M n).hom ≫
+        (MonoidalClosed.pre (SSet.stdSimplex.map f)).app M.InterfaceNerve :=
+  (interfaceClassifyingDiagramMappingSpaceNaturalIso M).hom.naturality f.op
+
+/-- A complete project-local Reedy-fibrancy witness: the classifying diagram
+has a natural represented mapping-space presentation, its boundary matching
+cones are genuine limits, and all matching maps are fibrations. -/
+noncomputable def interfaceClassifyingDiagramBoundaryReedyFibrant :
+    SSet.BoundaryReedyFibrant (InterfaceClassifyingDiagram M) where
+  representingObject := M.InterfaceNerve
+  presentation := interfaceClassifyingDiagramMappingSpaceNaturalIso M
+  kanComplex := inferInstance
 
 /-- The concrete degree-`n` boundary-matching object in the mapping-space
 presentation of the interface classifying diagram. -/
@@ -264,27 +294,41 @@ abbrev InterfaceClassifyingDiagramBoundaryMatchingObject (n : ℕ) : SSet.{u} :=
   SSet.BoundaryMatchingObject M.InterfaceNerve n
 
 /-- Transport the standard boundary-restriction matching map through the
-categorical classifying diagram's degreewise mapping-space presentation. -/
+categorical classifying diagram's natural mapping-space presentation. -/
 noncomputable def interfaceClassifyingDiagramBoundaryMatchingMap (n : ℕ) :
     (InterfaceClassifyingDiagram M).obj (op ⦋n⦌) ⟶
       InterfaceClassifyingDiagramBoundaryMatchingObject M n :=
-  (interfaceClassifyingDiagramMappingSpaceIso M n).hom ≫
-    SSet.boundaryMatchingMap M.InterfaceNerve n
+  (interfaceClassifyingDiagramBoundaryReedyFibrant M).matchingMap n
 
-/-- Every transported boundary-matching map is a fibration.  This proves the
-model-categorical lifting statement needed for Reedy fibrancy once the
-degreewise presentation is upgraded to a natural identification with the
-abstract Reedy matching limit. -/
+/-- The genuine matching cone for the classifying diagram in degree `n`. -/
+noncomputable def interfaceClassifyingDiagramBoundaryMatchingCone (n : ℕ) :
+    Limits.Cone (SSet.boundaryMatchingDiagram M.InterfaceNerve n) :=
+  (interfaceClassifyingDiagramBoundaryReedyFibrant M).matchingCone n
+
+/-- The boundary matching cone satisfies the categorical limit universal
+property. -/
+noncomputable def interfaceClassifyingDiagramBoundaryMatchingConeIsLimit (n : ℕ) :
+    Limits.IsLimit (interfaceClassifyingDiagramBoundaryMatchingCone M n) :=
+  (interfaceClassifyingDiagramBoundaryReedyFibrant M).matchingConeIsLimit n
+
+/-- The source cone obtained by restricting an outer simplex along every
+simplex of its boundary. -/
+noncomputable def interfaceClassifyingDiagramBoundaryRestrictionCone (n : ℕ) :
+    Limits.Cone (SSet.boundaryMatchingDiagram M.InterfaceNerve n) :=
+  (interfaceClassifyingDiagramBoundaryReedyFibrant M).restrictionCone n
+
+/-- The classifying diagram's matching map is exactly the universal lift into
+the boundary matching limit. -/
+theorem interfaceClassifyingDiagramBoundaryMatchingMap_eq_limitLift (n : ℕ) :
+    (interfaceClassifyingDiagramBoundaryMatchingConeIsLimit M n).lift
+        (interfaceClassifyingDiagramBoundaryRestrictionCone M n) =
+      interfaceClassifyingDiagramBoundaryMatchingMap M n :=
+  (interfaceClassifyingDiagramBoundaryReedyFibrant M).matchingMap_eq_limitLift n
+
+/-- Every genuine boundary-matching map is a fibration. -/
 theorem interfaceClassifyingDiagramBoundaryMatchingMap_fibration (n : ℕ) :
     Fibration (interfaceClassifyingDiagramBoundaryMatchingMap M n) := by
-  change Fibration ((interfaceClassifyingDiagramMappingSpaceIso M n).hom ≫
-    SSet.boundaryMatchingMap M.InterfaceNerve n)
-  rw [fibration_iff]
-  apply (fibrations SSet).comp_mem
-  · rw [← fibration_iff]
-    infer_instance
-  · rw [← fibration_iff]
-    exact SSet.boundaryMatchingMap_fibration M.InterfaceNerve n
+  exact (interfaceClassifyingDiagramBoundaryReedyFibrant M).matchingMap_fibration n
 
 /-- Every vertical level is, in particular, a quasicategory. -/
 instance interfaceClassifyingDiagramLevelQuasicategory
