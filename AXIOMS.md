@@ -106,6 +106,13 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/ClassicalEmbedding.lean` |
 | `Ript.Examples.ClassicalQuantum.quantumNoisyNot_false_to_true` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ClassicalQuantum.lean` |
 | `Ript.Examples.ClassicalQuantum.dephase_bool_offDiagonal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ClassicalQuantum.lean` |
+| `Ript.Higher.ModelTransformation.horizontalComp_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Coherence.lean` |
+| `Ript.Higher.model_pentagon` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Coherence.lean` |
+| `Ript.Higher.model_triangle` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Coherence.lean` |
+| `Ript.Higher.ModelHom.map_cost_eq` | `none` | `Ript/Higher/Equivalence.lean` |
+| `Ript.Higher.ModelHom.map_comp_cost_le` | `none` | `Ript/Higher/Equivalence.lean` |
+| `Ript.Higher.ModelHom.map_tensor_cost_le` | `none` | `Ript/Higher/Equivalence.lean` |
+| `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Equivalence.lean` |
 
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
@@ -181,6 +188,16 @@ tensor, diagonal-state evolution, and faithfulness are all compiled theorems.
 Their audited assumptions are the same standard Mathlib finite-matrix set
 `[propext, Classical.choice, Quot.sound]`; no new project axiom and no
 choice-derived operational channel data are introduced.
+The higher-categorical layer fixes a resource type and bundles symmetric
+monoidal costed process categories as 0-cells, resource-nonincreasing strong
+braided monoidal functors as 1-cells, and monoidal natural transformations as
+2-cells. Its vertical and horizontal composition, interchange, associator,
+unitors, pentagon, and triangle laws reuse Mathlib's functor and bicategory
+infrastructure. These coherence theorems report the standard
+`[propext, Classical.choice, Quot.sound]` footprint inherited from that
+infrastructure. The cost-exact preservation lemmas themselves use no axioms:
+cost reflection is an explicit hypothesis, never inferred merely from a
+bicategorical equivalence.
 In particular,
 the braided hexagon soundness cases use the primitive `BraidedCategory`
 hexagon laws directly, so the stage-2 flagship results do not acquire that

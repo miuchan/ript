@@ -101,6 +101,13 @@ flowchart LR
   QuantumCP --> ClassicalEmbedding
   ClassicalEmbedding --> ClassicalQuantumExample["Examples.ClassicalQuantum"]
   ClassicalQuantumExample --> Audit
+  StructuralCost["Core.StructuralCost"] --> ModelHom["Higher.ModelHom"]
+  ModelHom --> ModelBicategory["Higher.ModelBicategory"]
+  ModelBicategory --> ModelCoherence["Higher.Coherence"]
+  ModelCoherence --> ModelEquivalence["Higher.Equivalence"]
+  MonoidalTermModel --> HigherModels["Examples.HigherModels"]
+  ModelEquivalence --> HigherModels
+  HigherModels --> Audit
 ```
 
 Every node in this graph is an existing compiled module.
@@ -121,7 +128,8 @@ Every node in this graph is an existing compiled module.
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | PROVED |
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
-| 10-11 | Bicategorical and univalent layers | OPEN_RESEARCH |
+| 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
+| 11 | Internally interpreted univalent layer | OPEN_RESEARCH |
 
 ## Stage-1 flagship theorem records
 
@@ -1942,6 +1950,199 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Quantum/ClassicalEmbedding.lean`.
 
+## Stage-10 higher-category flagship records
+
+### `ProcessModel`, `ModelHom.id`, and `ModelHom.comp`
+
+- Natural-language statement: for a fixed resource type `R`, a model packages
+  a symmetric monoidal process category with serial, parallel, and free
+  structural cost laws. A 1-cell is a resource-nonincreasing strong braided
+  monoidal functor. Identity and composition remain strong, braided, and
+  resource-nonincreasing.
+- Lean interfaces:
+
+  ```lean
+  structure ProcessModel (R : Type w) [AddCommMonoid R] [PartialOrder R]
+
+  structure ModelHom (M N : ProcessModel R) where
+    toLaxBraided : LaxBraidedFunctor M N
+    unit_isIso : IsIso (Functor.LaxMonoidal.ε toLaxBraided.toFunctor)
+    tensor_isIso : ∀ X Y, IsIso
+      (Functor.LaxMonoidal.μ toLaxBraided.toFunctor X Y)
+    map_cost_le : ∀ f, processCost (toLaxBraided.toFunctor.map f) ≤ processCost f
+
+  def ModelHom.id (M : ProcessModel R) : ModelHom M M
+  def ModelHom.comp (F : ModelHom M N) (G : ModelHom N P) : ModelHom M P
+  ```
+
+- Prerequisites: Mathlib braided and monoidal functors; Ript serial, parallel,
+  and structural cost typeclasses.
+- Status: `DEFINED`, with the identity/composition closure obligations accepted
+  by Lean and then used by the bicategory instance below.
+- Strongness boundary: invertibility of the lax unit and tensor comparison
+  maps is stored as a proposition. No redundant choice of inverse tensorator
+  is added to the public structure.
+- Computable: this is a proof-layer organization of semantic models; it does
+  not change the computability of morphisms inside a particular model.
+- Source: `Ript/Higher/ModelHom.lean`.
+
+### `modelBicategory`
+
+- Natural-language statement: resource-indexed process models are 0-cells,
+  resource-nonincreasing strong braided monoidal functors are 1-cells, and
+  monoidal natural transformations are 2-cells of a bicategory.
+- Lean interfaces:
+
+  ```lean
+  structure ModelTransformation (F G : ModelHom M N) where
+    toNatTrans : F.toFunctor ⟶ G.toFunctor
+    isMonoidal : NatTrans.IsMonoidal toNatTrans
+
+  instance modelBicategory : Bicategory (ProcessModel R)
+  ```
+
+- Prerequisites: `ModelHom.id`, `ModelHom.comp`, Mathlib's natural
+  transformation and bicategory APIs, and monoidality of whiskering.
+- Status: `PROVED`. The instance discharges vertical category laws, both
+  whiskering laws, exchange, associator/unitor compatibility, pentagon, and
+  triangle by reducing to componentwise functor equations.
+- Side conditions: all models use the same `R` and uniform object/morphism
+  universes. This makes the 0-cells elements of one Lean type and keeps the
+  bicategory construction honest.
+- Computable: proof layer.
+- Kernel assumptions: the audited exposed coherence theorems report
+  `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Higher/ModelBicategory.lean`.
+
+### `ModelTransformation.horizontalComp_interchange`
+
+- Natural-language statement: horizontal composition of model 2-cells is
+  closed in monoidal natural transformations, and it satisfies interchange
+  with vertical composition.
+- Lean type:
+
+  ```lean
+  theorem horizontalComp_interchange
+      (eta₁ : F₁ ⟶ F₂) (eta₂ : F₂ ⟶ F₃)
+      (theta₁ : G₁ ⟶ G₂) (theta₂ : G₂ ⟶ G₃) :
+      horizontalComp eta₁ theta₁ ≫ horizontalComp eta₂ theta₂ =
+        horizontalComp (eta₁ ≫ eta₂) (theta₁ ≫ theta₂)
+  ```
+
+- Prerequisites: left and right whiskering in `modelBicategory` and Mathlib's
+  whisker-exchange lemma.
+- Status: `PROVED`.
+- Computable: proof layer; the underlying operation is ordinary natural
+  transformation horizontal composition.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Higher/Coherence.lean`.
+
+### `model_pentagon` and `model_triangle`
+
+- Natural-language statement: model-functor associators satisfy the
+  bicategorical pentagon, and associators with the left/right unitors satisfy
+  the bicategorical triangle.
+- Lean interfaces:
+
+  ```lean
+  theorem model_pentagon (f : A ⟶ B) (g : B ⟶ C)
+      (h : C ⟶ D) (i : D ⟶ E) :
+      (associator f g h).hom ▷ i ≫ (associator f (g ≫ h) i).hom ≫
+          f ◁ (associator g h i).hom =
+        (associator (f ≫ g) h i).hom ≫
+          (associator f g (h ≫ i)).hom
+
+  theorem model_triangle (f : A ⟶ B) (g : B ⟶ C) :
+      (associator f (𝟙 B) g).hom ≫ f ◁ (leftUnitor g).hom =
+        (rightUnitor f).hom ▷ g
+  ```
+
+- Prerequisites: the compiled `modelBicategory` instance. These named
+  theorems intentionally reuse Mathlib's bicategory coherence interface
+  instead of maintaining an independent rewrite system.
+- Status: `PROVED`.
+- Computable: proof layer.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]` for each.
+- Source: `Ript/Higher/Coherence.lean`.
+
+### `ModelHom.map_cost_eq`, `map_comp_cost_le`, and `map_tensor_cost_le`
+
+- Natural-language statement: a resource-nonincreasing model morphism that
+  also explicitly reflects costs preserves every process cost exactly. It
+  therefore preserves and reflects all budget predicates and transports the
+  serial and parallel core resource bounds with the original source costs.
+- Lean interfaces:
+
+  ```lean
+  class CostReflecting (F : M ⟶ N) : Prop where
+    map_cost_ge : ∀ f, processCost f ≤ processCost (F.toFunctor.map f)
+
+  theorem ModelHom.map_cost_eq [CostReflecting F] (f : X ⟶ Y) :
+      processCost (F.toFunctor.map f) = processCost f
+
+  theorem ModelHom.map_comp_cost_le [CostReflecting F]
+      (f : X ⟶ Y) (g : Y ⟶ Z) :
+      processCost (F.toFunctor.map (f ≫ g)) ≤ processCost f + processCost g
+
+  theorem ModelHom.map_tensor_cost_le [CostReflecting F]
+      (f : X₁ ⟶ Y₁) (g : X₂ ⟶ Y₂) :
+      processCost (F.toFunctor.map (f ⊗ₘ g)) ≤ processCost f + processCost g
+  ```
+
+- Prerequisites: `ModelHom.map_cost_le`, the explicit `CostReflecting`
+  hypothesis, and the source model's serial/parallel cost laws.
+- Status: `PROVED`.
+- Scope boundary: bicategorical equivalence by itself does not constrain the
+  numerical process-cost assignment. Cost reflection is a named premise, not
+  a conclusion smuggled out of a natural isomorphism.
+- Computable: propositions over the model's cost function; no quotient choice
+  is needed by these three theorems.
+- Kernel assumptions: none for `map_cost_eq`, `map_comp_cost_le`, and
+  `map_tensor_cost_le`.
+- Source: `Ript/Higher/Equivalence.lean`.
+
+### `CostExactModelEquivalence.hom_map_cost_eq`
+
+- Natural-language statement: a bicategorical model equivalence whose forward
+  and inverse 1-cells both reflect costs preserves process costs in each
+  direction. The concrete free bit-process term model supplies the identity
+  example and exact budget preservation/reflection.
+- Lean interfaces:
+
+  ```lean
+  structure CostExactModelEquivalence (M N : ProcessModel R)
+      extends Bicategory.Equivalence M N where
+    hom_cost_reflecting : CostReflecting toEquivalence.hom
+    inv_cost_reflecting : CostReflecting toEquivalence.inv
+
+  theorem CostExactModelEquivalence.hom_map_cost_eq
+      (e : CostExactModelEquivalence M N) (f : X ⟶ Y) :
+      processCost (e.toEquivalence.hom.toFunctor.map f) = processCost f
+
+  def Ript.Examples.HigherModels.identityEquivalence :
+      CostExactModelEquivalence termProcessModel termProcessModel
+  ```
+
+- Prerequisites: Mathlib bicategorical equivalence, explicit cost reflection
+  in both directions, and the canonical symmetric monoidal term model.
+- Status: `PROVED`, with a compiled concrete model and budget equivalence
+  example.
+- Computable: the term signature and its natural-number costs are concrete;
+  the bicategorical equivalence and equality proofs are proof-layer objects.
+- Kernel assumptions for the audited forward theorem:
+  `[propext, Classical.choice, Quot.sound]`.
+- Sources: `Ript/Higher/Equivalence.lean` and
+  `Ript/Examples/HigherModels.lean`.
+
+### Explicit non-claims for Stage 10
+
+- No `(∞,1)`-category has been defined.
+- No univalence axiom is imported or postulated.
+- No theorem turns `Equiv α β` into `α = β`.
+- The bicategory is universe-uniform and uses one fixed resource type `R`.
+- A plain bicategorical equivalence is not advertised as cost-exact; exactness
+  requires the separately auditable `CostReflecting` fields.
+
 ## Design decisions
 
 1. The sequential core remains independently usable. Stage 2 adds a separate
@@ -2053,3 +2254,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     channel. This is the honest Karoubi-style categorical boundary; Ript does
     not claim a functor with the same morphism action into the full ambient
     Kraus category.
+30. Strong model morphisms are represented by lax braided monoidal functors
+    whose unit and tensor comparison maps are isomorphisms. Strongness is thus
+    property-based and stable under composition, without a second chosen
+    inverse structure that could disagree propositionally.
+31. Model 2-cells are monoidal natural transformations, and their bicategory
+    coherence is inherited from Mathlib's functor bicategory. This avoids a
+    parallel bespoke coherence calculus while keeping every model-specific
+    obligation kernel checked.
+32. Cost exactness is stronger than bicategorical equivalence. A natural
+    isomorphism relates functorial structure but does not determine arbitrary
+    numerical annotations, so `CostExactModelEquivalence` records cost
+    reflection explicitly in both directions.
+33. Stage 10 deliberately stops at a bicategory with fixed resources and
+    uniform universes. Any internally interpreted univalent layer must remain
+    separate and may not be presented as Lean type equality or external
+    univalence without a new, explicit trust-boundary review.

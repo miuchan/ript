@@ -7,6 +7,7 @@ import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
+import Ript.Examples.HigherModels
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
@@ -15,6 +16,10 @@ import Ript.Examples.SimpleDecision
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
+import Ript.Higher.Coherence
+import Ript.Higher.Equivalence
+import Ript.Higher.ModelBicategory
+import Ript.Higher.ModelHom
 import Ript.Models.Causal.DAG
 import Ript.Models.Causal.FinStoch
 import Ript.Models.Causal.Intervention

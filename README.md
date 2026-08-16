@@ -40,12 +40,17 @@ measurement--preparation functor into the dephasing-idempotent subcategory of
 Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
 composition, tensor, diagonal-state evolution, and recovery of every
 stochastic entry are proved. The converse Blackwell representation theorem,
-finite KL data processing, energy-derived Gibbs states, and higher categories
-remain research directions.
+finite KL data processing, and energy-derived Gibbs states remain research
+directions. The higher-categorical layer is now compiled: resource-indexed
+symmetric monoidal process models, resource-nonincreasing strong braided
+monoidal functors, and monoidal natural transformations form a bicategory with
+vertical and horizontal composition, interchange, associators, unitors,
+pentagon, and triangle coherence. Cost-exact equivalences preserve budgets and
+the serial/parallel core laws under an explicit cost-reflection hypothesis.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. The Stage 1–8 layers and the Stage 9
-> finite Kraus core are implemented and
+> Ript is early-stage research software. The Stage 1–10 layers, including the
+> finite Kraus core and model bicategory, are implemented and
 > checked by Lean's kernel; the public API is
 > not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
@@ -516,6 +521,13 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.QubitChannel.bellDensity_trace_one` | The explicitly normalized Bell density matrix has trace one. |
 | `Ript.Examples.QubitChannel.bellDensity_cross_term` | Its `|00⟩`/`|11⟩` coherence entry is exactly `1/2`. |
 | `Ript.Examples.QubitChannel.bitFlip_amplification_bell_posSemidef` | Complete positivity preserves the Bell density's positivity under an amplified Pauli-X action. |
+| `Ript.Higher.ModelTransformation.horizontalComp_interchange` | Horizontal and vertical composition of monoidal model 2-cells satisfy interchange. |
+| `Ript.Higher.model_pentagon` | Model-functor associators satisfy the bicategorical pentagon law. |
+| `Ript.Higher.model_triangle` | Model-functor associators and unitors satisfy the bicategorical triangle law. |
+| `Ript.Higher.ModelHom.map_cost_eq` | A resource-nonincreasing model morphism with explicit cost reflection preserves every cost exactly. |
+| `Ript.Higher.ModelHom.map_comp_cost_le` | Cost-exact model morphisms transport the serial core bound with the source costs. |
+| `Ript.Higher.ModelHom.map_tensor_cost_le` | Cost-exact model morphisms transport the parallel core bound with the source costs. |
+| `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | The forward morphism of a cost-exact bicategorical equivalence preserves process costs. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -542,7 +554,8 @@ finished physical theory.
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | **PROVED** |
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
-| 10–11 | Bicategorical and univalent layers | **OPEN RESEARCH** |
+| 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
+| 11 | Internally interpreted univalent layer | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -562,6 +575,7 @@ Implemented model support is intentionally narrow:
 | Finite thermal systems | Gibbs-preserving category | Product bifunctor | Executable | Specified exact equilibrium; free equilibrium states and generic DPI lifting |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
+| Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -571,7 +585,10 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
-and univalent or higher-categorical structure are **not implemented**. The sequential finite
+and an internally interpreted univalent layer are **not implemented**. The
+model bicategory is implemented for a fixed resource type and uniform
+universes; it does not claim an `(infinity,1)`-category or identify Lean type
+equivalence with type equality. The sequential finite
 Kraus channel core, including finite complete positivity, is implemented and
 kernel checked.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
@@ -901,9 +918,9 @@ force-pushes and branch deletion are disabled.
    image, exact finite decision layer, homogeneous finite DAG causal layer, and
    specified-equilibrium finite thermal layer, and tensor/discard/complete-
    positivity finite Kraus core are implemented; converse representation,
-   general stochastic and causal, analytic thermodynamic, quantum classical-
-   embedding, and higher
-   layers remain visibly marked as open research.
+   general stochastic and causal, analytic thermodynamic, and univalent layers
+   remain visibly marked as open research. The classical quantum embedding and
+   model bicategory are implemented with their scope boundaries explicit.
 8. **Make information task-relative when value is the claim.** A semantic-value
    statement names its prior, actions, loss, baseline, and resource budget; it
    is not silently promoted to a task-independent entropy claim.
@@ -969,6 +986,9 @@ updated assumption audit.
 - [x] Exact Pauli-X completeness and computational-basis state transformation
 - [x] Faithful finite-stochastic measurement--preparation embedding with composition and tensor preservation
 - [x] Dephasing-idempotent classical quantum category and exact noisy-Boolean example
+- [x] Resource-indexed model 0-cells and resource-nonincreasing strong braided monoidal 1-cells
+- [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
+- [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -984,7 +1004,7 @@ updated assumption audit.
 - [ ] Concrete finite KL divergence and a proved data-processing inequality
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
-- [ ] Carefully isolated univalent or higher-categorical layers
+- [ ] Carefully isolated internally interpreted univalent layer; no external univalence axiom
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate
