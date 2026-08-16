@@ -47,6 +47,7 @@ import Ript.Models.FiniteFunction.Monoidal
 import Ript.Models.FiniteStochastic
 import Ript.Models.FiniteStochastic.Convex
 import Ript.Models.FiniteStochastic.Kleisli
+import Ript.Models.Probability.FiniteKL
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.Quantum.Basic
 import Ript.Models.Quantum.ClassicalEmbedding
@@ -56,6 +57,7 @@ import Ript.Models.Quantum.Kraus
 import Ript.Models.Quantum.Tensor
 import Ript.Models.Thermal.Equilibrium
 import Ript.Models.Thermal.GibbsPreserving
+import Ript.Models.Thermal.KLDivergence
 import Ript.Models.Thermal.Monotone
 import Ript.Resource.Basic
 import Ript.Resource.Budget

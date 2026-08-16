@@ -65,6 +65,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
 | `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
 | `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/StochFunctor.lean` |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
+| `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Probability/FiniteKL.lean` |
 | `Ript.Core.Simulates.trans` | `none` | `Ript/Core/Simulation.lean` |
 | `Ript.Core.SimulatesWithin.trans` | `[propext, Quot.sound]` | `Ript/Core/Simulation.lean` |
 | `Ript.Models.Decision.Blackwell.dominates_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/Blackwell.lean` |
@@ -96,7 +101,9 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monotone.lean` |
+| `Ript.Models.Thermal.klAthermality_monotone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/KLDivergence.lean` |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleThermalModel.lean` |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Kraus.lean` |
@@ -229,16 +236,23 @@ causal theorems report `Classical.choice` and `Quot.sound` through Mathlib's
 generic finite-set, finite-product, and nonnegative-rational proof
 infrastructure; no choice-derived value is used by the evaluator, and the
 two-node example reduces to exact rational results under ordinary `#eval`.
-The finite thermal slice likewise contains only executable finite carriers,
-exact rational equilibrium states, and exact stochastic channels. Its
+The finite thermal slice likewise contains executable finite carriers, exact
+rational equilibrium states, and exact stochastic channels. Its
 Gibbs-preserving category and tensor bifunctor use proof fields only to certify
 that channels preserve the distinguished distributions. The generic
-divergence theorem assumes data processing as an explicit structure field; it
-does not postulate finite KL data processing or manufacture a proof of it. The
-audited thermal theorems inherit `Classical.choice` and `Quot.sound` from the
-same Mathlib finite-sum, category, and nonnegative-rational proof
-infrastructure, while the Boolean thermal example evaluates using ordinary
-kernel reduction and exact arithmetic.
+divergence theorem still requires data processing as an explicit structure
+field. The separate finite-KL semantic layer now discharges that field rather
+than assuming it: it embeds exact distributions as discrete probability
+measures, specializes Mathlib's extended-nonnegative-real KL divergence, and
+derives full finite stochastic data processing from Mathlib's Markov-kernel
+theorem. This keeps support violations at `∞` and confines logarithms and
+measure-theoretic noncomputability to the semantic boundary. Its audited
+theorems inherit `Classical.choice` and `Quot.sound` from Mathlib's measure,
+integration, finite-sum, category, and nonnegative-rational infrastructure;
+there is no project axiom and no choice-derived data flows back into the exact
+executable model. The Boolean thermal example still evaluates its rational
+channel facts by ordinary kernel reduction, while its KL invariance theorem is
+kernel-checked proof data.
 The finite quantum slice is intentionally separate from the classical
 stochastic object type. Density matrices are complex positive-semidefinite
 matrices of trace one, and every operational map carries the mere existence of

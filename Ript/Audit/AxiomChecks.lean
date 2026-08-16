@@ -14,6 +14,7 @@ import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
 import Ript.Models.Decision.SemanticValue
+import Ript.Models.Probability.FiniteKL
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Resource.ParallelBudget
@@ -90,6 +91,11 @@ set_option autoImplicit false
 #print axioms Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff
 #print axioms Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top
 #print axioms Ript.Models.Probability.StochFunctor.toStoch_map_tensor
+#print axioms Ript.Models.Probability.FiniteKL.distributionMeasure_push
+#print axioms Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff
+#print axioms Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff
+#print axioms Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation
+#print axioms Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing
 #print axioms Ript.Core.Simulates.trans
 #print axioms Ript.Core.SimulatesWithin.trans
 #print axioms Ript.Models.Decision.Blackwell.dominates_tensor
@@ -121,7 +127,9 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.GibbsPreserving.tensor_comp
 #print axioms Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free
 #print axioms Ript.Models.Thermal.Divergence.athermality_monotone
+#print axioms Ript.Models.Thermal.klAthermality_monotone
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
+#print axioms Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_posSemidef
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_trace
 #print axioms Ript.Models.Quantum.KrausChannel.map_posSemidef

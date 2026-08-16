@@ -28,8 +28,11 @@ distribuojn, malmolajn intervenojn kaj ekzaktan `FinStoch`-semantikon. Ĝenerala
 mezureblaj kaŭzaj modeloj restas malfermaj. La sekva kompilita tavolo aldonas
 finiajn termikajn sistemojn kun specifitaj ekvilibraj distribuoj, kategorion kaj
 tensora bifunktoron de Gibbs-konservaj ekzaktaj kanaloj, liberajn ekvilibrajn
-preparojn kaj ĝeneralan diverĝencan monotonecon. La inversa Blackwell-teoremo,
-finia KL-datumtraktado kaj energio-derivitaj Gibbs-statoj restas esplorvojoj.
+preparojn kaj ĝeneralan diverĝencan monotonecon. Aparta semantika tavolo nun
+difinas konkretan finian KL en `ℝ≥0∞`, pruvas ĝian nulvaloron kaj subtenliman
+konduton, la plenan datumtraktan neegalaĵon por ĉiu finia stokasta kanalo, kaj
+konkretan monotonecon de KL-atermikeco. La inversa Blackwell-teoremo kaj
+energio-derivitaj Gibbs-statoj restas esplorvojoj.
 Ript nun ankaŭ havas apartan fini-dimensian kompleksan kvantuman kernon:
 pozitivajn duondifinajn densmatricojn kun spuro unu, operaciajn mapojn
 atestitajn per finiaj kompletaj Kraus-familioj, pruvitan konservon de pozitiveco
@@ -397,9 +400,27 @@ La diverĝenca tavolo eksplicite montras sian premison. `Divergence Value`
 enhavas statkomparon kune kun pruvita stokasta datumtrakta neegalaĵo. Por ĉiu
 tia diverĝenco kaj Gibbs-konserva `T`, Ript pruvas
 `D(Tp ‖ γY) ≤ D(p ‖ γX)` kaj pakas ĝin kiel `ThermalMonotone`. Tio ne estas
-senpruva aserto pri KL. Konkreta finia KL kaj ĝia DPI, energioj, temperaturoj,
-Gibbs-formuloj, libera energio kaj Landauer-tipaj neegalaĵoj restas apartaj
-esploraj devoj.
+senpruva aserto pri KL.
+
+Konkreta finia KL estas konstruita aparte, sen aldoni premison al la ĝenerala
+teoremo. `Ript.Models.Probability.FiniteKL` enigas ĉiun ekzaktan racian
+`FinDist` kiel ĝian diskretan probablomezuron kaj specialigas la mezurteorian
+`InformationTheory.klDiv` de Mathlib. La celaro estas `ℝ≥0∞`: pozitiva maso kie
+la referenca maso estas nul do donas ekzakte `∞`, kaj malsamaj punktamasoj havas
+pruvite senfinan diverĝencon. La semantika enigo estas injekcia, plenumebla
+antaŭenigo ekzakte egalas mezurkunmeton kun la interpretita Markov-kerno, kaj la
+kernnivela teoremo de Mathlib donas por ĉiu ekzakta finia stokasta kanalo `T`
+
+```text
+KL(Tp ‖ Tq) ≤ KL(p ‖ q)
+```
+
+Tiu pruvita DPI konstruas `finiteKLDivergence`, `klAthermality` kaj
+`klThermalMonotone`, tiel konkretigante la ĝeneralan termikan teoremon. La
+ekzaktaj raciaj statoj kaj kanaloj restas plenumeblaj; logaritmoj, integraloj kaj
+nekomputebleco restas nur en la analiza semantika tavolo. Energioj,
+temperaturoj, Gibbs-formuloj, libera energio kaj Landauer-tipaj neegalaĵoj
+restas apartaj esploraj devoj.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -758,7 +779,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | Termika tensoro plenumas interchange kun kunmeto. |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | Ĉiu specifita ekvilibro estas libera preparo. |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Ĉiu diverĝenco kun DPI donas Gibbs-konservan termikan monotonon. |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | Plenumebla distribua antaŭenigo egalas mezur–kernan kunmeton. |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | Finia absoluta kontinueco ekzakte egalas inkludon de nenula subteno. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | Finia KL estas nul ekzakte por egalaj ekzaktaj distribuoj. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | Pozitiva maso kontraŭ nula referenca maso devigas senfinan KL. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Ĉiu ekzakta finia stokasta kanalo plenumas KL-datumtraktadon. |
+| `Ript.Models.Thermal.klAthermality_monotone` | Konkreta finia KL de ekvilibro estas Gibbs-konserva monotono. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Inversigebla termika bitrenverso ekzakte konservas KL-atermikecon. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Ĉiu finia Kraus-sumo konservas kompleksan operatoran pozitivecon. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus-kompleteco implicas ekzaktan spurokonservon. |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | Ĉiu atestita kanalo konservas pozitivan duondifinitecon. |
@@ -860,7 +888,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 6 | Blackwell-ordo, finia decidrisko, rimedbuĝetoj kaj task-rilata valoro | **PROVED** |
 | 7, komputado | Plurdimensiaj totalaj kaj `Option`-partaj modeloj | **PROVED** |
 | 7, kaŭzeco | Finiaj DAG-mekanismoj, normaligitaj kunaj distribuoj, intervenoj kaj `FinStoch`-statoj | **PROVED** |
-| 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj kaj ĝenerala diverĝenca monotoneco | **PROVED** |
+| 8 | Finiaj ekvilibraj sistemoj, Gibbs-konservaj procezoj, ĝenerala diverĝenca monotoneco kaj konkreta finia KL-datumtraktado | **PROVED** |
 | 9, finiaj kvantumaj kanaloj | Kompleksaj densmatricoj, TP Kraus-kanaloj, tensoro/interchange, spura forĵeto, kaŭza unikeco kaj finia kompleta pozitiveco | **PROVED** |
 | 9, kvantuma etendaĵo | Fidela mezur-prepara enigo en la malfazigan idempotentan Kraus-subkategorion | **PROVED** |
 | 10 | Rimed-indeksita modeldukategorio, monoidaj 2-ĉeloj, kohero kaj transporto per kost-ekzakta ekvivalento | **PROVED** |
@@ -885,7 +913,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Totala komputado | Jes | Produkta bifunktoro | Plenumebla | Paŝo/demando/memoro/pordego; ekzakta sinsekva kaj paralela kalkulado |
 | `Option`-parta komputado | Jes | Produkta bifunktoro | Plenumebla | Malsukces-propaganta Kleisli-kunmeto; totala enigo |
 | Finia kaŭza DAG | Topologia generado | Per `FinStoch`-statoj | Plenumebla | Homogena finia portanto; gepatro-lokaj ekzaktaj mekanismoj kaj malmolaj intervenoj |
-| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Plenumebla | Specifita ekzakta ekvilibro; liberaj ekvilibraj statoj kaj ĝenerala DPI-levo |
+| Finiaj termikaj sistemoj | Gibbs-konserva kategorio | Produkta bifunktoro | Ekzaktaj statoj/kanaloj plenumeblaj; KL-semantiko nekomputebla | Specifita ekvilibro, ĝenerala DPI-levo, konkreta finia KL kaj atermikeca monotoneco |
 | Finiaj kvantumaj Kraus-kanaloj | Kraus-kategorio | Jes | Matrica pruva tavolo; bazetikedoj plenumeblaj | Kompleksaj PSD-spurunuaj statoj, kanona tensoro, spura forĵeto kaj CP por ĉiu finia ident-amplifo; sen kopiado |
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
@@ -903,8 +931,8 @@ pri Blackwell, Bayes-risko, rimedoj kaj semantika valoro; la homogena finia
 DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
-ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco, konkreta finia
-KL-datumtraktado, energio-derivitaj Gibbs-statoj kaj pli-altdimensia aŭ
+ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco,
+energio-derivitaj Gibbs-statoj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
@@ -971,6 +999,10 @@ flowchart LR
   CK --> GP["Gibbs-konserva kanalkategorio"]
   TE --> GP
   GP --> TM["Ĝenerala diverĝenca termika monotono"]
+  FD --> FKL["Finia KL en etenditaj nenegativaj reeloj"]
+  ST --> FKL
+  FKL --> KTM["Konkreta monotono de KL-atermikeco"]
+  TM --> KTM
   QB["Kompleksaj PSD-spurunuaj matricoj"] --> QK["Finiaj kompletaj Kraus-atestiloj"]
   QK --> QC["Spurkonserva Kraus-kanalkategorio"]
   QC --> QT["Kanona tensoro kaj spura forĵeto"]
@@ -1152,7 +1184,9 @@ ekskludon de kontraŭaj valoroj kaj supran invariadon.
 `Ript/Examples/SimpleThermalModel.lean` specifas ekzaktan unuforman ekvilibran
 distribuon por Bulea sistemo. Determinisma bitrenverso konservas la ekvilibron
 kaj estas involucio sub Gibbs-konserva kunmeto. La ekzemplo ankaŭ plenumas la
-liberan ekvilibran preparon kaj produktan ekvilibron; ses `#eval decide`-
+liberan ekvilibran preparon kaj produktan ekvilibron, kaj pruvas ke la ekvilibra
+KL-atermikeco estas nul kaj ke la inversigebla renverso konservas ĝin ekzakte;
+ses `#eval decide`-
 kontraktoj kontrolas normaligon, kanal-elementojn, evoluitan mason, liberan
 preparon, produktan mason `1/4` kaj la identecon de du renversoj.
 
@@ -1187,8 +1221,8 @@ import Ript.Models.Decision.SemanticValue
 import Ript.Models.Computation.Partial
 -- aŭ, por finiaj DAG-oj, malmolaj intervenoj kaj ekzaktaj stokastaj statoj:
 import Ript.Models.Causal.FinStoch
--- aŭ, por finiaj Gibbs-konservaj procezoj kaj ĝeneralaj termikaj monotonoj:
-import Ript.Models.Thermal.Monotone
+-- aŭ, por finia KL-datumtraktado kaj konkreta termika monotoneco:
+import Ript.Models.Thermal.KLDivergence
 -- aŭ, por kompleksaj densmatricoj kaj spurkonservaj Kraus-kanaloj:
 import Ript.Models.Quantum.Kraus
 -- aŭ, por la senaksioma interne univalenta procezuniverso:
@@ -1280,8 +1314,9 @@ perfortaj puŝoj kaj forigo de la branĉo estas malŝaltitaj.
     aparta operacio kaj ne estas uzata kiel surogato.
 12. **Ne kaŝe enporti termodinamikan analizon.** Specifita ekvilibro estas
     operacia datumo, kaj ĝenerala diverĝenca teoremo postulas eksplicitan DPI-
-    pruvon. Energi-derivitaj Gibbs-formuloj, KL-datumtraktado kaj libera energio
-    restas nomitaj esploraj devoj.
+    pruvon. La konkreta finia KL pruvas tiun premison per la Markov-kerna teoremo
+    de Mathlib kaj restas en nekomputebla semantika tavolo. Energi-derivitaj
+    Gibbs-formuloj kaj libera energio restas nomitaj esploraj devoj.
 13. **Ne kaŝe enporti klasikan strukturon en kvantumajn sistemojn.** La
     kvantuma bazobjekto estas aparta de `FinStoch`; Kraus-formo kaj kompleteco
     estas eksplicitaj atestiloj. Tensoro, forĵeto kaj kompleta pozitiveco de
@@ -1329,6 +1364,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Ekzaktaj finiaj ekvilibraj sistemoj kaj stokasta statevoluo
 - [x] Gibbs-konserva kategorio, tensora bifunktoro kaj liberaj ekvilibraj statoj
 - [x] Ĝenerala diverĝenco-al-termika-monotono kun eksplicita DPI-premiso
+- [x] Konkreta finia KL kun ekzaktaj nul-, subten- kaj senfin-limaj semantikoj
+- [x] Plena finia-stokasta KL-datumtraktado kaj konkreta KL-atermikeca monotoneco
 - [x] Plenumebla unuforma termika bito kun ekvilibro-konserva renverso
 - [x] Kompleksaj pozitivaj duondifinaj densmatricoj kun spuro unu
 - [x] Finiaj kompletaj Kraus-prezentoj kun pruvita pozitiveco kaj spurokonservo
@@ -1349,7 +1386,6 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Inversa finia Blackwell--Sherman--Stein-prezenta teoremo
 - [ ] Ĝeneralaj mezureblaj decidproblemoj preter ekzaktaj finiaj datumoj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
-- [ ] Konkreta finia KL-diverĝenco kaj pruvita datumtrakta neegalaĵo
 - [ ] Energioj, inversa temperaturo, Gibbs-konstruo, libera energio kaj Landauer-limoj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
@@ -1422,8 +1458,9 @@ kvantuma idento.
 Ript nun ankaŭ subtenas finiajn sistemojn kun specifita ekzakta
 ekvilibro, Gibbs-konservan kunmeton kaj tensoron, liberajn ekvilibrajn statojn
 kaj ĝeneralan termikan monotonecon kiam diverĝenco liveras pruvitan DPI. Ĝi
-ankoraŭ ne derivas ekvilibrojn el energioj kaj ne havas finiajn KL- aŭ
-liberenergi-teoremojn. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
+ankaŭ liveras konkretan finian KL en `ℝ≥0∞`, plenan stokastan datumtraktadon kaj
+monotonecon de KL-atermikeco. Ĝi ankoraŭ ne derivas ekvilibrojn el energioj kaj
+ne havas liberenergi-teoremojn. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 La inversa finia Blackwell-prezenta teoremo kaj ĝenerala mezurebla decidteorio

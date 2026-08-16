@@ -20,8 +20,10 @@ Blackwell 比较、精确可执行的有限 Bayes 风险、资源受限决策风
 项目还包含带显式步数、查询、存储与门数量资源的总函数和可失败计算范畴，并已实现可执行
 有限 DAG 因果模型、只读取父节点的精确机制、归一化观测联合分布、硬干预及其精确
 `FinStoch` 语义。下一层还加入了带指定平衡分布的有限热系统、Gibbs-preserving 精确信道
-范畴及 tensor bifunctor、自由平衡态制备，以及通用 divergence 单调性。一般可测因果模型、
-Blackwell 反向表示定理、有限 KL 数据处理、由能量导出的 Gibbs 态仍是研究方向。Ript 现在还
+范畴及 tensor bifunctor、自由平衡态制备，以及通用 divergence 单调性。独立的语义层现已在
+`ℝ≥0∞` 中定义具体有限 KL，证明零值、支撑边界与对任意有限随机信道的完整数据处理不等式，
+并由此得到具体 KL 非平衡度单调性。一般可测因果模型、Blackwell 反向表示定理与由能量导出的
+Gibbs 态仍是研究方向。Ript 现在还
 拥有一个与经典随机模型分离的有限维复数量子核心：正半定、迹为一的密度矩阵；由有限完备
 Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
 Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、基 bra 构造的迹/丢弃信道、
@@ -295,8 +297,23 @@ interchange，从而得到显式 bifunctor。每个对象的指定平衡态也�
 divergence 层明确暴露假设。`Divergence Value` 同时携带状态比较函数与已经证明的随机数据处理
 律。对任意这样的 divergence，Ript 证明每个 Gibbs-preserving `T` 都满足
 `D(Tp ‖ γY) ≤ D(p ‖ γX)`，并把它封装为 `ThermalMonotone`。这不是对 KL 数据处理的
-未经证明宣称。具体有限 KL 及其 DPI、能量函数、温度、Gibbs 公式、自由能和 Landauer 型不等式
-仍是独立研究义务。
+未经证明宣称。
+
+具体有限 KL 在独立模块中实现，不向上述通用定理添加假设。
+`Ript.Models.Probability.FiniteKL` 把每个精确有理 `FinDist` 嵌入其离散概率测度，并专门化
+Mathlib 的测度论 `InformationTheory.klDiv`。值域采用 `ℝ≥0∞`，所以第一分布在参考质量为零
+之处具有正质量时，结果严格等于 `∞`；不同点质量的 divergence 也已证明为无限。语义嵌入是
+单射，可执行 pushforward 精确等于解释后 Markov kernel 的测度复合，并由 Mathlib 的
+kernel 级定理得到对每个精确有限随机信道 `T` 的
+
+```text
+KL(Tp ‖ Tq) ≤ KL(p ‖ q)
+```
+
+这条已证明 DPI 构造出 `finiteKLDivergence`、`klAthermality` 与
+`klThermalMonotone`，从而把通用结果实例化为具体热单调性定理。精确有理状态与信道继续保持
+可执行；对数、积分和不可计算性仅位于分析语义层。能量函数、温度、Gibbs 公式、自由能和
+Landauer 型不等式仍是独立研究义务。
 
 ### 12. 有限复密度矩阵与 Kraus 信道
 
@@ -598,7 +615,14 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | 热 tensor 与复合满足 interchange。 |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | 每个指定平衡态都是自由制备。 |
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | 每个带 DPI 的 divergence 都给出 Gibbs-preserving 热单调量。 |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | 可执行分布 pushforward 与测度—kernel 复合一致。 |
+| `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | 有限绝对连续性精确等价于非零支撑包含。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | 有限 KL 为零精确等价于两个精确分布相等。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | 正质量面对零参考质量时 KL 必为无限。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | 每个精确有限随机信道都满足 KL 数据处理不等式。 |
+| `Ript.Models.Thermal.klAthermality_monotone` | 相对平衡态的具体有限 KL 是 Gibbs-preserving 单调量。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 两次保持平衡的 Boolean 翻转复合为热恒等过程。 |
+| `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆热比特翻转精确保持 KL 非平衡度。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 每个有限 Kraus 和都保持复算子正性。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完备性蕴含精确迹保持。 |
 | `Ript.Models.Quantum.KrausChannel.map_posSemidef` | 每个已认证信道都保持正半定性。 |
@@ -697,7 +721,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 6 | Blackwell 序、有限决策风险、资源预算与任务相对价值 | **PROVED** |
 | 7，计算 | 多维总计算与 `Option` 部分计算模型 | **PROVED** |
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
-| 8 | 有限平衡系统、Gibbs-preserving 过程与通用 divergence 单调性 | **PROVED** |
+| 8 | 有限平衡系统、Gibbs-preserving 过程、通用 divergence 单调性与具体有限 KL 数据处理 | **PROVED** |
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
 | 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10 | 资源索引模型双范畴、幺半群 2-胞、coherence 与成本精确等价传递 | **PROVED** |
@@ -722,7 +746,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | 总计算 | 是 | 积 bifunctor | 可执行 | 形式步数/查询/存储/门向量；精确串并行记账 |
 | `Option` 部分计算 | 是 | 积 bifunctor | 可执行 | 失败传播的 Kleisli 复合；总计算嵌入 |
 | 有限因果 DAG | 拓扑生成 | 通过 `FinStoch` 状态 | 可执行 | 同质有限载体；父局部精确机制与硬干预 |
-| 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 可执行 | 指定精确平衡态；自由平衡态与通用 DPI 提升 |
+| 有限热系统 | Gibbs-preserving 范畴 | 积 bifunctor | 精确状态/信道可执行；KL 语义层不可计算 | 指定平衡态、通用 DPI 提升、具体有限 KL 与非平衡度单调性 |
 | 有限量子 Kraus 信道 | Kraus 范畴 | 是 | 矩阵证明层；基标签可执行 | 复 PSD 迹一态、规范信道 tensor、迹丢弃、任意有限恒等放大的 CP；无复制 |
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
@@ -737,7 +761,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 的 Mathlib `Stoch` 测度论语义，精确有限决策层也已有通过编译的 Blackwell、Bayes 风险、
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
-do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
+do-calculus、通用复制/丢弃与凸结构接口、由能量导出的 Gibbs 态、
 complete-Segal/Rezk-complete 的单值语义仍**尚未实现**。当前内部单值 universe 是一个小型深嵌入，
 其恒等与等价商解释在集合中；无选择的对象补全和不可计算的骨架补全只建立了经过明确审计的
 0/1-截断基础。Representable-presheaf 语义与 Yoneda 本质像 envelope 也已实现，但仍是没有
@@ -796,6 +820,10 @@ flowchart LR
   CK --> GP["Gibbs-preserving 信道范畴"]
   TE --> GP
   GP --> TM["通用 divergence 热单调量"]
+  FD --> FKL["扩展非负实数值有限 KL"]
+  ST --> FKL
+  FKL --> KTM["具体 KL 非平衡度单调量"]
+  TM --> KTM
   QB["复 PSD 迹一矩阵"] --> QK["有限完备 Kraus 证书"]
   QK --> QC["迹保持 Kraus 信道范畴"]
   QC --> QT["规范 tensor 与迹丢弃"]
@@ -950,7 +978,8 @@ singleton 质量；带噪否定保持公平分布；确定性否定确实成为�
 强制值排除和上游不变性。
 
 `Ript/Examples/SimpleThermalModel.lean` 为 Boolean 系统指定精确均匀平衡分布。确定性比特翻转
-保持该平衡态，并在 Gibbs-preserving 复合下是对合。例子还执行自由平衡态制备与积平衡态；
+保持该平衡态，并在 Gibbs-preserving 复合下是对合。例子证明平衡态的 KL 非平衡度为零、
+可逆翻转精确保持 KL 非平衡度，并执行自由平衡态制备与积平衡态；
 六个 `#eval decide` 契约检查精确归一化、信道条目、演化质量、自由态制备、积质量 `1/4` 和
 双翻转恒等过程。
 
@@ -982,8 +1011,8 @@ import Ript.Models.Decision.SemanticValue
 import Ript.Models.Computation.Partial
 -- 或者导入有限 DAG、硬干预与精确随机状态：
 import Ript.Models.Causal.FinStoch
--- 或者导入有限 Gibbs-preserving 过程与通用热单调量：
-import Ript.Models.Thermal.Monotone
+-- 或者导入有限 KL 数据处理与具体热单调性：
+import Ript.Models.Thermal.KLDivergence
 -- 或者导入复密度矩阵与迹保持 Kraus 信道：
 import Ript.Models.Quantum.Kraus
 -- 或者导入无公理的内部单值过程 universe：
@@ -1056,7 +1085,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 11. **不把干预混同于条件化。**硬干预先替换局部机制再重新生成联合分布；观测条件化是不同操作，
     不能作为替代实现。
 12. **不偷渡热力学分析。**指定平衡态是操作性数据，通用 divergence 定理要求显式 DPI 证明；
-    能量导出的 Gibbs 公式、KL 数据处理和自由能仍是明确列出的研究义务。
+    具体有限 KL 通过 Mathlib 的 Markov-kernel 定理证明该前提，并被限制在不可计算语义层。
+    能量导出的 Gibbs 公式和自由能仍是明确列出的研究义务。
 13. **不把经典结构偷渡进量子系统。**量子基对象与 `FinStoch` 分离；Kraus 形式和完备性是显式
     证书。tensor、丢弃与有限恒等放大的完整正性已有独立证明；复制仍刻意缺席，经典嵌入仍需
     单独证明。
@@ -1099,6 +1129,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 精确有限平衡系统与随机状态演化
 - [x] Gibbs-preserving 范畴、tensor bifunctor 与自由平衡态
 - [x] 带显式 DPI 前提的通用 divergence-to-thermal-monotone 定理
+- [x] 具有精确零值、支撑与无限边界语义的具体有限 KL
+- [x] 完整有限随机 KL 数据处理与具体 KL 非平衡度单调性
 - [x] 具有保持平衡翻转的可执行均匀热比特示例
 - [x] 复正半定、迹一密度矩阵
 - [x] 有限完备 Kraus 表示，以及正性和迹保持证明
@@ -1120,7 +1152,6 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 有限 Blackwell--Sherman--Stein 反向表示定理
 - [ ] 超出精确有限数据的一般可测空间决策问题
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
-- [ ] 具体有限 KL divergence 与经过证明的数据处理不等式
 - [ ] 能量函数、逆温度、Gibbs 构造、自由能与 Landauer 界
 - [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
 - [x] 资源索引模型 0-胞与资源非增的强编织幺半群 1-胞
@@ -1178,7 +1209,8 @@ Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复�
 测量—制备函子忠实嵌入退相干幂等子范畴；这一目标边界避免把退相干误作全量子恒等。
 Ript 也支持带指定精确平衡分布的有限系统、
 Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence 提供已证明 DPI 时的通用
-热单调性；但尚未从能量导出平衡态，也没有有限 KL 与自由能定理。对于精确有限数据，Ript 还支持 Blackwell
+热单调性；现在还提供 `ℝ≥0∞` 值的具体有限 KL、完整随机数据处理和 KL 非平衡度单调性；
+但尚未从能量导出平衡态，也没有自由能定理。对于精确有限数据，Ript 还支持 Blackwell
 garbling、可执行 Bayes 风险、资源受限风险和任务相对语义价值，并证明正向数据处理方向；
 反向有限 Blackwell 表示定理和一般可测决策论仍未完成。
 项目也支持具有共同有限值域的拓扑编号 DAG、父局部精确机制、归一化观测联合分布、硬干预与
