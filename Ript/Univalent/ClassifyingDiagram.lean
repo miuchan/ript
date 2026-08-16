@@ -1,5 +1,6 @@
 import Mathlib.CategoryTheory.Functor.Currying
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
+import Ript.ForMathlib.CategoryTheory.GroupoidInterval
 import Ript.Univalent.Simplicial
 
 /-!
@@ -22,7 +23,10 @@ the ordinary interface nerve and its vertical edges with invertible natural
 transformations.  By flipping the two finite indexing categories, every
 horizontal row is naturally isomorphic to an ordinary categorical nerve, so
 the actual outer spine maps are equivalences in every bidegree.  The Rezk
-completeness equivalence remains the next completion step.
+completeness comparison is the outer degeneracy from degree zero to the space
+of horizontal equivalences.  Since the source is a groupoid, every horizontal
+arrow is an equivalence; this file proves that the actual degeneracy is the
+nerve of an equivalence of categories.  Higher localization remains separate.
 -/
 
 set_option autoImplicit false
@@ -111,6 +115,88 @@ theorem interfaceClassifyingDiagramOuterSegalEquiv_apply (k n : ℕ)
     (x : (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌) :
     interfaceClassifyingDiagramOuterSegalEquiv M k n x =
       (InterfaceClassifyingDiagramHorizontalRow M k).spine n x :=
+  rfl
+
+/-- The vertical simplicial set of objects in outer degree zero. -/
+abbrev InterfaceClassifyingDiagramObjectSpace : SSet :=
+  (InterfaceClassifyingDiagram M).obj (op ⦋0⦌)
+
+/-- The vertical simplicial set of horizontal equivalences.  For the
+classifying diagram of a groupoid this is the entire outer degree-one space,
+because every horizontal arrow is invertible. -/
+abbrev InterfaceClassifyingDiagramEquivalenceSpace : SSet :=
+  (InterfaceClassifyingDiagram M).obj (op ⦋1⦌)
+
+/-- Every horizontal arrow represented in outer degree one is an equivalence
+in the internal interface groupoid. -/
+theorem interfaceClassifyingDiagramHorizontalArrow_isIso
+    (F : ComposableArrows M.Object 1) : IsIso F.hom := by
+  infer_instance
+
+/-- The Rezk completeness comparison: the actual outer zero-degeneracy sends
+an object to its identity horizontal arrow. -/
+def interfaceClassifyingDiagramCompletenessMap :
+    InterfaceClassifyingDiagramObjectSpace M ⟶
+      InterfaceClassifyingDiagramEquivalenceSpace M :=
+  (InterfaceClassifyingDiagram M).σ (0 : Fin 1)
+
+/-- The composite equivalence through the underlying interface groupoid has a
+forward functor naturally isomorphic to the actual outer zero-degeneracy
+functor.  The explicit isomorphism prevents replacing the real simplicial
+structure map by an unrelated equivalent functor. -/
+noncomputable def interfaceClassifyingDiagramCompletenessFunctorIso :
+    (CategoryTheory.Groupoid.constantDiagramEquivalence M.Object 0).symm.functor ⋙
+        (CategoryTheory.Groupoid.constantDiagramEquivalence M.Object 1).functor ≅
+      ((interfaceClassifyingDiagramCat M).σ (0 : Fin 1)).toFunctor :=
+  NatIso.ofComponents
+    (fun F ↦ NatIso.ofComponents
+      (fun i ↦ Groupoid.isoEquivHom _ _ |>.symm
+        (F.map (homOfLE (Fin.zero_le
+          ((SimplexCategory.toCat.map
+            (SimplexCategory.σ (0 : Fin 1))).toFunctor.obj i)))))
+      (fun _ ↦ by
+        change (𝟙 (F.obj 0) : F.obj 0 ⟶ F.obj 0) ≫ F.map _ =
+          F.map _ ≫ F.map _
+        rw [Category.id_comp, ← F.map_comp]
+        congr))
+    (fun η ↦ by
+      apply NatTrans.ext
+      funext i
+      exact (η.naturality (homOfLE (Fin.zero_le
+        ((SimplexCategory.toCat.map
+          (SimplexCategory.σ (0 : Fin 1))).toFunctor.obj i)))).symm)
+
+/-- The category functor underlying the actual Rezk completeness comparison
+is an equivalence.  Its inverse evaluates an identity-arrow diagram at its
+source and packages the result as an outer zero-simplex. -/
+noncomputable def interfaceClassifyingDiagramCompletenessEquivalence :
+    ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1 :=
+  ((CategoryTheory.Groupoid.constantDiagramEquivalence M.Object 0).symm.trans
+    (CategoryTheory.Groupoid.constantDiagramEquivalence M.Object 1)).changeFunctor
+      (interfaceClassifyingDiagramCompletenessFunctorIso M)
+
+/-- The forward functor of the completeness equivalence is definitionally the
+actual outer zero-degeneracy functor. -/
+@[simp]
+theorem interfaceClassifyingDiagramCompletenessEquivalence_functor :
+    (interfaceClassifyingDiagramCompletenessEquivalence M).functor =
+      ((interfaceClassifyingDiagramCat M).σ (0 : Fin 1)).toFunctor :=
+  rfl
+
+/-- The actual category-valued outer zero-degeneracy is an equivalence. -/
+noncomputable instance interfaceClassifyingDiagramCompletenessFunctorIsEquivalence :
+    ((interfaceClassifyingDiagramCat M).σ
+      (0 : Fin 1)).toFunctor.IsEquivalence :=
+  (interfaceClassifyingDiagramCompletenessEquivalence M).isEquivalence_functor
+
+/-- The actual Rezk completeness map is exactly the nerve of the forward
+functor in the displayed category equivalence.  Thus the formal statement is
+about the real outer degeneracy, not only an abstract map between equivalent
+objects. -/
+theorem interfaceClassifyingDiagramCompletenessMap_eq_nerveMap :
+    interfaceClassifyingDiagramCompletenessMap M =
+      CategoryTheory.nerveMap
+        (interfaceClassifyingDiagramCompletenessEquivalence M).functor :=
   rfl
 
 /-- The outer category at a simplex `Δ` is definitionally the category of

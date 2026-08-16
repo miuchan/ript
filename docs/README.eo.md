@@ -140,8 +140,10 @@ verticoj nature reakiras la striktan interfacan nervon, kaj vertikalaj eĝoj
 estas precize inversigeblaj naturaj transformoj. Interŝanĝi la du finiajn
 indekskategoriojn nature identigas ĉiun horizontalan vicon kun ordinara
 kategoria nervo, do ĉiu efektiva ekstera spina/Segal-komparo estas ekvivalento
-en ĉiu dugrado. La Rezk-kompleteca mapo restas nepruvita, do neniu
-kompleta-Segal-a aŭ lokaliza aserto estas farata.
+en ĉiu dugrado. La efektiva Rezk-kompleteca mapo nun estas difinita kiel la
+ekstera nula degenero kaj pruvita esti la nervo de eksplicita kategoria
+ekvivalento. Reedy-fibreco, kompleta-Segal-a pakado kaj universala eco de
+lokalizo restas malfermitaj.
 Ript disponigas kontrolitan fundamenton, sur kiu oni povas aldoni
 tiujn tavolojn sen silente ŝanĝi procezkunmeton aŭ rimedkalkuladon.
 
@@ -969,6 +971,15 @@ interfaceClassifyingDiagramHorizontalRowIso M k :
 interfaceClassifyingDiagramOuterSegalEquiv M k n :
   (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌ ≃
     (InterfaceClassifyingDiagramHorizontalRow M k).Path n
+
+interfaceClassifyingDiagramCompletenessMap M :
+  InterfaceClassifyingDiagramObjectSpace M ⟶
+    InterfaceClassifyingDiagramEquivalenceSpace M
+
+interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
+  interfaceClassifyingDiagramCompletenessMap M =
+    CategoryTheory.nerveMap
+      (interfaceClassifyingDiagramCompletenessEquivalence M).functor
 ```
 
 La antaŭena mapo de la dua ekvivalento estas pruvite ĝuste la efektiva spina
@@ -976,10 +987,13 @@ mapo. Tial la ekstera Segal-kondiĉo validas strikte en ĉiu dugrado, ne nur per
 arbitre elektita ekvivalento de subaj tipoj.
 
 Tio estas la norma Rezk-klasifika-diagrama konstruo sur la interna grupoido kaj
-reala paŝo preter la strikta nervo. La eksteraj Segal-komparoj nun estas
-pruvitaj, sed la Rezk-kompleteca mapo ankoraŭ bezonas difinon kaj pruvon; do la
-objekto ankoraŭ ne estas deklarata kompleta Segal-spaco aŭ lokalizo de la
-tuta rimed-proceza dukategorio. La ekzakte reviziita aksioma spuro estas
+reala paŝo preter la strikta nervo. Ĉiu horizontala sago estas inversigebla, do
+la ekvivalentospaco estas la tuta ekstera unua grado. La efektiva ekstera nula
+degenero estas laŭdifine la nervo de la antaŭena funktoro en la eksplicita
+ekvivalento `ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1`.
+Tio pruvas la Rezk-kompletecan komparon je la forto de nervo de kategoria
+ekvivalento. Restas Reedy-fibreco kaj kompleta-Segal-a pakado; neniu universala
+lokaliza eco por la tuta rimed-proceza dukategorio estas asertata. La ekzakte reviziita aksioma spuro estas
 `[propext, Classical.choice, Quot.sound]`; neniu projekta aksiomo aŭ
 elekto-derivita plenumebla valoro estas aldonita.
 
@@ -1225,6 +1239,8 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal` | Ĉiu horizontala vico havas eksplicitajn strikt-Segal-ajn rekonstruajn datumojn. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv` | La ekstera spina komparo estas ekvivalento en ĉiuj horizontalaj kaj vertikalaj gradoj. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | La antaŭena ekstera Segal-ekvivalento estas precize la spina mapo. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | La efektiva ekstera nula-degenera funktoro estas kategoria ekvivalento. |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | La Rezk-kompleteca mapo estas precize la nervo de la antaŭena funktoro de tiu ekvivalento. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Ĉiu vertikala nivelo de la klasifika diagramo havas eksplicitajn strikt-Segal-ajn rekonstruajn datumojn. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Ĉiu vertikala nivelo de la klasifika diagramo estas Kan-komplekso. |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | Preni vertikalajn verticojn nature reakiras la ordinaran interfacan nervon. |
@@ -1267,8 +1283,8 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 12, tranĉita fundamento | Senelekta objektokompletigo, skeleta grupoidokompletigo, universala malsuprenigo kaj plenumeblaj invariantoj | **PROVED** |
 | 12, antaŭfaska fundamento | Plene fidela Yoneda-semantiko, reprezentebla idento/ekvivalento-korespondo kaj esenc-bilda envolvaĵo | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
-| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, nivelaj grupoidaj/Kan-aj/strikt-Segal-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj en ĉiuj dugradoj, natura reakiro de la ordinara nervo kaj inversigeblaj vertikalaj transformoj | **PROVED** |
-| 12, pli-alta etendaĵo | Rezk-kompleteco kaj pli-alta lokalizo preter la ekstere-Segal-a klasifika diagramo | **OPEN RESEARCH** |
+| 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, nivelaj grupoidaj/Kan-aj/strikt-Segal-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj en ĉiuj dugradoj, kategoria Rezk-kompleteca komparo, natura reakiro de la ordinara nervo kaj inversigeblaj vertikalaj transformoj | **PROVED** |
+| 12, pli-alta etendaĵo | Reedy-fibreco, kompleta-Segal-a pakado kaj pli-alta lokalizo preter la kompleteca komparo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
 
@@ -1295,7 +1311,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Interna antaŭfaska universo | Naturaj transformoj inter tip-valoraj antaŭfaskoj | Reprezentebla agado | Semantika pruva tavolo | Yoneda plene fidela; identoj/ekvivalentoj respondas al reprezenteblaj transformoj/izomorfioj |
 | Yoneda-envolvaĵo | Funktoroj el la esenca bildo de reprezenteblaj antaŭfaskoj | Strukturo heredita per kategoria ekvivalento | Nekomputebla esenc-bilda semantiko | Grupoido ekvivalenta al la fonto; nek ekstere univalenta nek Rezk-kompleta |
 | Simplicia interfaca nervo | Simpliciaj facoj kaj degeneroj; homotopikategorio | Strikta Segal-kunmeto de spinoj | Semantika pruva tavolo | Kan-a, kvazaŭkategoria kaj 2-koskeleta; eksplicitaj internaj kaj eksteraj kornplenigiloj; sen kompleta-Segal- aŭ Rezk-aserto |
-| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; nivele strikta Segal kaj Kan; striktaj eksteraj Segal-ekvivalentoj en ĉiuj dugradoj | Semantika pruva tavolo | Vera dusimplicia konstruo; horizontalaj vicoj estas ordinaraj nervoj kaj vertikalaj verticoj reakiras la striktan nervon; Rezk-kompleteco restas malfermita |
+| Rezk-klasifika diagramo | Eksteraj simpliciaj kategorioj de kunmeteblaj ĉenoj kaj nivelaj nervoj | Naturaj transformoj de ĉenoj; nivele strikta Segal kaj Kan; striktaj eksteraj Segal-ekvivalentoj en ĉiuj dugradoj | Semantika pruva tavolo | Vera dusimplicia konstruo; la efektiva kompleteca mapo estas nervo de kategoria ekvivalento; Reedy-fibreco, kompleta-Segal-a pakado kaj lokalizo restas malfermitaj |
 
 Kopiado, forĵetado kaj kaŭzeco estas realigitaj en la finia stokasta modelo,
 kaj ĝia finia diskreta bildo havas kontrolitan mezurteorian semantikon en
@@ -1321,7 +1337,9 @@ simpliciaj objektoj kun teoremoj pri strikta Segal, kompleta Kan-kornplenigo,
 kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio. La
 klasifika diagramo aldone havas naturan vertikal-vertican komparon,
 inversigeblajn vertikalajn transformojn kaj eksterajn Segal-ekvivalentojn en
-ĉiuj dugradoj, sed neniu rezulto pri Rezk-kompleteco aŭ lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
+ĉiuj dugradoj; la efektiva Rezk-kompleteca komparo estas ankaŭ pruvita kiel la
+nervo de kategoria ekvivalento. Neniu rezulto pri Reedy-fibreco,
+kompleta-Segal-a pakado aŭ lokalizo estas asertata. La modeldukategorio estas realigita por fiksa
 rimedtipo kaj unuformaj universoj; neniu tavolo pretendas `(∞,1)`-kategorion
 nek derivon de tipegaleco el Lean-tipekvivalento. La finia
 Kraus-kanala kerno kun tensoro, forĵeto kaj finia kompleta pozitiveco estas
@@ -1857,7 +1875,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Plene fidela Yoneda-semantiko kaj la esenc-bilda reprezentebla envolvaĵo
 - [x] Strikta simplicia nervo, kompleta Kan-kornplenigo, ekzakta Segal-rekonstruo, kvazaŭkategorio, 2-koskeleteco kaj reakiro de la homotopikategorio
 - [x] Rezk-klasifika diagramo kun nivelaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, natura vertikal-vertica komparo kaj inversigeblaj vertikalaj transformoj
-- [ ] Rezk-kompleteco kaj lokalizo kun eksplicita pli-alta kohero
+- [x] La efektiva Rezk-kompleteca komparo estas nervo de kategoria ekvivalento
+- [ ] Reedy-fibreco, kompleta-Segal-a pakado kaj lokalizo kun eksplicita pli-alta kohero
 
 Tiuj markobutonoj ne promesas difinitan eldonordon. Ĉiu aldono devas konservi la
 ekzistantan sinsekvan limon aŭ dokumenti intencan malkongruan ŝanĝon.

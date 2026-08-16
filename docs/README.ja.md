@@ -84,7 +84,9 @@ Rezk への次の基礎もコンパイル済みです。真正な classifying di
 外側の simplicial 方向に保持し、各レベルで nerve を取ります。各垂直レベルは groupoid nerve なので Kan
 であり、垂直頂点を取ると厳密な interface nerve が自然に復元され、垂直辺は可逆自然変換に正確に対応します。
 二つの有限添字圏を入れ替えると、各水平行は通常の圏の nerve と自然同型になります。したがって全双次数で
-実際の外側 spine/Segal 比較が同値です。Rezk 完備性写像は未証明なので、complete-Segal や localization は主張しません。
+実際の外側 spine/Segal 比較が同値です。実際の Rezk 完備性写像は外側の零退化として定義され、明示的な
+圏同値の nerve であることが証明されました。Reedy fibrancy、complete-Segal のパッケージ化、localization
+の普遍性は未解決です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
@@ -747,14 +749,25 @@ interfaceClassifyingDiagramHorizontalRowIso M k :
 interfaceClassifyingDiagramOuterSegalEquiv M k n :
   (InterfaceClassifyingDiagramHorizontalRow M k) _⦋n⦌ ≃
     (InterfaceClassifyingDiagramHorizontalRow M k).Path n
+
+interfaceClassifyingDiagramCompletenessMap M :
+  InterfaceClassifyingDiagramObjectSpace M ⟶
+    InterfaceClassifyingDiagramEquivalenceSpace M
+
+interfaceClassifyingDiagramCompletenessMap_eq_nerveMap M :
+  interfaceClassifyingDiagramCompletenessMap M =
+    CategoryTheory.nerveMap
+      (interfaceClassifyingDiagramCompletenessEquivalence M).functor
 ```
 
 第二の同値の順方向写像は、実際の spine 写像そのものです。よって外側 Segal 条件は、任意に選んだ
 台集合の同値ではなく、各双次数で厳密に成立します。
 
 これは内部 groupoid 上の標準的な Rezk classifying-diagram 構成で、厳密 nerve を越える実質的な一歩です。
-外側 Segal 比較は証明済みですが、Rezk completeness map はまだ定義・証明されていないため、現段階では
-complete Segal space や資源プロセス双圏の localization とは呼びません。監査済みの正確な公理 footprint は
+全水平射が可逆なので、同値部分空間は外側次数 1 の全体です。実際の外側零退化は、明示的な圏同値
+`ComposableArrows M.Object 0 ≌ ComposableArrows M.Object 1` の順方向関手の nerve そのものであり、
+Rezk 完備性比較を nerve-of-category-equivalence の強さで証明します。残る complete-Segal 境界は
+Reedy fibrancy とそのパッケージ化であり、資源プロセス双圏の localization 普遍性はまだ主張しません。監査済みの正確な公理 footprint は
 `[propext, Classical.choice, Quot.sound]` であり、プロジェクト固有の公理や実行時の選択データは追加しません。
 
 ## 証明済みの内容
@@ -999,6 +1012,8 @@ complete Segal space や資源プロセス双圏の localization とは呼びま
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalStrictSegal` | 各水平行は明示的な strict-Segal 再構成データを持ちます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv` | 全水平・垂直次数で外側 spine 比較は同値です。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramOuterSegalEquiv_apply` | 外側 Segal 同値の順方向写像は正確に spine 写像です。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessEquivalence` | 実際の外側零退化関手は圏同値です。 |
+| `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | Rezk 完備性写像はその圏同値の順方向関手の nerve そのものです。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | Classifying diagram の各垂直レベルは明示的な strict-Segal 再構成データを持ちます。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | Classifying diagram の各垂直レベルは Kan complex です。 |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | 垂直頂点を取ると通常の interface nerve が自然に復元されます。 |
@@ -1039,8 +1054,8 @@ complete Segal space や資源プロセス双圏の localization とは呼びま
 | 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
 | 12、presheaf 基礎 | 充満忠実な Yoneda 意味論、可表対象での同一性/同値対応、本質像包絡 | **PROVED** |
 | 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
-| 12、classifying-diagram 基礎 | Rezk classifying diagram、レベルごとの groupoid/Kan/strict-Segal 構造、全双次数での厳密な外側 Segal 同値、通常 nerve の自然な復元、可逆垂直変換 | **PROVED** |
-| 12、高次拡張 | Rezk 完備性、outer-Segal classifying diagram を越える高次 localization | **OPEN RESEARCH** |
+| 12、classifying-diagram 基礎 | Rezk classifying diagram、レベルごとの groupoid/Kan/strict-Segal 構造、全双次数での厳密な外側 Segal 同値、圏論的 Rezk 完備性比較、通常 nerve の自然な復元、可逆垂直変換 | **PROVED** |
+| 12、高次拡張 | Reedy fibrancy、complete-Segal のパッケージ化、完備性比較を越える高次 localization | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -1067,7 +1082,7 @@ complete Segal space や資源プロセス双圏の localization とは呼びま
 | 内部 presheaf universe | 型値 presheaf 間の自然変換 | 可表対象の作用 | 意味論的証明層 | Yoneda は充満忠実；同一性/同値は可表自然変換/自然同型に対応 |
 | Yoneda 包絡 | 可表対象の本質像から出る関手 | 圏同値を通して構造を継承 | 非計算的な本質像意味論 | 元の groupoid と圏同値；外部 univalence も Rezk 完備性もない |
 | Simplicial interface nerve | Simplicial 面・退化写像；homotopy category | Strict Segal spine 合成 | 意味論的証明層 | Kan、quasicategory、2-coskeletal；inner/outer horn filler を明示；complete-Segal/Rezk の主張なし |
-| Rezk classifying diagram | 合成可能な射列の外側 simplicial 圏とレベルごとの nerve | 射列間の自然変換；レベルごとの strict Segal と Kan；全双次数での厳密な外側 Segal 同値 | 意味論的証明層 | 真正な双 simplicial 構成；水平行は通常の nerve、垂直頂点は厳密 nerve を復元；Rezk 完備性は未解決 |
+| Rezk classifying diagram | 合成可能な射列の外側 simplicial 圏とレベルごとの nerve | 射列間の自然変換；レベルごとの strict Segal と Kan；全双次数での厳密な外側 Segal 同値 | 意味論的証明層 | 真正な双 simplicial 構成；実際の完備性写像は圏同値の nerve；Reedy fibrancy、complete-Segal のパッケージ化、localization は未解決 |
 
 有限確率モデルにはコピー、破棄、因果性が実装され、その有限離散像には Mathlib `Stoch` による
 検証済みの測度論的意味論があります。正確な有限意思決定層にも、コンパイル済みの Blackwell、
@@ -1085,7 +1100,8 @@ complete-Segal/Rezk-complete な
 通常の 1-圏論的構成にとどまります。それらの厳密な圏論的 nerve とレベルごとに groupoid 化された Rezk
 classifying diagram は真正な simplicial 対象として実装され、完全な Kan horn filling、strict Segal、
 quasicategory、2-coskeletal、homotopy-category 復元が証明済みです。Classifying diagram にはさらに自然な
-垂直頂点比較、可逆垂直変換、全双次数での外側 Segal 同値がありますが、Rezk 完備性と localization は未証明です。モデル双圏は固定資源型と統一 universe の範囲で実装され、
+垂直頂点比較、可逆垂直変換、全双次数での外側 Segal 同値を持ち、実際の Rezk 完備性比較も圏同値の
+nerve として証明済みです。ただし Reedy fibrancy、complete-Segal のパッケージ化、localization は未証明です。モデル双圏は固定資源型と統一 universe の範囲で実装され、
 これらの層は `(∞,1)`-圏や
 Lean の型同値から型等式への同一視は主張しません。
 テンソル、破棄、有限完全正値性を備えた Kraus
@@ -1568,7 +1584,8 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] 充満忠実な Yoneda 意味論と可表対象の本質像包絡
 - [x] 厳密 simplicial nerve、完全な Kan horn filling、正確な Segal 再構成、quasicategory、2-coskeletality、homotopy-category 復元
 - [x] Rezk classifying diagram、レベルごとの groupoid/Kan 構造、厳密な外側 Segal 同値、自然な垂直頂点比較、可逆垂直変換
-- [ ] Rezk 完備性、明示的高次 coherence を持つ localization
+- [x] 実際の Rezk 完備性比較は圏同値の nerve
+- [ ] Reedy fibrancy、complete-Segal のパッケージ化、明示的高次 coherence を持つ localization
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
 破壊的変更を明記する必要があります。
