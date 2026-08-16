@@ -93,8 +93,12 @@ set_option autoImplicit false
 #print axioms Ript.Models.Probability.StochFunctor.toStoch_map_tensor
 #print axioms Ript.Models.Probability.FiniteKL.distributionMeasure_push
 #print axioms Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff
+#print axioms Ript.Models.Probability.FiniteKL.distributionMeasure_withDensity_densityRatio
+#print axioms Ript.Models.Probability.FiniteKL.finiteKL_eq_sum_of_absolutelyContinuous
+#print axioms Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport
 #print axioms Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff
 #print axioms Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation
+#print axioms Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation
 #print axioms Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing
 #print axioms Ript.Core.Simulates.trans
 #print axioms Ript.Core.SimulatesWithin.trans
@@ -129,6 +133,7 @@ set_option autoImplicit false
 #print axioms Ript.Models.Thermal.Divergence.athermality_monotone
 #print axioms Ript.Models.Thermal.klAthermality_monotone
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_involutive
+#print axioms Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum
 #print axioms Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_posSemidef
 #print axioms Ript.Models.Quantum.KrausRepresentation.map_trace

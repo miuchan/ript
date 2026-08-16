@@ -407,8 +407,13 @@ teoremo. `Ript.Models.Probability.FiniteKL` enigas ĉiun ekzaktan racian
 `FinDist` kiel ĝian diskretan probablomezuron kaj specialigas la mezurteorian
 `InformationTheory.klDiv` de Mathlib. La celaro estas `ℝ≥0∞`: pozitiva maso kie
 la referenca maso estas nul do donas ekzakte `∞`, kaj malsamaj punktamasoj havas
-pruvite senfinan diverĝencon. La semantika enigo estas injekcia, plenumebla
-antaŭenigo ekzakte egalas mezurkunmeton kun la interpretita Markov-kerno, kaj la
+pruvite senfinan diverĝencon. La semantika enigo estas injekcia. Sub subtena
+inkludo, la formaligo identigas la Radon--Nikodym-denson punkte kiel la ekzaktan
+racion de masoj, derivas kaj la etend-reelan finian f-diverĝencan sumon kaj la
+klasikan reelan formulon `sum_x p(x) log (p(x) / q(x))`, kaj pruvas ke KL estas
+`∞` ekzakte kiam ekzistas subtena malobservo. La unuforma Bulea termika ekzemplo
+instancigas la reelan formulon por ĉiu stato. Plenumebla antaŭenigo ekzakte
+egalas mezurkunmeton kun la interpretita Markov-kerno, kaj la
 kernnivela teoremo de Mathlib donas por ĉiu ekzakta finia stokasta kanalo `T`
 
 ```text
@@ -781,11 +786,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | Ĉiu diverĝenco kun DPI donas Gibbs-konservan termikan monotonon. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | Plenumebla distribua antaŭenigo egalas mezur–kernan kunmeton. |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | Finia absoluta kontinueco ekzakte egalas inkludon de nenula subteno. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_sum_of_absolutelyContinuous` | Sub subtena inkludo, finia KL estas la eksplicita finia f-diverĝenca sumo. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport` | Plensubtenaj referencoj donas la klasikan reelan formulon `sum p log (p / q)`. |
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | Finia KL estas nul ekzakte por egalaj ekzaktaj distribuoj. |
-| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | Pozitiva maso kontraŭ nula referenca maso devigas senfinan KL. |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | Senfina KL estas ekvivalenta al pozitiva maso kontraŭ nula referenca maso. |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Ĉiu ekzakta finia stokasta kanalo plenumas KL-datumtraktadon. |
 | `Ript.Models.Thermal.klAthermality_monotone` | Konkreta finia KL de ekvilibro estas Gibbs-konserva monotono. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
+| `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Bulea KL-atermikeco estas eksplicita duterma logaritma sumo. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Inversigebla termika bitrenverso ekzakte konservas KL-atermikecon. |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | Ĉiu finia Kraus-sumo konservas kompleksan operatoran pozitivecon. |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus-kompleteco implicas ekzaktan spurokonservon. |

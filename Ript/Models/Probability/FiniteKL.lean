@@ -75,6 +75,24 @@ theorem lintegral_distributionMeasure {X : Object.{u}} (p : FinDist X)
   simp [distributionMeasure, lintegral_finsetSum_measure,
     lintegral_smul_measure, lintegral_dirac]
 
+/-- Real-valued integration over a semantic finite distribution is the
+corresponding probability-weighted finite sum. -/
+theorem integral_distributionMeasure {X : Object.{u}} (p : FinDist X)
+    (g : X → ℝ) :
+    letI : MeasurableSpace X := ⊤
+    ∫ x, g x ∂distributionMeasure p =
+      ∑ x : X, (p.prob x : ℝ) * g x := by
+  let _ : MeasurableSpace X := ⊤
+  rw [distributionMeasure, integral_finsetSum_measure]
+  · simp only [integral_smul_measure, integral_dirac, smul_eq_mul]
+    apply Finset.sum_congr rfl
+    intro x _
+    simp only [← ENNReal.coe_nnratCast, ENNReal.coe_toReal,
+      NNRat.cast_def, NNReal.coe_div, NNReal.coe_natCast]
+  · intro x _
+    apply (integrable_dirac (by finiteness)).smul_measure
+    exact (ENNReal.coe_ne_top : (p.prob x : ℝ≥0∞) ≠ ∞)
+
 /-- The discrete measure interpretation loses no information. -/
 theorem distributionMeasure_injective {X : Object.{u}} :
     Function.Injective (@distributionMeasure X) := by
@@ -145,6 +163,121 @@ standard extended-nonnegative-real boundary semantics. -/
 def finiteKL {X : Object.{u}} (p q : FinDist X) : ℝ≥0∞ :=
   InformationTheory.klDiv (distributionMeasure p) (distributionMeasure q)
 
+/-- The pointwise Radon--Nikodym density of `p` relative to `q`, expressed
+directly from their exact rational probability masses. -/
+def densityRatio {X : Object.{u}} (p q : FinDist X) (x : X) : ℝ≥0∞ :=
+  (p.prob x : ℝ≥0∞) / (q.prob x : ℝ≥0∞)
+
+/-- The explicit finite f-divergence summand used by the extended-real KL
+formula. -/
+def finiteKLTerm {X : Object.{u}} (p q : FinDist X) (x : X) : ℝ≥0∞ :=
+  (q.prob x : ℝ≥0∞) *
+    ENNReal.ofReal (InformationTheory.klFun (densityRatio p q x).toReal)
+
+/-- The classical real-valued KL summand.  Lean's real logarithm satisfies
+`log 0 = 0`, so the conventional `0 * log 0 = 0` boundary needs no separate
+branch. -/
+def finiteKLRealTerm {X : Object.{u}} (p q : FinDist X) (x : X) : ℝ :=
+  (p.prob x : ℝ) * Real.log ((p.prob x : ℝ) / (q.prob x : ℝ))
+
+/-- Absolute continuity identifies the first discrete measure as the second
+measure weighted by the explicit pointwise density ratio. -/
+theorem distributionMeasure_withDensity_densityRatio {X : Object.{u}}
+    {p q : FinDist X}
+    (h_ac : distributionMeasure p ≪ distributionMeasure q) :
+    (distributionMeasure q).withDensity (densityRatio p q) =
+      distributionMeasure p := by
+  let _ : MeasurableSpace X := ⊤
+  apply @Measure.ext_of_singleton X ⊤ (by infer_instance)
+  intro x
+  rw [withDensity_apply _ MeasurableSet.of_discrete,
+    lintegral_singleton, distributionMeasure_singleton,
+    distributionMeasure_singleton]
+  apply ENNReal.div_mul_cancel'
+  · intro hqx
+    rw [ennreal_coe_nnrat_eq_zero_iff] at hqx
+    rw [ennreal_coe_nnrat_eq_zero_iff]
+    exact (distributionMeasure_absolutelyContinuous_iff.mp h_ac) x hqx
+  · intro hqx
+    exact False.elim ((ENNReal.coe_ne_top : (q.prob x : ℝ≥0∞) ≠ ∞) hqx)
+
+/-- The Radon--Nikodym derivative of two exact finite distributions is their
+pointwise rational mass ratio, almost everywhere under the reference measure. -/
+theorem rnDeriv_distributionMeasure_ae {X : Object.{u}} {p q : FinDist X}
+    (h_ac : distributionMeasure p ≪ distributionMeasure q) :
+    (distributionMeasure p).rnDeriv (distributionMeasure q) =ᵐ[distributionMeasure q]
+      densityRatio p q := by
+  let _ : MeasurableSpace X := ⊤
+  rw [← distributionMeasure_withDensity_densityRatio h_ac]
+  exact Measure.rnDeriv_withDensity _ Measurable.of_discrete
+
+/-- The log-likelihood ratio is the logarithm of the exact pointwise mass
+ratio, almost everywhere under the first distribution. -/
+theorem llr_distributionMeasure_ae {X : Object.{u}} {p q : FinDist X}
+    (h_ac : distributionMeasure p ≪ distributionMeasure q) :
+    llr (distributionMeasure p) (distributionMeasure q) =ᵐ[distributionMeasure p]
+      fun x => Real.log (densityRatio p q x).toReal := by
+  apply h_ac.ae_eq
+  filter_upwards [rnDeriv_distributionMeasure_ae h_ac] with x hx
+  simp only [llr, hx]
+
+/-- **Explicit finite KL formula.** Whenever the support of `p` is contained
+in that of `q`, the measure-theoretic KL divergence is exactly a finite sum of
+the pointwise f-divergence terms. -/
+theorem finiteKL_eq_sum_of_absolutelyContinuous {X : Object.{u}}
+    {p q : FinDist X}
+    (h_ac : distributionMeasure p ≪ distributionMeasure q) :
+    finiteKL p q = ∑ x : X, finiteKLTerm p q x := by
+  rw [finiteKL, InformationTheory.klDiv_eq_lintegral_klFun_of_ac h_ac]
+  rw [lintegral_congr_ae]
+  · rw [lintegral_distributionMeasure]
+    rfl
+  · filter_upwards [rnDeriv_distributionMeasure_ae h_ac] with x hx
+    simp only [hx]
+
+/-- Under the same support condition, the real value of finite KL is the
+classical finite sum `sum_x p(x) log (p(x) / q(x))`. -/
+theorem finiteKL_toReal_eq_sum_of_absolutelyContinuous {X : Object.{u}}
+    {p q : FinDist X}
+    (h_ac : distributionMeasure p ≪ distributionMeasure q) :
+    (finiteKL p q).toReal = ∑ x : X, finiteKLRealTerm p q x := by
+  rw [finiteKL, InformationTheory.toReal_klDiv_of_measure_eq h_ac]
+  · rw [integral_congr_ae (llr_distributionMeasure_ae h_ac),
+      integral_distributionMeasure]
+    apply Finset.sum_congr rfl
+    intro x _
+    simp only [finiteKLRealTerm, densityRatio, ENNReal.toReal_div]
+    congr 2
+  · rw [distributionMeasure_univ, distributionMeasure_univ]
+
+/-- A support-containment hypothesis stated directly on exact rational masses
+is sufficient for the explicit extended-real finite sum. -/
+theorem finiteKL_eq_sum_of_support {X : Object.{u}} {p q : FinDist X}
+    (h_support : ∀ x, q.prob x = 0 → p.prob x = 0) :
+    finiteKL p q = ∑ x : X, finiteKLTerm p q x := by
+  apply finiteKL_eq_sum_of_absolutelyContinuous
+  exact distributionMeasure_absolutelyContinuous_iff.mpr h_support
+
+/-- With a full-support reference distribution, the classical real finite-sum
+formula is always available. -/
+theorem finiteKL_toReal_eq_sum_of_fullSupport {X : Object.{u}} {p q : FinDist X}
+    (h_full : ∀ x, q.prob x ≠ 0) :
+    (finiteKL p q).toReal = ∑ x : X, finiteKLRealTerm p q x := by
+  apply finiteKL_toReal_eq_sum_of_absolutelyContinuous
+  rw [distributionMeasure_absolutelyContinuous_iff]
+  intro x hqx
+  exact False.elim (h_full x hqx)
+
+/-- Absolute continuity rules out the infinite boundary of finite KL. -/
+theorem finiteKL_ne_top_of_absolutelyContinuous {X : Object.{u}}
+    {p q : FinDist X}
+    (h_ac : distributionMeasure p ≪ distributionMeasure q) :
+    finiteKL p q ≠ ∞ := by
+  rw [finiteKL_eq_sum_of_absolutelyContinuous h_ac]
+  simp [finiteKLTerm]
+  intro x
+  exact ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top
+
 /-- A distribution has zero KL divergence from itself. -/
 @[simp]
 theorem finiteKL_self {X : Object.{u}} (p : FinDist X) : finiteKL p p = 0 := by
@@ -167,6 +300,23 @@ theorem finiteKL_eq_top_of_support_violation {X : Object.{u}}
   intro hpq
   obtain ⟨x, hpx, hqx⟩ := h
   exact hpx (hpq x hqx)
+
+/-- Finite KL reaches `∞` exactly when the first distribution assigns nonzero
+mass to a point on which the reference distribution has zero mass. -/
+theorem finiteKL_eq_top_iff_support_violation {X : Object.{u}}
+    {p q : FinDist X} :
+    finiteKL p q = ∞ ↔ ∃ x, p.prob x ≠ 0 ∧ q.prob x = 0 := by
+  constructor
+  · intro h_top
+    by_contra h_violation
+    push Not at h_violation
+    have h_ac : distributionMeasure p ≪ distributionMeasure q := by
+      rw [distributionMeasure_absolutelyContinuous_iff]
+      intro x hqx
+      by_contra hpx
+      exact h_violation x hpx hqx
+    exact (finiteKL_ne_top_of_absolutelyContinuous h_ac) h_top
+  · exact finiteKL_eq_top_of_support_violation
 
 /-- Distinct point masses exhibit the KL boundary behavior explicitly: their
 divergence is infinite, while equal point masses have divergence zero. -/

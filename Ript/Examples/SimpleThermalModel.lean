@@ -77,6 +77,17 @@ theorem fairEquilibrium_klAthermality :
   change finiteKL fairEquilibrium fairEquilibrium = 0
   exact finiteKL_self fairEquilibrium
 
+/-- The uniform Boolean equilibrium has full support, so every state's KL
+athermality admits the classical two-term logarithmic formula. -/
+theorem klAthermality_toReal_eq_sum (state : FinDist thermalBit.system) :
+    (klAthermality thermalBit state).toReal =
+      ∑ x : Bool, finiteKLRealTerm state fairEquilibrium x := by
+  change (finiteKL state fairEquilibrium).toReal = _
+  apply finiteKL_toReal_eq_sum_of_fullSupport
+  intro x
+  change (1 : ℚ≥0) / 2 ≠ 0
+  norm_num
+
 /-- Reversible equilibrium-preserving bit flip leaves concrete KL athermality
 unchanged.  Each inequality comes from the full stochastic KL data-processing
 theorem; involutivity supplies the reverse inequality. -/

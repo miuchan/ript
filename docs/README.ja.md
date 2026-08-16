@@ -334,7 +334,11 @@ DPI を未証明のまま仮定するものではありません。
 `Ript.Models.Probability.FiniteKL` は正確な有理 `FinDist` を離散確率測度へ埋め込み、Mathlib の
 測度論的 `InformationTheory.klDiv` を特殊化します。値域は `ℝ≥0∞` なので、参照質量がゼロの
 点に正の質量があれば結果は厳密に `∞` であり、異なる点質量間の divergence も無限だと証明
-されています。意味論的埋め込みは単射で、実行可能な pushforward は解釈された Markov kernel
+されています。意味論的埋め込みは単射です。台の包含のもとで Radon--Nikodym 密度を正確な
+有理質量比として各点で同定し、拡張実数値の有限 f-divergence 和と古典的な実数公式
+`sum_x p(x) log (p(x) / q(x))` の両方を導出しました。また KL が `∞` であることと台の違反が
+あることは同値です。一様 Boolean 熱モデルでは任意の状態に対してこの実数公式を具体化します。
+実行可能な pushforward は解釈された Markov kernel
 との測度合成に正確に一致します。Mathlib の kernel レベル定理から、任意の正確な有限確率
 チャネル `T` に対して
 
@@ -660,11 +664,14 @@ horn に制限されることも検証します。
 | `Ript.Models.Thermal.Divergence.athermality_monotone` | DPI を持つ divergence は Gibbs-preserving 熱単調量を与えます。 |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_push` | 実行可能な分布 pushforward は測度–kernel 合成と一致します。 |
 | `Ript.Models.Probability.FiniteKL.distributionMeasure_absolutelyContinuous_iff` | 有限絶対連続性は非零台の包含と正確に同値です。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_sum_of_absolutelyContinuous` | 台の包含のもとで有限 KL は明示的な有限 f-divergence 和です。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_toReal_eq_sum_of_fullSupport` | 全台の参照分布から古典的実数 `sum p log (p / q)` 公式が得られます。 |
 | `Ript.Models.Probability.FiniteKL.finiteKL_eq_zero_iff` | 有限 KL がゼロであることは正確な分布の等しさと同値です。 |
-| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_of_support_violation` | 正の質量がゼロ参照質量に対応すると KL は無限です。 |
+| `Ript.Models.Probability.FiniteKL.finiteKL_eq_top_iff_support_violation` | KL が無限であることは正の質量がゼロ参照質量に対応することと同値です。 |
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | すべての正確な有限確率チャネルが KL データ処理を満たします。 |
 | `Ript.Models.Thermal.klAthermality_monotone` | 平衡からの具体的有限 KL は Gibbs-preserving 単調量です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
+| `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality は明示的な二項対数和です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆熱ビット反転は KL athermality を正確に保存します。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_posSemidef` | 有限 Kraus 和は複素作用素の正値性を保存します。 |
 | `Ript.Models.Quantum.KrausRepresentation.map_trace` | Kraus 完全性から正確なトレース保存が従います。 |
