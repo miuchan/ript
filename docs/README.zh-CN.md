@@ -26,7 +26,9 @@ Blackwell 反向表示定理、有限 KL 数据处理、由能量导出的 Gibbs
 Kraus 族认证的操作映射；经过证明的正性与迹保持；恒等与串行复合封闭；信道范畴；以及精确的
 Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、基 bra 构造的迹/丢弃信道、
 丢弃的唯一性与因果律、任意有限辅助系统上的完整正性，以及规范化 Bell 密度矩阵示例。
-经典随机嵌入与高阶范畴仍是开放研究。
+经典到量子的层现已实现：它以 `sqrt(P(y | x)) |y><x|` 构造 Kraus 算子，并给出到
+退相干幂等子范畴的忠实测量—制备函子；恒等、复合、tensor、对角态演化与概率恢复均已证明。
+高阶范畴仍是开放研究。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–8 与 Stage 9 的有限 Kraus 核心已实现并通过 Lean 内核检验；公共 API 尚未
@@ -300,7 +302,9 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 量子比特示例还构造了规范化 Bell 密度矩阵，证明正半定、迹为一，并把 `|00⟩`/`|11⟩` 的
 非对角相干项精确算为 `1/2`；随后用一般放大定理证明只在第二个量子比特上施加 Pauli-X 后仍
 保持正性。这个例子用于展示一般联合态定理，而不是拿有限测试代替证明；目前也没有声称已经
-形式化证明非可分性。Stage 9 剩余扩展是把有限经典随机信道嵌入为测量—制备量子信道。
+形式化证明非可分性。Stage 9 的经典扩展现已完成：有限随机信道通过
+`sqrt(P(y | x)) |y><x|` 映射为测量—制备信道，并忠实保持复合与 tensor。经典恒等映射为
+基底退相干，而不是所有量子态上的恒等，因此目标被精确定义为退相干幂等子范畴。
 
 ## 已经证明的结果
 
@@ -385,6 +389,12 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | `Ript.Models.Quantum.KrausChannel.eq_discard` | 迹信道是到单位系统的唯一 Kraus 信道。 |
 | `Ript.Models.Quantum.KrausChannel.comp_discard` | 每个有限 Kraus 信道都满足因果丢弃律。 |
 | `Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive` | 每个有限 Kraus 信道在任意有限恒等放大下都保持任意联合矩阵的正性。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.transitionOperator_complete` | `sqrt(P(y | x)) |y><x|` 满足精确 Kraus 完备方程。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_diagonalDensity` | 对角经典态的量子演化精确等于有限分布随机推前。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_comp` | 测量—制备保持随机信道复合。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_tensor` | 测量—制备在完整联合矩阵空间上保持 tensor。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_faithful` | 嵌入信道相等可以恢复全部随机矩阵元素。 |
+| `Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor` | 忠实的退相干子范畴函子保持信道 tensor。 |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X 满足 Kraus 完备方程 `XᴴX = I`。 |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X 交换两个计算基密度矩阵。 |
 | `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | 两个独立 Pauli-X 信道精确翻转两个计算基态。 |
@@ -413,7 +423,7 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 | 7，因果 | 有限 DAG 机制、归一化联合分布、干预与 `FinStoch` 状态 | **PROVED** |
 | 8 | 有限平衡系统、Gibbs-preserving 过程与通用 divergence 单调性 | **PROVED** |
 | 9，有限量子信道 | 复密度矩阵、TP Kraus 信道、tensor/interchange、迹丢弃、因果唯一性与有限完整正性 | **PROVED** |
-| 9，量子扩展 | 有限经典随机信道的测量—制备嵌入 | **OPEN RESEARCH** |
+| 9，量子扩展 | 到退相干幂等 Kraus 子范畴的忠实有限随机测量—制备嵌入 | **PROVED** |
 | 10–11 | 双范畴与单值层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -439,7 +449,7 @@ Ript 证明规范放大正好是 `identity A ⊗ channel` 的复线性作用，�
 资源与语义价值定理；同质有限 DAG 层也已具有经过证明的观测与干预语义。有限
 Blackwell--Sherman--Stein 反向表示定理、一般可测决策问题、异构或可测因果模型、完整
 do-calculus、通用复制/丢弃与凸结构接口、具体有限 KL 数据处理、由能量导出的 Gibbs 态、
-经典到量子的嵌入，以及单值或高阶范畴结构都**尚未实现**。带 tensor、丢弃和有限完整正性的
+单值或高阶范畴结构仍**尚未实现**。带 tensor、丢弃和有限完整正性的
 Kraus 信道核心已经实现并通过内核检验。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
@@ -793,7 +803,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [ ] 更丰富的计算成本模型与经过操作验证的 reduction 成本
 - [ ] 具体有限 KL divergence 与经过证明的数据处理不等式
 - [ ] 能量函数、逆温度、Gibbs 构造、自由能与 Landauer 界
-- [ ] 有限经典随机信道到量子层的嵌入
+- [x] 有限经典随机信道到退相干幂等量子子范畴的忠实嵌入
 - [ ] 严格隔离的单价或高阶范畴层
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
@@ -836,7 +846,8 @@ Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复�
 有限完备 Kraus 证书；正性保持、迹保持、恒等、复合、范畴律、规范 tensor 与 interchange、
 密度态演化、具有因果唯一性的迹丢弃，以及 Pauli-X 单/双量子比特例子都已证明。项目还证明了
 对每个有限辅助系统、任意正半定联合矩阵的完整正性，并给出规范化 Bell 密度矩阵示例。这是
-普通有限矩阵表述，不声称已经连接到分析性的 C\*-代数 API。经典随机嵌入仍属于路线图。
+普通有限矩阵表述，不声称已经连接到分析性的 C\*-代数 API。有限经典随机信道已通过
+测量—制备函子忠实嵌入退相干幂等子范畴；这一目标边界避免把退相干误作全量子恒等。
 Ript 也支持带指定精确平衡分布的有限系统、
 Gibbs-preserving 信道复合与 tensor、自由平衡态，以及 divergence 提供已证明 DPI 时的通用
 热单调性；但尚未从能量导出平衡态，也没有有限 KL 与自由能定理。对于精确有限数据，Ript 还支持 Blackwell

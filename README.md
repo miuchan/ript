@@ -35,9 +35,13 @@ and trace preservation, identity and composition closure, canonical tensor
 products, a basis-bra trace/discard channel with causal uniqueness, a channel
 category, complete positivity under every finite identity amplification, a
 normalized Bell-density example, and exact Pauli-X single- and two-qubit
-proofs. The converse Blackwell representation theorem, finite KL data
-processing, energy-derived Gibbs states, the classical-to-quantum embedding,
-and higher categories remain research directions.
+proofs. The classical-to-quantum layer is now implemented as a faithful
+measurement--preparation functor into the dephasing-idempotent subcategory of
+Kraus channels. Its operators are `sqrt(P(y | x)) |y><x|`; identity,
+composition, tensor, diagonal-state evolution, and recovery of every
+stochastic entry are proved. The converse Blackwell representation theorem,
+finite KL data processing, energy-derived Gibbs states, and higher categories
+remain research directions.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The Stage 1–8 layers and the Stage 9
@@ -406,8 +410,15 @@ positive semidefiniteness and trace one, computes its `|00⟩`/`|11⟩` coherenc
 entry as `1/2`, and applies the general amplification theorem to Pauli-X on the
 second qubit. This is evidence for the full joint-state theorem, not a finite
 test standing in for it. A formal nonseparability theorem is not claimed. The
-remaining Stage 9 extension is the embedding of finite classical stochastic
-channels as measurement-preparation quantum channels.
+classical extension constructs the Kraus operator
+`sqrt(P(y | x)) |y><x|` for every stochastic transition and proves the
+completeness equation. It maps exact diagonal states to exact stochastic
+pushforwards, preserves composition and tensor, and is faithful. Since a
+stochastic identity maps to complete basis dephasing rather than the identity
+on arbitrary quantum coherences, the functor honestly targets the
+dephasing-idempotent (Karoubi-style) subcategory of Kraus channels. Its
+categorical identity is dephasing; no incompatible functor into the full
+ambient Kraus category is claimed.
 
 ## What is proved
 
@@ -493,6 +504,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Quantum.KrausChannel.eq_discard` | The trace channel is the unique Kraus channel into the unit system. |
 | `Ript.Models.Quantum.KrausChannel.comp_discard` | Every finite Kraus channel satisfies the causal discard law. |
 | `Ript.Models.Quantum.KrausChannel.toLinearMap_isCompletelyPositive` | Every finite Kraus channel preserves positivity under every finite identity amplification on arbitrary joint matrices. |
+| `Ript.Models.Quantum.ClassicalEmbedding.transitionOperator_complete` | `sqrt(P(y | x)) |y><x|` satisfies the exact Kraus completeness equation. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_diagonalDensity` | Quantum evolution of a diagonal classical state equals exact stochastic pushforward. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_comp` | Measurement--preparation preserves stochastic composition. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_tensor` | Measurement--preparation preserves tensor on the full joint matrix space. |
+| `Ript.Models.Quantum.ClassicalEmbedding.measurementPreparation_faithful` | Equality of embedded channels recovers equality of all stochastic entries. |
+| `Ript.Models.Quantum.ClassicalEmbedding.ClassicalQuantum.embedding_map_tensor` | The faithful dephasing-subcategory functor preserves channel tensor. |
 | `Ript.Examples.QubitChannel.bitFlipOperator_complete` | Pauli-X satisfies the Kraus completeness equation `XᴴX = I`. |
 | `Ript.Examples.QubitChannel.bitFlip_basisDensity` | Pauli-X exchanges the two computational-basis density matrices. |
 | `Ript.Examples.QubitChannel.bitFlip_tensor_basisDensity` | Two independent Pauli-X channels flip both computational-basis states exactly. |
@@ -524,7 +541,7 @@ finished physical theory.
 | 7, causal | Finite DAG mechanisms, normalized joints, interventions, and `FinStoch` states | **PROVED** |
 | 8 | Finite equilibrium systems, Gibbs-preserving processes, and generic divergence monotonicity | **PROVED** |
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
-| 9, quantum extension | Classical finite-stochastic measurement-preparation embedding | **OPEN RESEARCH** |
+| 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10–11 | Bicategorical and univalent layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -544,6 +561,7 @@ Implemented model support is intentionally narrow:
 | Finite causal DAG | Topological generation | Via `FinStoch` states | Executable | Homogeneous finite carrier; parent-local exact mechanisms and hard interventions |
 | Finite thermal systems | Gibbs-preserving category | Product bifunctor | Executable | Specified exact equilibrium; free equilibrium states and generic DPI lifting |
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
+| Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
 discard law. Its finite discrete image has checked measure-theoretic semantics
@@ -553,8 +571,7 @@ Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
 interfaces, concrete finite KL data processing, energy-derived Gibbs states,
-the classical-to-quantum embedding, and univalent or
-higher-categorical structure are **not implemented**. The sequential finite
+and univalent or higher-categorical structure are **not implemented**. The sequential finite
 Kraus channel core, including finite complete positivity, is implemented and
 kernel checked.
 See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
@@ -613,6 +630,11 @@ flowchart LR
   QC --> QT["Canonical tensor and trace discard"]
   QT --> QP["Finite identity-amplification CP"]
   QP --> QX["Exact Pauli-X and Bell-density proofs"]
+  CK --> CQ["Faithful measurement-preparation embedding"]
+  FD --> CQ
+  QP --> CQ
+  CQ --> CD["Dephasing-idempotent Kraus subcategory"]
+  CD --> CX["Exact noisy-Boolean quantum example"]
 ```
 
 | Layer | Main modules | Responsibility |
@@ -945,6 +967,8 @@ updated assumption audit.
 - [x] Complete positivity under every finite identity amplification on arbitrary joint matrices
 - [x] Normalized Bell density, exact coherence entry, and amplified Pauli-X positivity example
 - [x] Exact Pauli-X completeness and computational-basis state transformation
+- [x] Faithful finite-stochastic measurement--preparation embedding with composition and tensor preservation
+- [x] Dephasing-idempotent classical quantum category and exact noisy-Boolean example
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
@@ -960,7 +984,6 @@ updated assumption audit.
 - [ ] Concrete finite KL divergence and a proved data-processing inequality
 - [ ] Energy functions, inverse temperature, Gibbs construction, free energy, and Landauer bounds
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
-- [ ] Embedding of finite classical stochastic channels into the quantum layer
 - [ ] Carefully isolated univalent or higher-categorical layers
 
 These checkboxes are not promises of a particular release order. Each addition
@@ -1018,7 +1041,10 @@ and Pauli-X one- and two-qubit examples are proved. Complete positivity under
 every finite identity amplification and arbitrary joint positive matrix is
 proved, together with a normalized Bell-density example. This predicate is
 Ript's ordinary finite-matrix formulation; no analytic C\*-algebra bridge is
-claimed. The classical stochastic embedding remains a roadmap item. Ript also
+claimed. Exact finite stochastic channels also embed faithfully as
+measurement--preparation channels in the dephasing-idempotent classical
+subcategory; this formulation preserves identities, composition, and tensor
+without confusing dephasing with the full quantum identity. Ript also
 supports finite systems with a specified exact equilibrium distribution,
 Gibbs-preserving channel composition and tensor, free equilibrium states, and
 generic divergence monotonicity whenever a divergence supplies a proved DPI.

@@ -6,6 +6,7 @@ import Ript.Core.ParallelCost
 import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
+import Ript.Examples.ClassicalQuantum
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
@@ -31,6 +32,7 @@ import Ript.Models.FiniteStochastic
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.Quantum.Basic
+import Ript.Models.Quantum.ClassicalEmbedding
 import Ript.Models.Quantum.CompletePositivity
 import Ript.Models.Quantum.Discard
 import Ript.Models.Quantum.Kraus
