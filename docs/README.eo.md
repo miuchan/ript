@@ -38,7 +38,10 @@ konstruas strikt-pozitivajn normaligitajn Gibbs-probablojn kaj atestas kiam
 ekzakta racia ekvilibro realigas ilin. Ĝi difinas Shannon-entropion, averaĝan
 energion kaj neekvilibran/ekvilibran Helmholtz-liberan energion, pruvas
 `D(p ‖ γ) = β (F(p) - F(γ))`, kaj derivas monotonecon de la liberenergia diferenco
-por Gibbs-konservaj kanaloj je komuna inversa temperaturo.
+por Gibbs-konservaj kanaloj je komuna inversa temperaturo. Ĝi ankaŭ kanone
+realigas ĉiun plen-subtenan ekzaktan ekvilibron je ĉiu pozitiva inversa
+temperaturo kaj pruvas faktoradon, multiplikan particifunkcion kaj adiciecon de
+energio, entropio kaj libera energio por sendependaj samtemperaturaj sistemoj.
 Ript nun ankaŭ havas apartan fini-dimensian kompleksan kvantuman kernon:
 pozitivajn duondifinajn densmatricojn kun spuro unu, operaciajn mapojn
 atestitajn per finiaj kompletaj Kraus-familioj, pruvitan konservon de pozitiveco
@@ -439,6 +442,13 @@ realiga atestilo inter tiu analiza distribuo kaj la ekzistanta ekzakta racia
 ekvilibro; ĝi ne supozas ke arbitraj eksponentaj pezoj estas raciaj aŭ
 plenumeblaj.
 
+Inverse, ĉiu ekzakta finia ekvilibro kun plena subteno havas kanonan Gibbs-
+realigon je ĉiu elektita `β > 0`. Ript metas
+`E(x) = -log γ(x) / β`, pruvas ke la Boltzmann-pezo estas ekzakte `γ(x)` kaj
+ke `Z = 1`, kaj pakas la realigan atestilon. Tio estas ekzistoteoremo pri
+energireprezento de plen-subtenaj ekzaktaj distribuoj, ne decidproceduro por
+racieco de Gibbs-pezoj de aparte donita reela energispektro.
+
 Por ĉiu realigita sistemo la liberenergia tavolo difinas averaĝan energion
 `U(p)`, Shannon-entropion `S(p)`, `F(p) = U(p) - S(p) / β`, kaj
 `F(γ) = -log Z / β`. Lean tiam pruvas
@@ -449,9 +459,12 @@ D(p ‖ γ) = β (F(p) - F(γ)).
 
 Gibbs-ekvilibroj havas plenan subtenon, do la KL-valoro ĉi tie estas finia.
 Kun la pruvita DPI sekvas ke Gibbs-konserva kanalo inter sistemoj je la sama
-inversa temperaturo ne povas pligrandigi `F(p) - F(γ)`. Landauer-tipaj
-neegalaĵoj kaj ĝenerala klasifiko de ekzakte raciaj Gibbs-realigoj restas
-malfermaj.
+inversa temperaturo ne povas pligrandigi `F(p) - F(γ)`. Sendependaj Gibbs-
+sistemoj je komuna inversa temperaturo ankaŭ tenzoriĝas ekzakte: pezoj kaj
+probabloj faktoriĝas, particifunkcioj multiplikiĝas, kaj `U`, `S`, `F`,
+`F(γ)` kaj la liberenergia diferenco estas adiciaj sur produktaj statoj.
+Landauer-tipaj neegalaĵoj kaj klasifiko de raciaj Gibbs-pezoj por aparte
+donitaj reelaj energispektroj restas malfermaj.
 
 ### 12. Finiaj kompleksaj densmatricoj kaj Kraus-kanaloj
 
@@ -819,9 +832,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Ĉiu ekzakta finia stokasta kanalo plenumas KL-datumtraktadon. |
 | `Ript.Models.Thermal.klAthermality_monotone` | Konkreta finia KL de ekvilibro estas Gibbs-konserva monotono. |
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | La normaligitaj finiaj Boltzmann-pezoj sumiĝas al unu. |
+| `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | Ĉiu plen-subtena ekzakta ekvilibro havas kanonan Gibbs-realigon je ĉiu pozitiva inversa temperaturo. |
+| `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | Samtemperaturaj produktaj sistemoj havas multiplikajn particifunkciojn. |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | Ĉiu ekzakte realigita Gibbs-ekvilibro havas plenan subtenon. |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finia KL-atermikeco egalas inversan temperaturon oble la troan Helmholtz-liberan energion. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Samtemperaturaj Gibbs-konservaj kanaloj ne pligrandigas troan liberan energion. |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | Troa libera energio estas adicia sur sendependaj samtemperaturaj produktaj statoj. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Du ekvilibro-konservaj Buleaj renversoj kunmetiĝas al termika idento. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Bulea KL-atermikeco estas eksplicita duterma logaritma sumo. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Inversigebla termika bitrenverso ekzakte konservas KL-atermikecon. |
@@ -972,7 +988,7 @@ DAG-tavolo ankaŭ havas pruvitan observan kaj intervenan semantikon. La inversa
 finia Blackwell--Sherman--Stein-prezenta teoremo, ĝeneralaj mezureblaj
 decidproblemoj, heterogenaj aŭ mezureblaj kaŭzaj modeloj, kompleta do-kalkulo,
 ĝeneralaj interfacoj por kopiado, forĵetado kaj konvekseco,
-ĝeneralaj kriterioj por ekzakte raciaj Gibbs-realigoj, Landauer-limoj kaj pli-altdimensia aŭ
+raci-peza klasifiko por aparte donitaj reelaj energispektroj, Landauer-limoj kaj pli-altdimensia aŭ
 Rezk-kompleta univalenta semantiko estas **ne realigitaj**. La nuna interne
 univalenta universo estas malgranda profunda enigo, kies identaj kaj ekvivalentaj
 kvocientoj interpretiĝas en aroj. Ĝiaj senelekta objektokompletigo kaj
@@ -1437,7 +1453,8 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [ ] Pli riĉaj komputkostaj modeloj kaj operacie validigitaj reduktokostoj
 - [x] Finiaj energioj, pozitiva inversa temperaturo, Gibbs-realigo, entropio kaj Helmholtz-libera energio
 - [x] Ekzakta finia KL/liberenergia identeco kaj samtemperatura monotoneco de liberenergia diferenco
-- [ ] Landauer-limoj kaj ĝeneralaj kriterioj por ekzakte raciaj Gibbs-realigoj
+- [x] Kanona Gibbs-realigo de ĉiu plen-subtena ekzakta ekvilibro kaj samtemperatura tenzora adicieco
+- [ ] Landauer-limoj kaj klasifiko de raciaj Gibbs-pezoj por aparte donitaj reelaj energispektroj
 - [x] Fidela enigo de finiaj klasikaj stokastaj kanaloj en la malfazigan idempotentan kvantuman subkategorion
 - [x] Rimed-indeksitaj modelaj 0-ĉeloj kaj rimed-nepligrandigaj fortaj plektitaj monoidaj 1-ĉeloj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
@@ -1514,8 +1531,10 @@ monotonecon de KL-atermikeco. Ĝia analiza realiga tavolo konstruas finiajn
 Gibbs-probablojn el reelaj energioj kaj pozitiva inversa temperaturo, atestas
 ekzaktajn raciajn ekvilibrojn kiam la probabloj egalas, kaj pruvas la
 KL/liberenergian identecon kaj samtemperaturan monotonecon de la liberenergia
-diferenco. Ĝi ankoraŭ ne havas Landauer-neegalaĵojn aŭ kompletan klasifikon de
-ekzakte raciaj Gibbs-familioj. Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
+diferenco. Ĝi ankaŭ kanone realigas ĉiun plen-subtenan ekzaktan ekvilibron kaj
+pruvas samtemperaturan tensoran adiciecon. Ĝi ankoraŭ ne havas Landauer-
+neegalaĵojn aŭ raci-pezan klasifikon por aparte donitaj reelaj energispektroj.
+Por ekzaktaj finiaj datumoj, Ript ankaŭ subtenas
 Blackwell-malprecigon, plenumeblan Bayes-riskon, rimed-limigitan riskon kaj
 task-rilatan semantikan valoron, kaj pruvas la antaŭenan datumtraktan direkton.
 La inversa finia Blackwell-prezenta teoremo kaj ĝenerala mezurebla decidteorio

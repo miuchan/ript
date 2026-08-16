@@ -64,6 +64,24 @@ noncomputable def gibbsThermalBit : GibbsThermalObject where
     rw [Fintype.sum_bool]
     norm_num
 
+/-- The uniform exact equilibrium has full support. -/
+theorem fairEquilibrium_fullSupport (x : thermalBit.system) :
+    thermalBit.equilibrium.prob x ≠ 0 := by
+  change (1 : ℚ≥0) / 2 ≠ 0
+  norm_num
+
+/-- The generic full-support construction supplies a second, canonically
+gauged Gibbs realization of the same exact thermal bit. -/
+noncomputable def canonicalGibbsThermalBit : GibbsThermalObject :=
+  GibbsThermalObject.ofFullSupport thermalBit 1 (by norm_num)
+    fairEquilibrium_fullSupport
+
+/-- The canonical construction recovers the exact uniform mass directly. -/
+theorem canonicalGibbsThermalBit_probability (x : thermalBit.system) :
+    canonicalGibbsThermalBit.gibbs.probability x =
+      (thermalBit.equilibrium.prob x : ℝ) := by
+  exact (canonicalGibbsThermalBit.equilibrium_eq_probability x).symm
+
 /-- Deterministic Boolean flip as an exact stochastic channel. -/
 def flipChannel : FinStoch bitSystem bitSystem :=
   FinStoch.dirac Bool.not
@@ -196,6 +214,32 @@ theorem thermal_pair_equilibrium (output : Bool × Bool) :
   cases left <;> cases right <;>
     change ((1 : ℚ≥0) / 2) * (1 / 2) = 1 / 4 <;>
     norm_num
+
+/-- The common-temperature Gibbs realization of two independent thermal
+bits. -/
+noncomputable def gibbsThermalPair : GibbsThermalObject :=
+  gibbsThermalBit.tensor gibbsThermalBit rfl
+
+/-- The pair's equilibrium free energy is twice the one-bit value. -/
+theorem thermalPair_equilibriumFreeEnergy :
+    gibbsThermalPair.equilibriumFreeEnergy = -2 * Real.log 2 := by
+  rw [show gibbsThermalPair.equilibriumFreeEnergy =
+      gibbsThermalBit.equilibriumFreeEnergy +
+        gibbsThermalBit.equilibriumFreeEnergy by
+    exact GibbsThermalObject.equilibriumFreeEnergy_tensor
+      gibbsThermalBit gibbsThermalBit rfl,
+    thermalBit_equilibriumFreeEnergy]
+  ring
+
+/-- Excess free energy of an independent pair is the sum of the two one-bit
+excess free energies. -/
+theorem thermalPair_freeEnergyGap_additive
+    (p q : FinDist thermalBit.system) :
+    gibbsThermalPair.freeEnergyGap (p.tensor q) =
+      gibbsThermalBit.freeEnergyGap p +
+        gibbsThermalBit.freeEnergyGap q := by
+  exact GibbsThermalObject.freeEnergyGap_tensor
+    gibbsThermalBit gibbsThermalBit rfl p q
 
 -- The distinguished equilibrium state is exactly normalized.
 #eval decide (∑ value : Bool, fairEquilibrium.prob value = 1)

@@ -27,7 +27,9 @@ bifunctor、自由平衡状態の準備、一般 divergence の単調性も実�
 逆温度を与え、正で正規化された Gibbs 確率を構成し、正確な有理平衡がそれを実現する条件を
 証明書として保持します。Shannon エントロピー、平均エネルギー、非平衡・平衡 Helmholtz
 自由エネルギーを定義し、`D(p ‖ γ) = β (F(p) - F(γ))` と同一逆温度での自由エネルギー差単調性を
-証明しました。一般の可測因果モデル、Blackwell 逆表現定理、Landauer 型境界は研究課題です。
+証明しました。全台を持つ正確な平衡の任意の正逆温度での標準的 Gibbs 実現と、同温の独立系に
+対する重み・確率の因数分解、分配関数の乗法性、エネルギー・エントロピー・自由エネルギーの
+加法性も証明済みです。一般の可測因果モデル、Blackwell 逆表現定理、Landauer 型境界は研究課題です。
 さらに Ript には、古典確率モデルと分離された有限次元複数量子コアがあります。正半定値かつ
 トレース 1 の密度行列、有限完全 Kraus 族で認証された作用、正値性とトレース保存、恒等・直列
 合成閉包、標準チャネルテンソル、interchange、基底 bra によるトレース/破棄チャネルと因果的一意性、
@@ -358,6 +360,11 @@ KL(Tp ‖ Tq) ≤ KL(p ‖ q)
 `GibbsThermalObject` は解析分布と既存の正確な有理平衡を結ぶ実現証明書であり、一般の指数重みが
 有理または実行可能だとは仮定しません。
 
+逆に、全台を持つ任意の正確な有限平衡は、選んだ任意の `β > 0` で標準的 Gibbs 実現を持ちます。
+Ript は `E(x) = -log γ(x) / β` と置き、Boltzmann 重みが厳密に `γ(x)`、`Z = 1` となることを
+証明し、実現証明書を構成します。これは全台を持つ正確な分布のエネルギー表示の存在定理であり、
+別に与えた実エネルギースペクトルがいつ有理 Gibbs 重みを持つかを判定する手続きではありません。
+
 実現済みの各系について平均エネルギー `U(p)`、Shannon エントロピー `S(p)`、
 `F(p) = U(p) - S(p) / β`、`F(γ) = -log Z / β` を定義し、Lean は
 
@@ -366,8 +373,10 @@ D(p ‖ γ) = β (F(p) - F(γ)).
 ```
 
 を証明します。Gibbs 平衡は全台を持つため、この KL は有限です。証明済み DPI と組み合わせると、
-同じ逆温度の Gibbs-preserving チャネルは `F(p) - F(γ)` を増加させません。Landauer 型不等式と
-正確な有理 Gibbs 実現可能性の一般判定は未解決です。
+同じ逆温度の Gibbs-preserving チャネルは `F(p) - F(γ)` を増加させません。同温の独立 Gibbs
+系は厳密にテンソル合成でき、重みと確率は因数分解し、分配関数は乗法的、`U`、`S`、`F`、
+`F(γ)`、自由エネルギー差は積状態上で加法的です。Landauer 型不等式と、別に指定した実スペクトル
+に対する有理 Gibbs 重みの分類は未解決です。
 
 ### 12. 有限複素密度行列と Kraus チャネル
 
@@ -689,9 +698,12 @@ horn に制限されることも検証します。
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | すべての正確な有限確率チャネルが KL データ処理を満たします。 |
 | `Ript.Models.Thermal.klAthermality_monotone` | 平衡からの具体的有限 KL は Gibbs-preserving 単調量です。 |
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | 正規化された有限 Boltzmann 重みの和は 1 です。 |
+| `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | 全台を持つ任意の正確な平衡は、任意の正の逆温度で標準的 Gibbs 実現を持ちます。 |
+| `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | 同温の積系では分配関数が乗法的です。 |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | 正確に実現された Gibbs 平衡は全台を持ちます。 |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | 有限 KL athermality は逆温度と超過 Helmholtz 自由エネルギーの積です。 |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | 同一温度の Gibbs-preserving チャネルは超過自由エネルギーを増加させません。 |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | 同温の独立積状態では超過自由エネルギーが加法的です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | 平衡を保つ Boolean 反転を二回合成すると熱的恒等になります。 |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality は明示的な二項対数和です。 |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | 可逆熱ビット反転は KL athermality を正確に保存します。 |
@@ -837,7 +849,7 @@ horn に制限されることも検証します。
 Bayes リスク、資源、意味価値定理があり、同種有限 DAG 層にも証明済みの観測・介入意味論があります。
 有限 Blackwell--Sherman--Stein 逆表現定理、一般可測意思決定問題、異種または可測な因果モデル、
 完全な do-calculus、一般的なコピー・破棄および凸構造、
-正確な有理 Gibbs 実現可能性の一般判定、Landauer 境界、complete-Segal/Rezk-complete な
+別に指定した実エネルギースペクトルに対する有理 Gibbs 重みの分類、Landauer 境界、complete-Segal/Rezk-complete な
 ユニバレント意味論は**未実装**です。
 現在の内部ユニバレント universe は、同一性と同値の商を集合で解釈する小さな深い埋め込みです。
 選択不要の対象 completion と非計算的 skeleton completion は、明示的に監査された 0/1-truncated 基礎だけを
@@ -1252,7 +1264,8 @@ import Ript.Univalent.Simplicial
 - [ ] より豊かな計算コストモデルと操作的に検証された reduction コスト
 - [x] 有限エネルギー、正の逆温度、Gibbs 実現、エントロピー、Helmholtz 自由エネルギー
 - [x] 正確な有限 KL/自由エネルギー恒等式と同温度の自由エネルギー差単調性
-- [ ] Landauer 境界と正確な有理 Gibbs 実現可能性の一般判定
+- [x] 全台を持つ正確な平衡の標準的 Gibbs 実現と同温テンソル加法性
+- [ ] Landauer 境界と、別に指定した実エネルギースペクトルの有理 Gibbs 重み分類
 - [x] 量子テンソル、破棄/トレースチャネル、恒等/interchange、因果的破棄則
 - [x] 有限古典確率チャネルの脱位相化冪等量子部分圏への忠実な埋め込み
 - [x] 資源添字付きモデル 0-射と資源非増加な強 braided monoidal 1-射
@@ -1318,8 +1331,9 @@ Ript は指定された正確な
 証明済み DPI を持つ場合の一般熱単調性もサポートします。さらに `ℝ≥0∞` 値の具体的有限 KL、
 完全な確率データ処理、KL athermality 単調性も提供します。解析的実現層は実エネルギーと正の
 逆温度から有限 Gibbs 確率を構成し、確率が一致する正確な有理平衡を認証し、KL/自由エネルギー
-恒等式と同温度自由エネルギー差単調性を証明します。Landauer 不等式と全有理 Gibbs 族の分類は
-まだありません。正確な有限
+恒等式と同温度自由エネルギー差単調性を証明します。さらに全台を持つ正確な平衡を標準的に
+実現し、同温テンソル加法性を証明します。Landauer 不等式と、別に指定した実スペクトルの有理
+Gibbs 重み分類はまだありません。正確な有限
 データについては、Blackwell garbling、実行可能 Bayes リスク、資源制約付きリスク、タスク
 相対的意味価値も扱い、正方向のデータ処理を証明しています。逆向きの有限 Blackwell 表現定理と
 一般可測意思決定理論はまだ証明していません。

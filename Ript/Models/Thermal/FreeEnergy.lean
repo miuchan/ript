@@ -1,6 +1,5 @@
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Ring
-import Mathlib.Data.NNRat.BigOperators
 import Ript.Models.Thermal.Gibbs
 import Ript.Models.Thermal.KLDivergence
 
@@ -35,12 +34,6 @@ universe u
 
 noncomputable section
 
-/-- The real probabilities of an exact finite distribution sum to one. -/
-theorem FinDist.sum_prob_real {X : Object.{u}} (state : FinDist X) :
-    ∑ x : X, (state.prob x : ℝ) = 1 := by
-  rw [← NNRat.cast_sum, state.normalized]
-  exact NNRat.cast_one
-
 namespace GibbsThermalObject
 
 /-- Mean energy of an exact state in a finite Gibbs realization. -/
@@ -69,6 +62,170 @@ def equilibriumFreeEnergy (X : GibbsThermalObject.{u}) : ℝ :=
 def freeEnergyGap (X : GibbsThermalObject.{u})
     (state : FinDist X.thermal.system) : ℝ :=
   X.nonequilibriumFreeEnergy state - X.equilibriumFreeEnergy
+
+/-- Mean energy is additive for independent states of common-temperature
+Gibbs systems. -/
+theorem meanEnergy_tensor (left right : GibbsThermalObject.{u})
+    (hTemperature : left.gibbs.inverseTemperature =
+      right.gibbs.inverseTemperature)
+    (p : FinDist left.thermal.system) (q : FinDist right.thermal.system) :
+    (left.tensor right hTemperature).meanEnergy (p.tensor q) =
+      left.meanEnergy p + right.meanEnergy q := by
+  classical
+  change (∑ outcome : left.thermal.system × right.thermal.system,
+      ((p.prob outcome.1 * q.prob outcome.2 : ℚ≥0) : ℝ) *
+        (left.gibbs.energy outcome.1 + right.gibbs.energy outcome.2)) =
+    (∑ x : left.thermal.system,
+      (p.prob x : ℝ) * left.gibbs.energy x) +
+    ∑ y : right.thermal.system,
+      (q.prob y : ℝ) * right.gibbs.energy y
+  simp_rw [NNRat.cast_mul]
+  have hleft :
+      (∑ outcome : left.thermal.system × right.thermal.system,
+        (p.prob outcome.1 : ℝ) * (q.prob outcome.2 : ℝ) *
+          left.gibbs.energy outcome.1) =
+        (∑ x : left.thermal.system,
+          (p.prob x : ℝ) * left.gibbs.energy x) *
+        ∑ y : right.thermal.system, (q.prob y : ℝ) := by
+    rw [Fintype.sum_prod_type, Fintype.sum_mul_sum]
+    apply Fintype.sum_congr
+    intro x
+    apply Fintype.sum_congr
+    intro y
+    ring
+  have hright :
+      (∑ outcome : left.thermal.system × right.thermal.system,
+        (p.prob outcome.1 : ℝ) * (q.prob outcome.2 : ℝ) *
+          right.gibbs.energy outcome.2) =
+        (∑ x : left.thermal.system, (p.prob x : ℝ)) *
+        ∑ y : right.thermal.system,
+          (q.prob y : ℝ) * right.gibbs.energy y := by
+    rw [Fintype.sum_prod_type, Fintype.sum_mul_sum]
+    apply Fintype.sum_congr
+    intro x
+    apply Fintype.sum_congr
+    intro y
+    ring
+  simp_rw [mul_add]
+  rw [Finset.sum_add_distrib, hleft, hright,
+    finDist_sum_prob_real p, finDist_sum_prob_real q]
+  ring
+
+/-- Pointwise logarithmic identity underlying Shannon-entropy additivity,
+including the zero-mass boundary cases. -/
+theorem entropy_tensor_term (a b : ℚ≥0) :
+    (((a * b : ℚ≥0) : ℝ) * Real.log ((a * b : ℚ≥0) : ℝ)) =
+      (b : ℝ) * ((a : ℝ) * Real.log (a : ℝ)) +
+      (a : ℝ) * ((b : ℝ) * Real.log (b : ℝ)) := by
+  by_cases ha : a = 0
+  · simp [ha]
+  by_cases hb : b = 0
+  · simp [hb]
+  have ha_real : (a : ℝ) ≠ 0 := by simpa using ha
+  have hb_real : (b : ℝ) ≠ 0 := by simpa using hb
+  rw [NNRat.cast_mul, Real.log_mul ha_real hb_real]
+  ring
+
+/-- Shannon entropy is additive on independent product states. -/
+theorem entropy_tensor (left right : GibbsThermalObject.{u})
+    (hTemperature : left.gibbs.inverseTemperature =
+      right.gibbs.inverseTemperature)
+    (p : FinDist left.thermal.system) (q : FinDist right.thermal.system) :
+    (left.tensor right hTemperature).entropy (p.tensor q) =
+      left.entropy p + right.entropy q := by
+  classical
+  change -(∑ outcome : left.thermal.system × right.thermal.system,
+      (((p.prob outcome.1 * q.prob outcome.2 : ℚ≥0) : ℝ) *
+        Real.log ((p.prob outcome.1 * q.prob outcome.2 : ℚ≥0) : ℝ))) =
+    -(∑ x : left.thermal.system,
+      (p.prob x : ℝ) * Real.log (p.prob x : ℝ)) +
+    -(∑ y : right.thermal.system,
+      (q.prob y : ℝ) * Real.log (q.prob y : ℝ))
+  simp_rw [entropy_tensor_term]
+  rw [Fintype.sum_prod_type]
+  simp_rw [Finset.sum_add_distrib]
+  have hleft :
+      (∑ x : left.thermal.system, ∑ y : right.thermal.system,
+        (q.prob y : ℝ) *
+          ((p.prob x : ℝ) * Real.log (p.prob x : ℝ))) =
+        (∑ x : left.thermal.system,
+          (p.prob x : ℝ) * Real.log (p.prob x : ℝ)) *
+        ∑ y : right.thermal.system, (q.prob y : ℝ) := by
+    rw [Fintype.sum_mul_sum]
+    apply Fintype.sum_congr
+    intro x
+    apply Fintype.sum_congr
+    intro y
+    ring
+  have hright :
+      (∑ x : left.thermal.system, ∑ y : right.thermal.system,
+        (p.prob x : ℝ) *
+          ((q.prob y : ℝ) * Real.log (q.prob y : ℝ))) =
+        (∑ x : left.thermal.system, (p.prob x : ℝ)) *
+        ∑ y : right.thermal.system,
+          (q.prob y : ℝ) * Real.log (q.prob y : ℝ) := by
+    rw [Fintype.sum_mul_sum]
+  rw [hleft, hright,
+    finDist_sum_prob_real p, finDist_sum_prob_real q]
+  ring
+
+/-- Equilibrium Helmholtz free energy is additive for independent
+common-temperature Gibbs systems. -/
+theorem equilibriumFreeEnergy_tensor (left right : GibbsThermalObject.{u})
+    (hTemperature : left.gibbs.inverseTemperature =
+      right.gibbs.inverseTemperature) :
+    (left.tensor right hTemperature).equilibriumFreeEnergy =
+      left.equilibriumFreeEnergy + right.equilibriumFreeEnergy := by
+  change -Real.log
+        (left.gibbs.tensor right.gibbs hTemperature).partitionFunction /
+      left.gibbs.inverseTemperature =
+    -Real.log left.gibbs.partitionFunction /
+        left.gibbs.inverseTemperature +
+      -Real.log right.gibbs.partitionFunction /
+        right.gibbs.inverseTemperature
+  rw [FiniteGibbsData.tensor_partitionFunction left.gibbs right.gibbs
+      hTemperature,
+    Real.log_mul left.gibbs.partitionFunction_ne_zero
+      right.gibbs.partitionFunction_ne_zero]
+  rw [← hTemperature]
+  field_simp [ne_of_gt left.gibbs.inverseTemperature_pos]
+  ring
+
+/-- Nonequilibrium Helmholtz free energy is additive on independent states of
+common-temperature Gibbs systems. -/
+theorem nonequilibriumFreeEnergy_tensor
+    (left right : GibbsThermalObject.{u})
+    (hTemperature : left.gibbs.inverseTemperature =
+      right.gibbs.inverseTemperature)
+    (p : FinDist left.thermal.system) (q : FinDist right.thermal.system) :
+    (left.tensor right hTemperature).nonequilibriumFreeEnergy (p.tensor q) =
+      left.nonequilibriumFreeEnergy p + right.nonequilibriumFreeEnergy q := by
+  unfold nonequilibriumFreeEnergy
+  rw [meanEnergy_tensor left right hTemperature p q,
+    entropy_tensor left right hTemperature p q]
+  change left.meanEnergy p + right.meanEnergy q -
+      (left.entropy p + right.entropy q) /
+        left.gibbs.inverseTemperature =
+    (left.meanEnergy p -
+      left.entropy p / left.gibbs.inverseTemperature) +
+    (right.meanEnergy q -
+      right.entropy q / right.gibbs.inverseTemperature)
+  rw [← hTemperature]
+  field_simp [ne_of_gt left.gibbs.inverseTemperature_pos]
+  ring
+
+/-- Excess free energy is additive on independent states of
+common-temperature Gibbs systems. -/
+theorem freeEnergyGap_tensor (left right : GibbsThermalObject.{u})
+    (hTemperature : left.gibbs.inverseTemperature =
+      right.gibbs.inverseTemperature)
+    (p : FinDist left.thermal.system) (q : FinDist right.thermal.system) :
+    (left.tensor right hTemperature).freeEnergyGap (p.tensor q) =
+      left.freeEnergyGap p + right.freeEnergyGap q := by
+  unfold freeEnergyGap
+  rw [nonequilibriumFreeEnergy_tensor left right hTemperature p q,
+    equilibriumFreeEnergy_tensor left right hTemperature]
+  ring
 
 /-- The pointwise classical KL summand expands into entropy, energy, and
 partition-function contributions. -/
@@ -124,7 +281,7 @@ theorem sum_finiteKLRealTerm_eq
     _ = -X.entropy state +
         X.gibbs.inverseTemperature * X.meanEnergy state +
         Real.log X.gibbs.partitionFunction := by
-      rw [FinDist.sum_prob_real state]
+      rw [finDist_sum_prob_real state]
       simp [entropy, meanEnergy]
 
 /-- KL athermality of a realized Gibbs state is always finite. -/

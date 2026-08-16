@@ -37,7 +37,12 @@ strictly positive normalized Gibbs probabilities, and certifies when an exact
 rational equilibrium realizes them. It defines Shannon entropy, mean energy,
 nonequilibrium and equilibrium Helmholtz free energies, proves
 `D(p ‖ γ) = β (F(p) - F(γ))`, and derives free-energy-gap monotonicity for
-Gibbs-preserving channels at common inverse temperature. Ript now also has a separate finite-dimensional
+Gibbs-preserving channels at common inverse temperature. Every full-support
+exact equilibrium now has a canonical Gibbs realization at any chosen positive
+inverse temperature. Independent common-temperature realizations compose, with
+factorized weights and probabilities, multiplicative partition functions, and
+additive energy, entropy, equilibrium/nonequilibrium free energy, and
+free-energy gaps. Ript now also has a separate finite-dimensional
 quantum core over `ℂ`: positive-semidefinite trace-one density matrices,
 operational maps certified by finite complete Kraus families, proved positivity
 and trace preservation, identity and composition closure, canonical tensor
@@ -449,6 +454,14 @@ realization certificate connecting that analytic distribution to the existing
 exact rational equilibrium; it does not claim that arbitrary exponential
 weights are rational or executable.
 
+Conversely, every exact finite equilibrium with full support has a canonical
+realization at every chosen `β > 0`: Ript sets
+`E(x) = -log γ(x) / β`, proves that the resulting Boltzmann weight is exactly
+`γ(x)`, proves `Z = 1`, and packages the equality certificate. This is an
+existence theorem for energy representations of full-support exact
+distributions. It is deliberately not a decision procedure classifying which
+independently supplied real energy spectra have rational Gibbs weights.
+
 For each realized system the free-energy layer defines mean energy `U(p)`,
 Shannon entropy `S(p)`, nonequilibrium Helmholtz free energy
 `F(p) = U(p) - S(p) / β`, and `F(γ) = -log Z / β`. Lean then proves
@@ -460,8 +473,12 @@ D(p ‖ γ) = β (F(p) - F(γ)).
 Because Gibbs equilibria have full support, the extended-real KL value is
 finite here. Combining this identity with the proved KL data-processing law
 shows that a Gibbs-preserving channel between realized systems at the same
-inverse temperature cannot increase `F(p) - F(γ)`. Landauer-type inequalities
-and a general rational-realizability classification remain open research.
+inverse temperature cannot increase `F(p) - F(γ)`. At a common inverse
+temperature, independent Gibbs systems also tensor exactly: weights and
+probabilities factor, partition functions multiply, and `U`, `S`, `F`,
+`F(γ)`, and `F - F(γ)` are additive on product states. Landauer-type
+inequalities and classification of rational Gibbs weights for independently
+specified real spectra remain open research.
 
 ### 12. Finite complex density matrices and Kraus channels
 
@@ -838,9 +855,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.Probability.FiniteKL.finiteKL_dataProcessing` | Every exact finite stochastic channel satisfies KL data processing. |
 | `Ript.Models.Thermal.klAthermality_monotone` | Concrete finite KL from equilibrium is Gibbs-preserving monotone. |
 | `Ript.Models.Thermal.FiniteGibbsData.sum_probability` | Normalized finite Boltzmann weights sum to one. |
+| `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability` | Every full-support exact equilibrium has a canonical Gibbs realization at any positive inverse temperature. |
+| `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction` | Common-temperature product systems have multiplicative partition functions. |
 | `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport` | Every exactly realized Gibbs equilibrium has full support. |
 | `Ript.Models.Thermal.GibbsThermalObject.klAthermality_toReal_eq_inverseTemperature_mul_freeEnergyGap` | Finite KL athermality equals inverse temperature times excess Helmholtz free energy. |
 | `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_monotone` | Common-temperature Gibbs-preserving channels cannot increase excess free energy. |
+| `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor` | Excess free energy is additive on independent states at common inverse temperature. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_involutive` | Two equilibrium-preserving Boolean flips compose to thermal identity. |
 | `Ript.Examples.SimpleThermalModel.klAthermality_toReal_eq_sum` | Boolean KL athermality is the explicit two-term logarithmic sum. |
 | `Ript.Examples.SimpleThermalModel.thermalFlip_klAthermality_invariant` | Reversible thermal bit flip preserves KL athermality exactly. |
@@ -990,7 +1010,8 @@ Bayes-risk, resource, and semantic-value theorems. The converse finite
 Blackwell--Sherman--Stein representation theorem, general measurable decision
 problems, heterogeneous or measurable causal models, complete do-calculus,
 native monoidal packaging for computation, generic copy/discard and convex
-interfaces, general Gibbs rational-realizability criteria and Landauer bounds,
+interfaces, rational Gibbs-weight classification for independently specified
+real energy spectra, Landauer bounds,
 and a complete-Segal/Rezk-complete univalent semantics are **not implemented**.
 The current internally univalent universe is a small deep embedding whose
 identity and equivalence quotients are interpreted in sets. Its choice-free
@@ -1470,7 +1491,8 @@ updated assumption audit.
 - [ ] Rich computational cost models and operationally validated reduction costs
 - [x] Finite energies, positive inverse temperature, Gibbs realization, entropy, and Helmholtz free energy
 - [x] Exact finite KL/free-energy identity and common-temperature free-energy-gap monotonicity
-- [ ] Landauer bounds and general criteria for exact rational Gibbs realizability
+- [x] Canonical Gibbs realization of every full-support exact equilibrium and common-temperature tensor additivity
+- [ ] Landauer bounds and rational-weight classification for independently specified real energy spectra
 - [x] Quantum tensor, discard/trace channel, identity/interchange, and causal discard law
 - [x] Choice-free object completion, invariant descent, and skeletal groupoid completion
 - [x] Fully faithful Yoneda semantics and the essential-image representable envelope
@@ -1544,8 +1566,10 @@ and KL athermality monotonicity. Its analytic realization layer constructs
 finite Gibbs probabilities from real energies and positive inverse temperature,
 certifies exact rational equilibria when the probabilities agree, and proves
 the KL/free-energy identity plus common-temperature free-energy-gap
-monotonicity. It does not yet provide Landauer inequalities or a complete
-classification of exactly rational Gibbs families.
+monotonicity. It also canonically realizes every full-support exact equilibrium
+and proves common-temperature tensor additivity. It does not yet provide
+Landauer inequalities or classify rational Gibbs weights for independently
+specified real energy spectra.
 For finite exact data, Ript also supports Blackwell garbling, executable Bayes
 risk, resource-bounded risk, and task-relative semantic value. It proves the
 forward data-processing direction. It does not yet prove the converse finite

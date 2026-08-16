@@ -1554,7 +1554,10 @@ witness, Boltzmann weights, and the finite partition function. It constructs a
 strictly positive normalized real Gibbs probability. `GibbsThermalObject` then
 certifies that the already executable rational equilibrium agrees with this
 analytic probability after coercion to `ℝ`; generic exponential weights are
-not asserted to be rational.
+not asserted to be rational. Conversely, any exact full-support equilibrium
+has a canonical realization at every positive inverse temperature by setting
+`E(x) = -log γ(x) / β`; the resulting weight is exactly `γ(x)` and the chosen
+gauge has `Z = 1`.
 
 The free-energy layer defines mean energy, Shannon entropy, nonequilibrium
 Helmholtz free energy, equilibrium free energy, and their difference. It proves
@@ -1562,7 +1565,10 @@ the exact finite identity `D(p || γ) = β (F(p) - F(γ))`. Because the realized
 equilibrium has full support, the KL value is finite. Combined with the compiled
 KL DPI, the identity proves monotonicity of the free-energy gap under
 Gibbs-preserving channels between realized systems at common inverse
-temperature. Landauer inequalities remain open.
+temperature. Common-temperature realized systems also tensor: Boltzmann
+weights and probabilities factor, partition functions multiply, and mean
+energy, entropy, both free energies, and the free-energy gap are additive on
+product states. Landauer inequalities remain open.
 
 ### `Ript.Models.FiniteDistribution.FinDist.push_comp`
 
@@ -1917,6 +1923,63 @@ temperature. Landauer inequalities remain open.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/Gibbs.lean`.
 
+### `Ript.Models.Thermal.FiniteGibbsData.ofFullSupport_probability`
+
+- Natural-language statement: every exact finite equilibrium with full
+  support has a canonical Gibbs realization at any selected positive inverse
+  temperature.
+- Lean type:
+
+  ```lean
+  theorem FiniteGibbsData.ofFullSupport_probability
+      (thermal : ThermalObject) (β : ℝ) (hβ : 0 < β)
+      (hfull : ∀ x, thermal.equilibrium.prob x ≠ 0)
+      (x : thermal.system) :
+      (FiniteGibbsData.ofFullSupport thermal β hβ hfull).probability x =
+        (thermal.equilibrium.prob x : ℝ)
+  ```
+
+- Prerequisite definitions: the canonical energy
+  `E(x) = -log γ(x) / β` and exact finite-distribution normalization.
+- Prerequisite lemmas: positivity from full support, `Real.exp_log`, and
+  preservation of the normalized rational sum under coercion to `ℝ`.
+- Status: `PROVED`; the same construction proves each weight equals `γ(x)`
+  and the partition function is one.
+- Classical choice: inherited through finite exact-distribution proof
+  infrastructure; the construction does not choose a microstate.
+- Computable: the exact equilibrium remains executable; real logarithmic
+  energies are noncomputable analytic data.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Gibbs.lean`.
+
+### `Ript.Models.Thermal.FiniteGibbsData.tensor_partitionFunction`
+
+- Natural-language statement: the partition function of two independent
+  finite Gibbs systems at the same inverse temperature is the product of the
+  two partition functions.
+- Lean type:
+
+  ```lean
+  theorem FiniteGibbsData.tensor_partitionFunction
+      (left : FiniteGibbsData X) (right : FiniteGibbsData Y)
+      (hTemperature : left.inverseTemperature =
+        right.inverseTemperature) :
+      (left.tensor right hTemperature).partitionFunction =
+        left.partitionFunction * right.partitionFunction
+  ```
+
+- Prerequisite definitions: additive product energy and a common inverse
+  temperature.
+- Prerequisite lemmas: `Real.exp_add` and factorization of a finite double
+  sum. Companion theorems factor weights and normalized probabilities.
+- Status: `PROVED` for arbitrary finite realized Gibbs factors at a common
+  inverse temperature.
+- Classical choice: no new choice beyond the bundled finite-model proof
+  infrastructure.
+- Computable: no; this is an equality of real exponential sums.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/Gibbs.lean`.
+
 ### `Ript.Models.Thermal.GibbsThermalObject.equilibrium_fullSupport`
 
 - Natural-language statement: if an exact rational equilibrium realizes the
@@ -1964,6 +2027,34 @@ temperature. Landauer inequalities remain open.
   Gibbs positivity.
 - Computable: exact input states remain executable; logarithms, exponentials,
   KL, entropy, and free energy are noncomputable semantic values.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Models/Thermal/FreeEnergy.lean`.
+
+### `Ript.Models.Thermal.GibbsThermalObject.freeEnergyGap_tensor`
+
+- Natural-language statement: at a common inverse temperature, excess
+  Helmholtz free energy is additive on independent product states.
+- Lean type:
+
+  ```lean
+  theorem GibbsThermalObject.freeEnergyGap_tensor
+      (left right : GibbsThermalObject)
+      (hTemperature : left.gibbs.inverseTemperature =
+        right.gibbs.inverseTemperature)
+      (p : FinDist left.thermal.system)
+      (q : FinDist right.thermal.system) :
+      (left.tensor right hTemperature).freeEnergyGap (p.tensor q) =
+        left.freeEnergyGap p + right.freeEnergyGap q
+  ```
+
+- Prerequisite lemmas: mean-energy and Shannon-entropy additivity, product
+  partition function, logarithm of a positive product, and additivity of both
+  equilibrium and nonequilibrium free energy.
+- Status: `PROVED`; zero-probability entropy summands are handled explicitly,
+  not hidden behind a positivity assumption on the input states.
+- Classical choice: inherited only from the analytic finite-sum/Gibbs layer.
+- Computable: product states are exact and executable; free-energy evaluation
+  remains noncomputable real semantics.
 - Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
 - Source: `Ript/Models/Thermal/FreeEnergy.lean`.
 
@@ -3436,7 +3527,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     noncomputable and downstream of the exact rational core. The Gibbs/free-
     energy layer now proves normalized Boltzmann probabilities, the exact
     KL/free-energy identity, and common-temperature free-energy-gap
-    monotonicity without claiming arbitrary exponential weights are rational.
+    monotonicity. It also canonically realizes every full-support exact
+    equilibrium and proves common-temperature tensor additivity, without
+    claiming arbitrary independently supplied exponential weights are rational.
 27. Finite complete positivity quantifies over every finite auxiliary system
     and every joint positive-semidefinite matrix. It is not weakened to tests
     on Kronecker-product inputs, and it is not presented as a bridge to

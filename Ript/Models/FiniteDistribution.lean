@@ -51,6 +51,13 @@ theorem ext (p q : FinDist X) (h : ∀ x, p.prob x = q.prob x) : p = q := by
       cases hProb
       rfl
 
+/-- Every normalized finite distribution has a nonempty carrier. -/
+theorem carrier_nonempty (p : FinDist X) : Nonempty X := by
+  by_contra h
+  let _ : IsEmpty X := not_nonempty_iff.mp h
+  have hnormalized := p.normalized
+  simp at hnormalized
+
 /-- The point distribution concentrated at one outcome. -/
 def pure (x : X) : FinDist X where
   prob y := if x = y then 1 else 0
