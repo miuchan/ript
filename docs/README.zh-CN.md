@@ -14,11 +14,12 @@ Ript 形式化了 **Resource-Indexed Information Process Theory（资源索引�
 的一组小而严谨的核心结构：带类型的过程、可组合的资源上界、可执行的解释、显式的等式
 推导，以及通过规范项模型建立的相对完备性。
 
-本项目严格按层推进。目前已经包含精确、可执行的有限随机模型及其有限分布 Kleisli 表示；
-测度论概率、决策论、热力学、量子理论和高阶范畴仍是研究方向，而不是当前能力。
+本项目严格按层推进。目前已经包含精确、可执行的有限随机模型、其有限分布 Kleisli 表示，
+以及到 Mathlib 测度论范畴 `Stoch` 的 faithful 语义桥。一般可测空间上的随机模型、决策论、
+热力学、量子理论和高阶范畴仍是研究方向，而不是当前能力。
 
 > [!IMPORTANT]
-> Ript 是早期研究软件。Stage 1–4 已实现并通过 Lean 内核检验；公共 API 尚未
+> Ript 是早期研究软件。Stage 1–5 已实现并通过 Lean 内核检验；公共 API 尚未
 > 稳定，当前核心也不宣称已经构成完整的物理信息理论。
 
 ## 目录
@@ -144,6 +145,28 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 有理概率分布通常仍构成无限集合，因此不会闭合在 Mathlib 无限制 `CategoryTheory.Kleisli`
 所要求的有限载体基范畴中。
 
+### 7. 到 Mathlib `Stoch` 的 faithful 桥
+
+`Ript.Models.Probability.StochFunctor` 在不替换有限可执行核心的前提下，把精确矩阵接入
+Mathlib 的测度论概率库。每个有限载体都使用离散可测空间；矩阵的一行
+`p : Y → ℚ≥0` 被解释为概率测度
+
+```math
+\sum_{y \in Y} \uparrow p(y) \; \delta_y.
+```
+
+源行的归一化证明该测度总质量为一，因此每个 `FinStoch` 态射都诱导一个 Markov kernel。
+由此得到的 `toStoch` 函子保持恒等态射和 Chapman–Kolmogorov 复合，并且：
+
+- 把有限 Dirac 矩阵映射为 Mathlib 的确定性 kernel；
+- 是 faithful 的，因为 singleton 质量在注入 `ℝ≥0∞` 后仍可恢复每个精确有理矩阵条目；
+- 在一个显式确定性同构之下保持独立 tensor。这个同构比较 Mathlib 的积可测对象与同一
+  有限积载体上直接给出的离散顶可测空间。
+
+最后一项以 `Stoch` 中的交换图陈述，而不是伪装成定义相等或尚未声明的幺半群函子实例，
+因此可测空间之间的识别明确出现在定理边界上。所有不可计算性都被限制在这层语义桥中；
+`FinStoch`、`FinDist`、它们的复合与运行示例仍是可执行的精确 `ℚ≥0` 数据。
+
 ## 已经证明的结果
 
 下列旗舰结果当前均可编译。表中的中文是非形式化摘要，Lean 声明本身才是权威定义。
@@ -177,6 +200,12 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 | `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | 矩阵到 Kleisli 的转换被反向转换逆转。 |
 | `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | Kleisli 到矩阵的转换被反向转换逆转。 |
 | `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` 等价于 `FinDist` 的有限载体 Kleisli 范畴。 |
+| `Ript.Models.Probability.StochFunctor.rowMeasure_singleton` | 解释后行测度的 singleton 质量恢复源矩阵的精确条目。 |
+| `Ript.Models.Probability.StochFunctor.toKernel_comp` | 精确 Chapman–Kolmogorov 复合成为 Mathlib kernel 复合。 |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_dirac` | Dirac 矩阵成为确定性 `Stoch` kernel。 |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | `Stoch` 解释不会丢失精确有限信道信息。 |
+| `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | 两个有限离散可测空间的积仍是离散空间。 |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | 独立 tensor 复合在规范比较同构下得到保持。 |
 
 [BLUEPRINT.md](../BLUEPRINT.md) 记录了每个定理的前置条件、可计算性、源文件和内核假设；
 [AXIOMS.md](../AXIOMS.md) 则保存机器生成并核对过的假设清单。
@@ -193,7 +222,8 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 | 2 | 张量、对称性、并行资源与严格自由普遍提升 | **PROVED** |
 | 3 | 可执行的有限随机模型 | **PROVED** |
 | 4 | 有限分布的 Kleisli 表示 | **PROVED** |
-| 5–11 | 后续语义模型与高阶层 | **OPEN RESEARCH** |
+| 5 | 到 Mathlib `Stoch` 的 faithful 有限信道桥 | **PROVED** |
+| 6–11 | 后续语义模型与高阶层 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -205,9 +235,11 @@ tensor 将独立概率相乘，确定性函数通过 faithful Dirac 函子嵌入
 | 对称幺半群项模型 | 是 | 是 | 证明层 | 按显式幺半群推导取商 |
 | 精确有限随机信道 | 是 | 是 | 可执行 | 归一化 `ℚ≥0` 矩阵、Dirac、复制与丢弃 |
 | 有限分布 Kleisli 范畴 | 是 | 否 | 可执行 | 精确 `pure`/`bind`，与 `FinStoch` 范畴等价 |
+| Mathlib `Stoch` 桥的有限离散像 | 是 | 是，在规范同构意义下 | 语义层 | faithful Markov-kernel 解释；源矩阵保持可执行 |
 
-有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律。通用凸结构、测度论随机语义、
-热结构、量子信道，以及单价或高阶范畴结构都**尚未实现**。权威能力矩阵见
+有限随机模型已经具有显式复制、丢弃和经过证明的因果丢弃律；它的有限离散像现在也具有
+经过检验的 Mathlib `Stoch` 测度论语义。任意可测空间上的通用随机模型、通用复制/丢弃与凸
+结构接口、热结构、量子信道，以及单价或高阶范畴结构都**尚未实现**。权威能力矩阵见
 [MODEL_MATRIX.md](../MODEL_MATRIX.md)，经过形式化登记的开放
 命题见 [CONJECTURES.md](../CONJECTURES.md)。目前没有已登记的猜想。
 
@@ -237,6 +269,8 @@ flowchart LR
   FD["精确 FinDist pure 与 bind"] --> KL["有限载体 Kleisli 范畴"]
   CK <--> EQ["范畴等价"]
   KL <--> EQ
+  CK --> ST["faithful Mathlib Stoch 语义桥"]
+  ST --> MT["有限离散 Markov kernels"]
 ```
 
 | 层 | 主要模块 | 职责 |
@@ -266,10 +300,10 @@ Ript 的目标是让证明信任可以检查，而不是隐含在工程习惯里
 - 未证明的研究主张只能进入 `CONJECTURES.md`，不能伪装成已完成定理进入命名空间。
 
 Stage 1 和 Stage 2 的旗舰审计只在必要处报告 Lean 的标准原则 `propext` 与
-`Quot.sound`。有限随机和 Kleisli 表示定理的证明还会通过 Mathlib 通用 `Fintype` 与有限和证明基础设施
-报告 `Classical.choice`；运行时信道数据由显式、可计算的 `Fintype` 和 `DecidableEq` 提供，
-没有有限模型定义被标为 `noncomputable`，CI 会实际执行精确 `ℚ≥0` 示例。审计不含编译器
-信任逃逸或占位证明公理。
+`Quot.sound`。有限随机、Kleisli 与 `Stoch` 桥定理的证明还会通过 Mathlib 通用有限和、测度
+及范畴基础设施报告 `Classical.choice`；运行时信道数据由显式、可计算的 `Fintype` 和
+`DecidableEq` 提供，没有有限模型定义被标为 `noncomputable`，CI 会实际执行精确 `ℚ≥0`
+示例。不可计算性只出现在测度论语义模块中。审计不含编译器信任逃逸或占位证明公理。
 
 查看逐定理输出：
 
@@ -358,6 +392,10 @@ CI 会精确比较这段输出，因此任何非预期的可执行行为变化�
 解释器，五个精确检查全部输出 `true`。`Ript/Examples/KleisliBits.lean` 继续执行点分布、Kleisli
 bind、双向矩阵转换和范畴等价中的函子，四个检查也全部输出 `true`。
 
+`Ript/Examples/StochBits.lean` 进一步在 Mathlib `Stoch` 内证明：解释后的公平硬币具有预期
+singleton 质量；带噪否定保持公平分布；确定性否定确实成为确定性 kernel；两枚独立公平
+硬币满足 tensor 比较交换图。这些是语义证明示例，不会增加额外的运行时输出。
+
 ## 将 Ript 作为 Lean 依赖
 
 Ript 暴露根模块 `Ript`。在预发布阶段，请固定到一个已知提交，不要跟踪持续移动的分支：
@@ -373,6 +411,8 @@ require ript from git
 import Ript
 -- 或者使用更窄的依赖边界：
 import Ript.Semantics.Eval
+-- 或者只导入有限测度论语义桥：
+import Ript.Models.Probability.StochFunctor
 ```
 
 Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本。可复现的下游工程必须固定
@@ -386,7 +426,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 | [`Ript/Resource/`](../Ript/Resource/) | 资源代数与经过检验的预算 |
 | [`Ript/Syntax/`](../Ript/Syntax/) | 串行和对称幺半群语言 |
 | [`Ript/Semantics/`](../Ript/Semantics/) | 求值、可靠性、项模型与完备性 |
-| [`Ript/Models/`](../Ript/Models/) | 有限确定性模型、有限分布与精确有限随机信道 |
+| [`Ript/Models/`](../Ript/Models/) | 确定性模型、精确有限概率与 Mathlib `Stoch` 语义桥 |
 | [`Ript/Examples/`](../Ript/Examples/) | 可执行示例 |
 | [`Ript/Audit/`](../Ript/Audit/) | Lint 与假设审计入口 |
 | [BLUEPRINT.md](../BLUEPRINT.md) | 依赖图、阶段、定理记录和设计决定 |
@@ -419,7 +459,8 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 4. **分离可执行语法与证明商。**完备性使用商模型，不应让计算代码无端继承不可计算性。
 5. **明确完备性的范围。**每项完备性结论都点名规范模型和证明边界。
 6. **把假设当作有版本的 API。**定理出现新公理应立即使门禁失败，而不是事后脚注。
-7. **区分实现与愿景。**随机、因果、热力学、量子和高阶层必须清楚标记为开放研究。
+7. **区分实现与愿景。**有限离散 `Stoch` 像已经实现；一般随机、因果、热力学、量子和高阶
+   层仍必须清楚标记为开放研究。
 
 ## 路线图
 
@@ -438,13 +479,14 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 幺半群可靠性与项模型相对完备性
 - [x] 精确有限随机范畴、tensor bifunctor、Dirac 嵌入、复制、丢弃和带类型示例
 - [x] 精确有限分布、Kleisli 范畴、双向比较函子与范畴等价
+- [x] 到 Mathlib `Stoch` 的 faithful 有限信道函子，以及确定性与 tensor 比较定理
 - [x] 零成本和显式计量的有限确定性示例
 - [x] 可复现 CI、声明 lint 与公理白名单
 
 ### 开放研究方向
 
-- [ ] 将精确有限随机信道桥接到 Mathlib 的测度论 `Stoch`
 - [ ] 将复制/丢弃能力接口推广到有限随机模型以外
+- [ ] 超出有限离散像的一般可测空间随机语义
 - [ ] 凸结构与因果结构
 - [ ] 热力学与资源理论模型
 - [ ] 量子信道模型
@@ -484,8 +526,9 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 ### Ript 已经支持概率或量子信道了吗？
 
 Ript 已支持基于 `ℚ≥0` 的精确可执行有限随机信道，包括复合、tensor、Dirac、复制与丢弃，
-并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。一般测度论概率、热模型和量子信道
-仍属于路线图。
+并证明它们与精确有限分布的有限载体 Kleisli 范畴等价。项目还给出了到 Mathlib 测度论
+范畴 `Stoch` 的 faithful 函子，在规范比较同构下保持确定性信道与 tensor。任意可测空间上的
+随机模型、热模型和量子信道仍属于路线图。
 
 ### 幺半群层是否自动带来复制或丢弃？
 

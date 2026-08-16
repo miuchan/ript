@@ -1,5 +1,6 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.StochasticBits
+import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Resource.ParallelBudget
 import Ript.Semantics.Completeness
@@ -45,3 +46,9 @@ set_option autoImplicit false
 #print axioms Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli
 #print axioms Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel
 #print axioms Ript.Models.FiniteStochastic.kleisliEquivalence
+#print axioms Ript.Models.Probability.StochFunctor.rowMeasure_singleton
+#print axioms Ript.Models.Probability.StochFunctor.toKernel_comp
+#print axioms Ript.Models.Probability.StochFunctor.toStoch_map_dirac
+#print axioms Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff
+#print axioms Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top
+#print axioms Ript.Models.Probability.StochFunctor.toStoch_map_tensor

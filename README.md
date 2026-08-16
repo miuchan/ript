@@ -16,13 +16,14 @@ interpretations, explicit equational derivations, and relative completeness via
 canonical term models.
 
 The project builds these layers in a strict order. It now includes an exact,
-executable finite stochastic model and its finite-distribution Kleisli
-representation; measure-theoretic probability, decision theory,
-thermodynamics, quantum theory, and higher categories remain research
+executable finite stochastic model, its finite-distribution Kleisli
+representation, and a faithful semantic bridge into Mathlib's
+measure-theoretic category `Stoch`. General measurable-space models, decision
+theory, thermodynamics, quantum theory, and higher categories remain research
 directions rather than current capabilities.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Stages 1–4 are implemented and
+> Ript is early-stage research software. Stages 1–5 are implemented and
 > checked by Lean's kernel; the public API is not yet stable, and no claim is
 > made that the current core is a complete theory of physical information.
 
@@ -174,6 +175,35 @@ intentional: the set of rational distributions over a finite carrier is
 generally infinite, so it is not itself an object of the finite-carrier base
 category required by Mathlib's unrestricted `CategoryTheory.Kleisli`.
 
+### 7. A faithful bridge to Mathlib `Stoch`
+
+`Ript.Models.Probability.StochFunctor` connects the exact executable matrices
+to Mathlib's measure-theoretic probability library without replacing the
+finite core. Each finite carrier receives the discrete measurable space, and a
+matrix row `p : Y → ℚ≥0` becomes the probability measure
+
+```math
+\sum_{y \in Y} \uparrow p(y) \; \delta_y.
+```
+
+Normalization of the source row proves that this measure has total mass one,
+so every `FinStoch` morphism induces a Markov kernel. The resulting `toStoch`
+functor preserves identities and Chapman–Kolmogorov composition. It also:
+
+- sends finite Dirac matrices to Mathlib's deterministic kernels;
+- is faithful, because singleton masses recover every exact rational matrix
+  entry after the injective cast into `ℝ≥0∞`;
+- preserves independent tensor composition up to an explicit deterministic
+  isomorphism between Mathlib's product measurable object and the same finite
+  product equipped directly with the discrete top measurable space.
+
+That last comparison is stated as a commuting diagram in `Stoch`, rather than
+as a definitional equality or an undeclared monoidal-functor instance. This
+makes the measurable-space identification visible in the theorem statement.
+All noncomputability is confined to this semantic bridge; `FinStoch`,
+`FinDist`, their compositions, and their examples remain executable exact
+`ℚ≥0` data.
+
 ## What is proved
 
 The following flagship results compile today. The short statements below are
@@ -208,6 +238,12 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | Matrix-to-Kleisli conversion is inverted by the reverse conversion. |
 | `Ript.Models.FiniteStochastic.channelToKleisli_kleisliToChannel` | Kleisli-to-matrix conversion is inverted by the reverse conversion. |
 | `Ript.Models.FiniteStochastic.kleisliEquivalence` | `FinStoch` is equivalent to the finite-carrier Kleisli category of `FinDist`. |
+| `Ript.Models.Probability.StochFunctor.rowMeasure_singleton` | Singleton mass of an interpreted row recovers the exact source matrix entry. |
+| `Ript.Models.Probability.StochFunctor.toKernel_comp` | Exact Chapman–Kolmogorov composition becomes Mathlib kernel composition. |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_dirac` | Dirac matrices become deterministic `Stoch` kernels. |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_eq_iff` | The `Stoch` interpretation is faithful on exact finite channels. |
+| `Ript.Models.Probability.StochFunctor.productMeasurableSpace_eq_top` | A product of finite discrete measurable spaces is again discrete. |
+| `Ript.Models.Probability.StochFunctor.toStoch_map_tensor` | Independent tensor composition is preserved through the canonical comparison isomorphism. |
 
 Detailed theorem records—including prerequisites, computability, source files,
 and kernel assumptions—live in [BLUEPRINT.md](BLUEPRINT.md). The generated
@@ -227,7 +263,8 @@ finished physical theory.
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | **PROVED** |
 | 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
-| 5–11 | Further semantic and higher layers | **OPEN RESEARCH** |
+| 5 | Faithful finite-channel bridge to Mathlib `Stoch` | **PROVED** |
+| 6–11 | Further semantic and higher layers | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -239,11 +276,14 @@ Implemented model support is intentionally narrow:
 | Symmetric monoidal term model | Yes | Yes | Proof layer | Quotient by explicit monoidal derivations |
 | Exact finite stochastic channels | Yes | Yes | Executable | Normalized `ℚ≥0` matrices, Dirac, copy, discard |
 | Finite-distribution Kleisli category | Yes | No | Executable | Exact `pure`/`bind`; categorically equivalent to `FinStoch` |
+| Mathlib `Stoch` bridge, finite discrete image | Yes | Yes, up to canonical isomorphism | Semantic layer | Faithful Markov-kernel interpretation; source matrices stay executable |
 
 The finite stochastic model has explicit copy, discard, and a proved causal
-discard law. Generic convex structure, measure-theoretic stochastic semantics,
-thermal structure, quantum channels, and univalent or higher-categorical
-structure are **not implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
+discard law. Its finite discrete image now has checked measure-theoretic
+semantics in Mathlib `Stoch`. Generic stochastic models over arbitrary
+measurable spaces, generic copy/discard and convex interfaces, thermal
+structure, quantum channels, and univalent or higher-categorical structure are
+**not implemented**. See [MODEL_MATRIX.md](MODEL_MATRIX.md) for the canonical
 capability matrix and [CONJECTURES.md](CONJECTURES.md) for formally tracked open
 statements. There are currently no registered conjectures.
 
@@ -273,6 +313,8 @@ flowchart LR
   FD["Exact FinDist pure and bind"] --> KL["Finite-carrier Kleisli category"]
   CK <--> EQ["Categorical equivalence"]
   KL <--> EQ
+  CK --> ST["Faithful Mathlib Stoch semantic bridge"]
+  ST --> MT["Finite discrete Markov kernels"]
 ```
 
 | Layer | Main modules | Responsibility |
@@ -306,12 +348,13 @@ Ript is designed so that proof trust is inspectable rather than implicit.
   namespace disguised as completed results.
 
 The stage-1 and stage-2 flagship audit reports only Lean's standard `propext`
-and `Quot.sound` principles where required. Finite-stochastic and Kleisli
-representation theorem proofs also report `Classical.choice` through Mathlib's
-generic `Fintype` and finite-sum proof infrastructure. Runtime data is supplied by
-explicit computational `Fintype` and `DecidableEq` values: no finite-model
-definition is `noncomputable`, and CI executes exact `ℚ≥0` examples. The audit
-reports no compiler-trust escape or placeholder-proof axiom.
+and `Quot.sound` principles where required. Finite-stochastic, Kleisli, and
+`Stoch` bridge theorem proofs also report `Classical.choice` through Mathlib's
+generic finite-sum, measure, and category infrastructure. Runtime data is
+supplied by explicit computational `Fintype` and `DecidableEq` values: no
+finite-model definition is `noncomputable`, and CI executes exact `ℚ≥0`
+examples. Noncomputability appears only in the measure-theoretic semantic
+module. The audit reports no compiler-trust escape or placeholder-proof axiom.
 
 For exact per-theorem output, read [AXIOMS.md](AXIOMS.md) or run:
 
@@ -408,6 +451,12 @@ interpreter. Its five checks use exact nonnegative rationals and all print
 both matrix conversions, and the functors contained in the categorical
 equivalence. Its four exact checks also print `true`.
 
+`Ript/Examples/StochBits.lean` then proves, inside Mathlib `Stoch`, that the
+interpreted fair coin has the expected singleton mass, noisy negation preserves
+the fair distribution, deterministic negation is a deterministic kernel, and
+two fair coins satisfy the tensor comparison diagram. These are semantic proof
+examples rather than additional runtime output.
+
 ## Using Ript as a Lean dependency
 
 Ript exposes the root module `Ript`. During the pre-release phase, pin a known
@@ -424,6 +473,8 @@ Then import the whole public surface or a narrow module:
 import Ript
 -- or, for a smaller dependency boundary:
 import Ript.Semantics.Eval
+-- or, for the finite measure-theoretic bridge:
+import Ript.Models.Probability.StochFunctor
 ```
 
 The package is currently versioned `0.1.0`, but no stable API or tagged release
@@ -437,7 +488,7 @@ is promised yet. Pinning a commit is required for reproducible downstream work.
 | [`Ript/Resource/`](Ript/Resource/) | Resource algebras and checked budgets |
 | [`Ript/Syntax/`](Ript/Syntax/) | Sequential and symmetric monoidal languages |
 | [`Ript/Semantics/`](Ript/Semantics/) | Evaluation, soundness, term models, completeness |
-| [`Ript/Models/`](Ript/Models/) | Deterministic finite models and exact finite stochastic channels |
+| [`Ript/Models/`](Ript/Models/) | Deterministic models, exact finite probability, and the Mathlib `Stoch` bridge |
 | [`Ript/Examples/`](Ript/Examples/) | Executable examples |
 | [`Ript/Audit/`](Ript/Audit/) | Lint and assumption-audit entry points |
 | [BLUEPRINT.md](BLUEPRINT.md) | Dependency graph, stages, theorem records, design decisions |
@@ -477,8 +528,9 @@ force-pushes and branch deletion are disabled.
    canonical model and proof boundary.
 6. **Treat assumptions as versioned API surface.** A theorem acquiring a new
    axiom is a gate failure, not a footnote discovered later.
-7. **Distinguish implementation from aspiration.** Planned stochastic, causal,
-   thermal, quantum, and higher layers remain visibly marked as open research.
+7. **Distinguish implementation from aspiration.** The finite discrete `Stoch`
+   image is implemented; general stochastic, causal, thermal, quantum, and
+   higher layers remain visibly marked as open research.
 
 ## Roadmap
 
@@ -500,12 +552,13 @@ updated assumption audit.
 - [x] Zero-cost and explicitly metered finite deterministic examples
 - [x] Exact finite stochastic category, tensor bifunctor, Dirac embedding, copy, discard, and typed example
 - [x] Exact finite distributions, Kleisli category, two comparison functors, and categorical equivalence
+- [x] Faithful finite-channel functor into Mathlib `Stoch`, including deterministic and tensor comparison theorems
 - [x] Reproducible CI, declaration lint, and axiom allowlist
 
 ### Open research tracks
 
-- [ ] Bridge exact finite stochastic channels to Mathlib's measure-theoretic `Stoch`
 - [ ] Generic copy/discard capability interfaces beyond the finite stochastic model
+- [ ] Stochastic semantics over general measurable spaces beyond the finite discrete image
 - [ ] Convex and causal structure
 - [ ] Thermal/resource-theoretic models
 - [ ] Quantum-channel models
@@ -554,8 +607,10 @@ monoidal term models.
 Ript supports exact executable finite stochastic channels over `ℚ≥0`, including
 composition, tensor, Dirac channels, copy, and discard. It also proves their
 equivalence with the finite-carrier Kleisli category of exact finite
-distributions. General measure-theoretic probability, thermal models, and
-quantum channels remain roadmap items.
+distributions and gives a faithful functor from them into Mathlib's
+measure-theoretic category `Stoch`, preserving deterministic channels and
+tensor up to a canonical comparison isomorphism. Arbitrary measurable-space
+stochastic models, thermal models, and quantum channels remain roadmap items.
 
 ### Does the monoidal layer imply copying or discarding?
 
