@@ -7,6 +7,13 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | --- | --- | --- |
 | `Ript.Resource.budgeted_id` | `[propext]` | `Ript/Resource/Budget.lean` |
 | `Ript.Resource.budgeted_comp` | `[propext, Quot.sound]` | `Ript/Resource/Budget.lean` |
+| `Ript.Resource.costToFiltration_toCost` | `[propext, Quot.sound]` | `Ript/Resource/Filtration.lean` |
+| `Ript.Resource.filtrationToCost_toFiltration_of_attained` | `none` | `Ript/Resource/Filtration.lean` |
+| `Ript.Resource.filtrationToCost_comp` | `none` | `Ript/Resource/Filtration.lean` |
+| `Ript.Resource.filtrationToCost_tensor` | `none` | `Ript/Resource/Filtration.lean` |
+| `Ript.Examples.CostFiltration.declaredUnitsFiltration_attained` | `[propext]` | `Ript/Examples/CostFiltration.lean` |
+| `Ript.Examples.CostFiltration.declaredUnitsCost_eq_units` | `[propext]` | `Ript/Examples/CostFiltration.lean` |
+| `Ript.Examples.CostFiltration.reconstructedProcessCost_eq_units` | `[propext]` | `Ript/Examples/CostFiltration.lean` |
 | `Ript.Syntax.Expr.syntaxCost_id` | `none` | `Ript/Syntax/Cost.lean` |
 | `Ript.Syntax.Expr.syntaxCost_comp` | `none` | `Ript/Syntax/Cost.lean` |
 | `Ript.Semantics.eval_id` | `none` | `Ript/Semantics/Eval.lean` |
@@ -162,7 +169,13 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 `propext` and `Quot.sound` are Lean's standard logical and quotient principles;
 they are not project-declared assumptions. The quotient dependency is confined
 to proof semantics. The stage-1 and stage-2 flagship theorems do not depend on
-classical choice. The finite stochastic and finite-distribution representation
+classical choice. The cost--filtration reconstruction stores the attained least
+budget as explicit data, so its round-trip, serial, and tensor proofs require no
+choice; the reverse round-trip is therefore constructive for discrete resource
+orders such as `Nat` as well as for complete orders. The reported `propext` and
+`Quot.sound` on the forward round-trip arise from the existing process-cost
+category interface, not from choosing a minimizing budget. The finite
+stochastic and finite-distribution representation
 theorems report `Classical.choice` through Mathlib's generic
 `Fintype` and finite-sum proof infrastructure. Runtime channel data instead
 uses explicitly supplied `Fintype` and `DecidableEq` values; no definition in

@@ -7,6 +7,7 @@ import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
+import Ript.Examples.CostFiltration
 import Ript.Examples.HigherModels
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
@@ -52,6 +53,7 @@ import Ript.Models.Thermal.GibbsPreserving
 import Ript.Models.Thermal.Monotone
 import Ript.Resource.Basic
 import Ript.Resource.Budget
+import Ript.Resource.Filtration
 import Ript.Resource.Monotone
 import Ript.Resource.ParallelBudget
 import Ript.Semantics.Completeness

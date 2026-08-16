@@ -1,5 +1,6 @@
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
+import Ript.Examples.CostFiltration
 import Ript.Examples.HigherModels
 import Ript.Examples.QubitChannel
 import Ript.Examples.SimpleCausalModel
@@ -29,6 +30,13 @@ set_option autoImplicit false
 
 #print axioms Ript.Resource.budgeted_id
 #print axioms Ript.Resource.budgeted_comp
+#print axioms Ript.Resource.costToFiltration_toCost
+#print axioms Ript.Resource.filtrationToCost_toFiltration_of_attained
+#print axioms Ript.Resource.filtrationToCost_comp
+#print axioms Ript.Resource.filtrationToCost_tensor
+#print axioms Ript.Examples.CostFiltration.declaredUnitsFiltration_attained
+#print axioms Ript.Examples.CostFiltration.declaredUnitsCost_eq_units
+#print axioms Ript.Examples.CostFiltration.reconstructedProcessCost_eq_units
 #print axioms Ript.Syntax.Expr.syntaxCost_id
 #print axioms Ript.Syntax.Expr.syntaxCost_comp
 #print axioms Ript.Semantics.eval_id

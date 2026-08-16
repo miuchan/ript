@@ -153,6 +153,16 @@ La nedeviga monoida kapablo aldonas
 kaj la nedeviga struktura-kosta kapablo deklaras asocigilojn, unuigilojn kaj
 simetriajn plektaĵojn senkostaj strukturaj rekonektoj.
 
+La sama rimedinformo nun havas duan, pruvite ekvivalentan prezenton. Kostfunkcio
+generas nestitajn buĝettavolojn per `cost(f) ≤ r`; identoj, sinsekva kunmeto kaj,
+kiam disponebla, tensoro konservas tiujn tavolojn. Inverse,
+`AttainedHomFiltration`, kiu eksplicite donas atingitan plej malgrandan permesitan
+buĝeton por ĉiu procezo, rekonstruas subadician koston. Ambaŭ rondiroj estas
+ekzaktaj: `costToFiltration_toCost` reakiras la originan koston, kaj
+`filtrationToCost_toFiltration_of_attained` reakiras ĉiun originan tavolon.
+Konservi la atingitan infimumon kiel datumon evitas elekton kaj funkcias por
+diskretaj rimedoj kiel `Nat` sen postuli kompletan latison.
+
 ### 2. Tiphava plenumebla sintakso
 
 La sinsekva lingvo enhavas primitivajn generilojn, identojn kaj sinsekvan
@@ -660,6 +670,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | --- | --- |
 | `Ript.Resource.budgeted_id` | Ĉiu idento haveblas kun nula buĝeto. |
 | `Ript.Resource.budgeted_comp` | Buĝetoj adiciiĝas sub sinsekva kunmeto. |
+| `Ript.Resource.costToFiltration_toCost` | Rekonstruo per la minimuma buĝeto redonas la originan procezkoston. |
+| `Ript.Resource.filtrationToCost_toFiltration_of_attained` | Rekonstruitaj kostmalegalecoj reakiras ĉiun atingitan filtran tavolon. |
+| `Ript.Resource.filtrationToCost_comp` | Rekonstruitaj kostoj estas subadiciaj sub sinsekva kunmeto. |
+| `Ript.Resource.filtrationToCost_tensor` | Tensor-kongruaj filtradoj rekonstruas paralele subadiciajn kostojn. |
 | `Ript.Semantics.eval_cost_le` | Semantika interpretado estas limigita de la sintaksa kosto. |
 | `Ript.Semantics.budget_sound` | Sintaksa buĝetpruvo donas semantikan buĝetpruvon. |
 | `Ript.Semantics.soundness` | Ĉiu interpreto respektas sinsekvajn derivojn. |
@@ -815,6 +829,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | --- | --- | --- |
 | 0 | Reproduktebla projekto, dokumentaro, CI kaj revizia bazlinio | **PROVED** |
 | 1 | Sinsekva rimed-proceza kerno | **PROVED** |
+| 1, prezento | Ekzaktaj rondiroj inter kostoj kaj atingitaj buĝetfiltradoj, kun sinsekva/tensora fermo | **PROVED** |
 | 2 | Tensoro, simetrio, paralelaj rimedoj kaj la strikta libera universala levo | **PROVED** |
 | 3 | Plenumebla finia stokasta modelo | **PROVED** |
 | 4 | Kleisli-prezento de finiaj distribuoj | **PROVED** |
@@ -1256,6 +1271,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 
 - [x] Ordigita adicia rimedinterfaco
 - [x] Subadiciaj sinsekvaj procezkostoj kaj kontrolitaj buĝetoj
+- [x] Ekzakta dudirekta prezento de kostoj kaj atingitaj buĝetfiltradoj
 - [x] Tiphava sinsekva sintakso kaj plenumebla interpretado
 - [x] Eksplicitaj derivoj de kategoriaj leĝoj
 - [x] Sinsekva ĝusteco kaj termmodela relativa kompleteco

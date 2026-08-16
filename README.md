@@ -153,6 +153,16 @@ The optional monoidal capability adds
 and the optional structural-cost capability declares associators, unitors, and
 symmetry morphisms to be zero-cost rewiring.
 
+The same resource information now has a second, proved representation. A cost
+function generates nested budget layers by `cost(f) ≤ r`; identities, serial
+composition, and—when available—tensor preserve those layers. Conversely, an
+`AttainedHomFiltration` with an explicit least admissible budget for every
+process reconstructs a lax additive cost. Both round trips are exact:
+`costToFiltration_toCost` recovers the original cost, while
+`filtrationToCost_toFiltration_of_attained` recovers every original layer.
+Storing the attained infimum as data keeps this construction choice-free and
+works for discrete resources such as `Nat` without imposing a complete lattice.
+
 ### 2. Typed executable syntax
 
 The sequential language contains primitive generators, identities, and serial
@@ -679,6 +689,10 @@ informal summaries; the Lean declarations are authoritative.
 | --- | --- |
 | `Ript.Resource.budgeted_id` | Every identity is available at zero budget. |
 | `Ript.Resource.budgeted_comp` | Budgets add under serial composition. |
+| `Ript.Resource.costToFiltration_toCost` | Least-budget reconstruction returns the original process cost. |
+| `Ript.Resource.filtrationToCost_toFiltration_of_attained` | Reconstructed cost inequalities recover every attained filtration layer. |
+| `Ript.Resource.filtrationToCost_comp` | Reconstructed costs are subadditive under serial composition. |
+| `Ript.Resource.filtrationToCost_tensor` | Tensor-compatible filtrations reconstruct parallel-subadditive costs. |
 | `Ript.Semantics.eval_cost_le` | Semantic evaluation is bounded by syntax cost. |
 | `Ript.Semantics.budget_sound` | A syntactic budget proof yields a semantic budget proof. |
 | `Ript.Semantics.soundness` | Sequential derivations are respected by every interpretation. |
@@ -834,6 +848,7 @@ finished physical theory.
 | --- | --- | --- |
 | 0 | Reproducible project, documentation, CI, and audit baseline | **PROVED** |
 | 1 | Sequential resource-process core | **PROVED** |
+| 1, representation | Exact cost/attained-filtration round trips and serial/tensor closure | **PROVED** |
 | 2 | Tensor, symmetry, parallel resources, and the strict free universal lift | **PROVED** |
 | 3 | Executable finite stochastic model | **PROVED** |
 | 4 | Finite-distribution Kleisli representation | **PROVED** |
@@ -1281,6 +1296,7 @@ updated assumption audit.
 
 - [x] Ordered additive resource interface
 - [x] Lax sequential process costs and checked budgets
+- [x] Exact cost/attained-budget-filtration representation in both directions
 - [x] Typed sequential syntax and executable evaluation
 - [x] Explicit category-law derivations
 - [x] Sequential soundness and term-model relative completeness

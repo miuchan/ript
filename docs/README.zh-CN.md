@@ -114,6 +114,13 @@ Ript 把这些义务编码为 Lean 接口，并一次性证明它们之间的核
 
 另一个可选能力则声明结合子、幺元子与对称编织都是零成本的结构性重新布线。
 
+同一份资源信息现在还有第二种已经证明等价的表示。成本函数按 `cost(f) ≤ r` 生成嵌套预算层；
+恒等、串行复合以及可用时的张量都会保持这些层。反过来，若 `AttainedHomFiltration` 为每个
+过程显式给出一个可达到的最小许可预算，就能重建松弛加法成本。两个往返都精确成立：
+`costToFiltration_toCost` 恢复原成本，
+`filtrationToCost_toFiltration_of_attained` 恢复原过滤的每一层。把可达到的下确界作为数据
+保存，使构造无需选择公理，也能直接用于 `Nat` 等离散资源，而不强迫资源序成为完备格。
+
 ### 2. 带类型、可执行的语法
 
 串行语言包含原始生成元、恒等过程和串行复合。它的类型索引使接口不匹配的复合无法表示。
@@ -507,6 +514,10 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | --- | --- |
 | `Ript.Resource.budgeted_id` | 每个恒等态射都可在零预算下使用。 |
 | `Ript.Resource.budgeted_comp` | 串行复合时预算相加。 |
+| `Ript.Resource.costToFiltration_toCost` | 最小预算重建精确返回原过程成本。 |
+| `Ript.Resource.filtrationToCost_toFiltration_of_attained` | 重建成本的不等式精确恢复可达到过滤的每一层。 |
+| `Ript.Resource.filtrationToCost_comp` | 从过滤重建的成本对串行复合次可加。 |
+| `Ript.Resource.filtrationToCost_tensor` | 张量相容过滤重建出对并行复合次可加的成本。 |
 | `Ript.Semantics.eval_cost_le` | 语义求值成本不超过语法成本。 |
 | `Ript.Semantics.budget_sound` | 语法预算证明可转化为语义预算证明。 |
 | `Ript.Semantics.soundness` | 每个解释都尊重串行推导。 |
@@ -659,6 +670,7 @@ complete-Segal 条件、presheaf localization、外部 univalence 或 Rezk compl
 | --- | --- | --- |
 | 0 | 可复现工程、文档、CI 与审计基线 | **PROVED** |
 | 1 | 串行资源过程核心 | **PROVED** |
+| 1，表示 | 成本与可达到预算过滤的双向精确表示，以及串行/张量闭包 | **PROVED** |
 | 2 | 张量、对称性、并行资源与严格自由普遍提升 | **PROVED** |
 | 3 | 可执行的有限随机模型 | **PROVED** |
 | 4 | 有限分布的 Kleisli 表示 | **PROVED** |
@@ -1037,6 +1049,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 
 - [x] 有序加法资源接口
 - [x] 松弛串行过程成本与检验过的预算
+- [x] 成本与可达到预算过滤的双向精确表示
 - [x] 带类型的串行语法与可执行求值
 - [x] 显式范畴律推导
 - [x] 串行可靠性与项模型相对完备性
