@@ -34,6 +34,23 @@ image of `FiniteStochastic`. Its Kraus operators are
 target dephasing. The target categorical identity is therefore dephasing,
 which is why this row is listed separately from the full Kraus category.
 
+## Resource-representation capabilities
+
+These are generic representations over every implemented costed process model,
+not extra semantic models, so they are recorded separately from the matrix.
+
+| Representation | Serial law | Tensor law | Round trip | Choice | Computability |
+| --- | --- | --- | --- | --- | --- |
+| Cost-induced budget filtration | Identity at zero; layers compose at summed budgets | Available with `HasParallelProcessCost` | Least-budget reconstruction returns the original cost exactly | None introduced | Same as the source cost |
+| Attained budget filtration | Reconstructed cost is subadditive | Available from explicit `TensorCompatible` evidence | Cost inequality is equivalent to original layer membership | None; least budget is explicit data | Same as the supplied `minimum` operation |
+
+`AttainedHomFiltration` expresses exactly the hypothesis needed for the reverse
+representation: every process has a least admissible budget and that budget is
+itself admissible. Ript does not silently strengthen ordinary resource orders
+to complete lattices. The executable `Metered`/`Nat` example reconstructs the
+stored unit count and accepts double Boolean negation at budget `2` while
+rejecting budget `1`.
+
 ## Higher categorical organization
 
 The following table records structure relating complete process models. It is
