@@ -86,11 +86,13 @@ kernel-checked endpoint normal form: every signed path represents the unique
 morphism between its endpoints, the completion is thin, and it is explicitly
 equivalent to the codiscrete groupoid on `Fin 2`. This removes path-representative
 ambiguity for the next strong-transformation extension. That extension now
-has explicit object components and generator constraints: the forward
-constraint transports from the source, while an explicit invertible mate
-constructs the constraint at the freely adjoined inverse. The remaining
-coherence across retained-coordinate arrows and composition has not yet been
-assembled into a target strong transformation. What remains open is factorization of an
+has explicit object components and a candidate strong-naturality isomorphism
+for every target 1-morphism. Forward arrows reuse source naturality with an
+arbitrary retained coordinate; reverse arrows compose an explicit invertible
+mate with the retained-coordinate constraint; endpoint normal form covers all
+target arrows. Naturality in 2-cells plus the identity and composition laws
+have not yet been assembled into a target strong transformation. What remains
+open is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the
 corresponding construction for the full resource-process bicategory.
