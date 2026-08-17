@@ -253,15 +253,21 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Pseudofunctor.mapEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.precomposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.localPrecomposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.idCompEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.localPrecomposition_id_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Bicategory.MorphismProperty.equivalences_isBicategoricalLocalization_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `Ript.Higher.costExactMorphisms_isMultiplicative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_costReflecting_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.costExactIdentity_isBicategoricalLocalization_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctor_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
+| `Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
@@ -588,9 +594,15 @@ requires local equivalences on strong transformations and modifications.
 Precomposition is implemented at all three levels. The discard example proves
 that every pseudofunctor into a locally discrete bicategory identifies its
 endpoint images, so such a target cannot retain the noninvertible 2-cell as
-data. These audited declarations have the same exact
+data. Identity precomposition is now constructed as an adjoint equivalence of
+pseudofunctors and an equivalence on every local category, yielding the first
+fully populated instance of the bicategorical-localization predicate: the
+identity pseudofunctor localizes exactly those markings whose arrows are
+already adjoint equivalences. The concrete zero-cost embedding is not such an
+equivalence, so the identity pseudofunctor is formally ruled out as Ript's
+cost-exact localization. These audited declarations have the same exact
 `[propext, Classical.choice, Quot.sound]` footprint. No existence theorem for
-the full higher localization is claimed.
+the nontrivial full higher localization is claimed.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

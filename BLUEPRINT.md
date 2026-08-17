@@ -221,7 +221,7 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, cost-exact specialization, and a locally-discrete 2-cell obstruction | PROVED |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, a fully constructed identity-localization base case, cost-exact specialization, and concrete locally-discrete/identity-candidate obstructions | PROVED |
 | 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -4130,8 +4130,26 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 
   structure Bicategory.MorphismProperty.IsBicategoricalLocalization (W) (Q) : Prop
 
+  noncomputable def Pseudofunctor.idCompEquivalence (F : B ⥤ᵖ C) :
+      (Pseudofunctor.id B).comp F ≌ F
+
+  theorem Pseudofunctor.localPrecomposition_id_isEquivalence (F G : B ⥤ᵖ C) :
+      ((Pseudofunctor.id B).localPrecomposition F G).IsEquivalence
+
+  theorem Bicategory.MorphismProperty.isBicategoricalLocalization_id_iff (W) :
+      W.IsBicategoricalLocalization (Pseudofunctor.id B) ↔
+        ∀ f, W f → Bicategory.IsEquivalence f
+
   abbrev IsCostExactBicategoricalLocalization
       (Q : ProcessModel R ⥤ᵖ L) : Prop
+
+  theorem costExactIdentity_isBicategoricalLocalization_iff :
+      IsCostExactBicategoricalLocalization (Pseudofunctor.id (ProcessModel R)) ↔
+        ∀ F, costExactArrows R F → Bicategory.IsEquivalence F
+
+  theorem HigherLocalization.costExactIdentity_not_isBicategoricalLocalization :
+      ¬ IsCostExactBicategoricalLocalization
+        (Pseudofunctor.id (ProcessModel Nat))
 
   theorem HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard
       (F : ProcessModel Nat ⥤ᵖ LocallyDiscrete C) :
@@ -4146,13 +4164,22 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   2-isomorphism saturation is consequently multiplicative and invariant under
   invertible 2-cells. The canonical `Pith` pseudofunctor records the exact
   higher-to-ordinary truncation, and Mathlib's `MorphismProperty.Q` carries an
-  actual `Functor.IsLocalization` instance.
+  actual `Functor.IsLocalization` instance. At the untruncated interface, the
+  identity-composition strong transformations and their modification
+  isomorphisms are now explicit. They prove essential surjectivity, fullness,
+  and faithfulness of identity precomposition on every local category and
+  therefore construct the first complete instance of
+  `IsBicategoricalLocalization`, at the marking of arrows already equivalent.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
   additive `0` in `Multiplicative Nat`; target object `1` is not in the
   essential image. It is cost-reflecting and hence marked, while
   `unitToNatModelHom_not_isIso` proves its homotopy class is not already an
-  isomorphism.
+  isomorphism. The strengthened theorem
+  `unitToNatModelHom_not_isEquivalence` rules out an adjoint equivalence in the
+  source bicategory, and
+  `costExactIdentity_not_isBicategoricalLocalization` consequently rules out
+  the identity pseudofunctor as the desired higher localization.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`
@@ -4170,9 +4197,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   untruncated target: marked arrows become adjoint equivalences, every
   inverting pseudofunctor factors biessentially, and precomposition is an
   equivalence on categories of strong transformations and modifications.
-  The current locally discrete construction is not proved to satisfy it.
-  No bicategorical, Dwyer--Kan, simplicial, complete-Segal, or Rezk universal
-  property is claimed.
+  Its identity base case is now fully constructed, proving that the interface
+  is inhabited and that all three fields interact correctly. The current
+  locally discrete construction is not proved to satisfy it, and the identity
+  candidate is proved not to satisfy it for the Ript cost-exact marking. No
+  nontrivial bicategorical, Dwyer--Kan, simplicial, complete-Segal, or Rezk
+  universal property is claimed.
 - Sources:
   `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean`,
@@ -5461,6 +5491,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     biessential factorization of every inverting pseudofunctor, and local
     equivalences on strong transformations and modifications. A generic
     locally-discrete-target theorem proves that the concrete discard 2-cell's
-    endpoint images must be identified there. This is a specification and an
-    obstruction theorem, not an existence proof for the desired higher
-    localization.
+    endpoint images must be identified there. Identity precomposition is now
+    proved locally equivalent and biessentially surjective, so the identity
+    pseudofunctor is a genuine localization exactly for markings already made
+    of adjoint equivalences. The concrete cost-reflecting discrete embedding
+    is not an equivalence, which rules out that identity candidate for Ript.
+    This is a verified base construction and a stronger obstruction, not an
+    existence proof for the desired nontrivial higher localization.
