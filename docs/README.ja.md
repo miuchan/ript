@@ -99,7 +99,7 @@ strong transformation から標的の対象成分と、全標的 1-射に対す�
 「保持座標の後に逆生成射」の順序についても、二つの積単位子比較、候補合成、標準逆射への transport、
 および二つの前向き分解の等式はコンパイル済みです。両側 mate 滑移、pseudofunctor による mate の保存、
 および strong transformation の滑移定理により、この順序の公開合成則も全 walking 射について証明されました。
-これらのデータを標的 strong transformation にするには、二つの生成射消去順序がまだ必要です。
+一般的な mate–counit 恒等式により、最初の生成射消去順序、すなわち厳密な逆生成射の後にその前向き生成射を合成する場合の公開合成則も証明されました。これらのデータを標的 strong transformation にするには、反対の「前向きの後に逆射」の消去順序がまだ必要です。
 walking 自由 groupoid 自体にも正規形を
 証明しました。各符号付き path は端点で一意に定まる射に等しく、補完は thin であり、`Fin 2` 上の
 codiscrete groupoid と明示的に圏同値です。
@@ -1087,6 +1087,8 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `CategoryTheory.Bicategory.MorphismProperty.IsInvertedBy.of_equivalence` | 始域 pseudofunctor を随伴同値なものへ置き換えても標識反転は保たれます。 |
 | `CategoryTheory.Pseudofunctor.FactorsThrough.trans` | pseudofunctor を通る因子化は始域 pseudofunctor の随伴同値に沿って移送できます。 |
 | `CategoryTheory.Bicategory.mateEquiv_sliding` | 左随伴平方間の可換平方は、mate により対応する右随伴平方間の可換平方になります。 |
+| `CategoryTheory.Bicategory.mateEquiv_counit` | mate の後に標的 counit を合成することは、元の平方の後に始域 counit を合成することと等しく、双圏 coherence も明示されます。 |
+| `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_comp_hom_counit` | mate から得た逆制約と前向き制約の合成は、counit に沿って transport すると標準恒等制約になります。 |
 | `CategoryTheory.Pseudofunctor.map_mateEquiv` | pseudofunctor は合成子と単位子の coherence を含めて双圏 mate を保存します。 |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding` | 前向き合成 coherence は随伴同値を越えて mate 由来の逆制約へ滑移します。 |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective` | 固定された可逆な標的 2-射に沿う移送は、strong-naturality 制約候補について単射です。 |
@@ -1139,6 +1141,9 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id` | 公開される全射候補は strong transformation の完全な恒等 coherence を満たします。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_forward` | 各標準前向き射上の公開制約は元の始域制約そのものです。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_generatorInverse` | 厳密な逆向き射上の公開制約は逆生成射 mate と正確に一致します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorCancellation_counit` | 逆生成射の後に前向き生成射を合成した自然性は、counit に沿って標準恒等制約へ transport されます。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_inverseGenerator_generator` | transport の単射性により、合成した公開消去候補は生の合成上の公開制約と一致します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_generator` | 厳密な逆生成射の後にその前向き生成射を合成する場合の公開合成 coherence 則を証明します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_iso` | 公開される全射制約は任意の標的 2-同型に沿って移送されます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseComposite` | 逆生成射/保持座標の生の合成上の公開制約は、明示的な構成子レベルの合成と等しいです。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | 公開される全射制約は厳密な恒等分岐を含む任意の標的 2-射に関して自然です。 |
@@ -1283,7 +1288,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
 | コスト完全モデル localization | コスト反映モデル射の可逆 2-射飽和と homotopy 類 | 各飽和標識類の形式的反転 | 非計算的意味論証明層 | 正確な標識降下定理と `Pith` からの標準 pseudofunctor；真の Mathlib Gabriel--Zisman 普遍性；具体的な非可逆 2-射が高次 localization でない理由を示す |
-| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、端点正規形・thin 性・`Fin 2` 上の codiscrete groupoid との同値を証明し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` とその随伴同値閉包を因子化し、形式的逆射を正しく解釈し、前合成は局所充満忠実で、予定される strong-transformation lift の全標的 1-射に制約候補を再構成する；恒等 coherence、全射 2-射自然性、inclusion 像の任意の射の組の合成 coherence、および両方の逆射/保持座標順序に対する公開因子 coherence は mate 滑移により証明済み；二つの消去順序・その閉包外の任意の非可分離混合座標因子化・局所本質的全射性は未解決 |
+| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、端点正規形・thin 性・`Fin 2` 上の codiscrete groupoid との同値を証明し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` とその随伴同値閉包を因子化し、形式的逆射を正しく解釈し、前合成は局所充満忠実で、予定される strong-transformation lift の全標的 1-射に制約候補を再構成する；恒等 coherence、全射 2-射自然性、inclusion 像の任意の射の組の合成 coherence、両方の逆射/保持座標順序に対する公開因子 coherence、および「逆生成射の後に前向き生成射」の消去則は証明済み；反対の前向き–逆射消去順序・その閉包外の任意の非可分離混合座標因子化・局所本質的全射性は未解決 |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；全内部同一射に関する Mathlib localization；Rezk completion ではない |

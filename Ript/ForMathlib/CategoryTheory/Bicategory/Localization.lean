@@ -186,6 +186,130 @@ theorem mateEquiv_sliding
       mateEquiv adj₁ adj₂ β ≫ δ ▷ r₂ := by
   rw [← mateEquiv_precomp, ← mateEquiv_postcomp, comm]
 
+set_option backward.isDefEq.respectTransparency false in
+private theorem mateEquiv_counit_exchange
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂) {h : b ⟶ d} :
+    𝟙 ((((r₁ ≫ l₁) ≫ h) ≫ r₂) ≫ l₂) ⊗≫
+        ((adj₁.counit ▷ h ▷ r₂) ▷ l₂) ⊗≫
+          h ◁ adj₂.counit ⊗≫ 𝟙 h =
+      𝟙 ((((r₁ ≫ l₁) ≫ h) ≫ r₂) ≫ l₂) ⊗≫
+        (r₁ ≫ l₁) ◁ (h ◁ adj₂.counit) ⊗≫
+          adj₁.counit ▷ h ⊗≫ 𝟙 h := by
+  calc
+    _ = 𝟙 _ ⊗≫
+          (adj₁.counit ▷ (h ≫ (r₂ ≫ l₂)) ≫
+            (𝟙 b) ◁ (h ◁ adj₂.counit)) ⊗≫ 𝟙 _ := by
+      bicategory
+    _ = 𝟙 _ ⊗≫
+          ((r₁ ≫ l₁) ◁ (h ◁ adj₂.counit) ≫
+            adj₁.counit ▷ (h ≫ 𝟙 d)) ⊗≫ 𝟙 _ := by
+      rw [← whisker_exchange]
+    _ = _ := by
+      bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem mateEquiv_counit_naturality_exchange
+    {a b c d : B} {l₁ : a ⟶ b}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₂ : l₂ ⊣ r₂) {g : a ⟶ c} {h : b ⟶ d}
+    (α : g ≫ l₂ ⟶ l₁ ≫ h) :
+    𝟙 ((g ≫ l₂) ≫ (r₂ ≫ l₂)) ⊗≫
+        α ▷ (r₂ ≫ l₂) ⊗≫
+          (l₁ ≫ h) ◁ adj₂.counit ⊗≫
+            𝟙 ((l₁ ≫ h) ≫ 𝟙 d) =
+      𝟙 ((g ≫ l₂) ≫ (r₂ ≫ l₂)) ⊗≫
+        (g ≫ l₂) ◁ adj₂.counit ⊗≫
+          α ▷ (𝟙 d) ⊗≫
+            𝟙 ((l₁ ≫ h) ≫ 𝟙 d) := by
+  calc
+    _ = 𝟙 _ ⊗≫
+          (α ▷ (r₂ ≫ l₂) ≫
+            (l₁ ≫ h) ◁ adj₂.counit) ⊗≫ 𝟙 _ := by
+      bicategory
+    _ = 𝟙 _ ⊗≫
+          ((g ≫ l₂) ◁ adj₂.counit ≫
+            α ▷ (𝟙 d)) ⊗≫ 𝟙 _ := by
+      rw [← whisker_exchange]
+    _ = _ := by
+      bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Whiskering a mate by its right adjoint's left adjoint and then applying
+the target counit agrees with applying the source counit to the original
+square.  This is the counit half of the mate correspondence, with all
+bicategorical associators and unitors made explicit. -/
+theorem mateEquiv_counit
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g : a ⟶ c} {h : b ⟶ d} (α : g ≫ l₂ ⟶ l₁ ≫ h) :
+    mateEquiv adj₁ adj₂ α ▷ l₂ ≫
+        (α_ h r₂ l₂).hom ≫
+        h ◁ adj₂.counit ≫
+        (ρ_ h).hom =
+      (α_ r₁ g l₂).hom ≫
+        r₁ ◁ α ≫
+        (α_ r₁ l₁ h).inv ≫
+        adj₁.counit ▷ h ≫
+      (λ_ h).hom := by
+  rw [mateEquiv_apply']
+  calc
+    _ = 𝟙 _ ⊗≫
+          (r₁ ◁ g ◁ adj₂.unit) ▷ l₂ ⊗≫
+            (r₁ ◁ α ▷ r₂) ▷ l₂ ⊗≫
+              (adj₁.counit ▷ h ▷ r₂) ▷ l₂ ⊗≫
+                h ◁ adj₂.counit ⊗≫ 𝟙 _ := by
+      bicategory
+    _ = 𝟙 _ ⊗≫
+          (r₁ ◁ g ◁ adj₂.unit) ▷ l₂ ⊗≫
+            r₁ ◁ (α ▷ (r₂ ≫ l₂) ≫
+              (l₁ ≫ h) ◁ adj₂.counit) ⊗≫
+                adj₁.counit ▷ h ⊗≫ 𝟙 _ := by
+      calc
+        _ = (𝟙 ((r₁ ≫ g) ≫ l₂) ⊗≫
+              (r₁ ◁ g ◁ adj₂.unit) ▷ l₂ ⊗≫
+                (r₁ ◁ α ▷ r₂) ▷ l₂) ⊗≫
+            (𝟙 ((((r₁ ≫ l₁) ≫ h) ≫ r₂) ≫ l₂) ⊗≫
+              ((adj₁.counit ▷ h ▷ r₂) ▷ l₂) ⊗≫
+                h ◁ adj₂.counit ⊗≫ 𝟙 h) := by
+          bicategory
+        _ = (𝟙 ((r₁ ≫ g) ≫ l₂) ⊗≫
+              (r₁ ◁ g ◁ adj₂.unit) ▷ l₂ ⊗≫
+                (r₁ ◁ α ▷ r₂) ▷ l₂) ⊗≫
+            (𝟙 ((((r₁ ≫ l₁) ≫ h) ≫ r₂) ≫ l₂) ⊗≫
+              (r₁ ≫ l₁) ◁ (h ◁ adj₂.counit) ⊗≫
+                adj₁.counit ▷ h ⊗≫ 𝟙 h) := by
+          rw [mateEquiv_counit_exchange adj₁ adj₂]
+        _ = _ := by
+          bicategory
+    _ = 𝟙 _ ⊗≫
+          r₁ ◁ g ◁ leftZigzag adj₂.unit adj₂.counit ⊗≫
+            r₁ ◁ α ⊗≫ adj₁.counit ▷ h ⊗≫ 𝟙 _ := by
+      calc
+        _ = (𝟙 ((r₁ ≫ g) ≫ l₂) ⊗≫
+              (r₁ ◁ g ◁ adj₂.unit) ▷ l₂) ⊗≫
+            r₁ ◁ (𝟙 ((g ≫ l₂) ≫ (r₂ ≫ l₂)) ⊗≫
+              α ▷ (r₂ ≫ l₂) ⊗≫
+                (l₁ ≫ h) ◁ adj₂.counit ⊗≫
+                  𝟙 ((l₁ ≫ h) ≫ 𝟙 d)) ⊗≫
+            (adj₁.counit ▷ h ⊗≫ 𝟙 h) := by
+          bicategory
+        _ = (𝟙 ((r₁ ≫ g) ≫ l₂) ⊗≫
+              (r₁ ◁ g ◁ adj₂.unit) ▷ l₂) ⊗≫
+            r₁ ◁ (𝟙 ((g ≫ l₂) ≫ (r₂ ≫ l₂)) ⊗≫
+              (g ≫ l₂) ◁ adj₂.counit ⊗≫
+                α ▷ (𝟙 d) ⊗≫
+                  𝟙 ((l₁ ≫ h) ≫ 𝟙 d)) ⊗≫
+            (adj₁.counit ▷ h ⊗≫ 𝟙 h) := by
+          rw [mateEquiv_counit_naturality_exchange adj₂ α]
+        _ = _ := by
+          bicategory
+    _ = _ := by
+      rw [adj₂.left_triangle]
+      bicategory
+
 namespace IsEquivalence
 
 /-- Being an adjoint equivalence is invariant under a 2-isomorphism of
@@ -814,6 +938,53 @@ theorem inverseNaturalityIso_hom (F G : C ⥤ᵖ D)
         (G.mapAdjunction e.toAdjunction) α.inv := by
   rw [mateEquiv_apply']
   rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Composing the mate-derived inverse constraint with its original forward
+constraint and transporting across the adjoint equivalence counit yields the
+canonical identity constraint. -/
+theorem inverseNaturalityIso_comp_hom_counit (F G : C ⥤ᵖ D)
+    {a b : C} (e : a ≌ b)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map e.hom ≫ appB ≅ appA ≫ G.map e.hom) :
+    naturalityIsoOfIso F G appB appB
+        (naturalityCompIsoOfIsos F G e.inv e.hom
+          appB appA appB (inverseNaturalityIso F G e appA appB α) α)
+        e.counit =
+      identityNaturalityIso F G b appB := by
+  apply Iso.ext
+  dsimp [naturalityIsoOfIso, naturalityCompIsoOfIsos,
+    identityNaturalityIso]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv]
+  rw [inverseNaturalityIso_hom]
+  rw [← cancel_epi ((F.mapId b).inv ▷ appB)]
+  rw [← cancel_mono (appB ◁ (G.mapId b).hom)]
+  simp only [Category.assoc]
+  simp
+  rw [← cancel_mono (ρ_ appB).hom]
+  simp only [Category.assoc]
+  simp
+  rw [← whiskerLeft_comp_assoc, ← whiskerLeft_comp_assoc]
+  simp only [Category.assoc]
+  have hG :
+      (G.mapComp e.inv e.hom).inv ≫
+          G.map₂ e.counit.hom ≫ (G.mapId b).hom =
+        (G.mapAdjunction e.toAdjunction).counit := rfl
+  rw [hG]
+  rw [Bicategory.mateEquiv_counit
+    (F.mapAdjunction e.toAdjunction)
+    (G.mapAdjunction e.toAdjunction) α.inv]
+  simp
+  change (F.mapId b).inv ▷ appB ≫
+      F.map₂ e.counit.inv ▷ appB ≫
+      F.map₂ e.counit.hom ▷ appB ≫
+      (F.mapId b).hom ▷ appB ≫
+      (λ_ appB).hom =
+    (λ_ appB).hom
+  slice_lhs 2 3 => rw [← comp_whiskerRight, F.map₂_inv_hom]
+  simp
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Strong-transformation composition coherence slides across a chosen

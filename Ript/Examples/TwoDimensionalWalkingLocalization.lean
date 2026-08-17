@@ -40,9 +40,11 @@ identity branch.  Composition coherence is proved whenever both arrows lie
 in the inclusion image, and hence for every canonical forward-forward pair.
 At constructor level, the inverse-generator mate followed by an arbitrary
 retained-coordinate constraint is now proved to recover the public constraint
-on its raw composite.  The remaining public-factor mixed cases involving the
-freely adjoined inverse, local essential surjectivity, and arbitrary
-nonseparable biessential factorization remain open.
+on its raw composite.  Both inverse/retained orders now satisfy public-factor
+composition coherence.  The inverse-generator/forward-generator cancellation
+order is also proved by a general mate-counit identity and transport
+injectivity.  The opposite generator-cancellation order, local essential
+surjectivity, and arbitrary nonseparable biessential factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -1599,6 +1601,20 @@ theorem liftedStrongTransNaturality_forward
   rw [liftedStrongTransNaturality_eq_endpoint]
   exact liftedStrongTransEndpointNaturality_forward σ f A
 
+/-- On a forward walking generator, the public all-arrow constraint is the
+generator constraint from which inverse naturality is obtained by mates. -/
+theorem liftedStrongTransNaturality_generator
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    liftedStrongTransNaturality σ (generatorEquivalence f).hom =
+      liftedStrongTransGeneratorNaturality σ f := by
+  change liftedStrongTransNaturality σ
+      (canonicalForwardHom f
+        (𝟙 (MonoidalSingleObj.star (Type)))) = _
+  rw [liftedStrongTransNaturality_forward]
+  exact (liftedStrongTransGeneratorNaturality_eq_forward σ f).symm
+
 set_option backward.isDefEq.respectTransparency false in
 /-- On a strict reverse walking arrow, the public all-arrow constraint is
 exactly the mate-derived inverse-generator constraint.  The retained identity
@@ -1663,6 +1679,98 @@ theorem liftedStrongTransNaturality_iso
   rw [liftedStrongTransNaturality_eq_endpoint,
     liftedStrongTransNaturality_eq_endpoint]
   exact liftedStrongTransEndpointNaturality_iso σ e
+
+/-- The inverse-generator mate followed by its forward generator becomes the
+canonical identity constraint after transport across the chosen adjoint
+equivalence counit. -/
+theorem liftedStrongTransGeneratorCancellation_counit
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+          (generatorEquivalence f).inv (generatorEquivalence f).hom
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransGeneratorInverseNaturality σ f)
+          (liftedStrongTransGeneratorNaturality σ f))
+        (generatorEquivalence f).counit =
+      liftedStrongTransIdentityNaturality σ
+        (canonicalTargetObject Y) := by
+  exact Pseudofunctor.StrongTrans.inverseNaturalityIso_comp_hom_counit
+    F G (generatorEquivalence f)
+      (liftedStrongTransApp σ (canonicalTargetObject X))
+      (liftedStrongTransApp σ (canonicalTargetObject Y))
+      (liftedStrongTransGeneratorNaturality σ f)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- For a strict reverse walking generator, the canonical composition of its
+public inverse and forward constraints is the public constraint on the raw
+canceling composite.  Both sides are identified after transport across the
+generator adjoint equivalence counit. -/
+theorem liftedStrongTransNaturality_compIso_inverseGenerator_generator
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) :
+    Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+        (generatorEquivalence f).inv (generatorEquivalence f).hom
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransNaturality σ (generatorEquivalence f).inv)
+        (liftedStrongTransNaturality σ (generatorEquivalence f).hom) =
+      liftedStrongTransNaturality σ
+        ((generatorEquivalence f).inv ≫
+          (generatorEquivalence f).hom) := by
+  apply Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective F G
+    (liftedStrongTransApp σ (canonicalTargetObject Y))
+    (liftedStrongTransApp σ (canonicalTargetObject Y))
+    (generatorEquivalence f).counit
+  rw [liftedStrongTransNaturality_generatorInverse σ f h,
+    liftedStrongTransNaturality_generator]
+  have hleft := liftedStrongTransGeneratorCancellation_counit
+    (F := F) (G := G) σ f
+  have hright := liftedStrongTransNaturality_iso
+    (F := F) (G := G) σ (generatorEquivalence f).counit
+  rw [liftedStrongTransNaturality_id_eq] at hright
+  exact hleft.trans hright.symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The public all-arrow constraint satisfies the strong-transformation
+composition equation for a strict inverse generator followed by its forward
+generator. -/
+theorem liftedStrongTransNaturality_comp_inverseGenerator_generator
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) :
+    (liftedStrongTransNaturality σ
+        ((generatorEquivalence f).inv ≫
+          (generatorEquivalence f).hom)).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+          (G.mapComp (generatorEquivalence f).inv
+            (generatorEquivalence f).hom).hom =
+      (F.mapComp (generatorEquivalence f).inv
+          (generatorEquivalence f).hom).hom ▷
+          liftedStrongTransApp σ (canonicalTargetObject Y) ≫
+        (α_ _ _ _).hom ≫
+        F.map (generatorEquivalence f).inv ◁
+          (liftedStrongTransNaturality σ
+            (generatorEquivalence f).hom).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ
+          (generatorEquivalence f).inv).hom ▷
+            G.map (generatorEquivalence f).hom ≫
+        (α_ _ _ _).hom := by
+  have hcomp :=
+    liftedStrongTransNaturality_compIso_inverseGenerator_generator
+      (F := F) (G := G) σ f h
+  rw [← hcomp]
+  simp [Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos,
+    Category.assoc]
+  rfl
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The public constraint on the raw inverse-generator/retained composite is

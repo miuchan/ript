@@ -162,9 +162,11 @@ koordinato sekvata de la inversa generatoro, ambaŭ produkt-unuigilaj komparoj,
 la kandidata kunmetaĵo, ĝia transporto al la kanona inversa sago kaj la egaleco
 de la du antaŭaj faktorigoj estas kompilitaj. Duflanka mate-glitado, konservado
 de mate-oj per pseŭdofunktoroj kaj la induktita fort-transforma glita teoremo nun
-pruvas la publikan kunmetan leĝon por ĉi tiu ordo ĉe ĉiu marŝanta sago. Antaŭ ol
-ĉi tiuj datumoj formas celan fortan transformon, restas la du generatoraj
-nuligaj ordoj.
+pruvas la publikan kunmetan leĝon por ĉi tiu ordo ĉe ĉiu marŝanta sago. Ĝenerala
+mate–counit-idento nun pruvas la unuan generatoran nuligan ordon: strikta inversa
+generatoro sekvata de sia antaŭa generatoro plenumas la publikan kunmetan leĝon.
+Antaŭ ol ĉi tiuj datumoj formas celan fortan transformon, restas la kontraŭa
+ordo, antaŭa generatoro sekvata de sia inverso.
 La libera grupoido de la marŝanta sago nun havas ankaŭ
 normalformon: ĉiu signumita vojo egalas la solan morfion difinitan de siaj
 finpunktoj, do la kompletigo estas maldika kaj eksplicite kategorie ekvivalenta
@@ -1364,6 +1366,8 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `CategoryTheory.Bicategory.MorphismProperty.IsInvertedBy.of_equivalence` | Mark-inversigo konserviĝas kiam fonta pseŭdofunktoro estas anstataŭigita per adjunkte ekvivalenta. |
 | `CategoryTheory.Pseudofunctor.FactorsThrough.trans` | Faktorado tra pseŭdofunktoro transportiĝas laŭ adjunkta ekvivalento de fontaj pseŭdofunktoroj. |
 | `CategoryTheory.Bicategory.mateEquiv_sliding` | Komuta kvadrato inter maldekstra-adjunktaj kvadratoj iĝas la responda komuta kvadrato inter iliaj dekstraj mate-oj. |
+| `CategoryTheory.Bicategory.mateEquiv_counit` | Mate sekvata de la cela counit egalas la originan kvadraton sekvatan de la fonta counit, kun dukategoria kohero eksplicita. |
+| `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_comp_hom_counit` | La mate-derivita inversa kondiĉo sekvata de la antaŭa kondiĉo transportiĝas laŭ la counit al la kanona identeca kondiĉo. |
 | `CategoryTheory.Pseudofunctor.map_mateEquiv` | Pseŭdofunktoroj konservas dukategoriajn mate-ojn kun la tuta kunmetila kaj unuigila kohero. |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding` | Antaŭa kunmeta kohero glitas trans adjunktan ekvivalenton al la mate-derivita inversa kondiĉo. |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective` | Transporto laŭ fiksa inversigebla cela 2-ĉelo estas injekcia je kandidataj fort-naturecaj kondiĉoj. |
@@ -1416,6 +1420,9 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id` | La publika tut-saga kandidato plenumas la kompletan identecan koherleĝon de forta transformo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_forward` | La publika kondiĉo ĉe ĉiu kanona antaŭa sago estas la origina fonta kondiĉo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_generatorInverse` | Ĉe strikta inversa sago, la publika kondiĉo estas ĝuste la invers-generatora mate. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorCancellation_counit` | Invers-generatora natureco sekvata de la antaŭa generatoro transportiĝas laŭ la counit al la kanona identeca kondiĉo. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_inverseGenerator_generator` | Injekteco de transporto identigas la kunmetitan publikan nuligan kandidaton kun la publika kondiĉo de la kruda kunmetaĵo. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_generator` | La publika kunmeta kohero validas por strikta inversa generatoro sekvata de sia antaŭa generatoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_iso` | La publikaj tut-sagaj kondiĉoj transportiĝas laŭ arbitraj celaj 2-izomorfioj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseComposite` | La publika kondiĉo ĉe kruda invers-generatora/konservita kunmetaĵo egalas ĝian eksplicitan konstrunivelan kunmetaĵon. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | La publika tut-saga kondiĉo estas natura en ĉiu cela 2-ĉelo, inkluzive sian striktan identecan branĉon. |
@@ -1562,7 +1569,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 | Kost-ekzakta modellokalizo | Inversigebla-2-ĉela saturiĝo de kost-reflektaj modelmorfioj, poste homotopiklasoj | Formala inversigo de ĉiu saturite markita klaso | Nekomputebla semantika pruva tavolo | Preciza mark-malsupreniga teoremo kaj kanona pseŭdofunktoro el `Pith`; vera Mathlib-a Gabriel--Zisman universala eco; konkreta neinversigebla 2-ĉelo pruvas kial ĝi ne estas pli-alta lokalizo |
-| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, pruvas finpunktan normalformon, maldikecon kaj ekvivalenton kun la kodiskreta grupoido sur `Fin 2`, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĉiun apartigeblan miks-familion `K × H` kaj ĝian tutan adjunkt-ekvivalentan fermon, ĝuste interpretas la formalan inverson, havas plene fidelan antaŭkunmeton en ĉiuj lokaj kategorioj, konservas neinversigeblan Bulean forĵeton, havas pruvite neloke-diskretan celon kaj rekonstruas kandidatan kondiĉon por ĉiu cela 1-morfio de eventuala fort-transforma levo; identeca kohero, tut-saga 2-ĉela natureco, kunmeta kohero por ĉiu inkludo-bilda paro kaj publik-faktora kohero por ambaŭ inversa/konservita ordoj estas pruvitaj per mate-glitado; la du nuligaj ordoj, arbitra neapartigebla miks-koordinata faktorigo ekster tiu fermo kaj loka esenca surĵeteco restas malfermitaj |
+| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, pruvas finpunktan normalformon, maldikecon kaj ekvivalenton kun la kodiskreta grupoido sur `Fin 2`, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĉiun apartigeblan miks-familion `K × H` kaj ĝian tutan adjunkt-ekvivalentan fermon, ĝuste interpretas la formalan inverson, havas plene fidelan antaŭkunmeton en ĉiuj lokaj kategorioj, konservas neinversigeblan Bulean forĵeton, havas pruvite neloke-diskretan celon kaj rekonstruas kandidatan kondiĉon por ĉiu cela 1-morfio de eventuala fort-transforma levo; identeca kohero, tut-saga 2-ĉela natureco, kunmeta kohero por ĉiu inkludo-bilda paro, publik-faktora kohero por ambaŭ inversa/konservita ordoj kaj la nuligo “inversa generatoro sekvata de la antaŭa generatoro” estas pruvitaj; la kontraŭa antaŭa–inversa nuliga ordo, arbitra neapartigebla miks-koordinata faktorigo ekster tiu fermo kaj loka esenca surĵeteco restas malfermitaj |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; Mathlib-lokalizo je ĉiu interna identeco; ne Rezk-kompletigo |
