@@ -317,6 +317,9 @@ set_option autoImplicit false
 #print axioms Ript.Examples.WalkingLocalization.arrow_not_isEquivalence
 #print axioms Ript.Examples.WalkingLocalization.inclusion_genuinely_adds_inverse
 #print axioms CategoryTheory.Pseudofunctor.prod
+#print axioms CategoryTheory.Pseudofunctor.pair
+#print axioms CategoryTheory.Pseudofunctor.StrongTrans.pair
+#print axioms CategoryTheory.Pseudofunctor.pairEquivalence
 #print axioms CategoryTheory.Bicategory.Equivalence.prod
 #print axioms CategoryTheory.Pseudofunctor.fstComp
 #print axioms CategoryTheory.Pseudofunctor.prodIdSndCompEquivalence
@@ -343,6 +346,12 @@ set_option autoImplicit false
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.retainedSource_has_factorization
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_map₂_discardTwoCell_not_isIso
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedFactorization
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedSource_inverts
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedSource_has_factorization
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedLift_map_inverse_fst
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard

@@ -71,10 +71,15 @@ to an arbitrary groupoid induces a marking-inverting pseudofunctor, factors
 through the free-groupoid target, and sends the formally adjoined inverse to
 the actual inverse of the generator's image. Precomposition is faithful on
 every local category of strong transformations and modifications because the
-inclusion is surjective on objects. What remains open is factorization of an
-arbitrary mixed-coordinate marking-inverting pseudofunctor, local fullness and
-essential surjectivity, and ultimately the corresponding construction for the
-full resource-process bicategory.
+inclusion is surjective on objects. These two families now combine: for an
+arbitrary groupoid-valued localized component `K` and arbitrary
+retained-coordinate pseudofunctor `H`, the paired pseudofunctor `K × H`
+inverts the marking and factors componentwise, while its lift maps the formal
+inverse correctly; with the identity retained component it still detects the
+noninvertible Boolean discard. What remains open is factorization of an
+arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor, local
+fullness and essential surjectivity, and ultimately the corresponding
+construction for the full resource-process bicategory.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

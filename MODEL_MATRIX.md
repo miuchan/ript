@@ -177,6 +177,7 @@ a bicategory, not additional operations inside any one semantic model.
 | Equivalence | Bicategorical equivalence plus explicit cost reflection in both directions | Forward and inverse functors preserve every process cost exactly | Budget preservation/reflection and transport of serial and parallel core bounds |
 | Homotopy 1-category | Model morphisms modulo invertible monoidal 2-cells | Raw cost reflection is multiplicative; its invertible-2-cell saturation is explicit | Bicategorical unitors/associator descend to strict ordinary category laws; saturated marking descends exactly to marked quotient classes |
 | Cost-exact localization | Mathlib Gabriel--Zisman localization of the model homotopy category | Formally inverts every saturated cost-exact class | Genuine `Functor.IsLocalization`; canonical pseudofunctor from `Pith`; marked arrows map to isomorphisms; a noninvertible marked arrow and a noninvertible 2-cell expose nontriviality and truncation |
+| Parameterized walking localization | Product of the locally discrete walking arrow with the one-object bicategory of types and functions | All first-coordinate arrows are marked when the retained coordinate is already an adjoint equivalence | Free-groupoid inversion in the first coordinate; faithful action on 2-cells; retained-, localized-, and separable mixed-coordinate lift families; the mixed identity-retained specialization maps the formal inverse correctly while preserving noninvertible Boolean discard; arbitrary nonseparable lifts and local fullness/essential surjectivity remain open |
 
 This layer is a bicategory of models for a fixed resource type and uniform
 universes. It is not an `(∞,1)`-category, does not provide univalence, and does
@@ -188,7 +189,11 @@ from `Pith`, which retains only invertible 2-cells. A concrete finite
 deterministic discard 2-cell has endpoints that remain distinct in the
 homotopy category, proving why the bridge cannot extend to the full
 bicategory with this locally discrete target. It is therefore not a
-bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
+bicategorical, Dwyer--Kan, simplicial, or Rezk localization. The independent
+parameterized walking construction is a non-locally-discrete test case: its
+new separable mixed family is a genuine two-coordinate factorization result,
+but it does not yet establish the universal lift for arbitrary nonseparable
+pseudofunctors or the full local equivalence.
 
 ## Internally univalent deep layer
 

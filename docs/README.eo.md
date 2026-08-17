@@ -141,8 +141,13 @@ loka kategorio de fortaj transformoj kaj modifoj. Komplemente, por ĉiu grupoido
 `G`, ĉiu funktoro de la marŝanta sago al `G` induktas mark-inversigan
 pseŭdofunktoron dependantan nur de la lokalizata koordinato; ĝi eksplicite
 faktoriĝas tra la liber-grupoida celo, kaj ĝia levo mapas la formale aldonitan
-inverson al la efektiva inverso de la bildo de la genera sago. Faktorado de
-arbitraj miks-koordinataj mark-inversigaj pseŭdofunktoroj, loka pleneco kaj loka esenca surĵeteco ankoraŭ
+inverson al la efektiva inverso de la bildo de la genera sago. La du komponantoj
+nun ankaŭ kombiniĝas: ĉiu apartigebla miks-koordinata pseŭdofunktoro `K × H`,
+kun arbitra grupoid-valora lokalizata komponanto kaj arbitra konservit-koordinata
+komponanto, faktoriĝas tra la celo; ĝia levo ĝuste interpretas la formalan
+inverson, kaj kun identeca konservita komponanto ĝi ankoraŭ detektas
+neinversigeblan Bulean forĵeton. Faktorado de arbitraj neapartigeblaj
+miks-koordinataj mark-inversigaj pseŭdofunktoroj, loka pleneco kaj loka esenca surĵeteco ankoraŭ
 mankas. La plena rimed-proceza konstruo ankoraŭ devas pruvi biesencan kaj lokan
 universalecon por siaj propraj modelaj 2-ĉeloj; la ekzistanta ponto do ankoraŭ
 ne estas plena dukategoria, Dwyer--Kan-a, simplicia aŭ Rezk-lokalizo.
@@ -1344,6 +1349,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization` | Ĉiu grupoid-valora funktoro dependanta nur de la lokalizata marŝanta koordinato faktoriĝas tra la liber-grupoida celo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateLift_map_inverse` | La levita funktoro mapas la formale aldonitan inverson al la efektiva inverso de la bildo de la origina genera sago. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinate_inverts_factors_and_maps_inverse` | La tuta lokalizat-koordinata familio samtempe inversigas markojn, faktoriĝas kaj ĝuste interpretas la novan inverson. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedSource_has_factorization` | Por arbitraj grupoid-valora `K` kaj konservit-koordinata `H`, la apartigebla miks-pseŭdofunktoro `K × H` faktoriĝas tra la celo. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedLift_map_inverse_fst` | La miksita levo mapas la formalan inverson en la unua koordinato al la efektiva inverso de la bildo de la genera sago. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | Kun identeca konservita komponanto, la miksita levo ankoraŭ detektas neinversigeblan Bulean forĵeton. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | Unu teoremo kunigas mark-inversigon, miks-koordinatan faktoradon, ĝustan interpreton de la inverso kaj konservon de neinversigebla 2-ĉelo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Antaŭkunmeto estas fidela en ĉiuj lokaj kategorioj de fortaj transformoj kaj modifoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | Konkreta mark-inversiga pseŭdofunktoro faktoriĝas tra la celo dum ĝi ankoraŭ detektas neinversigeblan Bulean forĵeton. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finia determinisma forĵeto estas neinversigebla modela 2-ĉelo kies finpunktoj restas malsamaj post homotopia tranĉo. |
@@ -1455,7 +1464,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 12, grupoida lokaliza fundamento | Lokalizaj modeloj per idento, skeletokompletigo kaj limigita Yoneda je ĉiuj internaj identecoj, kun Mathlib-universalaj ecoj de funktorkategorioj | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
 | 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, vertikalaj kaj horizontalaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, ekzakta projekt-loka grupoida kompleta-Segal-a pakado, natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj | **PROVED** |
-| 12, pli-alta lokaliza specifo | Mark-inversigo al adjunktaj ekvivalentoj, pseŭdofunktora antaŭkunmeto, identecaj kaj marŝant-sagaj bazkonstruoj, neloke-diskreta parametrigita konstruo kun konservit-koordinataj kaj lokalizat-koordinataj faktoradfamilioj kaj fidela antaŭkunmeto en ĉiuj lokaj kategorioj, kost-ekzakta specialigo kaj konkretaj obstrukcoj | **PROVED** |
+| 12, pli-alta lokaliza specifo | Mark-inversigo al adjunktaj ekvivalentoj, pseŭdofunktora antaŭkunmeto, identecaj kaj marŝant-sagaj bazkonstruoj, neloke-diskreta parametrigita konstruo kun konservit-koordinataj, lokalizat-koordinataj kaj apartigeblaj miks-koordinataj faktoradfamilioj kaj fidela antaŭkunmeto en ĉiuj lokaj kategorioj, kost-ekzakta specialigo kaj konkretaj obstrukcoj | **PROVED** |
 | 12, pli-alta lokaliza konstruo | Plena rimed-proceza pseŭdofunktoro plenumanta la kompilitan dukategorian lokalizan predikaton, plus Mathlib-denaska simplicia malfort-ekvivalenta/norma kompleta-Segal-a komparo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -1478,7 +1487,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 | Kost-ekzakta modellokalizo | Inversigebla-2-ĉela saturiĝo de kost-reflektaj modelmorfioj, poste homotopiklasoj | Formala inversigo de ĉiu saturite markita klaso | Nekomputebla semantika pruva tavolo | Preciza mark-malsupreniga teoremo kaj kanona pseŭdofunktoro el `Pith`; vera Mathlib-a Gabriel--Zisman universala eco; konkreta neinversigebla 2-ĉelo pruvas kial ĝi ne estas pli-alta lokalizo |
-| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron kaj ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĝuste interpretas la formalan inverson, havas fidelan antaŭkunmeton en ĉiuj lokaj kategorioj, konservas neinversigeblan Bulean forĵeton kaj havas pruvite neloke-diskretan celon; arbitra miks-koordinata faktorigo, loka pleneco kaj loka esenca surĵeteco restas malfermitaj |
+| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron kaj ĉiun apartigeblan miks-familion `K × H`, ĝuste interpretas la formalan inverson, havas fidelan antaŭkunmeton en ĉiuj lokaj kategorioj, konservas neinversigeblan Bulean forĵeton kaj havas pruvite neloke-diskretan celon; arbitra neapartigebla miks-koordinata faktorigo, loka pleneco kaj loka esenca surĵeteco restas malfermitaj |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; Mathlib-lokalizo je ĉiu interna identeco; ne Rezk-kompletigo |
@@ -2048,7 +2057,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
 - [x] Modelaj asociantoj, unuigiloj, kvinangulo, triangulo kaj transporto per kost-ekzakta ekvivalento
 - [x] Kostmarko saturita laŭ inversigeblaj 2-ĉeloj, preciza homotopia malsuprenigo, kanona `Pith`-pseŭdofunktoro kaj Gabriel--Zisman-lokalizo, kun neinversigeblaj markita-saga kaj 2-ĉela atestoj
-- [x] Plena dudimensia lokaliza predikato, identecaj kaj marŝant-sagaj bazkonstruoj, neloke-diskreta parametrigita invers-aldona konstruo kun konservit-koordinataj kaj lokalizat-koordinataj faktoradfamilioj kaj fidela antaŭkunmeto en ĉiuj lokaj kategorioj, konservado de neinversigeblaj 2-ĉeloj kaj identec-kandidataj obstrukcoj; arbitra miks-koordinata faktorigo, loka pleneco kaj loka esenca surĵeteco restas malfermitaj
+- [x] Plena dudimensia lokaliza predikato, identecaj kaj marŝant-sagaj bazkonstruoj, neloke-diskreta parametrigita invers-aldona konstruo kun konservit-koordinataj, lokalizat-koordinataj kaj apartigeblaj miks-koordinataj faktoradfamilioj kaj fidela antaŭkunmeto en ĉiuj lokaj kategorioj, konservado de neinversigeblaj 2-ĉeloj kaj identec-kandidataj obstrukcoj; arbitra neapartigebla miks-koordinata faktorigo, loka pleneco kaj loka esenca surĵeteco restas malfermitaj
 - [x] Profundaj interfackodoj kun apartaj sintaksoj de struktura ekvivalento kaj interna idento
 - [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo

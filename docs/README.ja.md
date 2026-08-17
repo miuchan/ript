@@ -86,7 +86,10 @@ localization になるのは、すべての印付き射が既に随伴同値で�
 は標的を通る明示的因子化を持ち、前合成は strong transformation と modification の全局所圏で忠実です。
 これと相補的に、任意の groupoid `G` への各 walking-arrow 関手は、局所化される座標のみに依存する
 標識反転 pseudofunctor を誘導し、自由 groupoid 標的を通って明示的に因子化します。その lift は形式的に
-追加された逆射を生成射の像の実際の逆射へ写します。完全な資源過程構成には任意の混合座標の標識反転
+追加された逆射を生成射の像の実際の逆射へ写します。さらに両成分を組み合わせられます。任意の groupoid 値
+局所化成分 `K` と任意の保持座標 pseudofunctor `H` からなる可分離混合 pseudofunctor `K × H` は標的を
+通って因子化し、形式的逆射を正しく解釈します。保持成分が恒等なら非可逆 Boolean discard も保持します。
+完全な資源過程構成には任意の非可分離混合座標の標識反転
 pseudofunctor の因子化、局所充満性、本質的全射性がなお必要で、
 現行の橋も完全な双圏的、Dwyer--Kan、simplicial、Rezk localization ではありません。
 Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
@@ -1083,6 +1086,10 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization` | groupoid に値を取り、局所化される walking 座標のみに依存する各関手は自由 groupoid 標的を通って因子化します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateLift_map_inverse` | lift 後の関手は形式的に追加された逆射を元の生成射の像の実際の逆射へ写します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinate_inverts_factors_and_maps_inverse` | 局所化座標族全体が標識を反転し、因子化し、新しい逆射を正しく解釈します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedSource_has_factorization` | 任意の groupoid 値 `K` と保持座標 `H` について、可分離混合 pseudofunctor `K × H` は標的を通って因子化します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedLift_map_inverse_fst` | 混合 lift は第 1 座標の形式的逆射を生成射の像の実際の逆射へ写します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | 保持成分が恒等なら、混合 lift は非可逆 Boolean discard を引き続き検出します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | 一つの定理が標識反転、混合座標因子化、正しい逆射解釈、非可逆 2-射の保持をまとめます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | 前合成は strong transformation と modification の全局所圏で忠実です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | 具体的な標識反転 pseudofunctor は非可逆 Boolean discard を検出したまま標的を通って因子化します。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限決定論的 discard は非可逆なモデル 2-射で、その両端は homotopy truncation 後も異なります。 |
@@ -1192,7 +1199,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 12、groupoidal localization 基礎 | 恒等・skeleton completion・制限 Yoneda 関手による全内部同一射の Mathlib localization model と関手圏普遍性 | **PROVED** |
 | 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
 | 12、classifying-diagram 基礎 | Rezk classifying diagram、垂直・水平の groupoid/Kan 構造、厳密な外側 Segal 同値、正確なプロジェクト内 groupoidal complete-Segal パッケージ、自然な simplex-mapping 表示、真正な境界 matching limit と matching-map fibration | **PROVED** |
-| 12、高次 localization 仕様 | 随伴同値への標識反転、pseudofunctor 前合成、恒等・walking-arrow 基底構成、および保持座標・局所化座標の両因子化と局所忠実性を持つ非局所離散パラメータ化構成 | **PROVED** |
+| 12、高次 localization 仕様 | 随伴同値への標識反転、pseudofunctor 前合成、恒等・walking-arrow 基底構成、および保持座標・局所化座標・可分離混合座標の因子化と局所忠実性を持つ非局所離散パラメータ化構成 | **PROVED** |
 | 12、高次 localization 構成 | コンパイル済み双圏 localization 述語を満たす完全資源プロセス pseudofunctor と Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal 比較 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
@@ -1215,7 +1222,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
 | コスト完全モデル localization | コスト反映モデル射の可逆 2-射飽和と homotopy 類 | 各飽和標識類の形式的反転 | 非計算的意味論証明層 | 正確な標識降下定理と `Pith` からの標準 pseudofunctor；真の Mathlib Gabriel--Zisman 普遍性；具体的な非可逆 2-射が高次 localization でない理由を示す |
-| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor と全 groupoid 値の局所化座標関手を因子化し、形式的逆射を正しく解釈し、前合成は局所忠実；任意の混合座標因子化・局所充満性・局所本質的全射性は未解決 |
+| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` を因子化し、形式的逆射を正しく解釈し、前合成は局所忠実；任意の非可分離混合座標因子化・局所充満性・局所本質的全射性は未解決 |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；全内部同一射に関する Mathlib localization；Rezk completion ではない |
@@ -1721,7 +1728,7 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] モノイダル自然変換 2-射、垂直・水平合成、interchange
 - [x] モデル結合子、単位子、五角形、三角形、コスト完全同値による移送
 - [x] 可逆 2-射飽和コスト標識、正確な homotopy 降下、標準 `Pith` pseudofunctor、Gabriel--Zisman localization（非可逆な印付き射と 2-射の見証を含む）
-- [x] 完全な 2 次元 localization 述語、恒等・walking-arrow 基礎構成、保持座標・局所化座標の両因子化と局所忠実な前合成を持つ非局所離散逆射追加スライス、恒等候補の障害；任意の混合座標因子化・局所充満性・局所本質的全射性は未解決
+- [x] 完全な 2 次元 localization 述語、恒等・walking-arrow 基礎構成、保持座標・局所化座標・可分離混合座標の因子化と局所忠実な前合成を持つ非局所離散逆射追加スライス、恒等候補の障害；任意の非可分離混合座標因子化・局所充満性・局所本質的全射性は未解決
 - [x] 構造同値構文と内部同一性構文を分離した深いインターフェース code
 - [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例

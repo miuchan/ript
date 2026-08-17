@@ -46,6 +46,89 @@ def prod (F : B ⥤ᵖ C) (G : D ⥤ᵖ E) : (B × D) ⥤ᵖ (C × E) where
   map₂_left_unitor f := by apply Prod.ext <;> simp
   map₂_right_unitor f := by apply Prod.ext <;> simp
 
+/-- Pair two pseudofunctors with a common source into the product of their
+targets. -/
+@[simps]
+def pair (F : B ⥤ᵖ C) (G : B ⥤ᵖ D) : B ⥤ᵖ (C × D) where
+  obj X := (F.obj X, G.obj X)
+  map f := (F.map f, G.map f)
+  map₂ η := (F.map₂ η, G.map₂ η)
+  mapId X := Iso.prod (F.mapId X) (G.mapId X)
+  mapComp f g := Iso.prod (F.mapComp f g) (G.mapComp f g)
+  map₂_id f := by
+    apply Prod.ext
+    · exact F.map₂_id f
+    · exact G.map₂_id f
+  map₂_comp η θ := by
+    apply Prod.ext
+    · exact F.map₂_comp η θ
+    · exact G.map₂_comp η θ
+  map₂_whisker_left f g h η := by apply Prod.ext <;> simp
+  map₂_whisker_right η h := by apply Prod.ext <;> simp
+  map₂_associator f g h := by apply Prod.ext <;> simp
+  map₂_left_unitor f := by apply Prod.ext <;> simp
+  map₂_right_unitor f := by apply Prod.ext <;> simp
+
+namespace StrongTrans
+
+variable {F F' : B ⥤ᵖ C} {G G' : B ⥤ᵖ D}
+
+/-- Pair strong transformations with a common source into a strong
+transformation between paired pseudofunctors. -/
+@[simps]
+def pair (η : F ⟶ F') (θ : G ⟶ G') : F.pair G ⟶ F'.pair G' where
+  app X := (η.app X, θ.app X)
+  naturality f := Iso.prod (η.naturality f) (θ.naturality f)
+  naturality_naturality μ := by
+    apply Prod.ext
+    · exact η.naturality_naturality μ
+    · exact θ.naturality_naturality μ
+  naturality_id X := by
+    apply Prod.ext
+    · exact η.naturality_id X
+    · exact θ.naturality_id X
+  naturality_comp f g := by
+    apply Prod.ext
+    · exact η.naturality_comp f g
+    · exact θ.naturality_comp f g
+
+/-- Evaluate an isomorphism of strong transformations at one source
+object. -/
+def isoApp {η θ : F ⟶ F'} (e : η ≅ θ) (X : B) : η.app X ≅ θ.app X where
+  hom := e.hom.as.app X
+  inv := e.inv.as.app X
+  hom_inv_id := congrArg (fun k => k.as.app X) e.hom_inv_id
+  inv_hom_id := congrArg (fun k => k.as.app X) e.inv_hom_id
+
+end StrongTrans
+
+/-- Pair adjoint equivalences between pseudofunctors with a common source. -/
+noncomputable def pairEquivalence {F F' : B ⥤ᵖ C} {G G' : B ⥤ᵖ D}
+    (e : F ≌ F') (e' : G ≌ G') : F.pair G ≌ F'.pair G' :=
+  Bicategory.Equivalence.mkOfAdjointifyCounit
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := 𝟙 (F.pair G))
+      (θ := e.hom.pair e'.hom ≫ e.inv.pair e'.inv)
+      (fun X => Iso.prod
+        (Pseudofunctor.StrongTrans.isoApp e.unit X)
+        (Pseudofunctor.StrongTrans.isoApp e'.unit X))
+      (by
+        intro a b f
+        apply Prod.ext
+        · exact e.unit.hom.as.naturality f
+        · exact e'.unit.hom.as.naturality f))
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := e.inv.pair e'.inv ≫ e.hom.pair e'.hom)
+      (θ := 𝟙 (F'.pair G'))
+      (fun X => Iso.prod
+        (Pseudofunctor.StrongTrans.isoApp e.counit X)
+        (Pseudofunctor.StrongTrans.isoApp e'.counit X))
+      (by
+        intro a b f
+        apply Prod.ext
+        · exact e.counit.hom.as.naturality f
+        · exact e'.counit.hom.as.naturality f))
+
 end Pseudofunctor
 
 namespace Bicategory.Equivalence
