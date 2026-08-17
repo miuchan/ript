@@ -2,41 +2,24 @@
 
 Only implemented and compiled capabilities are marked as supported.
 
-<!-- Keep this wide matrix as explicit HTML: the repository quality gate
-checks the 10-cell schema so a malformed Markdown separator cannot silently
-degrade into the raw pipe text shown by some renderers. -->
-<table>
-  <thead>
-    <tr>
-      <th>Model</th>
-      <th>Sequential</th>
-      <th>Tensor</th>
-      <th>Discard</th>
-      <th>Copy</th>
-      <th>Convex</th>
-      <th>Causal</th>
-      <th>Decision</th>
-      <th>Thermal</th>
-      <th>Computable</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr><td>FiniteFunction (zero cost)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>FiniteFunction.Metered</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Sequential term model</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Proof layer</td></tr>
-    <tr><td>Symmetric monoidal term model</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Proof layer</td></tr>
-    <tr><td>FiniteStochastic (exact <code>ℚ≥0</code>)</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Finite-distribution Kleisli</td><td>Yes</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Mathlib <code>Stoch</code> bridge (finite discrete image)</td><td>Yes</td><td>Yes</td><td>Via <code>Stoch</code></td><td>Via <code>Stoch</code></td><td>No</td><td>Via <code>Stoch</code></td><td>Via Mathlib Bayes risk</td><td>No</td><td>Semantic layer</td></tr>
-    <tr><td>Exact finite decision layer</td><td>Via <code>FinStoch</code></td><td>No</td><td>No</td><td>No</td><td>No</td><td>Via <code>FinStoch</code></td><td>Yes: forward data processing, deterministic and full finite stochastic Blackwell--Sherman--Stein converses, exact rational garbling-simplex representation, and rational-separator/decision-certificate equivalence</td><td>No</td><td>Exact finite minima, deterministic mixtures, rational convex-hull reflection, rational strict separation, fiber witnesses, the necessary empty-parameter boundary, and a genuinely stochastic <code>1/4 &lt; 1/2</code> certificate are compiled</td></tr>
-    <tr><td>Total computation (<code>Fin 4 → Nat</code> resources)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Partial computation (<code>Option</code> Kleisli)</td><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Finite causal DAG (exact <code>ℚ≥0</code>)</td><td>Topological generation</td><td>Via <code>FinStoch</code> states</td><td>No</td><td>No</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td></tr>
-    <tr><td>Finite thermal systems (specified and realized Gibbs equilibrium)</td><td>Gibbs-preserving category; finite closed and bath-assisted protocols</td><td>Bifunctor; realized Gibbs tensor at common temperature</td><td>No exported thermal discard</td><td>No</td><td>No generic interface</td><td>Via <code>FinStoch</code></td><td>No</td><td>Yes: exact rationality classification, irrational counterexample, closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds</td><td>Exact states/channels/protocol traces/marginals, positive-rational weight normalization, information-battery, entropy-neutral work-battery, and closed erasure–recharge witnesses executable; arbitrary real exponential equality and Gibbs/KL/free-energy/work accounting remain analytic</td></tr>
-    <tr><td>Finite quantum Kraus channels (<code>ℂ</code>)</td><td>Kraus category</td><td>Yes</td><td>Yes</td><td>No</td><td>No</td><td>Yes</td><td>No</td><td>No</td><td>Matrix proof layer; basis labels executable</td></tr>
-    <tr><td>Classical quantum dephasing subcategory</td><td>Yes; identity is basis dephasing</td><td>Bifunctor</td><td>Via ambient trace discard, not separately packaged</td><td>No exported copy</td><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td><td>Exact <code>FinStoch</code> source; noncomputable complex matrix semantics</td></tr>
-  </tbody>
-</table>
+<!-- Keep all 10 columns aligned. The repository quality gate validates every
+row so a malformed separator cannot degrade into raw pipe text. -->
+| Model | Sequential | Tensor | Discard | Copy | Convex | Causal | Decision | Thermal | Computable |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| FiniteFunction (zero cost) | Yes | Yes | Yes | Yes | No | Yes | No | No | Yes |
+| FiniteFunction.Metered | Yes | No | No | No | No | No | No | No | Yes |
+| Sequential term model | Yes | No | No | No | No | No | No | No | Proof layer |
+| Symmetric monoidal term model | Yes | Yes | No | No | No | No | No | No | Proof layer |
+| FiniteStochastic (exact `ℚ≥0`) | Yes | Yes | Yes | Yes | Yes | Yes | No | No | Yes |
+| Finite-distribution Kleisli | Yes | No | No | No | No | No | No | No | Yes |
+| Mathlib `Stoch` bridge (finite discrete image) | Yes | Yes | Via `Stoch` | Via `Stoch` | No | Via `Stoch` | Via Mathlib Bayes risk | No | Semantic layer |
+| Exact finite decision layer | Via `FinStoch` | No | No | No | No | Via `FinStoch` | Yes: forward data processing, deterministic and full finite stochastic Blackwell--Sherman--Stein converses, exact rational garbling-simplex representation, and rational-separator/decision-certificate equivalence | No | Exact finite minima, deterministic mixtures, rational convex-hull reflection, rational strict separation, fiber witnesses, the necessary empty-parameter boundary, and a genuinely stochastic `1/4 < 1/2` certificate are compiled |
+| Total computation (`Fin 4 → Nat` resources) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
+| Partial computation (`Option` Kleisli) | Yes | Bifunctor | No | No | No | No | No | No | Yes |
+| Finite causal DAG (exact `ℚ≥0`) | Topological generation | Via `FinStoch` states | No | No | No generic interface | Yes | No | No | Yes |
+| Finite thermal systems (specified and realized Gibbs equilibrium) | Gibbs-preserving category; finite closed and bath-assisted protocols | Bifunctor; realized Gibbs tensor at common temperature | No exported thermal discard | No | No generic interface | Via `FinStoch` | No | Yes: exact rationality classification, irrational counterexample, closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds | Exact states/channels/protocol traces/marginals, positive-rational weight normalization, information-battery, entropy-neutral work-battery, and closed erasure–recharge witnesses executable; arbitrary real exponential equality and Gibbs/KL/free-energy/work accounting remain analytic |
+| Finite quantum Kraus channels (`ℂ`) | Kraus category | Yes | Yes | No | No | Yes | No | No | Matrix proof layer; basis labels executable |
+| Classical quantum dephasing subcategory | Yes; identity is basis dephasing | Bifunctor | Via ambient trace discard, not separately packaged | No exported copy | No generic interface | Yes | No | No | Exact `FinStoch` source; noncomputable complex matrix semantics |
 
 For the quantum row, “Discard” is the proved trace channel and “Causal” means
 the compiled uniqueness/compatibility laws `eq_discard` and `comp_discard`.

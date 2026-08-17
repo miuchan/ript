@@ -54,25 +54,62 @@ reject_matches \
   '\\operatorname' \
   '*.md'
 
+# Validate complete GFM table blocks, not just their separator rows. A single
+# missing separator or data cell makes GitHub render the whole block as raw
+# pipe-delimited prose, which is easy to miss in source review.
 markdown_table_errors=0
 while IFS= read -r markdown_file; do
   if ! awk '
-    function pipe_count(line, copy) {
-      copy = line
-      return gsub(/\|/, "", copy)
-    }
-
-    NR > 1 &&
-        $0 ~ /^[[:space:]]*\|[[:space:]]*:?-+/ &&
-        $0 !~ /[^|:[:space:]-]/ {
-      if (previous !~ /^[[:space:]]*\|/ ||
-          pipe_count(previous) != pipe_count($0)) {
-        printf "Source quality check failed: malformed Markdown table separator at %s:%d\n", FILENAME, NR
-        failed = 1
+    function pipe_count(line, i, character, in_code, count) {
+      for (i = 1; i <= length(line); i += 1) {
+        character = substr(line, i, 1)
+        if (character == "\\") {
+          i += 1
+        } else if (character == "`") {
+          while (i < length(line) && substr(line, i + 1, 1) == "`") {
+            i += 1
+          }
+          in_code = !in_code
+        } else if (character == "|" && !in_code) {
+          count += 1
+        }
       }
+      return count
     }
 
-    { previous = $0 }
+    function is_table_row(line) {
+      return line ~ /^[[:space:]]*\|.*\|[[:space:]]*$/
+    }
+
+    function is_separator(line) {
+      return line ~ /^[[:space:]]*\|[[:space:]]*:?-/ &&
+        line !~ /[^|:[:space:]-]/
+    }
+
+    {
+      if (in_table) {
+        if (is_table_row($0)) {
+          if (pipe_count($0) != expected_pipes) {
+            printf "Source quality check failed: Markdown table row at %s:%d has %d pipes; expected %d\n", FILENAME, NR, pipe_count($0), expected_pipes
+            failed = 1
+          }
+        } else {
+          in_table = 0
+        }
+      }
+
+      if (NR > 1 && is_separator($0)) {
+        if (!is_table_row(previous) ||
+            pipe_count(previous) != pipe_count($0)) {
+          printf "Source quality check failed: malformed Markdown table separator at %s:%d\n", FILENAME, NR
+          failed = 1
+        }
+        in_table = 1
+        expected_pipes = pipe_count($0)
+      }
+
+      previous = $0
+    }
 
     END { exit failed }
   ' "$markdown_file"; then
@@ -84,38 +121,48 @@ if [[ "$markdown_table_errors" -ne 0 ]]; then
   exit 1
 fi
 
-# Keep the wide canonical capability matrix in explicit HTML. GitHub's
-# Markdown table parser treats one mismatched separator cell as ordinary text,
-# and this matrix is wide enough that such a regression is hard to spot in a
-# source review. Validate both the rendering boundary and every row width.
+# The canonical capability matrix is deliberately a standard GFM table so it
+# renders in GitHub and other Markdown clients. Its schema is public API:
+# validate the heading, separator, all 14 rows, and all 10 columns explicitly.
 if ! awk '
-  /<thead>/ { in_head = 1 }
-  /<\/thead>/ { in_head = 0 }
-  /<tbody>/ { in_body = 1; next }
-  /<\/tbody>/ { in_body = 0 }
-
-  in_head {
-    line = $0
-    header_cells += gsub(/<th>/, "", line)
+  function pipe_count(line, copy) {
+    copy = line
+    return gsub(/\|/, "", copy)
   }
 
-  in_body && /<tr>/ {
-    line = $0
-    cells = gsub(/<td>/, "", line)
-    rows += 1
-    if (cells != 10) {
-      printf "Source quality check failed: MODEL_MATRIX.md row %d has %d cells; expected 10\n", NR, cells
+  /^\| Model \| Sequential \| Tensor \| Discard \| Copy \| Convex \| Causal \| Decision \| Thermal \| Computable \|$/ {
+    header_line = NR
+    expected_pipes = pipe_count($0)
+    in_matrix = 1
+    next
+  }
+
+  in_matrix && NR == header_line + 1 {
+    if ($0 !~ /^\| --- \| --- \| --- \| --- \| --- \| --- \| --- \| --- \| --- \| --- \|$/) {
+      printf "Source quality check failed: MODEL_MATRIX.md has a malformed capability separator at row %d\n", NR
       failed = 1
     }
+    next
   }
+
+  in_matrix && NR > header_line + 1 && /^\|/ {
+    rows += 1
+    if (pipe_count($0) != expected_pipes) {
+      printf "Source quality check failed: MODEL_MATRIX.md capability row %d has %d columns; expected 10\n", NR, pipe_count($0) - 1
+      failed = 1
+    }
+    next
+  }
+
+  in_matrix && NR > header_line + 1 { in_matrix = 0 }
 
   END {
-    if (header_cells != 10) {
-      printf "Source quality check failed: MODEL_MATRIX.md header has %d cells; expected 10\n", header_cells
+    if (header_line == 0 || expected_pipes != 11) {
+      printf "Source quality check failed: MODEL_MATRIX.md is missing its 10-column GFM capability header\n"
       failed = 1
     }
-    if (rows == 0) {
-      printf "Source quality check failed: MODEL_MATRIX.md has no HTML capability rows\n"
+    if (rows != 14) {
+      printf "Source quality check failed: MODEL_MATRIX.md has %d capability rows; expected 14\n", rows
       failed = 1
     }
     exit failed
