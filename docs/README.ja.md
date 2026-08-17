@@ -100,9 +100,10 @@ codiscrete groupoid と明示的に圏同値です。
 局所化成分 `K` と任意の保持座標 pseudofunctor `H` からなる可分離混合 pseudofunctor `K × H` は標的を
 通って因子化し、形式的逆射を正しく解釈します。保持成分が恒等なら非可逆 Boolean discard も保持します。
 始域 pseudofunctor の標識反転と因子化は随伴同値のもとで不変であることも証明されました。したがって
-結果は可分離族の replete 閉包全体、すなわち定義上は成分ごとの積でない実装まで含みます。
-完全な資源過程構成には、その閉包外の任意の非可分離混合座標の標識反転 pseudofunctor の因子化が
-なお必要です。この未解決の大域的な双本質因子化フィールドのため、現行の橋も完全な双圏的、
+結果は可分離族の replete 閉包全体、すなわち定義上は成分ごとの積でない実装まで含みます。その閉包外でも、
+任意の標識反転始域 pseudofunctor は、全標的対象・1-射・2-射上のコンパイル済み `PrelaxFunctor` 作用を定めます。
+標準前向き射は始域作用を再利用し、真に逆向きの射は選択した逆同値を用います。残る作業は恒等・合成比較同型とその coherence を与え、
+始域因子化の随伴同値を構成することです。この未解決の大域的な双本質因子化フィールドのため、現行の橋も完全な双圏的、
 Dwyer--Kan、simplicial、Rezk localization ではありません。
 Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
 empty・unit・sum・tensor・原子的インターフェースの深い code は、構造同値の構文と内部同一性の
@@ -1113,6 +1114,12 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedLift_map_inverse_fst` | 混合 lift は第 1 座標の形式的逆射を生成射の像の実際の逆射へ写します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | 保持成分が恒等なら、混合 lift は非可逆 Boolean discard を引き続き検出します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | 一つの定理が標識反転、混合座標因子化、正しい逆射解釈、非可逆 2-射の保持をまとめます。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceEquivalence_hom` | 各始域 walking 射について、選択した像の同値の前向き 1-射は元の pseudofunctor の像そのものです。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor` | 任意の標識反転始域 pseudofunctor は、pseudofunctor coherence を与える前の段階で、標的の対象・1-射・2-射上の関手的作用を定めます。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_forward` | 任意の prelax 作用は標準前向き射上で始域 pseudofunctor の作用を再利用します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_inverse` | 真に逆向きの射では、任意の prelax 作用は選択した逆射に保持座標の像を続けます。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_forward` | 前向き保持座標 2-射の作用は始域作用と異種等しいです。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_inverse` | 逆向き保持座標 2-射の作用は、選択した逆射による始域作用の左 whiskering です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | 前合成は strong transformation と modification の全局所圏で忠実です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | walking 補完の各射は、その二つの端点で決まる標準射に等しいです。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | walking-arrow 補完は `Fin 2` 上の codiscrete groupoid と圏同値です。 |
@@ -1265,7 +1272,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 12、groupoidal localization 基礎 | 恒等・skeleton completion・制限 Yoneda 関手による全内部同一射の Mathlib localization model と関手圏普遍性 | **PROVED** |
 | 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
 | 12、classifying-diagram 基礎 | Rezk classifying diagram、垂直・水平の groupoid/Kan 構造、厳密な外側 Segal 同値、正確なプロジェクト内 groupoidal complete-Segal パッケージ、自然な simplex-mapping 表示、真正な境界 matching limit と matching-map fibration | **PROVED** |
-| 12、高次 localization 仕様 | 随伴同値への標識反転、pseudofunctor 前合成、恒等・walking-arrow 基底構成、walking 補完の端点正規形・thin・codiscrete 分類、および保持座標・局所化座標・可分離混合座標・随伴同値 replete 閉包の因子化と局所充満忠実性を持つ非局所離散パラメータ化構成 | **PROVED** |
+| 12、高次 localization 仕様 | 随伴同値への標識反転、pseudofunctor 前合成、恒等・walking-arrow 基底構成、walking 補完の端点正規形・thin・codiscrete 分類、および保持座標・局所化座標・可分離混合座標・随伴同値 replete 閉包の因子化、局所前合成同値、任意の標識反転標的 `PrelaxFunctor` 作用を持つ非局所離散パラメータ化構成 | **PROVED** |
 | 12、高次 localization 構成 | コンパイル済み双圏 localization 述語を満たす完全資源プロセス pseudofunctor と Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal 比較 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
@@ -1288,7 +1295,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
 | コスト完全モデル localization | コスト反映モデル射の可逆 2-射飽和と homotopy 類 | 各飽和標識類の形式的反転 | 非計算的意味論証明層 | 正確な標識降下定理と `Pith` からの標準 pseudofunctor；真の Mathlib Gabriel--Zisman 普遍性；具体的な非可逆 2-射が高次 localization でない理由を示す |
-| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、端点正規形・thin 性・`Fin 2` 上の codiscrete groupoid との同値を証明し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` とその随伴同値閉包を因子化し、形式的逆射を正しく解釈し、各始域 strong transformation を標的 strong transformation として正式に組み立て、modification を持ち上げ、前合成が全局所圏で同値であることを証明する；その閉包外の任意の非可分離混合座標因子化は未解決 |
+| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、端点正規形・thin 性・`Fin 2` 上の codiscrete groupoid との同値を証明し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` とその随伴同値閉包を因子化し、形式的逆射を正しく解釈し、各始域 strong transformation を標的 strong transformation として正式に組み立て、modification を持ち上げ、前合成が全局所圏で同値であることを証明する；任意の標識反転始域 pseudofunctor はコンパイル済みの標的 `PrelaxFunctor` 作用も持つが、pseudofunctor coherence と最終的な非可分離因子化は未解決 |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；全内部同一射に関する Mathlib localization；Rezk completion ではない |
@@ -1794,7 +1801,7 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] モノイダル自然変換 2-射、垂直・水平合成、interchange
 - [x] モデル結合子、単位子、五角形、三角形、コスト完全同値による移送
 - [x] 可逆 2-射飽和コスト標識、正確な homotopy 降下、標準 `Pith` pseudofunctor、Gabriel--Zisman localization（非可逆な印付き射と 2-射の見証を含む）
-- [x] 完全な 2 次元 localization 述語、恒等・walking-arrow 基礎構成、walking 補完の端点正規形・thin・codiscrete 分類、保持座標・局所化座標・可分離混合座標・随伴同値 replete 閉包の因子化と局所前合成同値を持つ非局所離散逆射追加スライス、恒等候補の障害；その閉包外の任意の非可分離混合座標因子化は未解決
+- [x] 完全な 2 次元 localization 述語、恒等・walking-arrow 基礎構成、walking 補完の端点正規形・thin・codiscrete 分類、保持座標・局所化座標・可分離混合座標・随伴同値 replete 閉包の因子化と局所前合成同値を持つ非局所離散逆射追加スライス、および任意の標識反転始域 pseudofunctor の標的 `PrelaxFunctor` 作用；pseudofunctor coherence と最終的な非可分離因子化は未解決
 - [x] 構造同値構文と内部同一性構文を分離した深いインターフェース code
 - [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
