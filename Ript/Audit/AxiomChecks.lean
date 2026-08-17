@@ -19,6 +19,7 @@ import Ript.Examples.SimpleComputation
 import Ript.Examples.StochasticSeparation
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
+import Ript.Examples.TwoDimensionalWalkingLocalization
 import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
@@ -315,6 +316,18 @@ set_option autoImplicit false
 #print axioms Ript.Examples.WalkingLocalization.inverse_comp_inclusion_map_arrow
 #print axioms Ript.Examples.WalkingLocalization.arrow_not_isEquivalence
 #print axioms Ript.Examples.WalkingLocalization.inclusion_genuinely_adds_inverse
+#print axioms CategoryTheory.Pseudofunctor.prod
+#print axioms CategoryTheory.Bicategory.Equivalence.prod
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_inverts
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.markedArrow_not_isEquivalence
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map_markedArrow_isEquivalence
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusionMapMarkedArrowCompInverseIso
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inverseCompInclusionMapMarkedArrowIso
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.discardTwoCell_not_isIso
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map₂_injective
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map₂_discardTwoCell_not_isIso
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.target_not_isLocallyDiscrete
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_adds_inverse_and_retains_noninvertible_twoCell
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard

@@ -31,6 +31,7 @@ import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
 import Ript.Examples.StochasticSeparation
+import Ript.Examples.TwoDimensionalWalkingLocalization
 import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
@@ -44,6 +45,7 @@ import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
 import Ript.ForMathlib.CategoryTheory.Bicategory.Localization
 import Ript.ForMathlib.CategoryTheory.Bicategory.MorphismProperty
 import Ript.ForMathlib.CategoryTheory.Bicategory.PithToHomotopy
+import Ript.ForMathlib.CategoryTheory.Bicategory.Product
 import Ript.ForMathlib.CategoryTheory.GroupoidInterval
 import Ript.ForMathlib.RationalConvexHull
 import Ript.Higher.Coherence
