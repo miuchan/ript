@@ -52,8 +52,14 @@ Thinness of the completed walking coordinate then reduces every target pair to
 one of those compiled cases.  The result packages as a genuine target strong
 transformation whose restriction is isomorphic to the source transformation;
 modifications lift as well, so precomposition is an equivalence on every local
-category.  Arbitrary nonseparable biessential factorization, and therefore the
-global `lift` field of the bicategorical-localization predicate, remains open.
+category.  For an arbitrary marking-inverting source pseudofunctor, the chosen
+endpoint equivalences now also determine a compiled `PrelaxFunctor` action on
+all target objects, 1-morphisms, and 2-morphisms.  Its equations on canonical
+forward arrows and genuinely reverse arrows are explicit.  Identity and
+composition comparison isomorphisms, their pseudofunctor coherence, and the
+resulting arbitrary nonseparable biessential factorization still remain open;
+consequently the global `lift` field of the bicategorical-localization
+predicate is not yet claimed.
 -/
 
 set_option autoImplicit false
@@ -3779,5 +3785,209 @@ theorem separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard
     separableMixedIdentity_map₂_discardTwoCell_not_isIso K⟩
 
 end SeparableMixedCoordinateLift
+
+section ArbitraryLiftPrelaxAction
+
+variable {E : Type u} [Bicategory.{w, v} E]
+
+/-- A chosen adjoint equivalence carried by the image of any source walking
+arrow paired with the retained-coordinate identity. -/
+noncomputable def generalLiftSourceEquivalence
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    F.obj (canonicalSourceObject X) ≌
+      F.obj (canonicalSourceObject Y) := by
+  let g := canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type)))
+  have hg : marking g :=
+    Bicategory.isEquivalence_hom (Bicategory.Equivalence.id _)
+  let eData := Classical.choice (hF g hg)
+  exact eData.1.replaceHom (eqToIso eData.2)
+
+/-- The chosen equivalence has exactly the source pseudofunctor's image of the
+marked walking arrow as its forward 1-morphism. -/
+@[simp]
+theorem generalLiftSourceEquivalence_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    (generalLiftSourceEquivalence F hF f).hom =
+      F.map (canonicalSourceHom f
+        (𝟙 (MonoidalSingleObj.star (Type)))) :=
+  rfl
+
+/-- On a forward target hom-category, reuse the source pseudofunctor after
+discarding the unique completed walking-coordinate representative. -/
+noncomputable def generalLiftForwardHomFunctor
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    (canonicalTargetObject X ⟶ canonicalTargetObject Y) ⥤
+      (F.obj (canonicalSourceObject X) ⟶
+        F.obj (canonicalSourceObject Y)) where
+  obj g := F.map (canonicalSourceHom f g.2)
+  map η := F.map₂ (canonicalSourceTwoCell f η.2)
+  map_id g := by
+    rw [← F.map₂_id (canonicalSourceHom f g.2)]
+    congr 1
+  map_comp η θ := by
+    rw [← F.map₂_comp
+      (canonicalSourceTwoCell f η.2) (canonicalSourceTwoCell f θ.2)]
+    congr 1
+
+/-- On a new reverse hom-category, use the inverse of the chosen image of the
+marked generator and then apply the source pseudofunctor to the retained
+coordinate at the lower endpoint. -/
+noncomputable def generalLiftReverseHomFunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    (canonicalTargetObject Y ⟶ canonicalTargetObject X) ⥤
+      (F.obj (canonicalSourceObject Y) ⟶
+        F.obj (canonicalSourceObject X)) where
+  obj g := (generalLiftSourceEquivalence F hF f).inv ≫
+    F.map (canonicalSourceHom (𝟙 X) g.2)
+  map η := (generalLiftSourceEquivalence F hF f).inv ◁
+    F.map₂ (canonicalSourceTwoCell (𝟙 X) η.2)
+  map_id g := by
+    change (generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) (𝟙 g.2)) = _
+    have hη : canonicalSourceTwoCell (𝟙 X) (𝟙 g.2) =
+        𝟙 (canonicalSourceHom (𝟙 X) g.2) := rfl
+    rw [hη, F.map₂_id]
+    simp
+  map_comp η θ := by
+    change (generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) (η.2 ≫ θ.2)) = _
+    have hηθ : canonicalSourceTwoCell (𝟙 X) (η.2 ≫ θ.2) =
+        canonicalSourceTwoCell (𝟙 X) η.2 ≫
+          canonicalSourceTwoCell (𝟙 X) θ.2 := rfl
+    rw [hηθ, F.map₂_comp]
+    simp
+
+/-- Object action of the arbitrary lift.  The free-groupoid completion adds
+arrows but no objects. -/
+def generalLiftObj (F : Source ⥤ᵖ E) (X : Target) : E :=
+  F.obj (sourceOfTarget X)
+
+/-- The hom-category action of the arbitrary lift, before identity and
+composition comparison isomorphisms are supplied. -/
+noncomputable def generalLiftHomFunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X Y : Target) :
+    (X ⟶ Y) ⥤ (generalLiftObj F X ⟶ generalLiftObj F Y) := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  let x : Ript.Examples.WalkingLocalization.Arrow := X.as.as
+  let y : Ript.Examples.WalkingLocalization.Arrow := Y.as.as
+  have hX : X = CategoryTheory.FreeGroupoid.mk x :=
+    CategoryTheory.FreeGroupoid.eq_mk X
+  have hY : Y = CategoryTheory.FreeGroupoid.mk y :=
+    CategoryTheory.FreeGroupoid.eq_mk Y
+  clear_value x
+  clear_value y
+  cases hX
+  cases hY
+  by_cases h : x ≤ y
+  · exact generalLiftForwardHomFunctor F (homOfLE h)
+  · exact generalLiftReverseHomFunctor F hF
+      (homOfLE (le_of_not_ge h))
+
+/-- The arbitrary lift already defines a functor on every hom-category.  This
+is the complete object/1-cell/2-cell action prior to pseudofunctor coherence. -/
+noncomputable def generalLiftPrelaxFunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    PrelaxFunctor Target E :=
+  PrelaxFunctor.mkOfHomFunctors (generalLiftObj F)
+    (generalLiftHomFunctor F hF)
+
+/-- The prelax action reuses the original pseudofunctor on every canonical
+forward target arrow. -/
+theorem generalLiftPrelaxFunctor_map_forward
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) =
+      F.map (canonicalSourceHom f A) := by
+  change (generalLiftHomFunctor F hF
+      (canonicalTargetObject X) (canonicalTargetObject Y)).obj
+        (canonicalForwardHom f A) = _
+  change (if h : X ≤ Y then
+      generalLiftForwardHomFunctor F (homOfLE h)
+    else
+      generalLiftReverseHomFunctor F hF
+        (homOfLE (le_of_not_ge h))).obj
+      (canonicalForwardHom f A) = _
+  rw [dif_pos f.le]
+  dsimp [generalLiftForwardHomFunctor]
+  congr 2
+
+/-- For a genuinely reverse endpoint pair, the prelax action sends the formal
+inverse to the inverse of the chosen source-image equivalence, followed by the
+retained-coordinate action. -/
+theorem generalLiftPrelaxFunctor_map_inverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type) :
+    (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) =
+      (generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) A) := by
+  change (generalLiftHomFunctor F hF
+      (canonicalTargetObject Y) (canonicalTargetObject X)).obj
+        (canonicalInverseHom f A) = _
+  change (if h : Y ≤ X then
+      generalLiftForwardHomFunctor F (homOfLE h)
+    else
+      generalLiftReverseHomFunctor F hF
+        (homOfLE (le_of_not_ge h))).obj
+      (canonicalInverseHom f A) = _
+  rw [dif_neg hf]
+  dsimp [generalLiftReverseHomFunctor]
+  congr 2
+
+/-- The action on forward retained-coordinate 2-cells is the source action.
+The heterogeneous equality records the already-proved equality of the
+dependent 1-morphism endpoints. -/
+theorem generalLiftPrelaxFunctor_map₂_forward
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq ((generalLiftPrelaxFunctor F hF).map₂
+        (canonicalForwardTwoCell f η))
+      (F.map₂ (canonicalSourceTwoCell f η)) := by
+  change HEq ((generalLiftHomFunctor F hF
+      (canonicalTargetObject X) (canonicalTargetObject Y)).map
+        (canonicalForwardTwoCell f η)) _
+  change HEq ((if h : X ≤ Y then
+      generalLiftForwardHomFunctor F (homOfLE h)
+    else
+      generalLiftReverseHomFunctor F hF
+        (homOfLE (le_of_not_ge h))).map
+      (canonicalForwardTwoCell f η)) _
+  rw [dif_pos f.le]
+  dsimp [generalLiftForwardHomFunctor]
+  congr 2
+
+/-- On a genuinely reverse endpoint pair, the action on a retained-coordinate
+2-cell is left whiskering by the chosen inverse. -/
+theorem generalLiftPrelaxFunctor_map₂_inverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A B : Type} (η : A ⟶ B) :
+    HEq ((generalLiftPrelaxFunctor F hF).map₂
+        (canonicalInverseTwoCell f η))
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) := by
+  change HEq ((generalLiftHomFunctor F hF
+      (canonicalTargetObject Y) (canonicalTargetObject X)).map
+        (canonicalInverseTwoCell f η)) _
+  change HEq ((if h : Y ≤ X then
+      generalLiftForwardHomFunctor F (homOfLE h)
+    else
+      generalLiftReverseHomFunctor F hF
+        (homOfLE (le_of_not_ge h))).map
+      (canonicalInverseTwoCell f η)) _
+  rw [dif_neg hf]
+  dsimp [generalLiftReverseHomFunctor]
+  congr 2
+
+end ArbitraryLiftPrelaxAction
 
 end Ript.Examples.TwoDimensionalWalkingLocalization

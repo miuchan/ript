@@ -88,38 +88,23 @@ only literal componentwise pairs. The free-groupoid coordinate now also has a
 kernel-checked endpoint normal form: every signed path represents the unique
 morphism between its endpoints, the completion is thin, and it is explicitly
 equivalent to the codiscrete groupoid on `Fin 2`. This removes path-representative
-ambiguity for the next strong-transformation extension. That extension now
-has explicit object components and a candidate strong-naturality isomorphism
-for every target 1-morphism. Forward arrows reuse source naturality with an
-arbitrary retained coordinate; reverse arrows compose an explicit invertible
-mate with the retained-coordinate constraint; endpoint normal form covers all
-target arrows. Naturality in every target 2-cell and the identity law are
-compiled, as is composition coherence for every pair in the inclusion image
-and hence every canonical forward-forward pair. A first mixed constructor is
-also compiled: the inverse-generator mate followed by any retained-coordinate
-constraint recovers the public constraint on its raw composite. Its factors
-have now also been normalized to the public constraints themselves, proving
-the public-factor composition law for a strict inverse generator followed by
-an arbitrary retained arrow. The hom-level law is now also packaged as an
-equality of candidate isomorphisms and transported to the canonical inverse
-arrow. For the opposite order, both product-unitor comparisons, the retained-
-then-inverse candidate, its canonical inverse transport, and the equality of
-the two forward factorizations are compiled. Pseudofunctors are now proved to
-preserve mates with their compositor and unitor coherence; the resulting
-strong-transformation mate-sliding theorem proves
-`liftedStrongTransNaturality_comp_retainedInverse`, which inhabits the former
-`LiftedStrongTransRetainedInverseCompositionCoherence` proposition for every
-walking arrow. A general `mateEquiv_counit` theorem now identifies a mate
-followed by the corresponding forward constraint after counit transport.
-Its walking instance proves the public inverse-generator/forward-generator
-composition law. The corresponding `mateEquiv_unit` theorem proves the
-opposite public forward-generator/inverse-generator cancellation law after
-inverse-unit transport. The next remaining step is to package the completed
-constructor coherence laws as a target strong transformation. What also remains open
-is factorization of an
-arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
-that closure, local essential surjectivity, and ultimately the
-corresponding construction for the full resource-process bicategory.
+ambiguity in the strong-transformation extension. That extension is now
+packaged as a genuine target strong transformation: forward constraints reuse
+source naturality, reverse constraints use invertible mates, both generator
+cancellation orders are compiled, and endpoint thinness reduces all remaining
+composition cases to those constructors. Modifications lift as well, the
+restriction recovers the original source transformation up to an invertible
+modification, and precomposition is an equivalence on every local category.
+
+For an arbitrary (possibly nonseparable) marking-inverting source
+pseudofunctor, chosen adjoint equivalences on the images of the marked walking
+arrows now determine a compiled `PrelaxFunctor` action on every target object,
+1-morphism, and 2-morphism. Its forward and genuinely reverse 1-/2-morphism
+equations are explicit. What remains open is to construct the identity and
+composition comparison isomorphisms, prove their pseudofunctor coherence, and
+then build the source-factorization adjoint equivalence. This is the missing
+global `lift` field, and the corresponding construction for the full
+resource-process bicategory remains downstream.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

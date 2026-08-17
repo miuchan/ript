@@ -94,8 +94,9 @@ walking 补全的 thin 性把其余所有目标复合归约到这些已证明情
 任意群胚值局部化分量 `K` 与任意保留坐标伪函子 `H` 组成的可分离混合伪函子 `K × H` 都通过目标
 分解；其提升正确解释形式逆元，而保留分量取恒等时仍检测不可逆 Boolean discard。现在还证明了
 源伪函子的标记反转与分解都在伴随等价下保持，因此结论覆盖可分离族的整个 replete 闭包，包括
-定义上不是逐分量积的实现。完整资源过程构造仍须分解该闭包之外任意不可分离混合坐标的
-反转标记伪函子。正是这个尚缺的全局双本质分解字段，使现有桥接仍不是完整的双范畴、
+定义上不是逐分量积的实现。在该闭包之外，每个任意的反转标记源伪函子现在都确定一个已编译的
+目标 `PrelaxFunctor` 作用，覆盖全部对象、1-态射和 2-胞；规范正向箭头复用源作用，真正逆向的箭头使用所选逆等价。
+剩余工作是给出恒等/复合比较同构及其 coherence，再构造源分解的伴随等价。正是这个尚缺的全局双本质分解字段，使现有桥接仍不是完整的双范畴、
 Dwyer--Kan、simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
 的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
@@ -1055,6 +1056,12 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedLift_map_inverse_fst` | 混合提升把第一坐标中的形式逆元映为生成箭头像的实际逆元。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | 保留分量取恒等时，混合提升仍检测不可逆 Boolean discard。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | 一个定理同时封装标记反转、混合坐标分解、正确逆元解释与不可逆 2-胞保留。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceEquivalence_hom` | 对每条源 walking 箭头，所选像等价的正向 1-态射恰为原伪函子的像。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor` | 每个任意的标记反转源伪函子，在尚未补入伪函子 coherence 前，已经给出目标对象、1-态射和 2-胞上的函子性作用。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_forward` | 任意 prelax 作用在规范正向箭头上复用源伪函子的作用。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_inverse` | 在真正的逆向箭头上，任意 prelax 作用先使用所选逆元，再接保留坐标的像。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_forward` | 正向保留坐标 2-胞的作用与源作用异质相等。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_inverse` | 逆向保留坐标 2-胞的作用是由所选逆元左 whisker 后的源作用。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | 预复合在全部强变换与 modification 的局部范畴上忠实。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | walking 补全中的每个态射都等于由其两个端点决定的规范态射。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | walking-arrow 补全与 `Fin 2` 上的 codiscrete 群胚范畴等价。 |
@@ -1206,7 +1213,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 12，群胚 localization 基础 | 恒等、骨架补全与限制 Yoneda 函子对全部内部恒等的 Mathlib localization 模型及函子范畴普遍性质 | **PROVED** |
 | 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
 | 12，classifying-diagram 基础 | Rezk classifying diagram、纵横群胚/Kan 结构、严格外层 Segal 等价、精确项目内群胚型 complete-Segal 封装、自然单形映射表示、真实边界 matching limit 与 matching-map fibration | **PROVED** |
-| 12，高阶 localization 规格 | 到伴随等价的标记反转、伪函子预复合、恒等与 walking-arrow 基例、walking 补全的端点规范形/thin/codiscrete 分类，以及具有保留坐标、局部化坐标、可分离混合坐标和伴随等价 replete 闭包分解及局部充满忠实性的非局部离散参数化构造 | **PROVED** |
+| 12，高阶 localization 规格 | 到伴随等价的标记反转、伪函子预复合、恒等与 walking-arrow 基例、walking 补全的端点规范形/thin/codiscrete 分类，以及具有保留坐标、局部化坐标、可分离混合坐标和伴随等价 replete 闭包分解、局部预复合等价及任意反转标记目标 `PrelaxFunctor` 作用的非局部离散参数化构造 | **PROVED** |
 | 12，高阶 localization 构造 | 满足已编译双范畴 localization 谓词的完整资源过程伪函子，以及 Mathlib 原生 simplicial 弱等价/标准 complete-Segal 比较 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -1229,7 +1236,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 | 成本精确模型 localization | 成本反射模型态射的可逆 2-胞饱和，再取同伦类 | 形式反转每个饱和标记类 | 不可计算语义证明层 | 精确标记下降定理与从 `Pith` 出发的规范伪函子；真正的 Mathlib Gabriel--Zisman 普遍性质；具体不可逆 2-胞证明它不是高阶 localization |
-| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，把每个源强变换正式组装为目标强变换，提升 modification，并证明预复合在每个局部范畴上构成等价；该闭包之外任意不可分离混合坐标分解仍开放 |
+| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，把每个源强变换正式组装为目标强变换，提升 modification，并证明预复合在每个局部范畴上构成等价；每个任意的反转标记源伪函子还具有已编译的目标 `PrelaxFunctor` 作用，其伪函子 coherence 及最终不可分离分解仍开放 |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；对所有内部恒等的 Mathlib localization；不是 Rezk completion |
@@ -1715,7 +1722,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
 - [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
 - [x] 可逆 2-胞饱和的成本标记、精确同伦下降、规范 `Pith` 伪函子与 Gabriel--Zisman localization，含不可逆标记态射及 2-胞见证
-- [x] 完整二维 localization 谓词、恒等与 walking-arrow 基础构造、walking 补全的端点规范形/thin/codiscrete 分类、具有保留坐标、局部化坐标、可分离混合坐标和伴随等价 replete 闭包分解及局部预复合等价的非局部离散逆元加入切片，以及恒等候选障碍；该闭包之外任意不可分离混合坐标分解仍开放
+- [x] 完整二维 localization 谓词、恒等与 walking-arrow 基础构造、walking 补全的端点规范形/thin/codiscrete 分类、具有保留坐标、局部化坐标、可分离混合坐标和伴随等价 replete 闭包分解及局部预复合等价的非局部离散逆元加入切片，以及任意反转标记源伪函子的目标 `PrelaxFunctor` 作用；伪函子 coherence 及最终不可分离分解仍开放
 - [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例

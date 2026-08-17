@@ -202,7 +202,7 @@ a bicategory, not additional operations inside any one semantic model.
 | Equivalence | Bicategorical equivalence plus explicit cost reflection in both directions | Forward and inverse functors preserve every process cost exactly | Budget preservation/reflection and transport of serial and parallel core bounds |
 | Homotopy 1-category | Model morphisms modulo invertible monoidal 2-cells | Raw cost reflection is multiplicative; its invertible-2-cell saturation is explicit | Bicategorical unitors/associator descend to strict ordinary category laws; saturated marking descends exactly to marked quotient classes |
 | Cost-exact localization | Mathlib Gabriel--Zisman localization of the model homotopy category | Formally inverts every saturated cost-exact class | Genuine `Functor.IsLocalization`; canonical pseudofunctor from `Pith`; marked arrows map to isomorphisms; a noninvertible marked arrow and a noninvertible 2-cell expose nontriviality and truncation |
-| Parameterized walking localization | Product of the locally discrete walking arrow with the one-object bicategory of types and functions | All first-coordinate arrows are marked when the retained coordinate is already an adjoint equivalence | Free-groupoid inversion in the first coordinate; endpoint-normal-form theorem, thinness, and an explicit equivalence with the codiscrete groupoid on `Fin 2`; faithful action on 2-cells; retained-, localized-, and separable mixed-coordinate lift families together with their full adjoint-equivalence closure; locally fully faithful precomposition, with modification naturality across the free inverse proved by mates; prospective strong-transformation lifts have reconstructed object components and a candidate constraint for every target 1-morphism, using source naturality forward and an explicit invertible mate in reverse; identity coherence, endpoint-normalized 2-cell naturality, inclusion-image composition coherence, public-factor composition laws in both inverse/retained orders, and both generator cancellation orders are proved by mate identities and transport; the mixed identity-retained specialization maps the formal inverse correctly while preserving noninvertible Boolean discard; packaging the constructor laws as a target strong transformation, arbitrary nonseparable lifts outside that replete closure, and local essential surjectivity remain open |
+| Parameterized walking localization | Product of the locally discrete walking arrow with the one-object bicategory of types and functions | All first-coordinate arrows are marked when the retained coordinate is already an adjoint equivalence | Free-groupoid inversion in the first coordinate; endpoint-normal-form theorem, thinness, and an explicit equivalence with the codiscrete groupoid on `Fin 2`; faithful action on 2-cells; retained-, localized-, and separable mixed-coordinate lift families together with their full adjoint-equivalence closure; every source strong transformation and modification lifts, and precomposition is an equivalence on every local category; every arbitrary marking-inverting source pseudofunctor now has a compiled `PrelaxFunctor` action on all target objects, 1-morphisms, and 2-morphisms, with explicit forward and reverse equations; identity/composition comparison isomorphisms, pseudofunctor coherence, and the resulting arbitrary nonseparable factorization remain open |
 
 This layer is a bicategory of models for a fixed resource type and uniform
 universes. It is not an `(∞,1)`-category, does not provide univalence, and does
@@ -217,9 +217,11 @@ bicategory with this locally discrete target. It is therefore not a
 bicategorical, Dwyer--Kan, simplicial, or Rezk localization. The independent
 parameterized walking construction is a non-locally-discrete test case: its
 walking coordinate has no hidden path ambiguity, and its separable mixed
-family is a genuine two-coordinate factorization result,
-but it does not yet establish the universal lift for arbitrary nonseparable
-pseudofunctors or the full local equivalence.
+family is a genuine two-coordinate factorization result. Its local
+precomposition functors are equivalences, and the arbitrary source action is
+already functorial on every hom-category, but the identity/composition
+comparison and coherence needed for the universal nonseparable lift are not
+yet established.
 
 ## Internally univalent deep layer
 
