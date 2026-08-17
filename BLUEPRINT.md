@@ -4344,9 +4344,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   canonical inverse arrow. For the opposite retained-then-inverse order, both
   product-unitor comparisons, its composite candidate, its transport to the
   canonical inverse arrow, and the equality of the two forward factorizations
-  are compiled. The remaining mate-sliding law is an exact
-  `STATEMENT_FORMALIZED` proposition; the two generator-cancellation orders
-  also remain before these data form a target strong transformation.
+  are compiled. Two-sided mate sliding, preservation of mates by
+  pseudofunctors, and the induced strong-transformation sliding theorem now
+  prove the public retained-then-inverse composition law for every walking
+  arrow. The two generator-cancellation orders still remain before these data
+  form a target strong transformation.
   It remains a
   parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
@@ -4389,44 +4391,28 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   Computability: noncomputable proof layer. Axiom audit:
   `[propext, Classical.choice, Quot.sound]`. Source:
   `Ript/Examples/TwoDimensionalWalkingLocalization.lean`.
-- Retained/inverse composition conjecture:
+- Public retained/inverse composition theorem:
 
   ```lean
-  def TwoDimensionalWalkingLocalization.
-      LiftedStrongTransRetainedInverseCompositionCoherence
+  theorem TwoDimensionalWalkingLocalization.
+      liftedStrongTransNaturality_comp_retainedInverse
       (σ : inclusion.comp F ⟶ inclusion.comp G)
       {X Y : WalkingLocalization.Arrow}
-      (f : X ⟶ Y) (A : Type) : Prop :=
-    (liftedStrongTransNaturality σ
-        (canonicalForwardHom (𝟙 Y) A ≫
-          (generatorEquivalence f).inv)).hom ≫
-        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
-          (G.mapComp (canonicalForwardHom (𝟙 Y) A)
-            (generatorEquivalence f).inv).hom =
-      (F.mapComp (canonicalForwardHom (𝟙 Y) A)
-          (generatorEquivalence f).inv).hom ▷
-          liftedStrongTransApp σ (canonicalTargetObject X) ≫
-        (α_ _ _ _).hom ≫
-        F.map (canonicalForwardHom (𝟙 Y) A) ◁
-          (liftedStrongTransNaturality σ
-            (generatorEquivalence f).inv).hom ≫
-        (α_ _ _ _).inv ≫
-        (liftedStrongTransNaturality σ
-          (canonicalForwardHom (𝟙 Y) A)).hom ▷
-            G.map (generatorEquivalence f).inv ≫
-        (α_ _ _ _).hom
+      (f : X ⟶ Y) (A : Type) :
+      LiftedStrongTransRetainedInverseCompositionCoherence
+        (F := F) (G := G) σ f A
   ```
 
   Natural-language statement: a retained-coordinate endomorphism followed by
-  the freely adjoined inverse generator must satisfy the public
-  strong-transformation composition equation. Prerequisites already compiled
-  are `naturalityIsoOfIso_refl`,
-  `naturalityCompIsoOfIsos_eq_of_coherence`, the two forward product-unitor
-  transports, and the retained-then-inverse candidate transported to the
-  canonical inverse arrow. The missing proof is the mate-sliding square that
-  sends equality of the two forward factorizations to equality of the two
-  inverse factorizations. Status: `STATEMENT_FORMALIZED`. Computability:
-  noncomputable proof layer. Axiom audit of the proposition definition:
+  the freely adjoined inverse generator satisfies the public
+  strong-transformation composition equation. The proof uses
+  `Bicategory.mateEquiv_sliding`, `Pseudofunctor.map_mateEquiv`, and
+  `Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding` to transport the
+  equality of the two forward factorizations to the inverse factorizations.
+  The strict reverse case is compared at the canonical inverse arrow by
+  injective isomorphism transport; the identity case reduces to the compiled
+  forward-forward law. Status: `PROVED`. Computability: noncomputable proof
+  layer. Axiom audit:
   `[propext, Classical.choice, Quot.sound]`. Source:
   `Ript/Examples/TwoDimensionalWalkingLocalization.lean`.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor

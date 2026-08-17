@@ -149,6 +149,43 @@ theorem mateEquiv_postcomp
       rw [whisker_exchange]
     _ = _ := by bicategory
 
+/-- Taking mates commutes with simultaneous precomposition on the left
+vertical edge and postcomposition on the right vertical edge of a square.
+This is the two-sided sliding law obtained by combining
+`mateEquiv_precomp` and `mateEquiv_postcomp`. -/
+theorem mateEquiv_precomp_postcomp
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g g' : a ⟶ c} {h h' : b ⟶ d}
+    (γ : g ⟶ g') (α : g' ≫ l₂ ⟶ l₁ ≫ h) (δ : h ⟶ h') :
+    mateEquiv adj₁ adj₂
+        ((γ ▷ l₂ ≫ α) ≫ l₁ ◁ δ) =
+      r₁ ◁ γ ≫ mateEquiv adj₁ adj₂ α ≫ δ ▷ r₂ := by
+  calc
+    _ = mateEquiv adj₁ adj₂ (γ ▷ l₂ ≫ α) ≫ δ ▷ r₂ :=
+      mateEquiv_postcomp adj₁ adj₂ (γ ▷ l₂ ≫ α) δ
+    _ = _ := by
+      rw [mateEquiv_precomp]
+      simp only [Category.assoc]
+
+/-- A commuting square between left-adjoint squares becomes the corresponding
+commuting square between their right-adjoint mates.  This is the equality
+form of the two one-sided mate-sliding formulas. -/
+theorem mateEquiv_sliding
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g g' : a ⟶ c} {h h' : b ⟶ d}
+    (γ : g ⟶ g')
+    (α : g' ≫ l₂ ⟶ l₁ ≫ h)
+    (β : g ≫ l₂ ⟶ l₁ ≫ h')
+    (δ : h' ⟶ h)
+    (comm : γ ▷ l₂ ≫ α = β ≫ l₁ ◁ δ) :
+    r₁ ◁ γ ≫ mateEquiv adj₁ adj₂ α =
+      mateEquiv adj₁ adj₂ β ≫ δ ▷ r₂ := by
+  rw [← mateEquiv_precomp, ← mateEquiv_postcomp, comm]
+
 namespace IsEquivalence
 
 /-- Being an adjoint equivalence is invariant under a 2-isomorphism of
@@ -185,6 +222,120 @@ end IsEquivalence
 end Bicategory
 
 namespace Pseudofunctor
+
+/-- Map a square between left adjoints through a pseudofunctor, inserting
+the compositor isomorphisms needed to recover a square between the mapped
+left adjoints. -/
+def mapLeftAdjointSquare (F : B ⥤ᵖ C)
+    {a b c d : B} {l₁ : a ⟶ b} {l₂ : c ⟶ d}
+    {g : a ⟶ c} {h : b ⟶ d}
+    (α : g ≫ l₂ ⟶ l₁ ≫ h) :
+    F.map g ≫ F.map l₂ ⟶ F.map l₁ ≫ F.map h :=
+  (F.mapComp g l₂).inv ≫ F.map₂ α ≫ (F.mapComp l₁ h).hom
+
+/-- Map a square between right adjoints through a pseudofunctor, inserting
+the compositor isomorphisms needed to recover a square between the mapped
+right adjoints. -/
+def mapRightAdjointSquare (F : B ⥤ᵖ C)
+    {a b c d : B} {r₁ : b ⟶ a} {r₂ : d ⟶ c}
+    {g : a ⟶ c} {h : b ⟶ d}
+    (β : r₁ ≫ g ⟶ h ≫ r₂) :
+    F.map r₁ ≫ F.map g ⟶ F.map h ≫ F.map r₂ :=
+  (F.mapComp r₁ g).inv ≫ F.map₂ β ≫ (F.mapComp h r₂).hom
+
+set_option backward.isDefEq.respectTransparency false in
+@[reassoc]
+private theorem map_mateEquiv_prefix (F : B ⥤ᵖ C)
+    {a b c : B} (r : b ⟶ a) (g : a ⟶ c) :
+    (ρ_ (F.map r ≫ F.map g)).inv ≫
+        (α_ (F.map r) (F.map g) (𝟙 (F.obj c))).hom ≫
+        F.map r ◁ F.map g ◁ (F.mapId c).inv =
+      (F.mapComp r g).inv ≫
+        (ρ_ (F.map (r ≫ g))).inv ≫
+        F.map (r ≫ g) ◁ (F.mapId c).inv ≫
+        (F.mapComp r g).hom ▷ F.map (𝟙 c) ≫
+        (α_ (F.map r) (F.map g) (F.map (𝟙 c))).hom := by
+  rw [F.whiskerLeft_mapId_inv]
+  calc
+    _ = F.map r ◁ F.map₂ (ρ_ g).inv ≫
+          F.map r ◁ (F.mapComp g (𝟙 c)).hom := by
+      bicategory
+    _ = (F.mapComp r g).inv ≫
+          F.map₂ (r ◁ (ρ_ g).inv) ≫
+          (F.mapComp r (g ≫ 𝟙 c)).hom ≫
+          F.map r ◁ (F.mapComp g (𝟙 c)).hom := by
+      rw [F.map₂_whisker_left]
+      simp
+    _ = (F.mapComp r g).inv ≫
+          F.map₂ (r ◁ (ρ_ g).inv) ≫
+          F.map₂ (α_ r g (𝟙 c)).inv ≫
+          (F.mapComp (r ≫ g) (𝟙 c)).hom ≫
+          (F.mapComp r g).hom ▷ F.map (𝟙 c) ≫
+          (α_ (F.map r) (F.map g) (F.map (𝟙 c))).hom := by
+      apply (cancel_epi (F.mapComp r g).inv).mpr
+      apply (cancel_epi (F.map₂ (r ◁ (ρ_ g).inv))).mpr
+      exact F.mapComp_assoc_right_hom r g (𝟙 c)
+    _ = (F.mapComp r g).inv ≫
+          F.map₂ (ρ_ (r ≫ g)).inv ≫
+          (F.mapComp (r ≫ g) (𝟙 c)).hom ≫
+          (F.mapComp r g).hom ▷ F.map (𝟙 c) ≫
+          (α_ (F.map r) (F.map g) (F.map (𝟙 c))).hom := by
+      rw [← F.map₂_comp_assoc]
+      rw [show r ◁ (ρ_ g).inv ≫ (α_ r g (𝟙 c)).inv =
+        (ρ_ (r ≫ g)).inv by bicategory]
+    _ = _ := by
+      rw [F.mapComp_id_right_hom]
+      apply (cancel_epi (F.mapComp r g).inv).mpr
+      slice_lhs 1 2 => rw [F.map₂_inv_hom]
+      simp
+
+set_option backward.isDefEq.respectTransparency false in
+@[reassoc]
+private theorem map_mateEquiv_suffix (F : B ⥤ᵖ C)
+    {b c d : B} (h : b ⟶ d) (r : d ⟶ c) :
+    (F.mapId b).hom ▷ F.map h ▷ F.map r ≫
+        (α_ (𝟙 (F.obj b)) (F.map h) (F.map r)).hom ≫
+        (λ_ (F.map h ≫ F.map r)).hom =
+      (α_ (F.map (𝟙 b)) (F.map h) (F.map r)).hom ≫
+        F.map (𝟙 b) ◁ (F.mapComp h r).inv ≫
+        (F.mapId b).hom ▷ F.map (h ≫ r) ≫
+        (λ_ (F.map (h ≫ r))).hom ≫
+        (F.mapComp h r).hom := by
+  rw [← cancel_mono (F.mapComp h r).inv]
+  simp only [Category.assoc, Iso.hom_inv_id, Category.comp_id]
+  rw [← leftUnitor_naturality]
+  calc
+    _ = ((α_ (F.map (𝟙 b)) (F.map h) (F.map r)).hom ≫
+          (F.mapId b).hom ▷ (F.map h ≫ F.map r) ≫
+          𝟙 (F.obj b) ◁ (F.mapComp h r).inv) ≫
+          (λ_ (F.map (h ≫ r))).hom := by
+      bicategory
+    _ = ((α_ (F.map (𝟙 b)) (F.map h) (F.map r)).hom ≫
+          F.map (𝟙 b) ◁ (F.mapComp h r).inv ≫
+          (F.mapId b).hom ▷ F.map (h ≫ r)) ≫
+          (λ_ (F.map (h ≫ r))).hom := by
+      rw [whisker_exchange]
+    _ = _ := by
+      bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Pseudofunctors preserve bicategorical mates.  Mapping a left-adjoint
+square and then taking its mate agrees with taking the mate first and mapping
+the resulting right-adjoint square, including all compositor and unitor
+coherence. -/
+theorem map_mateEquiv (F : B ⥤ᵖ C)
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g : a ⟶ c} {h : b ⟶ d}
+    (α : g ≫ l₂ ⟶ l₁ ≫ h) :
+    mateEquiv (F.mapAdjunction adj₁) (F.mapAdjunction adj₂)
+        (mapLeftAdjointSquare F α) =
+      mapRightAdjointSquare F (mateEquiv adj₁ adj₂ α) := by
+  simp [mateEquiv_apply', mapLeftAdjointSquare,
+    mapRightAdjointSquare, Pseudofunctor.mapAdjunction,
+    bicategoricalComp, F.map₂_iso_inv]
+  rw [map_mateEquiv_prefix_assoc, map_mateEquiv_suffix]
 
 /-- A source pseudofunctor factors through `Q` when it is adjoint equivalent
 to the precomposition of some pseudofunctor out of the target of `Q`.  This is
@@ -663,6 +814,188 @@ theorem inverseNaturalityIso_hom (F G : C ⥤ᵖ D)
         (G.mapAdjunction e.toAdjunction) α.inv := by
   rw [mateEquiv_apply']
   rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Strong-transformation composition coherence slides across a chosen
+adjoint equivalence.  If the constraints on `x`, the forward equivalence,
+and `y` commute with a forward sliding isomorphism, then the mate-derived
+inverse constraint commutes with the corresponding inverse sliding
+isomorphism. -/
+theorem inverseNaturalityIso_sliding
+    {a b : C} (e : a ≌ b) (x : a ⟶ a) (y : b ⟶ b)
+    (s : x ≫ e.hom ≅ e.hom ≫ y)
+    (t : y ≫ e.inv ≅ e.inv ≫ x)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (αx : F.map x ≫ appA ≅ appA ≫ G.map x)
+    (αe : F.map e.hom ≫ appB ≅ appA ≫ G.map e.hom)
+    (αy : F.map y ≫ appB ≅ appB ≫ G.map y)
+    (hs :
+      naturalityIsoOfIso F G appA appB
+          (naturalityCompIsoOfIsos F G x e.hom
+            appA appA appB αx αe) s =
+        naturalityCompIsoOfIsos F G e.hom y
+          appA appB appB αe αy)
+    (ht : t.inv = mateEquiv e.toAdjunction e.toAdjunction s.hom) :
+    naturalityIsoOfIso F G appB appA
+        (naturalityCompIsoOfIsos F G y e.inv
+          appB appB appA αy
+            (inverseNaturalityIso F G e appA appB αe)) t =
+      naturalityCompIsoOfIsos F G e.inv x
+        appB appA appA
+          (inverseNaturalityIso F G e appA appB αe) αx := by
+  have hsInv := congrArg Iso.inv hs
+  dsimp [naturalityIsoOfIso, naturalityCompIsoOfIsos] at hsInv
+  let α :
+      (appA ≫ G.map x) ≫ G.map e.hom ⟶
+        F.map e.hom ≫ (appB ≫ G.map y) :=
+    (α_ appA (G.map x) (G.map e.hom)).hom ≫
+      appA ◁ (G.mapComp x e.hom).inv ≫
+      appA ◁ G.map₂ s.hom ≫
+      appA ◁ (G.mapComp e.hom y).hom ≫
+      (α_ appA (G.map e.hom) (G.map y)).inv ≫
+      αe.inv ▷ G.map y ≫
+      (α_ (F.map e.hom) appB (G.map y)).hom
+  let β :
+      (F.map x ≫ appA) ≫ G.map e.hom ⟶
+        F.map e.hom ≫ (F.map y ≫ appB) :=
+    (α_ (F.map x) appA (G.map e.hom)).hom ≫
+      F.map x ◁ αe.inv ≫
+      (α_ (F.map x) (F.map e.hom) appB).inv ≫
+      (F.mapComp x e.hom).inv ▷ appB ≫
+      F.map₂ s.hom ▷ appB ≫
+      (F.mapComp e.hom y).hom ▷ appB ≫
+      (α_ (F.map e.hom) (F.map y) appB).hom
+  have comm :
+      αx.hom ▷ G.map e.hom ≫ α =
+        β ≫ F.map e.hom ◁ αy.hom := by
+    rw [← cancel_epi
+      (appA ◁ G.map₂ s.inv ≫
+        appA ◁ (G.mapComp x e.hom).hom ≫
+        (α_ appA (G.map x) (G.map e.hom)).inv ≫
+        αx.inv ▷ G.map e.hom)]
+    rw [← cancel_mono
+      (F.map e.hom ◁ αy.inv ≫
+        (α_ (F.map e.hom) (F.map y) appB).inv ≫
+        (F.mapComp e.hom y).inv ▷ appB)]
+    dsimp [α, β]
+    simp only [Category.assoc]
+    simp
+    rw [← Category.assoc]
+    rw [← whiskerLeft_comp, ← G.map₂_comp]
+    simp
+    simpa [Iso.trans_inv] using hsInv.symm
+  have mates := Bicategory.mateEquiv_sliding
+    (F.mapAdjunction e.toAdjunction)
+    (G.mapAdjunction e.toAdjunction)
+    αx.hom α β αy.hom comm
+  have hα :
+      mateEquiv (F.mapAdjunction e.toAdjunction)
+          (G.mapAdjunction e.toAdjunction) α ≫
+          (α_ appB (G.map y) (G.map e.inv)).hom =
+        (α_ (F.map e.inv) appA (G.map x)).inv ≫
+          mateEquiv (F.mapAdjunction e.toAdjunction)
+              (G.mapAdjunction e.toAdjunction) αe.inv ▷ G.map x ≫
+          (α_ appB (G.map e.inv) (G.map x)).hom ≫
+          appB ◁ mateEquiv (G.mapAdjunction e.toAdjunction)
+            (G.mapAdjunction e.toAdjunction)
+            (Pseudofunctor.mapLeftAdjointSquare G s.hom) := by
+    have hαDef :
+        α = Bicategory.leftAdjointSquare.vcomp αe.inv
+          (Pseudofunctor.mapLeftAdjointSquare G s.hom) := by
+      dsimp [α, Bicategory.leftAdjointSquare.vcomp,
+        Pseudofunctor.mapLeftAdjointSquare]
+      simp only [whiskerLeft_comp, Category.assoc]
+    rw [hαDef, Bicategory.mateEquiv_vcomp
+      (F.mapAdjunction e.toAdjunction)
+      (G.mapAdjunction e.toAdjunction)
+      (G.mapAdjunction e.toAdjunction)
+      αe.inv (Pseudofunctor.mapLeftAdjointSquare G s.hom)]
+    dsimp [Bicategory.rightAdjointSquare.vcomp]
+    simp
+  have hβ :
+      (α_ (F.map e.inv) (F.map x) appA).hom ≫
+          mateEquiv (F.mapAdjunction e.toAdjunction)
+            (G.mapAdjunction e.toAdjunction) β =
+        mateEquiv (F.mapAdjunction e.toAdjunction)
+              (F.mapAdjunction e.toAdjunction)
+              (Pseudofunctor.mapLeftAdjointSquare F s.hom) ▷ appA ≫
+          (α_ (F.map y) (F.map e.inv) appA).hom ≫
+          F.map y ◁ mateEquiv (F.mapAdjunction e.toAdjunction)
+            (G.mapAdjunction e.toAdjunction) αe.inv ≫
+          (α_ (F.map y) appB (G.map e.inv)).inv := by
+    have hβDef :
+        β = Bicategory.leftAdjointSquare.vcomp
+          (Pseudofunctor.mapLeftAdjointSquare F s.hom) αe.inv := by
+      dsimp [β, Bicategory.leftAdjointSquare.vcomp,
+        Pseudofunctor.mapLeftAdjointSquare]
+      simp only [comp_whiskerRight, Category.assoc]
+    rw [hβDef, Bicategory.mateEquiv_vcomp
+      (F.mapAdjunction e.toAdjunction)
+      (F.mapAdjunction e.toAdjunction)
+      (G.mapAdjunction e.toAdjunction)
+      (Pseudofunctor.mapLeftAdjointSquare F s.hom) αe.inv]
+    dsimp [Bicategory.rightAdjointSquare.vcomp]
+    simp
+  apply Iso.ext
+  dsimp [naturalityIsoOfIso, naturalityCompIsoOfIsos]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv]
+  rw [← cancel_mono (appB ◁ G.map₂ t.inv)]
+  simp only [Category.assoc]
+  rw [← Category.assoc, ← whiskerLeft_comp, ← G.map₂_comp]
+  simp
+  rw [ht]
+  have hFmap :
+      (F.mapComp e.inv x).inv ≫
+          F.map₂ (mateEquiv e.toAdjunction e.toAdjunction s.hom) ≫
+          (F.mapComp y e.inv).hom =
+        mateEquiv (F.mapAdjunction e.toAdjunction)
+          (F.mapAdjunction e.toAdjunction)
+          (Pseudofunctor.mapLeftAdjointSquare F s.hom) :=
+    (Pseudofunctor.map_mateEquiv F e.toAdjunction
+      e.toAdjunction s.hom).symm
+  have hGmap :
+      (G.mapComp e.inv x).inv ≫
+          G.map₂ (mateEquiv e.toAdjunction e.toAdjunction s.hom) ≫
+          (G.mapComp y e.inv).hom =
+        mateEquiv (G.mapAdjunction e.toAdjunction)
+          (G.mapAdjunction e.toAdjunction)
+          (Pseudofunctor.mapLeftAdjointSquare G s.hom) :=
+    (Pseudofunctor.map_mateEquiv G e.toAdjunction
+      e.toAdjunction s.hom).symm
+  rw [← cancel_epi ((F.mapComp e.inv x).inv ▷ appA)]
+  rw [← cancel_mono (appB ◁ (G.mapComp y e.inv).hom)]
+  simp only [Category.assoc]
+  rw [← comp_whiskerRight_assoc, ← comp_whiskerRight_assoc]
+  simp only [Category.assoc]
+  rw [hFmap]
+  simp only [← whiskerLeft_comp, Iso.inv_hom_id,
+    whiskerLeft_id, Category.comp_id]
+  rw [hGmap]
+  rw [inverseNaturalityIso_hom]
+  simp only [inv_hom_whiskerRight_assoc]
+  calc
+    _ = (α_ (F.map e.inv) (F.map x) appA).hom ≫
+          mateEquiv (F.mapAdjunction e.toAdjunction)
+              (G.mapAdjunction e.toAdjunction) β ≫
+          αy.hom ▷ G.map e.inv ≫
+          (α_ appB (G.map y) (G.map e.inv)).hom := by
+      simpa only [Category.assoc] using congrArg
+        (fun k => k ≫ αy.hom ▷ G.map e.inv ≫
+          (α_ appB (G.map y) (G.map e.inv)).hom) hβ.symm
+    _ = (α_ (F.map e.inv) (F.map x) appA).hom ≫
+          F.map e.inv ◁ αx.hom ≫
+          mateEquiv (F.mapAdjunction e.toAdjunction)
+              (G.mapAdjunction e.toAdjunction) α ≫
+          (α_ appB (G.map y) (G.map e.inv)).hom := by
+      simpa only [Category.assoc] using congrArg
+        (fun k => (α_ (F.map e.inv) (F.map x) appA).hom ≫ k ≫
+          (α_ appB (G.map y) (G.map e.inv)).hom) mates.symm
+    _ = _ := by
+      simpa only [Category.assoc] using congrArg
+        (fun k => (α_ (F.map e.inv) (F.map x) appA).hom ≫
+          F.map e.inv ◁ αx.hom ≫ k) hα
 
 /-- Transporting an existing strong-transformation constraint with
 `naturalityIsoOfIso` recovers its constraint at the isomorphic 1-morphism. -/

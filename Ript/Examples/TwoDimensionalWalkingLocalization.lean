@@ -705,6 +705,49 @@ noncomputable def canonicalRetainedGeneratorComparison
       change A ≫ 𝟙 (MonoidalSingleObj.star (Type)) ≅ A
       exact MonoidalCategory.rightUnitor A)
 
+/-- Slide a retained-coordinate endomorphism across a forward generator.
+Both composites normalize to the same canonical forward arrow. -/
+noncomputable def canonicalForwardSlidingComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    canonicalForwardHom (𝟙 X) A ≫ (generatorEquivalence f).hom ≅
+      (generatorEquivalence f).hom ≫ canonicalForwardHom (𝟙 Y) A :=
+  canonicalRetainedGeneratorComparison f A ≪≫
+    (canonicalGeneratorRetainedComparison f A).symm
+
+/-- Slide a retained-coordinate endomorphism across an inverse generator.
+Both composites normalize to the same canonical inverse arrow. -/
+noncomputable def canonicalInverseSlidingComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generatorEquivalence f).inv ≫ canonicalForwardHom (𝟙 X) A ≅
+      canonicalForwardHom (𝟙 Y) A ≫ (generatorEquivalence f).inv :=
+  canonicalInverseComparison f A ≪≫
+    (canonicalRetainedInverseComparison f A).symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The inverse sliding comparison is exactly the mate of the forward
+sliding comparison.  Thus the product left- and right-unitor normalizations
+are compatible with the chosen generator adjoint equivalence. -/
+theorem canonicalInverseSlidingComparison_hom
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    mateEquiv (generatorEquivalence f).toAdjunction
+        (generatorEquivalence f).toAdjunction
+        (canonicalForwardSlidingComparison f A).hom =
+      (canonicalInverseSlidingComparison f A).hom := by
+  rw [mateEquiv_apply']
+  apply Prod.ext
+  · exact Subsingleton.elim _ _
+  · dsimp [canonicalForwardSlidingComparison,
+      canonicalInverseSlidingComparison,
+      canonicalRetainedGeneratorComparison,
+      canonicalGeneratorRetainedComparison,
+      canonicalInverseComparison,
+      canonicalRetainedInverseComparison,
+      generatorEquivalence, Bicategory.Equivalence.toAdjunction]
+    rfl
+
 /-- The canonical forward identity arrow is isomorphic to the strict target
 identity through the inclusion pseudofunctor's unit comparison. -/
 noncomputable def canonicalForwardIdentityComparison
@@ -1774,6 +1817,78 @@ theorem liftedStrongTransNaturality_retainedGenerator_transport
   exact liftedStrongTransNaturality_iso σ
     (canonicalRetainedGeneratorComparison f A)
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Sliding a retained-coordinate constraint past the inverse generator
+transports the retained-then-inverse composite candidate to the
+inverse-then-retained composite candidate.  This is the concrete
+walking-localization instance of `inverseNaturalityIso_sliding`. -/
+theorem liftedStrongTransRetainedInverse_sliding
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (liftedStrongTransRetainedInverseCompositeNaturality σ f A)
+        (canonicalInverseSlidingComparison f A).symm =
+      liftedStrongTransInverseCompositeNaturality σ f A := by
+  apply Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding
+    (generatorEquivalence f)
+    (canonicalForwardHom (𝟙 X) A)
+    (canonicalForwardHom (𝟙 Y) A)
+    (canonicalForwardSlidingComparison f A)
+    (canonicalInverseSlidingComparison f A).symm
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (liftedStrongTransApp σ (canonicalTargetObject Y))
+    (liftedStrongTransForwardNaturality σ (𝟙 X) A)
+    (liftedStrongTransGeneratorNaturality σ f)
+    (liftedStrongTransForwardNaturality σ (𝟙 Y) A)
+  · dsimp [canonicalForwardSlidingComparison]
+    have hLeft :=
+      liftedStrongTransNaturality_retainedGenerator_transport
+        (F := F) (G := G) σ f A
+    simp only [liftedStrongTransNaturality_forward] at hLeft
+    rw [← liftedStrongTransGeneratorNaturality_eq_forward] at hLeft
+    have hRight :=
+      liftedStrongTransNaturality_compIso_forward
+        (F := F) (G := G) σ f (𝟙 Y)
+          (𝟙 (MonoidalSingleObj.star (Type))) A
+    simp only [liftedStrongTransNaturality_forward] at hRight
+    rw [← liftedStrongTransGeneratorNaturality_eq_forward] at hRight
+    rw [Pseudofunctor.StrongTrans.naturalityIsoOfIso_trans]
+    change
+      Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+            (liftedStrongTransApp σ (canonicalTargetObject X))
+            (liftedStrongTransApp σ (canonicalTargetObject Y))
+            (Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+              (canonicalForwardHom (𝟙 X) A)
+              (canonicalForwardHom f
+                (𝟙 (MonoidalSingleObj.star (Type))))
+              (liftedStrongTransApp σ (canonicalTargetObject X))
+              (liftedStrongTransApp σ (canonicalTargetObject X))
+              (liftedStrongTransApp σ (canonicalTargetObject Y))
+              (liftedStrongTransForwardNaturality σ (𝟙 X) A)
+              (liftedStrongTransGeneratorNaturality σ f))
+            (canonicalRetainedGeneratorComparison f A))
+          (canonicalGeneratorRetainedComparison f A).symm =
+        Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+          (canonicalForwardHom f
+            (𝟙 (MonoidalSingleObj.star (Type))))
+          (canonicalForwardHom (𝟙 Y) A)
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransGeneratorNaturality σ f)
+          (liftedStrongTransForwardNaturality σ (𝟙 Y) A)
+    rw [hLeft]
+    rw [← liftedStrongTransNaturality_forward]
+    rw [liftedStrongTransNaturality_iso]
+    exact hRight.symm
+  · exact (canonicalInverseSlidingComparison_hom f A).symm
+
 /-- The exact remaining public composition law for a retained-coordinate
 endomorphism followed by the freely adjoined inverse generator.  It is kept
 as a proposition until the mate-sliding proof is complete. -/
@@ -1908,6 +2023,188 @@ theorem liftedStrongTransNaturality_inverseGeneratorRetained_transport
     σ f h A]
   exact liftedStrongTransNaturality_iso σ
     (canonicalInverseComparison f A)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- For a strict reverse walking generator, the canonical composition of the
+public retained and inverse constraints is the public constraint on their raw
+composite.  The proof compares both mixed orders after transport to the
+canonical inverse arrow and uses injectivity of isomorphism transport. -/
+theorem liftedStrongTransNaturality_compIso_retainedInverse_public
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) (A : Type) :
+    Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+        (canonicalForwardHom (𝟙 Y) A)
+        (generatorEquivalence f).inv
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (liftedStrongTransNaturality σ
+          (canonicalForwardHom (𝟙 Y) A))
+        (liftedStrongTransNaturality σ
+          (generatorEquivalence f).inv) =
+      liftedStrongTransNaturality σ
+        (canonicalForwardHom (𝟙 Y) A ≫
+          (generatorEquivalence f).inv) := by
+  have hslide :=
+    liftedStrongTransRetainedInverse_sliding
+      (F := F) (G := G) σ f A
+  dsimp [canonicalInverseSlidingComparison] at hslide
+  rw [Pseudofunctor.StrongTrans.naturalityIsoOfIso_trans] at hslide
+  have hcanonical :
+      liftedStrongTransRetainedInverseNaturality σ f A =
+        liftedStrongTransInverseNaturality σ f A := by
+    apply Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective F G
+      (liftedStrongTransApp σ (canonicalTargetObject Y))
+      (liftedStrongTransApp σ (canonicalTargetObject X))
+      (canonicalInverseComparison f A).symm
+    change
+      Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransRetainedInverseNaturality σ f A)
+          (canonicalInverseComparison f A).symm =
+        Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransInverseNaturality σ f A)
+          (canonicalInverseComparison f A).symm
+    change _ = Pseudofunctor.StrongTrans.naturalityIsoOfIso F G _ _
+      (Pseudofunctor.StrongTrans.naturalityIsoOfIso F G _ _
+        (liftedStrongTransInverseCompositeNaturality σ f A)
+        (canonicalInverseComparison f A))
+      (canonicalInverseComparison f A).symm
+    rw [← Pseudofunctor.StrongTrans.naturalityIsoOfIso_trans]
+    have he :
+        canonicalInverseComparison f A ≪≫
+            (canonicalInverseComparison f A).symm =
+          Iso.refl _ := by
+      apply Iso.ext
+      simp
+    rw [he, Pseudofunctor.StrongTrans.naturalityIsoOfIso_refl]
+    exact hslide
+  have hInversePublic :=
+    liftedStrongTransNaturality_inverseGeneratorRetained_transport
+      (F := F) (G := G) σ f h A
+  rw [liftedStrongTransNaturality_generatorInverse σ f h,
+    liftedStrongTransNaturality_forward] at hInversePublic
+  change liftedStrongTransInverseNaturality σ f A =
+    liftedStrongTransNaturality σ (canonicalInverseHom f A) at hInversePublic
+  have hcandidate :
+      liftedStrongTransRetainedInverseCompositeNaturality σ f A =
+        liftedStrongTransNaturality σ
+          (canonicalForwardHom (𝟙 Y) A ≫
+            (generatorEquivalence f).inv) := by
+    apply Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective F G
+      (liftedStrongTransApp σ (canonicalTargetObject Y))
+      (liftedStrongTransApp σ (canonicalTargetObject X))
+      (canonicalRetainedInverseComparison f A)
+    change liftedStrongTransRetainedInverseNaturality σ f A = _
+    have hPublicTransport := liftedStrongTransNaturality_iso
+      (F := F) (G := G) σ (canonicalRetainedInverseComparison f A)
+    exact hcanonical.trans (hInversePublic.trans hPublicTransport.symm)
+  rw [liftedStrongTransNaturality_forward,
+    liftedStrongTransNaturality_generatorInverse σ f h]
+  exact hcandidate
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The public retained-then-inverse composition equation holds whenever the
+inverse generator is a strict reverse walking arrow. -/
+theorem liftedStrongTransNaturality_comp_retainedInverse_of_not_le
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) (A : Type) :
+    LiftedStrongTransRetainedInverseCompositionCoherence
+      (F := F) (G := G) σ f A := by
+  have hcomp := liftedStrongTransNaturality_compIso_retainedInverse_public
+    (F := F) (G := G) σ f h A
+  change
+    (liftedStrongTransNaturality σ
+        (canonicalForwardHom (𝟙 Y) A ≫
+          (generatorEquivalence f).inv)).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+          (G.mapComp (canonicalForwardHom (𝟙 Y) A)
+            (generatorEquivalence f).inv).hom =
+      (F.mapComp (canonicalForwardHom (𝟙 Y) A)
+          (generatorEquivalence f).inv).hom ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (α_ _ _ _).hom ≫
+        F.map (canonicalForwardHom (𝟙 Y) A) ◁
+          (liftedStrongTransNaturality σ
+            (generatorEquivalence f).inv).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ
+          (canonicalForwardHom (𝟙 Y) A)).hom ▷
+            G.map (generatorEquivalence f).inv ≫
+        (α_ _ _ _).hom
+  rw [← hcomp]
+  simp [Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos,
+    Category.assoc]
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- When the generator is an identity, retained-then-inverse coherence
+reduces to the already proved forward-forward composition equation. -/
+theorem liftedStrongTransNaturality_comp_retainedInverse_identity
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    (X : Ript.Examples.WalkingLocalization.Arrow) (A : Type) :
+    LiftedStrongTransRetainedInverseCompositionCoherence
+      (F := F) (G := G) σ (𝟙 X) A := by
+  have hinv :
+      (generatorEquivalence (𝟙 X)).inv =
+        canonicalForwardHom (𝟙 X)
+          (𝟙 (MonoidalSingleObj.star (Type))) := by
+    apply Prod.ext
+    · apply Discrete.ext
+      change inv (CategoryTheory.FreeGroupoid.homMk (𝟙 X)) =
+        CategoryTheory.FreeGroupoid.homMk (𝟙 X)
+      simp
+    · rfl
+  change
+    (liftedStrongTransNaturality σ
+        (canonicalForwardHom (𝟙 X) A ≫
+          (generatorEquivalence (𝟙 X)).inv)).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject X) ◁
+          (G.mapComp (canonicalForwardHom (𝟙 X) A)
+            (generatorEquivalence (𝟙 X)).inv).hom =
+      (F.mapComp (canonicalForwardHom (𝟙 X) A)
+          (generatorEquivalence (𝟙 X)).inv).hom ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (α_ _ _ _).hom ≫
+        F.map (canonicalForwardHom (𝟙 X) A) ◁
+          (liftedStrongTransNaturality σ
+            (generatorEquivalence (𝟙 X)).inv).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ
+          (canonicalForwardHom (𝟙 X) A)).hom ▷
+            G.map (generatorEquivalence (𝟙 X)).inv ≫
+        (α_ _ _ _).hom
+  rw [hinv]
+  exact liftedStrongTransNaturality_comp_forward
+    (F := F) (G := G) σ (𝟙 X) (𝟙 X) A
+      (𝟙 (MonoidalSingleObj.star (Type)))
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The public all-arrow constraint satisfies composition coherence when an
+arbitrary retained-coordinate endomorphism is followed by the freely
+adjoined inverse generator.  The strict reverse case is the mate-sliding
+calculation; the only remaining case is the identity generator and follows
+from forward-forward coherence. -/
+theorem liftedStrongTransNaturality_comp_retainedInverse
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    LiftedStrongTransRetainedInverseCompositionCoherence
+      (F := F) (G := G) σ f A := by
+  by_cases h : Y ≤ X
+  · have hXY : X = Y := le_antisymm f.le h
+    subst Y
+    have hf : f = 𝟙 X := Subsingleton.elim _ _
+    subst f
+    exact liftedStrongTransNaturality_comp_retainedInverse_identity
+      (F := F) (G := G) σ X A
+  · exact liftedStrongTransNaturality_comp_retainedInverse_of_not_le
+      (F := F) (G := G) σ f h A
 
 /-- The free groupoid on the walking arrow is thin: there is exactly one
 morphism between each pair of objects. -/
