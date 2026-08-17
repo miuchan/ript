@@ -326,6 +326,86 @@ def NaturalityAt (η θ : F ⟶ G)
   F.map f ◁ app b ≫ (θ.naturality f).hom =
     (η.naturality f).hom ≫ app a ▷ G.map f
 
+/-- Transport a candidate strong-naturality isomorphism across a
+2-isomorphism between parallel source 1-morphisms.  This is the constructor
+form of `naturality_naturality_iso`. -/
+def naturalityIsoOfIso (F G : C ⥤ᵖ D) {a b : C} {f g : a ⟶ b}
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f) (e : f ≅ g) :
+    F.map g ≫ appB ≅ appA ≫ G.map g :=
+  whiskerRightIso (F.map₂Iso e.symm) appB ≪≫ α ≪≫
+    whiskerLeftIso appA (G.map₂Iso e)
+
+/-- Compose candidate strong-naturality isomorphisms.  The pseudofunctor
+comparison maps and bicategorical associators make the result a constraint at
+the composite source 1-morphism.  This is the constructor form of
+`naturality_comp_iso`. -/
+def naturalityCompIsoOfIsos (F G : C ⥤ᵖ D)
+    {a b c : C} (f : a ⟶ b) (g : b ⟶ c)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (β : F.map g ≫ appC ≅ appB ≫ G.map g) :
+    F.map (f ≫ g) ≫ appC ≅ appA ≫ G.map (f ≫ g) :=
+  whiskerRightIso (F.mapComp f g) appC ≪≫ (α_ _ _ _) ≪≫
+    whiskerLeftIso (F.map f) β ≪≫ (α_ _ _ _).symm ≪≫
+    whiskerRightIso α (G.map g) ≪≫ α_ _ _ _ ≪≫
+    whiskerLeftIso appA (G.mapComp f g).symm
+
+/-- Derive the strong-naturality isomorphism at the chosen inverse of an
+adjoint equivalence from a constraint at its forward 1-morphism.
+
+For a general adjunction the mate of an invertible 2-cell need not be
+invertible.  Here both adjunctions are images of an *adjoint equivalence*, so
+their unit and counit are invertible.  The explicit bicategorical composite
+therefore packages the mate as an isomorphism without invoking choice. -/
+def inverseNaturalityIso (F G : C ⥤ᵖ D) {a b : C} (e : a ≌ b)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map e.hom ≫ appB ≅ appA ≫ G.map e.hom) :
+    F.map e.inv ≫ appA ≅ appB ≫ G.map e.inv :=
+  Iso.refl _ ≪⊗≫
+    whiskerLeftIso (F.map e.inv)
+      (whiskerLeftIso appA
+        ((G.mapId a).symm ≪≫ G.map₂Iso e.unit ≪≫
+          G.mapComp e.hom e.inv)) ≪⊗≫
+    whiskerLeftIso (F.map e.inv)
+      (whiskerRightIso α.symm (G.map e.inv)) ≪⊗≫
+    whiskerRightIso
+      (whiskerRightIso
+        ((F.mapComp e.inv e.hom).symm ≪≫ F.map₂Iso e.counit ≪≫
+          F.mapId b) appB)
+      (G.map e.inv) ≪⊗≫
+    Iso.refl _
+
+/-- The hom of `inverseNaturalityIso` is the ordinary bicategorical mate of
+the inverse forward constraint. -/
+theorem inverseNaturalityIso_hom (F G : C ⥤ᵖ D)
+    {a b : C} (e : a ≌ b)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map e.hom ≫ appB ≅ appA ≫ G.map e.hom) :
+    (inverseNaturalityIso F G e appA appB α).hom =
+      mateEquiv (F.mapAdjunction e.toAdjunction)
+        (G.mapAdjunction e.toAdjunction) α.inv := by
+  rw [mateEquiv_apply']
+  rfl
+
+/-- Transporting an existing strong-transformation constraint with
+`naturalityIsoOfIso` recovers its constraint at the isomorphic 1-morphism. -/
+theorem naturalityIsoOfIso_eq (η : F ⟶ G)
+    {a b : C} {f g : a ⟶ b} (e : f ≅ g) :
+    naturalityIsoOfIso F G (η.app a) (η.app b)
+        (η.naturality f) e = η.naturality g :=
+  (naturality_naturality_iso η e).symm
+
+/-- Composing two existing strong-transformation constraints with
+`naturalityCompIsoOfIsos` recovers the constraint at their composite. -/
+theorem naturalityCompIsoOfIsos_eq (η : F ⟶ G)
+    {a b c : C} (f : a ⟶ b) (g : b ⟶ c) :
+    naturalityCompIsoOfIsos F G f g (η.app a) (η.app b) (η.app c)
+        (η.naturality f) (η.naturality g) =
+      η.naturality (f ≫ g) :=
+  (naturality_comp_iso η f g).symm
+
 /-- Every proposed family of modification components is natural at identity
 1-morphisms. -/
 theorem naturalityAt_id (η θ : F ⟶ G)
@@ -408,6 +488,14 @@ theorem mate_naturality (η : F ⟶ G) {a b : C} (e : a ≌ b) :
   rw [η.naturality_naturality e.toAdjunction.unit]
   rw [naturality_id_hom]
   simp
+
+/-- For an existing strong transformation, the explicitly invertible mate
+constructor recovers its naturality isomorphism at the chosen inverse. -/
+theorem inverseNaturalityIso_eq (η : F ⟶ G) {a b : C} (e : a ≌ b) :
+    inverseNaturalityIso F G e (η.app a) (η.app b)
+        (η.naturality e.hom) = η.naturality e.inv := by
+  apply Iso.ext
+  rw [inverseNaturalityIso_hom, mate_naturality]
 
 /-- If proposed modification components are natural at the forward arrow of
 an adjoint equivalence, they are automatically natural at its chosen

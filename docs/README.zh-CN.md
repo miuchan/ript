@@ -83,7 +83,9 @@ Ript 同时编译了未截断研究目标的精确定义：双范畴 localizatio
 坐标局部化后仍不可逆。对任意目标双范畴，每个只依赖保留坐标的伪函子现在都有通过目标的显式
 分解。预复合在每个强变换与 modification 的局部范畴上现已充满忠实：modification 分量可从源
 提升，生成箭头的自然性通过 mate 演算延伸到自由加入的逆元，再通过路径归纳和积分解覆盖全部
-目标箭头。walking 自由群胚本身现在也有规范形定理：每条带符号路径都等于其端点唯一决定的
+目标箭头。对于尚缺的对象提升方向，源强变换现在决定目标对象分量，且其生成箭头约束可向前搬运；
+一个显式可逆 mate 给出自由加入逆元处的约束。在这些数据组成目标强变换之前，仍需证明其与保留
+坐标箭头及复合的相容性。walking 自由群胚本身现在也有规范形定理：每条带符号路径都等于其端点唯一决定的
 态射，因此该补全是 thin 的，并与 `Fin 2` 上的 codiscrete 群胚显式范畴等价。作为互补，对任意群胚 `G`，
 每个 walking-arrow 函子 `K : Arrow ⥤ G` 都诱导一个只依赖局部化坐标的标记反转伪函子；它通过
 自由群胚目标显式分解，而且其提升把形式加入的逆元映为生成箭头像的实际逆元。这两类分量现在还能组合：
@@ -1048,6 +1050,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | walking-arrow 补全与 `Fin 2` 上的 codiscrete 群胚范畴等价。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | 预复合后的每个 modification 都能跨越自由加入的逆元延拓。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | 预复合在每个局部范畴上充满忠实；要得到局部等价只剩局部本质满射。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | 预期目标强变换在逆生成箭头处的约束，是其正向约束的显式可逆双范畴 mate。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | 一个具体的标记反转伪函子在仍检测不可逆 Boolean discard 的同时通过目标分解。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限确定性 discard 是不可逆模型 2-胞，其两个端点经同伦截断后仍不相同。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 从完整模型双范畴到局部离散目标的每个伪函子都识别 discard 两个端点的像。 |

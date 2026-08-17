@@ -149,7 +149,12 @@ through the target for every target bicategory. Precomposition is now fully
 faithful on every local category: modification components lift from the source,
 naturality extends from forward generators to their freely adjoined inverses
 by mates, and then to all target arrows by path induction and product
-decomposition. The walking free groupoid itself is now normalized as well:
+decomposition. For the missing object-lifting direction, a source strong
+transformation now determines target object components and its generator
+constraint transports forward; an explicit invertible mate supplies the
+constraint at the freely adjoined inverse. Coherence with retained-coordinate
+arrows and composition is the remaining step before these data form a target
+strong transformation. The walking free groupoid itself is now normalized as well:
 every signed path is the unique morphism determined by its endpoints, making
 the completion thin and explicitly equivalent to the codiscrete groupoid on
 `Fin 2`. Complementarily, every functor from the walking arrow
@@ -1450,6 +1455,7 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | The walking-arrow completion is categorically equivalent to the codiscrete groupoid on `Fin 2`. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | Every modification after precomposition extends across the freely adjoined inverse. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | Precomposition is fully faithful on every local category; only local essential surjectivity remains for local equivalence. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | The prospective target strong transformation's inverse-generator constraint is an explicit invertible bicategorical mate of its forward constraint. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | A concrete marking-inverting pseudofunctor factors through the target while still detecting noninvertible Boolean discard. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finite deterministic discard is a noninvertible model 2-cell whose endpoints remain distinct after homotopy truncation. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Every full pseudofunctor to a locally discrete target identifies the images of discard's two endpoint model morphisms. |

@@ -85,8 +85,12 @@ only literal componentwise pairs. The free-groupoid coordinate now also has a
 kernel-checked endpoint normal form: every signed path represents the unique
 morphism between its endpoints, the completion is thin, and it is explicitly
 equivalent to the codiscrete groupoid on `Fin 2`. This removes path-representative
-ambiguity for the next strong-transformation extension without proving that
-extension itself. What remains open is factorization of an
+ambiguity for the next strong-transformation extension. That extension now
+has explicit object components and generator constraints: the forward
+constraint transports from the source, while an explicit invertible mate
+constructs the constraint at the freely adjoined inverse. The remaining
+coherence across retained-coordinate arrows and composition has not yet been
+assembled into a target strong transformation. What remains open is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the
 corresponding construction for the full resource-process bicategory.

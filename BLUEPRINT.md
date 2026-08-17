@@ -4322,7 +4322,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   source also inverts and factors even when it is not definitionally a pair.
   Surjectivity on objects also makes precomposition faithful on every local
   category, while the mate/path/product argument lifts every modification and
-  makes it full. It remains a parameterized slice: arbitrary inverting
+  makes it full. For the missing local-essential-surjectivity direction, target
+  object components and the forward generator constraint are now reconstructed
+  from a source strong transformation. An explicit invertible mate, assembled
+  from mapped unit and counit isomorphisms, supplies the constraint at the
+  freely adjoined inverse and is proved equal on homs to `mateEquiv`. Coherence
+  with retained-coordinate arrows and all compositions remains to be proved
+  before these data form a target strong transformation. It remains a
+  parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
   essential surjectivity remains open, and the source is not the
   resource-process bicategory.
@@ -4358,8 +4365,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   walking slice now supplies genuine `lift` witnesses, their full
   adjoint-equivalence closure, a canonical endpoint normal form and
   codiscrete classification for its free-groupoid coordinate, and fully
-  faithful local precomposition, but not arbitrary lifts outside that closure
-  or local essential surjectivity. The identity
+  faithful local precomposition. The inverse-generator constraint for a
+  prospective strong-transformation lift is explicit, but its full coherence,
+  arbitrary lifts outside that closure, and local essential surjectivity are
+  not yet proved. The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
   complete-Segal, or Rezk universal property is claimed.

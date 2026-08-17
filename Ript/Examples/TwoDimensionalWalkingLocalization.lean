@@ -28,8 +28,11 @@ function-valued coordinate still has noninvertible 2-cells.
 
 This is still a parameterized vertical slice, not the full bicategorical
 localization of Ript's resource-process bicategory.  Local precomposition is
-fully faithful, but local essential surjectivity and arbitrary nonseparable
-biessential factorization remain open.
+fully faithful.  For the next local-essential-surjectivity step, the source
+constraint at the walking generator now determines an explicit invertible
+mate constraint at the freely adjoined inverse.  The full strong-transformation
+coherence, local essential surjectivity, and arbitrary nonseparable biessential
+factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -421,6 +424,81 @@ theorem generatorEquivalence_inv
     (generatorEquivalence f).inv =
       (inv (CategoryTheory.FreeGroupoid.homMk f)).toLoc ×ₘ 𝟙 _ :=
   rfl
+
+/-- Recover the object component of a prospective target strong
+transformation from a strong transformation after precomposition.  The free
+groupoid completion changes arrows but not objects. -/
+noncomputable def liftedStrongTransApp
+    (σ : inclusion.comp F ⟶ inclusion.comp G) (X : Target) :
+    F.obj X ⟶ G.obj X := by
+  rw [← inclusion_obj_sourceOfTarget X]
+  exact σ.app (sourceOfTarget X)
+
+/-- Recovered strong-transformation components restrict exactly to the source
+components on objects in the image of the inclusion. -/
+@[simp]
+theorem liftedStrongTransApp_inclusionObj
+    (σ : inclusion.comp F ⟶ inclusion.comp G) (X : Source) :
+    liftedStrongTransApp σ (inclusion.obj X) = σ.app X := by
+  rcases X with ⟨⟨X⟩, Y⟩
+  cases Y
+  rfl
+
+/-- The source naturality isomorphism at a walking generator transports to
+the corresponding forward generator in the completion. -/
+noncomputable def liftedStrongTransGeneratorNaturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    F.map (generatorEquivalence f).hom ≫
+        liftedStrongTransApp σ
+          (LocallyDiscrete.mk (CategoryTheory.FreeGroupoid.mk Y),
+            MonoidalSingleObj.star (Type)) ≅
+      liftedStrongTransApp σ
+          (LocallyDiscrete.mk (CategoryTheory.FreeGroupoid.mk X),
+            MonoidalSingleObj.star (Type)) ≫
+        G.map (generatorEquivalence f).hom := by
+  change F.map (generatorEquivalence f).hom ≫
+      σ.app (LocallyDiscrete.mk Y, MonoidalSingleObj.star (Type)) ≅
+    σ.app (LocallyDiscrete.mk X, MonoidalSingleObj.star (Type)) ≫
+      G.map (generatorEquivalence f).hom
+  exact Pseudofunctor.StrongTrans.naturalityIsoOfIso F G _ _
+    (σ.naturality
+      (f.toLoc ×ₘ 𝟙 (MonoidalSingleObj.star (Type))))
+    (Iso.prod (Iso.refl _)
+      ((Pseudofunctor.id Cell).mapId (MonoidalSingleObj.star (Type))))
+
+/-- The forward generator constraint canonically determines an invertible
+strong-naturality constraint at the freely adjoined inverse.  This is the
+object-level extension datum needed for local essential surjectivity; the
+remaining obligation is compatibility with all retained-coordinate arrows
+and compositions. -/
+noncomputable def liftedStrongTransGeneratorInverseNaturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    F.map (generatorEquivalence f).inv ≫
+        liftedStrongTransApp σ
+          (LocallyDiscrete.mk (CategoryTheory.FreeGroupoid.mk X),
+            MonoidalSingleObj.star (Type)) ≅
+      liftedStrongTransApp σ
+          (LocallyDiscrete.mk (CategoryTheory.FreeGroupoid.mk Y),
+            MonoidalSingleObj.star (Type)) ≫
+        G.map (generatorEquivalence f).inv :=
+  Pseudofunctor.StrongTrans.inverseNaturalityIso F G
+    (generatorEquivalence f) _ _
+      (liftedStrongTransGeneratorNaturality σ f)
+
+/-- The hom of the inverse-generator constraint is exactly the bicategorical
+mate of the inverse forward constraint. -/
+theorem liftedStrongTransGeneratorInverseNaturality_hom
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    (liftedStrongTransGeneratorInverseNaturality σ f).hom =
+      mateEquiv
+        (F.mapAdjunction (generatorEquivalence f).toAdjunction)
+        (G.mapAdjunction (generatorEquivalence f).toAdjunction)
+        (liftedStrongTransGeneratorNaturality σ f).inv :=
+  Pseudofunctor.StrongTrans.inverseNaturalityIso_hom F G
+    (generatorEquivalence f) _ _ _
 
 /-- Naturality holds on forward free-groupoid generators. -/
 theorem liftedModificationApp_naturality_generator
