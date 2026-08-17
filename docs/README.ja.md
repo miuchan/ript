@@ -63,12 +63,16 @@ Lean カーネルで証明済みです。すべての正確な garbling は決�
 interchange、結合子、左右単位子、五角形・三角形 coherence を証明しました。明示的なコスト反映を
 備えたコスト完全なモデル同値は、各過程のコストと直列・並列の中心的資源境界を保存します。
 最初の非 groupoid localization の縦断面もコンパイル済みです。Ript は可逆なモノイダル
-2-射でモデル射を商し、モデル双圏の通常の homotopy 1-category を作ります。次に、コストを
-反映する代表を持つ射の類を印付けし、Mathlib の Gabriel--Zisman 構成を適用します。標準関手は
-真の `Functor.IsLocalization` instance と関手圏の普遍性を持ちます。コスト 0 の離散例は、印を
-付けた射の一つが localization 前には可逆でないことを証明するため、形式的逆射は実際に新しく
-追加されます。これは 2-射を切り捨てた後の通常の 1-圏 localization であり、双圏的、
-Dwyer--Kan、simplicial、Rezk localization ではありません。
+2-射でモデル射を商し、モデル双圏の通常の homotopy 1-category を作ります。生のコスト反映射と、
+可逆 2-射に関するその明示的飽和を分離し、この飽和標識が homotopy category の標識類と正確に
+一致することを証明しました。その後 Mathlib の Gabriel--Zisman 構成により、真の
+`Functor.IsLocalization` instance と関手圏の普遍性を得ます。標準的な高次から通常圏への橋は、
+Mathlib の `Pith`（モデル双圏の最大局所 groupoid 部分）から局所離散 localization への
+pseudofunctor として形式化され、すべての飽和標識射が同型へ写ることも証明済みです。コスト 0 の
+離散標識射は localization 前には可逆でないため、形式的逆射は実際に追加されます。さらに有限
+決定論的 discard は、両端が homotopy category でも異なる具体的な非可逆モノイダル 2-射です。
+したがって、この橋が先に非可逆 2-射を捨てなければならない理由も形式的に確認されています。
+これは双圏的、Dwyer--Kan、simplicial、Rezk localization ではありません。
 Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
 empty・unit・sum・tensor・原子的インターフェースの深い code は、構造同値の構文と内部同一性の
 構文を別々に持ちます。その意味論的商は実際の Mathlib groupoid をなし、内部同一性と内部構造同値は
@@ -1031,9 +1035,13 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | コスト完全なモデル射は、元モデルのコストによる並列コア境界を移送します。 |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | コスト完全な双圏同値の順方向射は過程コストを保存します。 |
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | 表示された射が homotopy category で可逆なら、その射は双圏同値です。 |
+| `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | 降下後の表示射が印付きであることは、元の双圏標識が可逆 2-射まで成り立つことと同値です。 |
+| `Ript.Higher.costExactMorphisms_homMk_iff` | Homotopy category の標識はコスト反映の可逆 2-射飽和と正確に一致します。 |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | 標準 Gabriel--Zisman 関手は、コスト反映代表を持つ全モデル射を形式的に反転します。 |
+| `Ript.Higher.costExactPithLocalization_map_isIso` | `Pith` からの標準 pseudofunctor は飽和コスト完全射を通常の同型へ写します。 |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | localization からの関手は、全印付き射を反転する関手と圏同値です。 |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | 具体的なコスト 0 離散印付き射は localization 前には同型ではありません。 |
+| `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限決定論的 discard は非可逆なモデル 2-射で、その両端は homotopy truncation 後も異なります。 |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe の内部同一性は内部構造同値と同値です。 |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | 二つの内部同一性が等しいことは、その解釈同値が等しいことと同値です。 |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | 生の path が商モデルで等しければ、その外部解釈も等しくなります。 |
@@ -1132,7 +1140,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 9、有限量子チャネル | 複素密度行列、TP Kraus チャネル、テンソル/interchange、トレース破棄、因果的一意性、有限完全正値性 | **PROVED** |
 | 9、量子拡張 | 脱位相化冪等 Kraus 部分圏への忠実な有限古典測定—準備埋め込み | **PROVED** |
 | 10 | 資源添字付きモデル双圏、モノイダル 2-射、coherence、コスト完全同値による移送 | **PROVED** |
-| 10、通常モデル localization | Homotopy 1-category、乗法的コスト完全標識、Mathlib localization の普遍性、真正に非可逆な印付き射 | **PROVED** |
+| 10、通常モデル localization | 可逆 2-射で飽和したコスト完全標識、homotopy 1-category への正確な降下、標準 `Pith` pseudofunctor、Mathlib localization の普遍性、非可逆な印付き射とモデル 2-射 | **PROVED** |
 | 11 | 公理不要の深いインターフェース/プロセス構文、商 groupoid、内部 univalence、健全性、indiscernibility | **PROVED** |
 | 12、truncated 基礎 | 選択不要の対象 completion、skeletal groupoid completion、普遍的降下、実行可能不変量 | **PROVED** |
 | 12、presheaf 基礎 | 充満忠実な Yoneda 意味論、可表対象での同一性/同値対応、本質像包絡 | **PROVED** |
@@ -1160,7 +1168,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 有限量子 Kraus チャネル | Kraus 圏 | 可 | 行列証明層；基底ラベルは実行可能 | 複素 PSD トレース 1 状態、標準テンソル、トレース破棄、任意の有限恒等増幅に対する CP；コピーなし |
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
-| コスト完全モデル localization | 可逆モノイダル 2-射で商したモデル射 | コスト反映代表を持つ各類の形式的反転 | 非計算的意味論証明層 | 真の Mathlib Gabriel--Zisman localization と関手圏普遍性；非可逆 2-射を切り捨てるため高次 localization ではない |
+| コスト完全モデル localization | コスト反映モデル射の可逆 2-射飽和と homotopy 類 | 各飽和標識類の形式的反転 | 非計算的意味論証明層 | 正確な標識降下定理と `Pith` からの標準 pseudofunctor；真の Mathlib Gabriel--Zisman 普遍性；具体的な非可逆 2-射が高次 localization でない理由を示す |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；全内部同一射に関する Mathlib localization；Rezk completion ではない |
@@ -1665,7 +1673,7 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] 資源添字付きモデル 0-射と資源非増加な強 braided monoidal 1-射
 - [x] モノイダル自然変換 2-射、垂直・水平合成、interchange
 - [x] モデル結合子、単位子、五角形、三角形、コスト完全同値による移送
-- [x] モデル homotopy 1-category とコスト反映モデル射の Gabriel--Zisman localization（非可逆な印付き例を含む）
+- [x] 可逆 2-射飽和コスト標識、正確な homotopy 降下、標準 `Pith` pseudofunctor、Gabriel--Zisman localization（非可逆な印付き射と 2-射の見証を含む）
 - [x] 構造同値構文と内部同一性構文を分離した深いインターフェース code
 - [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例

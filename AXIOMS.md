@@ -248,10 +248,17 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Equivalence.lean` |
 | `CategoryTheory.Bicategory.HomotopyCategory.homMk_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean` |
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean` |
+| `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MorphismProperty.lean` |
+| `CategoryTheory.Bicategory.HomotopyCategory.pithToHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PithToHomotopy.lean` |
 | `Ript.Higher.costExactMorphisms_isMultiplicative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.costExactMorphisms_homMk_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.costExactLocalizationFunctor_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.costExactPithLocalization_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
+| `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
+| `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
@@ -550,18 +557,24 @@ cost reflection is an explicit hypothesis, never inferred merely from a
 bicategorical equivalence.
 The first ordinary localization of that higher layer is now compiled as a
 separate, explicitly truncated semantic construction. Its homotopy category
-quotients 1-morphisms only by invertible 2-cells; the cost-exact marking is
-closed under identity and composition; and Mathlib's Gabriel--Zisman
-construction supplies a genuine `Functor.IsLocalization` instance and the
-standard functor-category universal property. A zero-cost discrete example
-proves that one marked arrow is not invertible before localization, so this
-construction adds a genuine formal inverse. All seven audited declarations
-for the quotient, multiplicative mark, localization, and example report
-exactly `[propext, Classical.choice, Quot.sound]`. These are the standard
-quotient and chosen-representative dependencies of the ordinary semantic
-layer; they introduce no project axiom and no choice-derived executable data.
-Because noninvertible 2-cells are discarded before localization, this result
-is not a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
+quotients 1-morphisms only by invertible 2-cells. The raw cost-reflecting mark
+is multiplicative, its closure under invertible 2-cells is explicit, and the
+descent theorem identifies that saturation exactly with marked quotient
+classes. The canonical bridge is a pseudofunctor from Mathlib's `Pith` to the
+locally discrete ordinary localization; it maps every saturated marked arrow
+to an isomorphism. Mathlib's Gabriel--Zisman construction supplies a genuine
+`Functor.IsLocalization` instance and the standard functor-category universal
+property. A zero-cost discrete example proves that one marked arrow is not
+invertible before localization, so this construction adds a genuine formal
+inverse. A second finite deterministic example exhibits a noninvertible
+monoidal 2-cell whose endpoints remain distinct in the homotopy category,
+making the truncation boundary formal rather than documentary. Every audited
+declaration in this bridge reports exactly `[propext, Classical.choice,
+Quot.sound]`. These are the standard quotient and chosen-representative
+dependencies of the ordinary semantic layer; they introduce no project axiom
+and no choice-derived executable data. Because noninvertible 2-cells are
+discarded before localization, this result is not a bicategorical,
+Dwyer--Kan, simplicial, or Rezk localization.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

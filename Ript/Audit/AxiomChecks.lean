@@ -11,6 +11,7 @@ import Ript.Examples.ExactWorkErasure
 import Ript.Examples.ExplicitBathErasure
 import Ript.Examples.HigherLocalization
 import Ript.Examples.HigherModels
+import Ript.Examples.HigherNoninvertibleTwoCell
 import Ript.Examples.QubitChannel
 import Ript.Examples.RationalGibbsSpectra
 import Ript.Examples.SimpleCausalModel
@@ -286,10 +287,17 @@ set_option autoImplicit false
 #print axioms Ript.Higher.ModelHom.compCostReflecting
 #print axioms CategoryTheory.Bicategory.HomotopyCategory.homMk_eq_iff
 #print axioms CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso
+#print axioms CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff
+#print axioms CategoryTheory.Bicategory.HomotopyCategory.pithToHomotopy
 #print axioms Ript.Higher.costExactMorphisms_isMultiplicative
+#print axioms Ript.Higher.costExactMorphisms_homMk_iff
 #print axioms Ript.Higher.costExactLocalizationFunctor_inverts
+#print axioms Ript.Higher.costExactLocalizationFunctor_map_isIso
+#print axioms Ript.Higher.costExactPithLocalization_map_isIso
 #print axioms Ript.Higher.costExactLocalizationFunctorEquivalence
 #print axioms Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso
+#print axioms Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso
+#print axioms Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne
 #print axioms Ript.Univalent.UniverseModel.internalUnivalence
 #print axioms Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq
 #print axioms Ript.Univalent.UniverseModel.path_interpretation_sound

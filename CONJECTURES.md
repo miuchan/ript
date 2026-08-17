@@ -39,11 +39,18 @@ invert any previously noninvertible process; the source is already a
 groupoid. Second, the model bicategory now has a compiled homotopy
 1-category, obtained by identifying invertibly 2-isomorphic model morphisms,
 and a Mathlib Gabriel--Zisman localization at all classes with a
-cost-reflecting representative. A concrete zero-cost discrete marked arrow is
-proved noninvertible before localization, so this second construction adds a
-genuine formal inverse. The open localization problem is specifically the
-higher or bicategorical localization that retains the full 2-cell structure
-of the resource-process theory.
+cost-reflecting representative. The representative-level mark is now
+explicitly saturated under invertible 2-cells, that saturation is proved to
+descend exactly to the homotopy-category mark, and a canonical pseudofunctor
+from Mathlib's `Pith` maps every saturated marked arrow to an isomorphism in
+the localization. A concrete zero-cost discrete marked arrow is proved
+noninvertible before localization, so this construction adds a genuine formal
+inverse. Finite deterministic discard supplies a separate noninvertible
+monoidal 2-cell whose endpoints remain distinct after homotopy truncation;
+this formally witnesses why the current bridge cannot retain all 2-cells. The
+open localization problem is specifically the higher or bicategorical
+localization with a universal property that retains that full 2-cell
+structure.
 
 ## Recently discharged: exact finite stochastic Blackwell converse
 
