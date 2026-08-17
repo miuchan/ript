@@ -256,6 +256,8 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Pseudofunctor.idCompEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.localPrecomposition_id_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Bicategory.MorphismProperty.equivalences_isBicategoricalLocalization_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.LocallyDiscrete.equivalenceOfIsIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Bicategory.MorphismProperty.locallyDiscrete_isInvertedBy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `Ript.Higher.costExactMorphisms_isMultiplicative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
@@ -268,6 +270,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
+| `Ript.Examples.WalkingLocalization.inclusionFunctor_isLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
+| `Ript.Examples.WalkingLocalization.inclusion_map_arrow_comp_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
+| `Ript.Examples.WalkingLocalization.inverse_comp_inclusion_map_arrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
+| `Ript.Examples.WalkingLocalization.arrow_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
+| `Ript.Examples.WalkingLocalization.inclusion_genuinely_adds_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
@@ -600,9 +607,16 @@ fully populated instance of the bicategorical-localization predicate: the
 identity pseudofunctor localizes exactly those markings whose arrows are
 already adjoint equivalences. The concrete zero-cost embedding is not such an
 equivalence, so the identity pseudofunctor is formally ruled out as Ript's
-cost-exact localization. These audited declarations have the same exact
+cost-exact localization. The walking-arrow example now takes the next
+constructive step: Mathlib's free groupoid adjoins an explicit inverse to a
+source arrow that is proved not to be a bicategorical equivalence. Both
+inverse laws, the ordinary `Functor.IsLocalization` instance, and the induced
+bicategorical mark inversion are kernel checked. This validates a genuine
+inverse-adjoining slice, but its locally discrete target does not retain
+arbitrary noninvertible 2-cells and has not been proved to satisfy the full
+bicategorical predicate. These audited declarations have the same exact
 `[propext, Classical.choice, Quot.sound]` footprint. No existence theorem for
-the nontrivial full higher localization is claimed.
+the nontrivial full resource-process higher localization is claimed.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

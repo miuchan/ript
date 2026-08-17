@@ -221,7 +221,7 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, a fully constructed identity-localization base case, cost-exact specialization, and concrete locally-discrete/identity-candidate obstructions | PROVED |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, a fully constructed identity base case, a walking-arrow inverse-adjoining construction, cost-exact specialization, and concrete obstructions | PROVED |
 | 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -4140,6 +4140,16 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       W.IsBicategoricalLocalization (Pseudofunctor.id B) ↔
         ∀ f, W f → Bicategory.IsEquivalence f
 
+  noncomputable def LocallyDiscrete.equivalenceOfIsIso
+      (f : X ⟶ Y) [IsIso f] :
+      LocallyDiscrete.mk X ≌ LocallyDiscrete.mk Y
+
+  theorem Bicategory.MorphismProperty.locallyDiscrete_isInvertedBy
+      (W : CategoryTheory.MorphismProperty C) (F : C ⥤ D)
+      (hF : W.IsInvertedBy F) :
+      (Bicategory.MorphismProperty.locallyDiscrete W).IsInvertedBy
+        F.toPseudofunctor
+
   abbrev IsCostExactBicategoricalLocalization
       (Q : ProcessModel R ⥤ᵖ L) : Prop
 
@@ -4150,6 +4160,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   theorem HigherLocalization.costExactIdentity_not_isBicategoricalLocalization :
       ¬ IsCostExactBicategoricalLocalization
         (Pseudofunctor.id (ProcessModel Nat))
+
+  theorem WalkingLocalization.inclusionFunctor_isLocalization :
+      Functor.IsLocalization (FreeGroupoid.of (Fin 2)) ⊤
+
+  theorem WalkingLocalization.inclusion_genuinely_adds_inverse :
+      (¬ Bicategory.IsEquivalence WalkingLocalization.arrow.toLoc) ∧
+        Bicategory.IsEquivalence
+          (WalkingLocalization.inclusion.map WalkingLocalization.arrow.toLoc)
 
   theorem HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard
       (F : ProcessModel Nat ⥤ᵖ LocallyDiscrete C) :
@@ -4170,6 +4188,17 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   and faithfulness of identity precomposition on every local category and
   therefore construct the first complete instance of
   `IsBicategoricalLocalization`, at the marking of arrows already equivalent.
+- Inverse-adjoining base construction: the preorder category `Fin 2` is the
+  walking arrow. Its generating arrow has no reverse 1-morphism, hence is not
+  a bicategorical equivalence in the locally discrete source. Mathlib's
+  `FreeGroupoid.of (Fin 2)` is an actual ordinary localization at all arrows.
+  Its induced pseudofunctor maps the generator to an adjoint equivalence, and
+  `WalkingLocalization.inverse` exposes the newly adjoined reverse arrow with
+  both composites proved equal to identities. The reusable
+  `MorphismProperty.locallyDiscrete_isInvertedBy` bridge transports ordinary
+  inversion into the mark-inversion field of the bicategorical interface.
+  This construction is intentionally not claimed to retain noninvertible
+  source 2-cells or to satisfy the other two fields of the full predicate.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
   additive `0` in `Multiplicative Nat`; target object `1` is not in the
@@ -4208,6 +4237,7 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/MorphismProperty.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/PithToHomotopy.lean`,
+  `Ript/Examples/WalkingLocalization.lean`,
   `Ript/Higher/Localization.lean`, and
   `Ript/Examples/HigherLocalization.lean`, and
   `Ript/Examples/HigherNoninvertibleTwoCell.lean`.
@@ -5496,5 +5526,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     pseudofunctor is a genuine localization exactly for markings already made
     of adjoint equivalences. The concrete cost-reflecting discrete embedding
     is not an equivalence, which rules out that identity candidate for Ript.
-    This is a verified base construction and a stronger obstruction, not an
-    existence proof for the desired nontrivial higher localization.
+    The walking-arrow/free-groupoid example now genuinely adjoins a missing
+    inverse and verifies both inverse equations plus the induced
+    bicategorical mark inversion. Because that example is locally discrete,
+    it still does not retain arbitrary 2-cells or prove biessential/local
+    universality. This is a verified inverse-adjoining base construction and
+    a stronger obstruction, not an existence proof for the desired
+    nontrivial resource-process higher localization.

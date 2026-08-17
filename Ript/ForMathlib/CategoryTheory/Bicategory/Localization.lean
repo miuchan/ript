@@ -1,5 +1,7 @@
 import Mathlib.CategoryTheory.Bicategory.Adjunction.Basic
+import Mathlib.CategoryTheory.Bicategory.Functor.LocallyDiscrete
 import Mathlib.CategoryTheory.Bicategory.FunctorBicategory.Pseudo
+import Mathlib.CategoryTheory.MorphismProperty.IsInvertedBy
 import Ript.ForMathlib.CategoryTheory.Bicategory.MorphismProperty
 
 /-!
@@ -62,6 +64,41 @@ theorem mapEquivalence_hom (F : B ⥤ᵖ C)
 
 end Pseudofunctor
 
+namespace LocallyDiscrete
+
+/-- An isomorphism in a category determines an adjoint equivalence in its
+locally discrete bicategory. -/
+noncomputable def equivalenceOfIsIso {E : Type u₁} [Category.{v₁} E]
+    {X Y : E} (f : X ⟶ Y) [IsIso f] :
+    LocallyDiscrete.mk X ≌ LocallyDiscrete.mk Y := by
+  let η : 𝟙 (LocallyDiscrete.mk X) ≅ f.toLoc ≫ (inv f).toLoc :=
+    eqToIso (by
+      apply Discrete.ext
+      simp)
+  let ε : (inv f).toLoc ≫ f.toLoc ≅ 𝟙 (LocallyDiscrete.mk Y) :=
+    eqToIso (by
+      apply Discrete.ext
+      simp)
+  exact Bicategory.Equivalence.mkOfAdjointifyCounit η ε
+
+@[simp]
+theorem equivalenceOfIsIso_hom {E : Type u₁} [Category.{v₁} E]
+    {X Y : E} (f : X ⟶ Y) [IsIso f] :
+    (equivalenceOfIsIso f).hom = f.toLoc :=
+  rfl
+
+/-- Every arrow of the locally discrete bicategory associated to a groupoid
+is an adjoint equivalence. -/
+theorem isEquivalence_of_groupoid {E : Type u₁} [Groupoid.{v₁} E]
+    {X Y : LocallyDiscrete E} (f : X ⟶ Y) :
+    Bicategory.IsEquivalence f := by
+  obtain ⟨X⟩ := X
+  obtain ⟨Y⟩ := Y
+  obtain ⟨f⟩ := f
+  exact Bicategory.isEquivalence_hom (equivalenceOfIsIso f)
+
+end LocallyDiscrete
+
 namespace Bicategory
 
 /-- A pseudofunctor sends a property of source 1-morphisms to equivalences. -/
@@ -85,6 +122,33 @@ theorem MorphismProperty.IsInvertedBy.comp (W : MorphismProperty B)
   refine ⟨⟨G.mapEquivalence e, ?_⟩⟩
   change G.map e.hom = G.map (F.map f)
   rw [he]
+
+namespace MorphismProperty
+
+/-- Lift a property of arrows in a category to the corresponding locally
+discrete bicategory. -/
+def locallyDiscrete {E : Type u₁} [Category.{v₁} E]
+    (W : CategoryTheory.MorphismProperty E) :
+    Bicategory.MorphismProperty (LocallyDiscrete E) :=
+  fun {_ _} f => W f.as
+
+/-- Ordinary inversion by a functor implies bicategorical inversion by the
+induced pseudofunctor between locally discrete bicategories. -/
+theorem locallyDiscrete_isInvertedBy
+    {E : Type u₁} [Category.{v₁} E]
+    {E' : Type u₂} [Category.{v₂} E']
+    (W : CategoryTheory.MorphismProperty E) (F : E ⥤ E')
+    (hF : CategoryTheory.MorphismProperty.IsInvertedBy W F) :
+    (locallyDiscrete W).IsInvertedBy F.toPseudofunctor := by
+  intro X Y f hf
+  obtain ⟨X⟩ := X
+  obtain ⟨Y⟩ := Y
+  obtain ⟨f⟩ := f
+  let _ : IsIso (F.map f) := hF f hf
+  exact Bicategory.isEquivalence_hom
+    (LocallyDiscrete.equivalenceOfIsIso (F.map f))
+
+end MorphismProperty
 
 end Bicategory
 
