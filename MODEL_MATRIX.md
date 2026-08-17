@@ -4,6 +4,7 @@ Only implemented and compiled capabilities are marked as supported.
 
 <!-- Keep all 10 columns aligned. The repository quality gate validates every
 row so a malformed separator cannot degrade into raw pipe text. -->
+
 | Model | Sequential | Tensor | Discard | Copy | Convex | Causal | Decision | Thermal | Computable |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | FiniteFunction (zero cost) | Yes | Yes | Yes | Yes | No | Yes | No | No | Yes |

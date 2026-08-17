@@ -130,6 +130,8 @@ if ! awk '
     return gsub(/\|/, "", copy)
   }
 
+  { source_line[NR] = $0 }
+
   /^\| Model \| Sequential \| Tensor \| Discard \| Copy \| Convex \| Causal \| Decision \| Thermal \| Computable \|$/ {
     header_line = NR
     expected_pipes = pipe_count($0)
@@ -159,6 +161,10 @@ if ! awk '
   END {
     if (header_line == 0 || expected_pipes != 11) {
       printf "Source quality check failed: MODEL_MATRIX.md is missing its 10-column GFM capability header\n"
+      failed = 1
+    }
+    if (header_line > 1 && source_line[header_line - 1] != "") {
+      printf "Source quality check failed: MODEL_MATRIX.md capability table must start after a blank line\n"
       failed = 1
     }
     if (rows != 14) {
