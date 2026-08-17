@@ -125,9 +125,14 @@ marked arrow is proved to map to an isomorphism. A zero-cost discrete marked
 arrow is not invertible before localization, so the construction adds a real
 formal inverse. Separately, finite deterministic discard is a concrete
 noninvertible monoidal 2-cell whose endpoints remain distinct in the homotopy
-category. This proves why the bridge must discard noninvertible 2-cells before
-localizing. It is therefore not a bicategorical, Dwyer--Kan, simplicial, or
-Rezk localization.
+category. Every pseudofunctor from the full model bicategory to a locally
+discrete target is now proved to identify the images of those endpoints.
+Ript also compiles the exact untruncated research target: a marked
+bicategorical-localization predicate requiring adjoint-equivalence inversion,
+biessential factorization of inverting pseudofunctors, and local equivalences
+on strong transformations and modifications. This specifies, but does not yet
+construct, the desired higher localization. The existing bridge is therefore
+not a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
 Stage 11 adds a deliberately small, axiom-free, internally univalent process
 universe. Deep codes for empty, unit, sum, tensor, and atomic interfaces carry
 separate syntax for structural equivalence and internal identity. Their
@@ -178,8 +183,9 @@ fibration. These results are now bundled in the exact project-local
 and the actual completeness map carries a displayed nerve-of-category-
 equivalence witness. The pinned Mathlib release has no simplicial-set weak-
 equivalence or completed Quillen-model API, so a Mathlib-native standard
-complete-Segal-space instance and a localization universal property for the
-full resource-process bicategory remain open.
+complete-Segal-space instance and construction of a pseudofunctor satisfying
+the compiled localization universal-property predicate for the full
+resource-process bicategory remain open.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. The implemented Stage 1–12 foundations, including the
@@ -1366,12 +1372,16 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | The forward morphism of a cost-exact bicategorical equivalence preserves process costs. |
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | A represented arrow is invertible in the homotopy category only if it is a bicategorical equivalence. |
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | Descent marks a represented arrow exactly when the original bicategorical mark holds up to an invertible 2-cell. |
+| `CategoryTheory.Pseudofunctor.precomposition` | Precomposition is a pseudofunctor between pseudofunctor bicategories, retaining strong transformations and modifications. |
+| `CategoryTheory.Pseudofunctor.localPrecomposition` | On each local hom-category, precomposition maps strong transformations and their modifications functorially. |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | The homotopy-category mark is exactly the invertible-2-cell saturation of cost reflection. |
+| `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | Any genuine higher cost-exact localization sends every saturated marked model morphism to an adjoint equivalence. |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | The canonical Gabriel--Zisman functor formally inverts every model arrow with a cost-reflecting representative. |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | The canonical pseudofunctor from the pith maps every saturated cost-exact arrow to an ordinary isomorphism. |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | Functors out of the localization are equivalent to functors that invert all marked cost-exact arrows. |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | A concrete zero-cost discrete marked arrow is not already invertible before localization. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finite deterministic discard is a noninvertible model 2-cell whose endpoints remain distinct after homotopy truncation. |
+| `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Every full pseudofunctor to a locally discrete target identifies the images of discard's two endpoint model morphisms. |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | Internal identity is equivalent to internal structural equivalence in the quotient universe. |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | Two internal identities are equal exactly when their interpreted equivalences are equal. |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | Equality of raw paths in the quotient model implies equality of their external interpretations. |
@@ -1479,7 +1489,8 @@ finished physical theory.
 | 12, groupoidal localization foundation | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
 | 12, classifying-diagram foundation | Rezk classifying diagram, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
-| 12, higher extension | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory | **OPEN RESEARCH** |
+| 12, higher-localization specification | Adjoint-equivalence mark inversion, pseudofunctor precomposition, local equivalence on strong transformations/modifications, cost-exact specialization, and a locally-discrete 2-cell obstruction | **PROVED** |
+| 12, higher-localization construction | A full resource-process pseudofunctor satisfying the compiled bicategorical-localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
 
@@ -2064,6 +2075,7 @@ updated assumption audit.
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
 - [x] Invertible-2-cell-saturated cost mark, exact homotopy descent, canonical `Pith` pseudofunctor, and Gabriel--Zisman localization, including noninvertible marked-arrow and 2-cell witnesses
+- [x] Full 2-dimensional localization predicate, precomposition on pseudofunctors/strong transformations/modifications, and locally-discrete discard obstruction
 - [x] Deep interface codes with distinct equivalence and internal-identity syntax
 - [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
 - [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example
@@ -2100,7 +2112,7 @@ updated assumption audit.
 - [x] Actual Rezk completeness comparison as the nerve of a category equivalence
 - [x] Natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations
 - [x] Exact project-local groupoidal complete-Segal witness with horizontal Kan rows
-- [ ] Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory with explicit higher coherence
+- [ ] Construct a full resource-process pseudofunctor satisfying the compiled bicategorical-localization predicate and compare it with Mathlib-native simplicial weak-equivalence/standard complete-Segal semantics
 
 These checkboxes are not promises of a particular release order. Each addition
 must preserve the existing sequential boundary or document a deliberate

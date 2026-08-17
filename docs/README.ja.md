@@ -71,8 +71,12 @@ Mathlib の `Pith`（モデル双圏の最大局所 groupoid 部分）から局�
 pseudofunctor として形式化され、すべての飽和標識射が同型へ写ることも証明済みです。コスト 0 の
 離散標識射は localization 前には可逆でないため、形式的逆射は実際に追加されます。さらに有限
 決定論的 discard は、両端が homotopy category でも異なる具体的な非可逆モノイダル 2-射です。
-したがって、この橋が先に非可逆 2-射を捨てなければならない理由も形式的に確認されています。
-これは双圏的、Dwyer--Kan、simplicial、Rezk localization ではありません。
+さらに、完全なモデル双圏から任意の局所離散な標的への pseudofunctor は、その両端の像を必ず
+同一視することも証明しました。Ript は未切断な研究目標も厳密な述語としてコンパイルしています：
+印付き 1-射を随伴同値へ送り、印を反転する各 pseudofunctor を本質的に因子化し、strong
+transformation と modification の各局所圏で同値を要求します。これは目標の仕様であり、満たす
+localization の構成は未完です。したがって現行の橋は双圏的、Dwyer--Kan、simplicial、Rezk
+localization ではありません。
 Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
 empty・unit・sum・tensor・原子的インターフェースの深い code は、構造同値の構文と内部同一性の
 構文を別々に持ちます。その意味論的商は実際の Mathlib groupoid をなし、内部同一性と内部構造同値は
@@ -105,7 +109,8 @@ Rezk への次の基礎もコンパイル済みです。真正な classifying di
 model structure はまだ存在しません。これらの結果は、各水平行の Kan 性と実際の完備性写像の
 圏同値 nerve witness を含む、正確なプロジェクト内 `SSet.GroupoidalCompleteSegal` 構造にまとめられました。
 固定 Mathlib には simplicial set の弱同値や完成した Quillen model API がないため、Mathlib ネイティブな
-標準 complete-Segal-space instance と資源プロセス双圏全体の localization の普遍性は未解決です。
+標準 complete-Segal-space instance と、コンパイル済み localization 普遍性述語を満たす資源プロセス
+双圏全体の pseudofunctor の構成は未解決です。
 Ript は、プロセス合成や資源会計の意味を暗黙に変えることなく、将来の層を追加するための
 検証済み土台を提供します。
 
@@ -1036,12 +1041,16 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | コスト完全な双圏同値の順方向射は過程コストを保存します。 |
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | 表示された射が homotopy category で可逆なら、その射は双圏同値です。 |
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | 降下後の表示射が印付きであることは、元の双圏標識が可逆 2-射まで成り立つことと同値です。 |
+| `CategoryTheory.Pseudofunctor.precomposition` | 前合成は pseudofunctor をなし、strong transformation と modification を保持します。 |
+| `CategoryTheory.Pseudofunctor.localPrecomposition` | 各局所 Hom 圏で、前合成は strong transformation と modification を関手的に写します。 |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | Homotopy category の標識はコスト反映の可逆 2-射飽和と正確に一致します。 |
+| `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | 真の高次コスト完全 localization は、全飽和印付きモデル射を随伴同値へ写します。 |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | 標準 Gabriel--Zisman 関手は、コスト反映代表を持つ全モデル射を形式的に反転します。 |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | `Pith` からの標準 pseudofunctor は飽和コスト完全射を通常の同型へ写します。 |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | localization からの関手は、全印付き射を反転する関手と圏同値です。 |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | 具体的なコスト 0 離散印付き射は localization 前には同型ではありません。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限決定論的 discard は非可逆なモデル 2-射で、その両端は homotopy truncation 後も異なります。 |
+| `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 完全なモデル双圏から局所離散な標的への全 pseudofunctor は discard の両端の像を同一視します。 |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe の内部同一性は内部構造同値と同値です。 |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | 二つの内部同一性が等しいことは、その解釈同値が等しいことと同値です。 |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | 生の path が商モデルで等しければ、その外部解釈も等しくなります。 |
@@ -1147,7 +1156,8 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 12、groupoidal localization 基礎 | 恒等・skeleton completion・制限 Yoneda 関手による全内部同一射の Mathlib localization model と関手圏普遍性 | **PROVED** |
 | 12、simplicial 基礎 | 圏論的 nerve、完全な Kan horn filling、strict Segal 再構成、quasicategory、2-coskeletal 構造、homotopy category 復元 | **PROVED** |
 | 12、classifying-diagram 基礎 | Rezk classifying diagram、垂直・水平の groupoid/Kan 構造、厳密な外側 Segal 同値、正確なプロジェクト内 groupoidal complete-Segal パッケージ、自然な simplex-mapping 表示、真正な境界 matching limit と matching-map fibration | **PROVED** |
-| 12、高次拡張 | Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと資源プロセス双圏全体の localization | **OPEN RESEARCH** |
+| 12、高次 localization 仕様 | 随伴同値への標識反転、pseudofunctor 前合成、strong transformation/modification 上の局所同値、コスト完全特殊化、局所離散 2-射障害 | **PROVED** |
+| 12、高次 localization 構成 | コンパイル済み双圏 localization 述語を満たす完全資源プロセス pseudofunctor と Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal 比較 | **OPEN RESEARCH** |
 
 実装済みのモデル能力は意図的に限定されています。
 
@@ -1674,6 +1684,7 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] モノイダル自然変換 2-射、垂直・水平合成、interchange
 - [x] モデル結合子、単位子、五角形、三角形、コスト完全同値による移送
 - [x] 可逆 2-射飽和コスト標識、正確な homotopy 降下、標準 `Pith` pseudofunctor、Gabriel--Zisman localization（非可逆な印付き射と 2-射の見証を含む）
+- [x] 完全な 2 次元 localization 述語、pseudofunctor/strong transformation/modification 上の前合成、局所離散 discard 障害
 - [x] 構造同値構文と内部同一性構文を分離した深いインターフェース code
 - [x] 商 groupoid、内部 univalence、健全性/reflection、構造移送、indiscernibility
 - [x] 再添字付けを持つ深いプロセス、等式健全性、正確な Boolean tensor 対称性例
@@ -1685,7 +1696,7 @@ import Ript.Univalent.ClassifyingDiagram
 - [x] 実際の Rezk 完備性比較は圏同値の nerve
 - [x] 自然な simplex-mapping 表示、真正な境界 matching limit、matching-map fibration
 - [x] 水平 Kan 行を持つ正確なプロジェクト内 groupoidal complete-Segal witness
-- [ ] Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal パッケージと、明示的高次 coherence を持つ資源プロセス双圏全体の localization
+- [ ] コンパイル済み双圏 localization 述語を満たす完全資源プロセス pseudofunctor を構成し、Mathlib ネイティブな simplicial 弱同値・標準 complete-Segal 比較を確立する
 
 チェックボックスは特定のリリース順を約束しません。追加は既存の直列境界を維持するか、意図的な
 破壊的変更を明記する必要があります。

@@ -27,9 +27,14 @@ Segal data, genuine matching fibrations, and the actual completeness map's
 work is broader infrastructure: the pinned Mathlib release has neither a
 simplicial-set weak-equivalence class nor a completed Quillen model structure,
 so a Mathlib-native standard complete-Segal instance cannot yet be stated. A
-localization universal property that retains the full resource-process
-bicategory's 2-cell data also remains open research rather than a silently
-assumed proposition.
+The exact localization target is no longer informal: the compiled predicate
+`Bicategory.MorphismProperty.IsBicategoricalLocalization` requires marked
+1-morphisms to become adjoint equivalences, biessential factorization of every
+inverting pseudofunctor, and equivalence on the local categories of strong
+transformations and modifications. Its Ript specialization is
+`IsCostExactBicategoricalLocalization`. What remains open is constructing a
+pseudofunctor that satisfies this predicate for the full resource-process
+bicategory; no existence proposition is silently assumed.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's
@@ -47,10 +52,12 @@ the localization. A concrete zero-cost discrete marked arrow is proved
 noninvertible before localization, so this construction adds a genuine formal
 inverse. Finite deterministic discard supplies a separate noninvertible
 monoidal 2-cell whose endpoints remain distinct after homotopy truncation;
-this formally witnesses why the current bridge cannot retain all 2-cells. The
-open localization problem is specifically the higher or bicategorical
-localization with a universal property that retains that full 2-cell
-structure.
+moreover, every pseudofunctor from the full model bicategory to a locally
+discrete target is proved to identify the images of those endpoints. This
+formally witnesses why the current bridge cannot retain the 2-cell as
+nontrivial data. The open localization problem is specifically constructing
+the higher or bicategorical localization satisfying the now-compiled
+2-dimensional universal-property predicate.
 
 ## Recently discharged: exact finite stochastic Blackwell converse
 

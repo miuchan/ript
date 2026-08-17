@@ -157,6 +157,7 @@ flowchart LR
   HigherModels --> Audit
   ModelBicategory --> ModelHomotopy["ForMathlib.Bicategory.HomotopyCategory"]
   ModelHomotopy --> BicatMarks["ForMathlib.Bicategory.MorphismProperty"]
+  BicatMarks --> BicatLocalizationSpec["ForMathlib.Bicategory.Localization"]
   ModelHomotopy --> PithBridge["ForMathlib.Bicategory.PithToHomotopy"]
   BicatMarks --> ModelLocalization["Higher.Localization"]
   PithBridge --> ModelLocalization
@@ -164,6 +165,7 @@ flowchart LR
   ModelLocalization --> HigherLocalization["Examples.HigherLocalization"]
   FiniteFunctionMonoidal --> HigherTwoCell["Examples.HigherNoninvertibleTwoCell"]
   ModelLocalization --> HigherTwoCell
+  BicatLocalizationSpec --> ModelLocalization
   HigherLocalization --> Audit
   HigherTwoCell --> Audit
   UnivalentSyntax["Univalent.Syntax"] --> UnivalentModel["Univalent.Model"]
@@ -219,7 +221,8 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher extension) | Mathlib-native simplicial weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory | OPEN_RESEARCH |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, cost-exact specialization, and a locally-discrete 2-cell obstruction | PROVED |
+| 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -4124,6 +4127,16 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 
   noncomputable def costExactPithLocalization R :
       Pith (ProcessModel R) ⥤ᵖ LocallyDiscrete (CostExactLocalization R)
+
+  structure Bicategory.MorphismProperty.IsBicategoricalLocalization (W) (Q) : Prop
+
+  abbrev IsCostExactBicategoricalLocalization
+      (Q : ProcessModel R ⥤ᵖ L) : Prop
+
+  theorem HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard
+      (F : ProcessModel Nat ⥤ᵖ LocallyDiscrete C) :
+      F.map (ModelHom.id finiteZeroCostModel) =
+        F.map constantUnitModelHom
   ```
 
 - Construction: local hom-categories are quotiented by Mathlib's
@@ -4144,20 +4157,25 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`
   component cannot be invertible, and the two endpoint 1-morphisms remain
-  distinct in the homotopy category.
+  distinct in the homotopy category. Every pseudofunctor from the full model
+  bicategory to a locally discrete target is now proved to identify their
+  images, so such a target necessarily erases this 2-dimensional distinction.
 - Status: `PROVED` for this ordinary localization of the homotopy 1-category.
 - Computability: the quotient inverse representative and the constructed
   localization are noncomputable semantic objects. The discrete source data
   and zero-cost witness are concrete; the noninvertibility proof is
   proposition-level.
 - Scope boundary: noninvertible 2-cells are discarded before localization.
-  A pseudofunctor from the full model bicategory to this locally discrete
-  target cannot extend the displayed pith bridge across the concrete discard
-  2-cell, because its endpoints have distinct homotopy classes.
+  The compiled `IsBicategoricalLocalization` predicate now states the correct
+  untruncated target: marked arrows become adjoint equivalences, every
+  inverting pseudofunctor factors biessentially, and precomposition is an
+  equivalence on categories of strong transformations and modifications.
+  The current locally discrete construction is not proved to satisfy it.
   No bicategorical, Dwyer--Kan, simplicial, complete-Segal, or Rezk universal
   property is claimed.
 - Sources:
   `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean`,
+  `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/MorphismProperty.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/PithToHomotopy.lean`,
   `Ript/Higher/Localization.lean`, and
@@ -4175,6 +4193,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - The ordinary cost-exact localization is not advertised as a localization of
   the full bicategory: it first identifies invertibly 2-isomorphic 1-cells and
   discards all noninvertible 2-cell data.
+- The full bicategorical localization universal property is now a compiled
+  predicate, but no existence witness for the process-model bicategory is
+  claimed.
 
 ## Stage-11 internally univalent flagship records
 
@@ -5435,3 +5456,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     property is therefore genuinely ordinary-categorical. It neither retains
     noninvertible 2-cells nor supplies the still-open bicategorical,
     Dwyer--Kan, simplicial, or Rezk localization of the full theory.
+54. The higher-localization target is now fixed by a kernel-checked
+    2-dimensional predicate. It asks for inversion into adjoint equivalences,
+    biessential factorization of every inverting pseudofunctor, and local
+    equivalences on strong transformations and modifications. A generic
+    locally-discrete-target theorem proves that the concrete discard 2-cell's
+    endpoint images must be identified there. This is a specification and an
+    obstruction theorem, not an existence proof for the desired higher
+    localization.

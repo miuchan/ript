@@ -1,5 +1,5 @@
 import Mathlib.CategoryTheory.Localization.Predicate
-import Ript.ForMathlib.CategoryTheory.Bicategory.MorphismProperty
+import Ript.ForMathlib.CategoryTheory.Bicategory.Localization
 import Ript.ForMathlib.CategoryTheory.Bicategory.PithToHomotopy
 import Ript.Higher.Equivalence
 
@@ -36,7 +36,7 @@ namespace Ript.Higher
 open CategoryTheory
 open CategoryTheory.Bicategory
 
-universe u v w u' v'
+universe u v w u' v' w'
 
 variable {R : Type w} [AddCommMonoid R] [PartialOrder R]
 
@@ -95,6 +95,38 @@ instance costExactArrows_isMultiplicative :
   by
     change Bicategory.MorphismProperty.IsMultiplicative (costReflectingArrows R).saturate
     infer_instance
+
+/-- The exact research target for a higher cost-exact localization.  A
+pseudofunctor satisfying this predicate must retain the full bicategory of
+model 2-cells, send every saturated cost-exact 1-morphism to an adjoint
+equivalence, and satisfy the pseudofunctor/strong-transformation/modification
+universal property.  No existence claim is bundled into this abbreviation. -/
+abbrev IsCostExactBicategoricalLocalization
+    {L : Type u'} [Bicategory.{w', v'} L]
+    (Q : ProcessModel.{u, v, w} R ⥤ᵖ L) : Prop :=
+  Bicategory.MorphismProperty.IsBicategoricalLocalization.{
+    _, _, _, u', v', w', u', v', w'} (costExactArrows R) Q
+
+/-- Any genuine higher cost-exact localization inverts the saturated
+bicategorical marking by definition. -/
+theorem IsCostExactBicategoricalLocalization.map_isEquivalence
+    {L : Type u'} [Bicategory.{w', v'} L]
+    {Q : ProcessModel.{u, v, w} R ⥤ᵖ L}
+    (hQ : IsCostExactBicategoricalLocalization Q)
+    {M N : ProcessModel.{u, v, w} R} (F : M ⟶ N)
+    (hF : costExactArrows R F) : Bicategory.IsEquivalence (Q.map F) :=
+  hQ.inverts F hF
+
+/-- Raw cost reflection is enough for inversion by any genuine higher
+cost-exact localization because the higher marking is its explicit
+invertible-2-cell saturation. -/
+theorem IsCostExactBicategoricalLocalization.map_costReflecting_isEquivalence
+    {L : Type u'} [Bicategory.{w', v'} L]
+    {Q : ProcessModel.{u, v, w} R ⥤ᵖ L}
+    (hQ : IsCostExactBicategoricalLocalization Q)
+    {M N : ProcessModel.{u, v, w} R} (F : M ⟶ N)
+    (hF : costReflectingArrows R F) : Bicategory.IsEquivalence (Q.map F) :=
+  hQ.inverts F (Bicategory.MorphismProperty.mem_saturate _ hF)
 
 /-- Cost-exact arrows in the model homotopy category are the quotient classes
 that have a cost-reflecting representative. -/
