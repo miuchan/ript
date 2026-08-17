@@ -143,10 +143,13 @@ localization universal property, and induced bicategorical mark inversion.
 A parameterized refinement now takes its product with the single-object
 bicategory of types and functions. The target is proved non-locally-discrete,
 the map is faithful on all source 2-cells, and Boolean discard remains
-noninvertible after the walking coordinate is localized. The full
-resource-process construction must still prove biessential and local
-universality for its native model 2-cells; the existing bridge is therefore
-not yet a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
+noninvertible after the walking coordinate is localized. Every pseudofunctor
+depending only on the retained coordinate now has an explicit factorization
+through the target for every target bicategory, and precomposition is faithful
+on every local category. The full resource-process construction must still
+factor arbitrary inverting pseudofunctors and prove local fullness and
+essential surjectivity for its native model 2-cells; the existing bridge is
+therefore not yet a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
 Stage 11 adds a deliberately small, axiom-free, internally univalent process
 universe. Deep codes for empty, unit, sum, tensor, and atomic interfaces carry
 separate syntax for structural equivalence and internal identity. Their
@@ -1412,6 +1415,9 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map₂_discardTwoCell_not_isIso` | Boolean discard remains a noninvertible 2-cell after the walking coordinate is localized. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.target_not_isLocallyDiscrete` | The localization target is formally not locally discrete. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_adds_inverse_and_retains_noninvertible_twoCell` | One compiled construction simultaneously adds a missing 1-cell inverse and retains a noninvertible 2-cell. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.retainedSource_has_factorization` | Every pseudofunctor depending only on the retained coordinate factors through the localization target, for every target bicategory. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Precomposition is faithful on all local categories of strong transformations and modifications. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | A concrete marking-inverting pseudofunctor factors through the target while still detecting noninvertible Boolean discard. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finite deterministic discard is a noninvertible model 2-cell whose endpoints remain distinct after homotopy truncation. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Every full pseudofunctor to a locally discrete target identifies the images of discard's two endpoint model morphisms. |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | Internal identity is equivalent to internal structural equivalence in the quotient universe. |
@@ -1521,7 +1527,7 @@ finished physical theory.
 | 12, groupoidal localization foundation | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
 | 12, classifying-diagram foundation | Rezk classifying diagram, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
-| 12, higher-localization specification | Adjoint-equivalence mark inversion, pseudofunctor precomposition, identity and walking-arrow base constructions, a non-locally-discrete parameterized construction retaining noninvertible 2-cells, cost-exact specialization, and concrete obstructions | **PROVED** |
+| 12, higher-localization specification | Adjoint-equivalence mark inversion, pseudofunctor precomposition, identity and walking-arrow base constructions, and a non-locally-discrete parameterized construction with retained-coordinate lifts and local faithfulness | **PROVED** |
 | 12, higher-localization construction | A full resource-process pseudofunctor satisfying the compiled bicategorical-localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -1544,7 +1550,7 @@ Implemented model support is intentionally narrow:
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 | Cost-exact model localization | Invertible-2-cell saturation of cost-reflecting model morphisms; then homotopy classes | Formal inversion of every saturated marked class | Noncomputable semantic proof layer | Exact mark-descent theorem and canonical pseudofunctor from `Pith`; genuine Mathlib Gabriel--Zisman universal property; a concrete noninvertible 2-cell proves why the construction is not a higher localization |
-| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse, is faithful on all source 2-cells, retains noninvertible Boolean discard, and has a provably non-locally-discrete target; full bicategorical universality remains open |
+| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse, retains noninvertible Boolean discard, factors every retained-coordinate pseudofunctor, and has locally faithful precomposition; arbitrary lifts, local fullness, and local essential surjectivity remain open |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; Mathlib localization at every internal identity; not a Rezk completion |
@@ -2108,7 +2114,7 @@ updated assumption audit.
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
 - [x] Invertible-2-cell-saturated cost mark, exact homotopy descent, canonical `Pith` pseudofunctor, and Gabriel--Zisman localization, including noninvertible marked-arrow and 2-cell witnesses
-- [x] Full 2-dimensional localization predicate, identity and walking-arrow base constructions, a non-locally-discrete parameterized inverse-adjoining construction retaining noninvertible 2-cells, precomposition on pseudofunctors/strong transformations/modifications, and identity-candidate obstructions
+- [x] Full 2-dimensional localization predicate, identity and walking-arrow base constructions, a non-locally-discrete inverse-adjoining slice with retained-coordinate lifts and locally faithful precomposition, and identity-candidate obstructions
 - [x] Deep interface codes with distinct equivalence and internal-identity syntax
 - [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
 - [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example

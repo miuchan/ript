@@ -32,6 +32,9 @@ namespace Ript.Examples.TwoDimensionalWalkingLocalization
 open CategoryTheory
 open CategoryTheory.Bicategory
 open CategoryTheory.Prod
+open scoped CategoryTheory.Pseudofunctor.StrongTrans
+
+universe u v w
 
 /-- A one-object bicategory whose 1-cells are types and whose 2-cells are
 functions. -/
@@ -178,5 +181,97 @@ theorem inclusion_adds_inverse_and_retains_noninvertible_twoCell :
           ¬ IsIso (inclusion.map₂ discardTwoCell) :=
   ⟨markedArrow_not_isEquivalence, inclusion_map_markedArrow_isEquivalence,
     discardTwoCell_not_isIso, inclusion_map₂_discardTwoCell_not_isIso⟩
+
+/-- The parameterized walking localization is surjective on objects.  The
+free groupoid adds arrows but no new objects, and the retained coordinate is
+unchanged. -/
+theorem inclusion_obj_surjective : Function.Surjective inclusion.obj := by
+  rintro ⟨⟨X⟩, Y⟩
+  rw [CategoryTheory.FreeGroupoid.eq_mk X]
+  cases Y
+  exact ⟨(LocallyDiscrete.mk X.as.as, MonoidalSingleObj.star (Type)), rfl⟩
+
+section RetainedCoordinateLift
+
+variable {E : Type u} [Bicategory.{w, v} E]
+
+/-- Precomposition by the parameterized walking localization is faithful on
+every category of strong transformations and modifications.  This proves the
+faithfulness component of the still-open `local_equivalence` field. -/
+theorem inclusion_localPrecomposition_faithful
+    (F G : Target ⥤ᵖ E) :
+    (inclusion.localPrecomposition F G).Faithful :=
+  Pseudofunctor.localPrecomposition_faithful_of_obj_surjective
+    inclusion inclusion_obj_surjective F G
+
+/-- A source pseudofunctor obtained by applying `H` only to the retained
+function-valued coordinate. -/
+noncomputable def retainedSource (H : Cell ⥤ᵖ E) : Source ⥤ᵖ E :=
+  Pseudofunctor.sndComp
+    (LocallyDiscrete Ript.Examples.WalkingLocalization.Arrow) H
+
+/-- The corresponding pseudofunctor on the localization target. -/
+noncomputable def retainedLift (H : Cell ⥤ᵖ E) : Target ⥤ᵖ E :=
+  Pseudofunctor.sndComp
+    (LocallyDiscrete Ript.Examples.WalkingLocalization.Completion) H
+
+/-- Every pseudofunctor which depends only on the retained coordinate sends
+the marking to adjoint equivalences. -/
+theorem retainedSource_inverts (H : Cell ⥤ᵖ E) :
+    marking.IsInvertedBy (retainedSource H) := by
+  intro X Y f hf
+  obtain ⟨⟨e, he⟩⟩ := hf
+  refine ⟨⟨H.mapEquivalence e, ?_⟩⟩
+  change H.map e.hom = H.map f.2
+  rw [he]
+
+/-- The retained-coordinate source pseudofunctor factors through the
+two-dimensional walking localization up to an adjoint equivalence of
+pseudofunctors. -/
+noncomputable def retainedFactorization (H : Cell ⥤ᵖ E) :
+    inclusion.comp (retainedLift H) ≌ retainedSource H :=
+  Pseudofunctor.prodIdSndCompEquivalence
+    Ript.Examples.WalkingLocalization.inclusion H
+
+/-- A family of concrete witnesses for the `lift` shape in the
+bicategorical-localization predicate: every retained-coordinate
+pseudofunctor has an explicit factor through the target. -/
+theorem retainedSource_has_factorization (H : Cell ⥤ᵖ E) :
+    ∃ G : Target ⥤ᵖ E, Nonempty (inclusion.comp G ≌ retainedSource H) :=
+  ⟨retainedLift H, ⟨retainedFactorization H⟩⟩
+
+/-- The second projection from the source, retaining all function-valued
+2-cells. -/
+noncomputable abbrev retainedCoordinate : Source ⥤ᵖ Cell :=
+  retainedSource (Pseudofunctor.id Cell)
+
+/-- The second projection from the target, providing the explicit lift of
+`retainedCoordinate`. -/
+noncomputable abbrev retainedCoordinateLift : Target ⥤ᵖ Cell :=
+  retainedLift (Pseudofunctor.id Cell)
+
+/-- The lifted retained coordinate still sees Boolean discard as a
+noninvertible 2-cell. -/
+theorem retainedCoordinate_map₂_discardTwoCell_not_isIso :
+    ¬ IsIso (retainedCoordinate.map₂ discardTwoCell) := by
+  intro h
+  have hInjective :=
+    (isIso_iff_bijective (retainedCoordinate.map₂ discardTwoCell)).1 h |>.1
+  change Function.Injective (fun _ : Bool => PUnit.unit) at hInjective
+  exact Bool.false_ne_true (hInjective rfl)
+
+/-- One explicit marking-inverting pseudofunctor both factors through the
+localization target and retains the chosen noninvertible 2-cell.  This proves
+a genuine family of the `lift` obligations without claiming the universal
+quantification required by `IsBicategoricalLocalization`. -/
+theorem retainedCoordinate_inverts_factors_and_retains_discard :
+    marking.IsInvertedBy retainedCoordinate ∧
+      (∃ G : Target ⥤ᵖ Cell,
+        Nonempty (inclusion.comp G ≌ retainedCoordinate)) ∧
+          ¬ IsIso (retainedCoordinate.map₂ discardTwoCell) :=
+  ⟨retainedSource_inverts _, retainedSource_has_factorization _,
+    retainedCoordinate_map₂_discardTwoCell_not_isIso⟩
+
+end RetainedCoordinateLift
 
 end Ript.Examples.TwoDimensionalWalkingLocalization
