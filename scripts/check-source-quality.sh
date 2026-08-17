@@ -121,55 +121,95 @@ if [[ "$markdown_table_errors" -ne 0 ]]; then
   exit 1
 fi
 
-# The canonical capability matrix is deliberately a standard GFM table so it
-# renders in GitHub and other Markdown clients. Its schema is public API:
-# validate the heading, separator, all 14 rows, and all 10 columns explicitly.
+# The canonical capability matrix is deliberately split into narrow GFM tables
+# so it remains usable in mobile and strict Markdown renderers. Its combined
+# schema is public API: validate every header, separator, row, and model key.
 if ! awk '
   function pipe_count(line, copy) {
     copy = line
     return gsub(/\|/, "", copy)
   }
 
-  { source_line[NR] = $0 }
+  function model_name(line, value) {
+    value = line
+    sub(/^\|[[:space:]]*/, "", value)
+    sub(/[[:space:]]*\|.*$/, "", value)
+    return value
+  }
 
-  /^\| Model \| Sequential \| Tensor \| Discard \| Copy \| Convex \| Causal \| Decision \| Thermal \| Computable \|$/ {
-    header_line = NR
+  function start_matrix(expected_separator) {
+    table += 1
+    header_line[table] = NR
     expected_pipes = pipe_count($0)
+    separator[table] = expected_separator
     in_matrix = 1
-    next
-  }
-
-  in_matrix && NR == header_line + 1 {
-    if ($0 !~ /^\| --- \| --- \| --- \| --- \| --- \| --- \| --- \| --- \| --- \| --- \|$/) {
-      printf "Source quality check failed: MODEL_MATRIX.md has a malformed capability separator at row %d\n", NR
+    if (NR > 1 && previous != "") {
+      printf "Source quality check failed: MODEL_MATRIX.md capability table at row %d must start after a blank line\n", NR
       failed = 1
     }
-    next
   }
 
-  in_matrix && NR > header_line + 1 && /^\|/ {
-    rows += 1
-    if (pipe_count($0) != expected_pipes) {
-      printf "Source quality check failed: MODEL_MATRIX.md capability row %d has %d columns; expected 10\n", NR, pipe_count($0) - 1
-      failed = 1
+  {
+    if ($0 == "| Model | Sequential | Tensor | Discard | Copy |") {
+      start_matrix("| --- | --- | --- | --- | --- |")
+      previous = $0
+      next
     }
-    next
-  }
+    if ($0 == "| Model | Convex | Causal | Decision | Thermal |") {
+      start_matrix("| --- | --- | --- | --- | --- |")
+      previous = $0
+      next
+    }
+    if ($0 == "| Model | Status |") {
+      start_matrix("| --- | --- |")
+      previous = $0
+      next
+    }
 
-  in_matrix && NR > header_line + 1 { in_matrix = 0 }
+    if (in_matrix && NR == header_line[table] + 1) {
+      if ($0 != separator[table]) {
+        printf "Source quality check failed: MODEL_MATRIX.md has a malformed capability separator at row %d\n", NR
+        failed = 1
+      }
+      previous = $0
+      next
+    }
+
+    if (in_matrix && NR > header_line[table] + 1 && /^\|/) {
+      rows[table] += 1
+      if (pipe_count($0) != expected_pipes) {
+        printf "Source quality check failed: MODEL_MATRIX.md capability row %d has %d columns; expected %d\n", NR, pipe_count($0) - 1, expected_pipes - 1
+        failed = 1
+      }
+      models[table, rows[table]] = model_name($0)
+      previous = $0
+      next
+    }
+
+    if (in_matrix && NR > header_line[table] + 1) {
+      in_matrix = 0
+    }
+
+    previous = $0
+  }
 
   END {
-    if (header_line == 0 || expected_pipes != 11) {
-      printf "Source quality check failed: MODEL_MATRIX.md is missing its 10-column GFM capability header\n"
+    if (table != 3) {
+      printf "Source quality check failed: MODEL_MATRIX.md has %d capability tables; expected 3\n", table
       failed = 1
     }
-    if (header_line > 1 && source_line[header_line - 1] != "") {
-      printf "Source quality check failed: MODEL_MATRIX.md capability table must start after a blank line\n"
-      failed = 1
+    for (current = 1; current <= 3; current += 1) {
+      if (rows[current] != 14) {
+        printf "Source quality check failed: MODEL_MATRIX.md capability table %d has %d rows; expected 14\n", current, rows[current]
+        failed = 1
+      }
     }
-    if (rows != 14) {
-      printf "Source quality check failed: MODEL_MATRIX.md has %d capability rows; expected 14\n", rows
-      failed = 1
+    for (row = 1; row <= 14; row += 1) {
+      if (models[1, row] != models[2, row] ||
+          models[1, row] != models[3, row]) {
+        printf "Source quality check failed: MODEL_MATRIX.md model keys diverge at capability row %d\n", row
+        failed = 1
+      }
     }
     exit failed
   }
