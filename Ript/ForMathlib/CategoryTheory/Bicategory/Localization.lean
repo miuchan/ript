@@ -409,6 +409,15 @@ def naturalityCompIsoOfIsos (F G : C ⥤ᵖ D)
     whiskerRightIso α (G.map g) ≪≫ α_ _ _ _ ≪≫
     whiskerLeftIso appA (G.mapComp f g).symm
 
+/-- The canonical candidate strong-naturality isomorphism at an identity
+1-morphism, determined by the pseudofunctor unit comparisons and unitors. -/
+noncomputable def identityNaturalityIso (F G : C ⥤ᵖ D) (a : C)
+    (appA : F.obj a ⟶ G.obj a) :
+    F.map (𝟙 a) ≫ appA ≅ appA ≫ G.map (𝟙 a) :=
+  whiskerRightIso (F.mapId a) appA ≪≫
+    (λ_ appA) ≪≫ (ρ_ appA).symm ≪≫
+      whiskerLeftIso appA (G.mapId a).symm
+
 /-- Composing candidate constraints preserves naturality in a 2-morphism of
 the second factor. -/
 theorem naturalityCompIsoOfIsos_naturality_right (F G : C ⥤ᵖ D)
@@ -468,6 +477,116 @@ theorem naturalityCompIsoOfIsos_naturality_right (F G : C ⥤ᵖ D)
       simp only [Category.assoc]
       rw [hα']
       simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Composing a candidate constraint with the canonical identity constraint
+and transporting along the right unitor recovers the original constraint. -/
+theorem naturalityCompIsoOfIsos_right_id (F G : C ⥤ᵖ D)
+    {a b : C} (f : a ⟶ b)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f) :
+    naturalityIsoOfIso F G appA appB
+      (naturalityCompIsoOfIsos F G f (𝟙 b)
+        appA appB appB α (identityNaturalityIso F G b appB))
+      (ρ_ f) = α := by
+  apply Iso.ext
+  dsimp [naturalityIsoOfIso, naturalityCompIsoOfIsos,
+    identityNaturalityIso]
+  simp only [Iso.trans_hom, whiskerRightIso_hom,
+    whiskerLeftIso_hom, Iso.symm_hom,
+    PrelaxFunctor.map₂Iso_hom, PrelaxFunctor.map₂Iso_inv]
+  rw [← cancel_epi (F.map₂ (ρ_ f).hom ▷ appB)]
+  simp only [← Category.assoc]
+  rw [← comp_whiskerRight, ← F.map₂_comp]
+  simp only [Iso.hom_inv_id, F.map₂_id, id_whiskerRight,
+    Category.id_comp]
+  rw [← cancel_mono (appA ◁ G.map₂ (ρ_ f).inv)]
+  simp only [Category.assoc]
+  rw [← whiskerLeft_comp, ← G.map₂_comp]
+  simp only [Iso.hom_inv_id, G.map₂_id, whiskerLeft_id,
+    Category.comp_id]
+  rw [F.mapComp_id_right_hom, G.mapComp_id_right_inv]
+  simp only [comp_whiskerRight, whiskerLeft_comp, Category.assoc]
+  apply (cancel_epi (F.map₂ (ρ_ f).hom ▷ appB)).mpr
+  simp only [← Category.assoc]
+  apply (cancel_mono (appA ◁ G.map₂ (ρ_ f).inv)).mpr
+  simp only [Category.assoc]
+  rw [associator_naturality_middle_assoc]
+  simp
+  rw [associator_inv_naturality_right_assoc
+    (F.map f) appB (G.mapId b).inv]
+  rw [Iso.hom_inv_id_assoc]
+  rw [← associator_naturality_right_assoc
+    appA (G.map f) (G.mapId b).hom]
+  rw [Iso.hom_inv_id_assoc]
+  rw [whisker_exchange_assoc α.hom (G.mapId b).inv]
+  rw [← whiskerLeft_comp_assoc]
+  simp only [Iso.inv_hom_id, whiskerLeft_id,
+    Category.id_comp]
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Transporting a composed candidate constraint along an isomorphism of its
+second factor is the same as transporting that factor before composition. -/
+theorem naturalityIsoOfIso_comp_right (F G : C ⥤ᵖ D)
+    {a b c : C} (f : a ⟶ b) {g h : b ⟶ c} (e : g ≅ h)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (β : F.map g ≫ appC ≅ appB ≫ G.map g) :
+    naturalityIsoOfIso F G appA appC
+        (naturalityCompIsoOfIsos F G f g
+          appA appB appC α β)
+        (whiskerLeftIso f e) =
+      naturalityCompIsoOfIsos F G f h appA appB appC α
+        (naturalityIsoOfIso F G appB appC β e) := by
+  have hβ :
+      F.map₂ e.hom ▷ appC ≫
+          (naturalityIsoOfIso F G appB appC β e).hom =
+        β.hom ≫ appB ◁ G.map₂ e.hom := by
+    dsimp [naturalityIsoOfIso]
+    simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+      Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+      PrelaxFunctor.map₂Iso_inv]
+    rw [← Category.assoc]
+    rw [← comp_whiskerRight, ← F.map₂_comp]
+    simp only [Iso.hom_inv_id, F.map₂_id, id_whiskerRight,
+      Category.id_comp]
+  have hcomp :=
+    naturalityCompIsoOfIsos_naturality_right
+      F G f e.hom appA appB appC α β
+      (naturalityIsoOfIso F G appB appC β e) hβ
+  apply Iso.ext
+  rw [← cancel_epi (F.map₂ (f ◁ e.hom) ▷ appC)]
+  dsimp [naturalityIsoOfIso]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv]
+  rw [← Category.assoc, ← comp_whiskerRight, ← F.map₂_comp]
+  have he_inv : (whiskerLeftIso f e).inv = f ◁ e.inv := rfl
+  rw [he_inv, ← whiskerLeft_comp, e.hom_inv_id,
+    whiskerLeft_id, F.map₂_id]
+  simp only [id_whiskerRight, Category.id_comp]
+  exact hcomp.symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Transporting a candidate constraint along a composite of parallel
+1-morphism isomorphisms agrees with successive transport. -/
+theorem naturalityIsoOfIso_trans (F G : C ⥤ᵖ D)
+    {a b : C} {f g h : a ⟶ b} (e : f ≅ g) (e' : g ≅ h)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f) :
+    naturalityIsoOfIso F G appA appB α (e ≪≫ e') =
+      naturalityIsoOfIso F G appA appB
+        (naturalityIsoOfIso F G appA appB α e) e' := by
+  apply Iso.ext
+  dsimp [naturalityIsoOfIso]
+  simp only [Iso.trans_hom, whiskerRightIso_hom,
+    whiskerLeftIso_hom, Iso.symm_hom,
+    PrelaxFunctor.map₂Iso_hom, PrelaxFunctor.map₂Iso_inv,
+    Category.assoc]
+  rw [F.map₂_comp, G.map₂_comp]
+  simp only [comp_whiskerRight, whiskerLeft_comp, Category.assoc]
 
 /-- Derive the strong-naturality isomorphism at the chosen inverse of an
 adjoint equivalence from a constraint at its forward 1-morphism.
