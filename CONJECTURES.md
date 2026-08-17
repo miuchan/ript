@@ -109,7 +109,12 @@ composable target-arrow pair, and eight reduction theorems expose the selected
 canonical comparison. The four endpoint hom-functors now also reduce to their
 forward or reverse implementations by compiled equalities, and one canonical
 endpoint 2-cell constructor covers retained-coordinate morphisms in every
-direction. What remains open is to prove the pseudofunctor unit,
+direction. For the forward/forward branch, the canonical target and source
+composition comparisons now satisfy compiled left and right naturality
+squares, and those squares remain valid after applying the arbitrary target
+action and the original source pseudofunctor. What remains open is to join
+these squares across the equality-transport stages of the full comparison,
+then prove the pseudofunctor unit,
 associativity, and whiskering laws, and then build the source-factorization
 adjoint equivalence. This is the missing global `lift`
 field, and the corresponding construction for the full resource-process

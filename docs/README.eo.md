@@ -1405,6 +1405,10 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | Unu finpunkt-normala konstruilo prezentas konservit-koordinatajn 2-ĉelojn en ĉiuj kvar walking-direktoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | La arbitra levo havas identecan komparon je ĉiu cela objekto. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | Unu komparo kovras ĉiujn kvar finpunktajn formojn kies ambaŭ faktoroj estas kanonaj antaŭaj sagoj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_right` | La celflanka antaŭa kunmeta komparo konservas ĉiun konservit-koordinatan 2-ĉelon sur sia dekstra faktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | La celflanka antaŭa kunmeta komparo konservas ĉiun konservit-koordinatan 2-ĉelon sur sia maldekstra faktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | La fonta pseŭdofunktora komponilo plenumas la respondan dekstran naturecan kvadraton. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | La fonta pseŭdofunktora komponilo plenumas la respondan maldekstran naturecan kvadraton. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | Kanona inversa sago sekvata de konservita datumo havas la bezonatan kunmetan komparon. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | Konservita datumo sekvata de kanona inverso estas komparata per la inversa mate de antaŭa glitado. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | Kanona inverso sekvata de sia kongrua antaŭa sago estas komparata per la counit de la elektita ekvivalento. |

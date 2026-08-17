@@ -1069,6 +1069,10 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | 一个端点规范构造器统一表示四种 walking 方向上的保留坐标 2-胞。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | 任意提升在每个目标对象上都有恒等比较。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | 一个比较覆盖两因子均为规范正向箭头的四种端点形状。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_right` | 目标侧正向复合比较保持右因子上的每个保留坐标 2-胞。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | 目标侧正向复合比较保持左因子上的每个保留坐标 2-胞。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | 源伪函子的复合器满足对应的右自然性方块。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | 源伪函子的复合器满足对应的左自然性方块。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | 规范逆箭头后接保留数据具有所需复合比较。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | 保留数据后接规范逆箭头的比较由正向滑动的逆 mate 构造。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | 规范逆箭头后接匹配正向箭头的比较通过所选等价的余单位消去。 |
