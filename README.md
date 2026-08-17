@@ -145,39 +145,20 @@ bicategory of types and functions. The target is proved non-locally-discrete,
 the map is faithful on all source 2-cells, and Boolean discard remains
 noninvertible after the walking coordinate is localized. Every pseudofunctor
 depending only on the retained coordinate now has an explicit factorization
-through the target for every target bicategory. Precomposition is now fully
-faithful on every local category: modification components lift from the source,
-naturality extends from forward generators to their freely adjoined inverses
-by mates, and then to all target arrows by path induction and product
-decomposition. For the missing object-lifting direction, a source strong
-transformation now determines target object components and a candidate
-strong-naturality isomorphism for every target 1-morphism. Forward arrows with
-arbitrary retained coordinates reuse source naturality; reverse arrows compose
-an explicit invertible mate with the retained constraint; endpoint normal form
-covers all target arrows. The endpoint-normalized constraints are now proved
-natural in every target 2-morphism, including those on freely adjoined inverse
-arrows. The endpoint constraint at a strict identity is now proved equal to
-the canonical identity constraint, so the public all-arrow constraint is
-2-cell-natural across its identity branch. Composition coherence is now
-proved for every pair of arrows in the inclusion image, hence for every
-canonical forward-forward pair with arbitrary retained coordinates. The mixed
-constructor in which the inverse-generator mate is followed by an arbitrary
-retained-coordinate constraint is also proved to recover the public constraint
-on its raw composite. Identity transport and right-unit normalization now
-identify each of those two factors with the public all-arrow constraint, so
-the corresponding public-factor composition law is compiled as well, both as
-a hom equation and as an equality of transported candidate isomorphisms. For
-the opposite retained-then-inverse order, both product-unitor comparisons, the
-candidate composite, its canonical inverse transport, and the equality of the
-two forward factorizations are now compiled. Two-sided mate sliding,
-pseudofunctor preservation of mates, and the induced strong-transformation
-sliding theorem now prove the public retained-then-inverse composition law for
-every walking arrow. A general mate-counit identity now proves the first
-generator cancellation order: a strict inverse generator followed by its
-forward generator satisfies the public composition law. A symmetric mate-unit
-identity now proves the opposite order: a strict forward generator followed by
-its inverse also satisfies the public composition law. Packaging these
-completed constructor laws as a target strong transformation is the next step.
+through the target for every target bicategory. Precomposition is now an
+equivalence on every local category of strong transformations and
+modifications. Source modification components lift across the freely adjoined
+inverse, while a source strong transformation determines target object
+components and canonical naturality isomorphisms on every target 1-morphism.
+Mate identities handle both generator-cancellation orders; associator
+transport and invariance under factor isomorphisms extend the result to both
+endpoint-changing cancellation orders with arbitrary retained coordinates.
+Thinness of the completed walking coordinate reduces every remaining target
+composition to one of these cases. The resulting data form a genuine target
+strong transformation, and an invertible modification identifies its
+restriction with the original source transformation. Together with full
+faithfulness, this proves local essential surjectivity and hence local
+equivalence.
 The walking free groupoid itself is now normalized as well:
 every signed path is the unique morphism determined by its endpoints, making
 the completion thin and explicitly equivalent to the codiscrete groupoid on
@@ -195,9 +176,9 @@ under adjoint equivalence of pseudofunctors. Therefore the result covers the
 entire replete closure of the separable family, including implementations that
 are not definitionally componentwise pairs. The full resource-process
 construction must still factor arbitrary nonseparable mixed-coordinate
-inverting pseudofunctors outside that closure and prove local essential
-surjectivity for its native model 2-cells; the existing bridge is
-therefore not yet a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
+inverting pseudofunctors outside that closure. That missing global
+biessential-factorization field is why the existing bridge is not yet a
+bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
 Stage 11 adds a deliberately small, axiom-free, internally univalent process
 universe. Deep codes for empty, unit, sum, tensor, and atomic interfaces carry
 separate syntax for structural equivalence and internal identity. Their
@@ -1486,7 +1467,11 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | Every morphism in the completed walking coordinate equals the canonical morphism determined by its endpoints. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | The walking-arrow completion is categorically equivalent to the codiscrete groupoid on `Fin 2`. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | Every modification after precomposition extends across the freely adjoined inverse. |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | Precomposition is fully faithful on every local category; only local essential surjectivity remains for local equivalence. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | Precomposition is fully faithful on every local category of strong transformations and modifications. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTrans` | Every source strong transformation extends to a genuine target strong transformation with all identity, naturality, and composition laws compiled. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransRestrictionIso` | Restricting the lifted target strong transformation recovers the original source transformation up to invertible modification. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_essSurj` | Precomposition is essentially surjective on objects in every local category. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_isEquivalence` | Precomposition is an equivalence on every local category of strong transformations and modifications. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_eq_source` | Forward constraints with arbitrary retained coordinates are definitionally the original source strong-naturality constraints. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | Forward lifted constraints are natural in every retained-coordinate 2-morphism. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | The prospective target strong transformation's inverse-generator constraint is an explicit invertible bicategorical mate of its forward constraint. |
@@ -1655,7 +1640,7 @@ Implemented model support is intentionally narrow:
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 | Cost-exact model localization | Invertible-2-cell saturation of cost-reflecting model morphisms; then homotopy classes | Formal inversion of every saturated marked class | Noncomputable semantic proof layer | Exact mark-descent theorem and canonical pseudofunctor from `Pith`; genuine Mathlib Gabriel--Zisman universal property; a concrete noninvertible 2-cell proves why the construction is not a higher localization |
-| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse; proves endpoint normal form, thinness, and equivalence with the codiscrete groupoid on `Fin 2`; retains noninvertible Boolean discard; factors every retained-coordinate pseudofunctor, every groupoid-valued localized-coordinate functor, every separable mixed family `K × H`, and their full adjoint-equivalence closure; maps the formal inverse correctly; has locally fully faithful precomposition; and reconstructs a candidate constraint for every target 1-morphism of a prospective strong-transformation lift, with identity coherence, all-arrow 2-cell naturality, composition coherence for every inclusion-image pair, public-factor coherence in both inverse/retained orders, and both generator cancellation orders proved by mate identities and transport; packaging the target strong transformation, arbitrary nonseparable mixed-coordinate lifts outside that closure, and local essential surjectivity remain open |
+| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse; proves endpoint normal form, thinness, and equivalence with the codiscrete groupoid on `Fin 2`; retains noninvertible Boolean discard; factors every retained-coordinate pseudofunctor, every groupoid-valued localized-coordinate functor, every separable mixed family `K × H`, and their full adjoint-equivalence closure; maps the formal inverse correctly; packages every source strong transformation as a target strong transformation; lifts modifications; and proves precomposition is an equivalence on every local category. Arbitrary nonseparable mixed-coordinate lifts outside the known closure remain open |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; Mathlib localization at every internal identity; not a Rezk completion |
@@ -2219,7 +2204,7 @@ updated assumption audit.
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
 - [x] Invertible-2-cell-saturated cost mark, exact homotopy descent, canonical `Pith` pseudofunctor, and Gabriel--Zisman localization, including noninvertible marked-arrow and 2-cell witnesses
-- [x] Full 2-dimensional localization predicate, identity and walking-arrow base constructions, endpoint-normal-form/thin/codiscrete classification of the completed walking coordinate, a non-locally-discrete inverse-adjoining slice with retained-, localized-, separable mixed-coordinate, and replete-equivalence-closure lift families and locally fully faithful precomposition, and identity-candidate obstructions; arbitrary nonseparable mixed-coordinate lifts outside that closure and local essential surjectivity remain open
+- [x] Full 2-dimensional localization predicate, identity and walking-arrow base constructions, endpoint-normal-form/thin/codiscrete classification of the completed walking coordinate, a non-locally-discrete inverse-adjoining slice with retained-, localized-, separable mixed-coordinate, and replete-equivalence-closure lift families, and local precomposition equivalences; arbitrary nonseparable mixed-coordinate lifts outside that closure remain open
 - [x] Deep interface codes with distinct equivalence and internal-identity syntax
 - [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
 - [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example

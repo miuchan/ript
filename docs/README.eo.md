@@ -136,39 +136,18 @@ produkton kun la unuobjekta dukategorio de tipoj kaj funkcioj: la celo estas
 pruvite ne loke diskreta, la mapo estas fidela je ĉiuj fontaj 2-ĉeloj, kaj Bulea
 forĵeto restas neinversigebla post lokalizo de la marŝanta koordinato. Por ĉiu
 cela dukategorio, ĉiu pseŭdofunktoro dependanta nur de la konservita koordinato
-havas eksplicitan faktoradon tra la celo. Antaŭkunmeto estas nun plene fidela en
-ĉiu loka kategorio de fortaj transformoj kaj modifoj: modifaj komponantoj leviĝas
-el la fonto, natureco etendiĝas de antaŭaj generatoroj al iliaj libere aldonitaj
-inversoj per mate-kalkulo, kaj poste al ĉiuj celaj sagoj per voja indukto kaj
-produkta malkompono. Por la ankoraŭ mankanta objekt-leva direkto, fonta forta
-transformo nun determinas celajn objektajn komponantojn kaj kandidatan fortan
-naturec-izomorfion por ĉiu cela 1-morfio. Antaŭaj sagoj kun arbitraj konservitaj
-koordinatoj reuzas fontan naturecon; inversaj sagoj kunmetas eksplicitan
-inversigeblan mate kun la konservita kondiĉo; finpunkta normalformo kovras ĉiujn
-celajn sagojn. La plena identeca koherleĝo kaj 2-ĉela natureco de ĉiuj
-finpunkt-normaligitaj kondiĉoj estas pruvitaj por ĉiu cela 2-ĉelo, inkluzive
-de la libere aldonitaj inversaj sagoj. La finpunkta kondiĉo ĉe strikta identeca
-sago nun estas pruvite egala al la kanona identeca kondiĉo, do ankaŭ la publika
-tut-saga kondiĉo estas 2-ĉele natura trans sia identeca branĉo. Kunmeta kohero
-estas pruvita por ĉiu paro de sagoj en la bildo de la inkludo, do por ĉiu kanona
-antaŭa-antaŭa paro kun arbitraj konservitaj koordinatoj. Ankaŭ estas pruvite, ke
-la konstrunivela miksita familio, en kiu la invers-generatora mate estas sekvata
-de arbitra konservit-koordinata kondiĉo, redonas la publikan kondiĉon ĉe sia kruda
-kunmetaĵo. Transporto de la idento kaj normaligo per la dekstra unuigilo nun
-identigas ambaŭ faktorojn kun la publikaj tut-sagaj kondiĉoj mem, do ankaŭ la
-responda publik-faktora kunmeta leĝo estas pruvita kaj kiel hom-ekvacio kaj kiel
-transporta egaleco de kandidataj izomorfioj. Por la kontraŭa ordo, konservita
-koordinato sekvata de la inversa generatoro, ambaŭ produkt-unuigilaj komparoj,
-la kandidata kunmetaĵo, ĝia transporto al la kanona inversa sago kaj la egaleco
-de la du antaŭaj faktorigoj estas kompilitaj. Duflanka mate-glitado, konservado
-de mate-oj per pseŭdofunktoroj kaj la induktita fort-transforma glita teoremo nun
-pruvas la publikan kunmetan leĝon por ĉi tiu ordo ĉe ĉiu marŝanta sago. Ĝenerala
-mate–counit-idento nun pruvas la unuan generatoran nuligan ordon: strikta inversa
-generatoro sekvata de sia antaŭa generatoro plenumas la publikan kunmetan leĝon.
-Simetria mate–unit-idento nun pruvas ankaŭ la kontraŭan ordon: strikta antaŭa
-generatoro sekvata de sia inverso plenumas la publikan kunmetan leĝon. La sekva
-paŝo estas paki tiujn kompletajn konstruantajn koherleĝojn kiel celan fortan
-transformon.
+havas eksplicitan faktoradon tra la celo. Antaŭkunmeto estas nun ekvivalento en
+ĉiu loka kategorio de fortaj transformoj kaj modifoj. Fontaj modifaj komponantoj
+leviĝas trans la libere aldonitan inverson; fonta forta transformo determinas
+celajn objektajn komponantojn kaj kanonajn naturec-izomorfiojn ĉe ĉiu cela
+1-morfio. Mate-identoj traktas ambaŭ generatorajn nuligajn ordojn, kaj transporto
+laŭ la asocianto kune kun invarianto sub faktoraj izomorfioj etendas la rezulton
+al ambaŭ finpunkt-ŝanĝaj nuligoj kun arbitraj konservitaj koordinatoj. Maldikeco
+de la marŝanta kompletigo reduktas ĉiun alian celan kunmetaĵon al unu el tiuj
+pruvitaj okazoj. La datumoj formas veran celan fortan transformon, kaj
+inversigebla modifo identigas ĝian limigon kun la origina fonta transformo. Kun
+la jam pruvita plena fideleco tio donas lokan esencan surĵetecon kaj lokan
+ekvivalenton.
 La libera grupoido de la marŝanta sago nun havas ankaŭ
 normalformon: ĉiu signumita vojo egalas la solan morfion difinitan de siaj
 finpunktoj, do la kompletigo estas maldika kaj eksplicite kategorie ekvivalenta
@@ -186,10 +165,9 @@ pseŭdofunktoroj estas nun pruvite invariantaj sub adjunkta ekvivalento. La
 rezulto do kovras la tutan repletan fermon de la apartigebla familio, inkluzive
 realigojn kiuj ne estas difine komponantaj produktoj. Faktorado de arbitraj
 neapartigeblaj miks-koordinataj mark-inversigaj pseŭdofunktoroj ekster tiu
-fermo kaj loka esenca surĵeteco ankoraŭ
-mankas. La plena rimed-proceza konstruo ankoraŭ devas pruvi biesencan kaj lokan
-universalecon por siaj propraj modelaj 2-ĉeloj; la ekzistanta ponto do ankoraŭ
-ne estas plena dukategoria, Dwyer--Kan-a, simplicia aŭ Rezk-lokalizo.
+fermo ankoraŭ mankas. Ĝuste tiu mankanta tutmonda biesenca faktoriga kampo
+signifas, ke la ekzistanta ponto ankoraŭ ne estas plena dukategoria,
+Dwyer--Kan-a, simplicia aŭ Rezk-lokalizo.
 Etapo 11 aldonas intence malgrandan, senaksioman, interne univalentan procez-
 universon. Profundaj kodoj por malpleno, unuo, sumo, tensoro kaj atomaj
 interfacoj portas apartajn sintaksojn por struktura ekvivalento kaj interna
@@ -1407,7 +1385,11 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | Ĉiu morfio en la kompletigita marŝanta koordinato egalas la kanonan morfion difinitan de siaj finpunktoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | La marŝant-saga kompletigo estas kategorie ekvivalenta al la kodiskreta grupoido sur `Fin 2`. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | Ĉiu modifo post antaŭkunmeto etendiĝas trans la libere aldonitan inverson. |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | Antaŭkunmeto estas plene fidela en ĉiu loka kategorio; por loka ekvivalento restas nur loka esenca surĵeteco. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | Antaŭkunmeto estas plene fidela en ĉiu loka kategorio de fortaj transformoj kaj modifoj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTrans` | Ĉiu fonta forta transformo etendiĝas al vera cela forta transformo kun ĉiuj identecaj, naturecaj kaj kunmetaj leĝoj pruvitaj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransRestrictionIso` | Limigi la levitan celan fortan transformon reakiras la originan fontan transformon ĝis inversigebla modifo. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_essSurj` | Antaŭkunmeto estas esence surĵeta je objektoj en ĉiu loka kategorio. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_isEquivalence` | Antaŭkunmeto estas ekvivalento en ĉiu loka kategorio de fortaj transformoj kaj modifoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_eq_source` | Antaŭaj kondiĉoj kun arbitraj konservitaj koordinatoj estas difine la originaj fontaj fort-naturecaj kondiĉoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | Antaŭaj levitaj kondiĉoj estas naturaj en ĉiu konservit-koordinata 2-ĉelo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | La invers-generatora kondiĉo de la eventuala cela forta transformo estas eksplicita inversigebla dukategoria mate de ĝia antaŭa kondiĉo. |
@@ -1576,7 +1558,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 | Kost-ekzakta modellokalizo | Inversigebla-2-ĉela saturiĝo de kost-reflektaj modelmorfioj, poste homotopiklasoj | Formala inversigo de ĉiu saturite markita klaso | Nekomputebla semantika pruva tavolo | Preciza mark-malsupreniga teoremo kaj kanona pseŭdofunktoro el `Pith`; vera Mathlib-a Gabriel--Zisman universala eco; konkreta neinversigebla 2-ĉelo pruvas kial ĝi ne estas pli-alta lokalizo |
-| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, pruvas finpunktan normalformon, maldikecon kaj ekvivalenton kun la kodiskreta grupoido sur `Fin 2`, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĉiun apartigeblan miks-familion `K × H` kaj ĝian tutan adjunkt-ekvivalentan fermon, ĝuste interpretas la formalan inverson, havas plene fidelan antaŭkunmeton en ĉiuj lokaj kategorioj, konservas neinversigeblan Bulean forĵeton, havas pruvite neloke-diskretan celon kaj rekonstruas kandidatan kondiĉon por ĉiu cela 1-morfio de eventuala fort-transforma levo; identeca kohero, tut-saga 2-ĉela natureco, kunmeta kohero por ĉiu inkludo-bilda paro, publik-faktora kohero por ambaŭ inversa/konservita ordoj kaj ambaŭ generatoraj nuligaj ordoj estas pruvitaj; formala pakado de la cela forta transformo, arbitra neapartigebla miks-koordinata faktorigo ekster tiu fermo kaj loka esenca surĵeteco restas malfermitaj |
+| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, pruvas finpunktan normalformon, maldikecon kaj ekvivalenton kun la kodiskreta grupoido sur `Fin 2`, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĉiun apartigeblan miks-familion `K × H` kaj ĝian tutan adjunkt-ekvivalentan fermon, ĝuste interpretas la formalan inverson, formale pakas ĉiun fontan fortan transformon kiel celan fortan transformon, levas modifojn kaj pruvas ke antaŭkunmeto estas ekvivalento en ĉiu loka kategorio; arbitra neapartigebla miks-koordinata faktorigo ekster tiu fermo restas malfermita |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; Mathlib-lokalizo je ĉiu interna identeco; ne Rezk-kompletigo |
@@ -2146,7 +2128,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
 - [x] Modelaj asociantoj, unuigiloj, kvinangulo, triangulo kaj transporto per kost-ekzakta ekvivalento
 - [x] Kostmarko saturita laŭ inversigeblaj 2-ĉeloj, preciza homotopia malsuprenigo, kanona `Pith`-pseŭdofunktoro kaj Gabriel--Zisman-lokalizo, kun neinversigeblaj markita-saga kaj 2-ĉela atestoj
-- [x] Plena dudimensia lokaliza predikato, identecaj kaj marŝant-sagaj bazkonstruoj, finpunkta normalformo/maldikeco/kodiskreta klasifiko de la marŝanta kompletigo, neloke-diskreta parametrigita invers-aldona konstruo kun konservit-koordinataj, lokalizat-koordinataj, apartigeblaj miks-koordinataj kaj adjunkt-ekvivalentaj replet-fermaj faktoradfamilioj kaj plene fidela antaŭkunmeto en ĉiuj lokaj kategorioj, konservado de neinversigeblaj 2-ĉeloj kaj identec-kandidataj obstrukcoj; arbitra neapartigebla miks-koordinata faktorigo ekster tiu fermo kaj loka esenca surĵeteco restas malfermitaj
+- [x] Plena dudimensia lokaliza predikato, identecaj kaj marŝant-sagaj bazkonstruoj, finpunkta normalformo/maldikeco/kodiskreta klasifiko de la marŝanta kompletigo, neloke-diskreta parametrigita invers-aldona konstruo kun konservit-koordinataj, lokalizat-koordinataj, apartigeblaj miks-koordinataj kaj adjunkt-ekvivalentaj replet-fermaj faktoradfamilioj kaj lokaj antaŭkunmetaj ekvivalentoj, konservado de neinversigeblaj 2-ĉeloj kaj identec-kandidataj obstrukcoj; arbitra neapartigebla miks-koordinata faktorigo ekster tiu fermo restas malfermita
 - [x] Profundaj interfackodoj kun apartaj sintaksoj de struktura ekvivalento kaj interna idento
 - [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo
