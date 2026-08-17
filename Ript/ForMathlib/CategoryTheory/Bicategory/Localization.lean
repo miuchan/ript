@@ -277,6 +277,20 @@ def Pseudofunctor.localPrecomposition (Q : B ⥤ᵖ C) (F G : C ⥤ᵖ D) :
   map_id _ := by ext X; rfl
   map_comp _ _ := by ext X; rfl
 
+/-- If a pseudofunctor is surjective on objects, precomposition with it is
+faithful on every local category of strong transformations and
+modifications.  Modification equality is recovered objectwise from a chosen
+source preimage. -/
+theorem Pseudofunctor.localPrecomposition_faithful_of_obj_surjective
+    (Q : B ⥤ᵖ C) (hQ : Function.Surjective Q.obj)
+    (F G : C ⥤ᵖ D) : (Q.localPrecomposition F G).Faithful :=
+  { map_injective := by
+      intro η θ Γ Δ h
+      apply Pseudofunctor.StrongTrans.homCategory.ext
+      intro X
+      obtain ⟨Y, rfl⟩ := hQ X
+      exact congrArg (fun k => k.as.app Y) h }
+
 set_option backward.defeqAttrib.useBackward true in
 set_option backward.isDefEq.respectTransparency false in
 /-- The canonical strong transformation from precomposition by the identity

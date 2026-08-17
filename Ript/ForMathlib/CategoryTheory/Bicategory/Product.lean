@@ -1,4 +1,5 @@
 import Mathlib.CategoryTheory.Bicategory.Adjunction.Basic
+import Mathlib.CategoryTheory.Bicategory.FunctorBicategory.Pseudo
 import Mathlib.CategoryTheory.Bicategory.Product
 
 /-!
@@ -18,6 +19,7 @@ set_option linter.checkUnivs false
 namespace CategoryTheory
 
 open Bicategory
+open scoped Pseudofunctor.StrongTrans
 
 universe u₁ v₁ w₁ u₂ v₂ w₂ u₃ v₃ w₃ u₄ v₄ w₄
 
@@ -61,5 +63,68 @@ theorem prod_hom {X Y : B} {X' Y' : D} (e : X ≌ Y) (e' : X' ≌ Y') :
   rfl
 
 end Bicategory.Equivalence
+
+namespace Pseudofunctor
+
+/-- Postcompose the strict second projection from a product bicategory with a
+pseudofunctor.  This packages pseudofunctors which depend only on the retained
+second coordinate. -/
+noncomputable def sndComp (B : Type u₁) [Bicategory.{w₁, v₁} B]
+    (H : D ⥤ᵖ E) : (B × D) ⥤ᵖ E :=
+  (Bicategory.Prod.snd B D).toPseudofunctor.comp H
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The forward strong transformation exhibiting that a product
+pseudofunctor of the form `Q × id` leaves every second-coordinate
+pseudofunctor unchanged up to equivalence. -/
+noncomputable def prodIdSndCompHom (Q : B ⥤ᵖ C) (H : D ⥤ᵖ E) :
+    (Q.prod (Pseudofunctor.id D)).comp (sndComp C H) ⟶
+      sndComp B H where
+  app X := 𝟙 (H.obj X.2)
+  naturality f := (ρ_ (H.map f.2)) ≪≫ (λ_ (H.map f.2)).symm
+  naturality_naturality η := by simp [sndComp]
+  naturality_id X := by simp [sndComp]
+  naturality_comp f g := by simp [sndComp]
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The inverse strong transformation for `prodIdSndCompHom`. -/
+noncomputable def prodIdSndCompInv (Q : B ⥤ᵖ C) (H : D ⥤ᵖ E) :
+    sndComp B H ⟶
+      (Q.prod (Pseudofunctor.id D)).comp (sndComp C H) where
+  app X := 𝟙 (H.obj X.2)
+  naturality f := (ρ_ (H.map f.2)) ≪≫ (λ_ (H.map f.2)).symm
+  naturality_naturality η := by simp [sndComp]
+  naturality_id X := by simp [sndComp]
+  naturality_comp f g := by simp [sndComp]
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- A product pseudofunctor `Q × id` preserves every pseudofunctor depending
+only on the second coordinate, up to an adjoint equivalence of
+pseudofunctors. -/
+noncomputable def prodIdSndCompEquivalence (Q : B ⥤ᵖ C) (H : D ⥤ᵖ E) :
+    (Q.prod (Pseudofunctor.id D)).comp (sndComp C H) ≌
+      sndComp B H :=
+  Bicategory.Equivalence.mkOfAdjointifyCounit
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := 𝟙 ((Q.prod (Pseudofunctor.id D)).comp (sndComp C H)))
+      (θ := prodIdSndCompHom Q H ≫ prodIdSndCompInv Q H)
+      (fun X => (ρ_ (𝟙 (H.obj X.2))).symm)
+      (by
+        intro a b f
+        dsimp [prodIdSndCompHom, prodIdSndCompInv, sndComp]
+        bicategory))
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := prodIdSndCompInv Q H ≫ prodIdSndCompHom Q H)
+      (θ := 𝟙 (sndComp B H))
+      (fun X => ρ_ (𝟙 (H.obj X.2)))
+      (by
+        intro a b f
+        dsimp [prodIdSndCompHom, prodIdSndCompInv, sndComp]
+        bicategory))
+
+end Pseudofunctor
 
 end CategoryTheory

@@ -62,10 +62,15 @@ functions, localizes only the walking coordinate, proves the resulting
 pseudofunctor faithful on every source 2-cell, and proves a concrete Boolean
 discard 2-cell remains noninvertible in the target. Thus genuine inverse
 addition and noninvertible 2-cell retention now coexist in one compiled
-bicategorical construction. What remains open is not that controlled
-retention example, but a construction for the full resource-process
-bicategory together with biessential factorization and local equivalence on
-strong transformations and modifications.
+bicategorical construction. The first universal-property fragments are now
+also compiled. For every target bicategory, every pseudofunctor that depends
+only on the retained coordinate inverts the marking and factors through the
+localization target up to an adjoint equivalence. Precomposition is faithful
+on every local category of strong transformations and modifications because
+the inclusion is surjective on objects. What remains open is factorization of
+an arbitrary marking-inverting pseudofunctor, local fullness and essential
+surjectivity, and ultimately the corresponding construction for the full
+resource-process bicategory.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's
