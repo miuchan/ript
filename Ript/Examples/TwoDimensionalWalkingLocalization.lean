@@ -459,6 +459,66 @@ theorem separableMixedSource_has_factorization
       Nonempty (inclusion.comp L ≌ separableMixedSource K H) :=
   ⟨separableMixedLift K H, ⟨separableMixedFactorization K H⟩⟩
 
+/-- The replete separable mixed family consists of arbitrary source
+pseudofunctors that are adjoint equivalent to a separable mixed source.  A
+member need not be definitionally a componentwise pair: only its
+two-dimensional pseudofunctor semantics must lie in the same equivalence
+class. -/
+def IsRepleteSeparableMixedSource
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E)
+    (F : Source ⥤ᵖ (LocallyDiscrete G × E)) : Prop :=
+  Nonempty (F ≌ separableMixedSource K H)
+
+/-- Every syntactically separable mixed source belongs to its replete
+closure. -/
+theorem separableMixedSource_isReplete
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) :
+    IsRepleteSeparableMixedSource K H (separableMixedSource K H) :=
+  ⟨Bicategory.Equivalence.id _⟩
+
+/-- Factorization extends from the literal componentwise pair to its entire
+replete closure.  Thus the source `F` may have arbitrary, non-product
+implementation data as long as it is adjoint equivalent to the compiled
+separable mixed semantics. -/
+theorem repleteSeparableMixedSource_has_factorization
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E)
+    (F : Source ⥤ᵖ (LocallyDiscrete G × E))
+    (hF : IsRepleteSeparableMixedSource K H F) :
+    inclusion.FactorsThrough F := by
+  obtain ⟨e⟩ := hF
+  exact Pseudofunctor.FactorsThrough.trans
+    (separableMixedSource_has_factorization K H) e.symm
+
+/-- Marking inversion also extends from the componentwise pair to its
+replete closure.  It is transported through the chosen adjoint equivalence
+of source pseudofunctors. -/
+theorem repleteSeparableMixedSource_inverts
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E)
+    (F : Source ⥤ᵖ (LocallyDiscrete G × E))
+    (hF : IsRepleteSeparableMixedSource K H F) :
+    marking.IsInvertedBy F := by
+  obtain ⟨e⟩ := hF
+  exact Bicategory.MorphismProperty.IsInvertedBy.of_equivalence
+    marking (separableMixedSource_inverts K H) e
+
+/-- Every member of the replete separable mixed family satisfies both the
+premise and the factorization conclusion of the localization `lift` field.
+This is strictly more flexible than requiring the source to be definitionally
+the pair `K × H`, while still stopping short of arbitrary mixed-coordinate
+pseudofunctors. -/
+theorem repleteSeparableMixedSource_inverts_and_factors
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E)
+    (F : Source ⥤ᵖ (LocallyDiscrete G × E))
+    (hF : IsRepleteSeparableMixedSource K H F) :
+    marking.IsInvertedBy F ∧ inclusion.FactorsThrough F :=
+  ⟨repleteSeparableMixedSource_inverts K H F hF,
+    repleteSeparableMixedSource_has_factorization K H F hF⟩
+
 /-- The mixed lift interprets the formally adjoined inverse correctly in its
 localized first component, independently of the retained component. -/
 theorem separableMixedLift_map_inverse_fst

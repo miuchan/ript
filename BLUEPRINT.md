@@ -221,7 +221,7 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained-, localized-, and separable mixed-coordinate lift families plus local faithfulness | PROVED |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained-, localized-, separable mixed-coordinate, and replete-equivalence-closure lift families plus local faithfulness | PROVED |
 | 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -4191,6 +4191,15 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       (Q : B ⥤ᵖ C) (hQ : Function.Surjective Q.obj)
       (F G : C ⥤ᵖ D) : (Q.localPrecomposition F G).Faithful
 
+  def Bicategory.Equivalence.trans (e : X ≌ Y) (e' : Y ≌ Z) : X ≌ Z
+
+  def Bicategory.Equivalence.symm (e : X ≌ Y) : Y ≌ X
+
+  def Pseudofunctor.FactorsThrough (Q : B ⥤ᵖ C) (F : B ⥤ᵖ D) : Prop
+
+  theorem Bicategory.MorphismProperty.IsInvertedBy.of_equivalence
+      (hG : W.IsInvertedBy G) (e : F ≌ G) : W.IsInvertedBy F
+
   theorem TwoDimensionalWalkingLocalization.inclusion_map₂_injective
       (η θ : f ⟶ g)
       (h : inclusion.map₂ η = inclusion.map₂ θ) : η = θ
@@ -4223,6 +4232,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       (K : WalkingLocalization.Arrow ⥤ G) (H : Cell ⥤ᵖ E) :
       ∃ L : Target ⥤ᵖ (LocallyDiscrete G × E),
         Nonempty (inclusion.comp L ≌ separableMixedSource K H)
+
+  theorem TwoDimensionalWalkingLocalization.repleteSeparableMixedSource_inverts_and_factors
+      (F : Source ⥤ᵖ (LocallyDiscrete G × E))
+      (hF : IsRepleteSeparableMixedSource K H F) :
+      marking.IsInvertedBy F ∧ inclusion.FactorsThrough F
 
   theorem TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard
       (K : WalkingLocalization.Arrow ⥤ G) :
@@ -4285,10 +4299,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   inverse addition and noninvertible 2-cell retention can coexist. For every
   target bicategory, every pseudofunctor depending only on the retained
   coordinate now has an explicit factorization through the target up to an
-  adjoint equivalence. Surjectivity on objects also makes precomposition
-  faithful on every local category. It remains a parameterized slice:
-  arbitrary inverting pseudofunctors have not been factored, local fullness
-  and essential surjectivity remain open, and the source is not the
+  adjoint equivalence. Adjoint-equivalence composition, reversal, and
+  2-isomorphism transport now make both marking inversion and factorization
+  replete, so every pseudofunctor adjoint equivalent to a separable mixed
+  source also inverts and factors even when it is not definitionally a pair.
+  Surjectivity on objects also makes precomposition faithful on every local
+  category. It remains a parameterized slice: arbitrary inverting
+  pseudofunctors outside that replete closure have not been factored, local
+  fullness and essential surjectivity remain open, and the source is not the
   resource-process bicategory.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
@@ -4319,9 +4337,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   equivalence on categories of strong transformations and modifications.
   Its identity base case is fully constructed, proving that the interface is
   inhabited and that all three fields interact correctly. The parameterized
-  walking slice now supplies a genuine family of `lift` witnesses and the
-  faithful part of every local precomposition functor, but not arbitrary
-  lifts, local fullness, or local essential surjectivity. The identity
+  walking slice now supplies genuine `lift` witnesses, their full
+  adjoint-equivalence closure, and the faithful part of every local
+  precomposition functor, but not arbitrary lifts outside that closure, local
+  fullness, or local essential surjectivity. The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
   complete-Segal, or Rezk universal property is claimed.
@@ -5634,8 +5653,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     every separable mixed pseudofunctor `K × H`, with arbitrary
     groupoid-valued localized component and arbitrary retained-coordinate
     component, factors through the target; the identity-retained
-    specialization also keeps Boolean discard noninvertible. Precomposition
-    is locally faithful for arbitrary target pseudofunctors. Arbitrary
-    nonseparable mixed-coordinate biessential factorization, local fullness,
-    and local essential surjectivity remain open, so this is not an existence
-    proof for the desired resource-process higher localization.
+    specialization also keeps Boolean discard noninvertible. Mark inversion
+    and factorization are now proved invariant under adjoint equivalence of
+    source pseudofunctors, extending the literal pairs to their entire replete
+    closure. Precomposition is locally faithful for arbitrary target
+    pseudofunctors. Arbitrary nonseparable mixed-coordinate biessential
+    factorization outside that closure, local fullness, and local essential
+    surjectivity remain open, so this is not an existence proof for the
+    desired resource-process higher localization.

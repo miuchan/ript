@@ -292,6 +292,15 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff
 #print axioms CategoryTheory.Bicategory.HomotopyCategory.pithToHomotopy
 #print axioms CategoryTheory.Pseudofunctor.mapEquivalence
+#print axioms CategoryTheory.Bicategory.Equivalence.trans
+#print axioms CategoryTheory.Bicategory.Equivalence.symm
+#print axioms CategoryTheory.Bicategory.Equivalence.replaceHom
+#print axioms CategoryTheory.Bicategory.IsEquivalence.of_iso
+#print axioms CategoryTheory.Bicategory.IsEquivalence.comp
+#print axioms CategoryTheory.Bicategory.IsEquivalence.of_comp_right
+#print axioms CategoryTheory.Pseudofunctor.FactorsThrough.trans
+#print axioms CategoryTheory.Pseudofunctor.StrongTrans.equivalenceApp
+#print axioms CategoryTheory.Bicategory.MorphismProperty.IsInvertedBy.of_equivalence
 #print axioms CategoryTheory.Pseudofunctor.precomposition
 #print axioms CategoryTheory.Pseudofunctor.localPrecomposition
 #print axioms CategoryTheory.Pseudofunctor.idCompEquivalence
@@ -349,6 +358,9 @@ set_option autoImplicit false
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedFactorization
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedSource_inverts
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedSource_has_factorization
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.repleteSeparableMixedSource_inverts
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.repleteSeparableMixedSource_has_factorization
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.repleteSeparableMixedSource_inverts_and_factors
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedLift_map_inverse_fst
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard
