@@ -33,9 +33,10 @@ constraints now determine strong-naturality isomorphisms for every target
 1-morphism: forward arrows reuse source naturality with arbitrary retained
 coordinates, while reverse arrows use an explicit invertible mate.  The
 identity coherence law is now proved, as is 2-cell naturality for every
-forward canonical arrow.  Naturality across inverse arrows, composition
-coherence, local essential surjectivity, and arbitrary nonseparable
-biessential factorization remain open.
+endpoint-normalized arrow, including the freely adjoined inverse.  The
+identity-boundary comparison for the public all-arrow constraint,
+composition coherence, local essential surjectivity, and arbitrary
+nonseparable biessential factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -593,6 +594,94 @@ noncomputable def canonicalInverseHom
     canonicalTargetObject Y ⟶ canonicalTargetObject X :=
   (inv (CategoryTheory.FreeGroupoid.homMk f)).toLoc ×ₘ A
 
+/-- A retained-coordinate 2-morphism between canonical inverse target
+arrows. -/
+noncomputable def canonicalInverseTwoCell
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    canonicalInverseHom f A ⟶ canonicalInverseHom f B :=
+  (𝟙 _, η)
+
+/-- Composing the inverse generator with a retained-coordinate endomorphism
+is canonically isomorphic to the corresponding inverse target arrow. -/
+noncomputable def canonicalInverseComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generatorEquivalence f).inv ≫ canonicalForwardHom (𝟙 X) A ≅
+      canonicalInverseHom f A :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change inv (CategoryTheory.FreeGroupoid.homMk f) ≫
+        CategoryTheory.FreeGroupoid.homMk (𝟙 X) =
+      inv (CategoryTheory.FreeGroupoid.homMk f)
+    simp))
+    (by
+      change (𝟙 (MonoidalSingleObj.star (Type))) ≫ A ≅ A
+      exact MonoidalCategory.leftUnitor A)
+
+/-- The inverse-arrow comparison is natural in every retained-coordinate
+2-morphism. -/
+theorem canonicalInverseComparison_naturality
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    (canonicalInverseComparison f A).hom ≫
+        canonicalInverseTwoCell f η =
+      ((generatorEquivalence f).inv ◁
+          canonicalForwardTwoCell (𝟙 X) η) ≫
+        (canonicalInverseComparison f B).hom := by
+  apply Prod.ext
+  · exact Subsingleton.elim _ _
+  · change (@leftUnitor Cell _ _ _ A).hom ≫ η =
+      (𝟙 (MonoidalSingleObj.star (Type)) ◁ η) ≫
+        (@leftUnitor Cell _ _ _ B).hom
+    exact (leftUnitor_naturality (B := Cell) η).symm
+
+/-- Compose the inverse-generator mate with the retained-coordinate
+constraint before transporting along `canonicalInverseComparison`. -/
+noncomputable def liftedStrongTransInverseCompositeNaturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map ((generatorEquivalence f).inv ≫
+          canonicalForwardHom (𝟙 X) A) ≫
+        liftedStrongTransApp σ (canonicalTargetObject X) ≅
+      liftedStrongTransApp σ (canonicalTargetObject Y) ≫
+        G.map ((generatorEquivalence f).inv ≫
+          canonicalForwardHom (𝟙 X) A) :=
+  Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+    (generatorEquivalence f).inv
+    (canonicalForwardHom (𝟙 X) A)
+    (liftedStrongTransApp σ (canonicalTargetObject Y))
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (liftedStrongTransGeneratorInverseNaturality σ f)
+    (liftedStrongTransForwardNaturality σ (𝟙 X) A)
+
+/-- The composite inverse constraint is natural in every retained-coordinate
+2-morphism. -/
+theorem liftedStrongTransInverseCompositeNaturality_naturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    F.map₂ ((generatorEquivalence f).inv ◁
+          canonicalForwardTwoCell (𝟙 X) η) ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (liftedStrongTransInverseCompositeNaturality σ f B).hom =
+      (liftedStrongTransInverseCompositeNaturality σ f A).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+          G.map₂ ((generatorEquivalence f).inv ◁
+            canonicalForwardTwoCell (𝟙 X) η) :=
+  Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_naturality_right
+    F G (generatorEquivalence f).inv
+      (canonicalForwardTwoCell (𝟙 X) η)
+      (liftedStrongTransApp σ (canonicalTargetObject Y))
+      (liftedStrongTransApp σ (canonicalTargetObject X))
+      (liftedStrongTransApp σ (canonicalTargetObject X))
+      (liftedStrongTransGeneratorInverseNaturality σ f)
+      (liftedStrongTransForwardNaturality σ (𝟙 X) A)
+      (liftedStrongTransForwardNaturality σ (𝟙 X) B)
+      (liftedStrongTransForwardNaturality_naturality σ (𝟙 X) η)
+
 /-- Extend the inverse-generator mate to an arbitrary retained-coordinate
 1-morphism.  The inverse constraint is composed with source naturality at the
 endpoint and then transported across the product left unitor. -/
@@ -605,23 +694,33 @@ noncomputable def liftedStrongTransInverseNaturality
       liftedStrongTransApp σ (canonicalTargetObject Y) ≫
         G.map (canonicalInverseHom f A) :=
   Pseudofunctor.StrongTrans.naturalityIsoOfIso F G _ _
-    (Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
-      (generatorEquivalence f).inv
-      (canonicalForwardHom (𝟙 X) A)
-      (liftedStrongTransApp σ (canonicalTargetObject Y))
-      (liftedStrongTransApp σ (canonicalTargetObject X))
-      (liftedStrongTransApp σ (canonicalTargetObject X))
-      (liftedStrongTransGeneratorInverseNaturality σ f)
-      (liftedStrongTransForwardNaturality σ (𝟙 X) A))
-    (Iso.prod (eqToIso (by
-      apply Discrete.ext
-      change inv (CategoryTheory.FreeGroupoid.homMk f) ≫
-          CategoryTheory.FreeGroupoid.homMk (𝟙 X) =
-        inv (CategoryTheory.FreeGroupoid.homMk f)
-      simp))
-      (by
-        change (𝟙 (MonoidalSingleObj.star (Type))) ≫ A ≅ A
-        exact MonoidalCategory.leftUnitor A))
+    (liftedStrongTransInverseCompositeNaturality σ f A)
+    (canonicalInverseComparison f A)
+
+/-- Lifted constraints on inverse target arrows are natural in every
+retained-coordinate 2-morphism. -/
+theorem liftedStrongTransInverseNaturality_naturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    F.map₂ (canonicalInverseTwoCell f η) ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (liftedStrongTransInverseNaturality σ f B).hom =
+      (liftedStrongTransInverseNaturality σ f A).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+          G.map₂ (canonicalInverseTwoCell f η) := by
+  exact Pseudofunctor.StrongTrans.naturalityIsoOfIso_naturality F G
+    ((generatorEquivalence f).inv ◁
+      canonicalForwardTwoCell (𝟙 X) η)
+    (canonicalInverseTwoCell f η)
+    (liftedStrongTransApp σ (canonicalTargetObject Y))
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (liftedStrongTransInverseCompositeNaturality σ f A)
+    (liftedStrongTransInverseCompositeNaturality σ f B)
+    (canonicalInverseComparison f A)
+    (canonicalInverseComparison f B)
+    (liftedStrongTransInverseCompositeNaturality_naturality σ f η)
+    (canonicalInverseComparison_naturality f η)
 
 /-- Naturality holds on forward free-groupoid generators. -/
 theorem liftedModificationApp_naturality_generator
@@ -884,11 +983,80 @@ noncomputable def liftedStrongTransEndpointNaturality
     exact liftedStrongTransInverseNaturality σ
       (homOfLE (le_of_not_ge h)) A
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint-normalized lifted constraints are natural in every target
+2-morphism.  Thinness of the completed walking coordinate reduces its
+component to an identity; the retained component is then handled by the
+forward or inverse canonical naturality theorem according to the endpoints. -/
+theorem liftedStrongTransEndpointNaturality_naturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Target} {f g : X ⟶ Y} (η : f ⟶ g) :
+    F.map₂ η ▷ liftedStrongTransApp σ Y ≫
+        (liftedStrongTransEndpointNaturality σ g).hom =
+      (liftedStrongTransEndpointNaturality σ f).hom ≫
+        liftedStrongTransApp σ X ◁ G.map₂ η := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  let x : Ript.Examples.WalkingLocalization.Arrow := X.as.as
+  let y : Ript.Examples.WalkingLocalization.Arrow := Y.as.as
+  have hx : X.as.as = x := rfl
+  have hy : Y.as.as = y := rfl
+  have hX : X = CategoryTheory.FreeGroupoid.mk x :=
+    CategoryTheory.FreeGroupoid.eq_mk X
+  have hY : Y = CategoryTheory.FreeGroupoid.mk y :=
+    CategoryTheory.FreeGroupoid.eq_mk Y
+  clear_value x
+  clear_value y
+  cases hX
+  cases hY
+  rcases f with ⟨⟨f⟩, A⟩
+  rcases g with ⟨⟨g⟩, B⟩
+  rcases η with ⟨ηfg, ηAB⟩
+  have hfg := LocallyDiscrete.eq_of_hom ηfg
+  cases hfg
+  have hηfg : ηfg = 𝟙 _ := Subsingleton.elim _ _
+  rw [hηfg]
+  by_cases h : x ≤ y
+  · have hf : f = CategoryTheory.FreeGroupoid.homMk (homOfLE h) := by
+      have hf' := completion_hom_eq_canonical f
+      simpa [canonicalCompletionHom, hx, hy, h] using hf'
+    subst f
+    simp [liftedStrongTransEndpointNaturality, hx, hy, h]
+    change F.map₂ (canonicalForwardTwoCell (homOfLE h) ηAB) ▷
+          liftedStrongTransApp σ (canonicalTargetObject y) ≫
+        (liftedStrongTransForwardNaturality σ (homOfLE h) B).hom =
+      (liftedStrongTransForwardNaturality σ (homOfLE h) A).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject x) ◁
+          G.map₂ (canonicalForwardTwoCell (homOfLE h) ηAB)
+    exact liftedStrongTransForwardNaturality_naturality σ
+      (homOfLE h) ηAB
+  · have hf : f = inv (CategoryTheory.FreeGroupoid.homMk
+        (homOfLE (le_of_not_ge h))) := by
+      have hf' := completion_hom_eq_canonical f
+      simpa [canonicalCompletionHom, hx, hy, h] using hf'
+    subst f
+    simp [liftedStrongTransEndpointNaturality, hx, hy, h]
+    change F.map₂ (canonicalInverseTwoCell
+          (homOfLE (le_of_not_ge h)) ηAB) ▷
+          liftedStrongTransApp σ (canonicalTargetObject y) ≫
+        (liftedStrongTransInverseNaturality σ
+          (homOfLE (le_of_not_ge h)) B).hom =
+      (liftedStrongTransInverseNaturality σ
+          (homOfLE (le_of_not_ge h)) A).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject x) ◁
+          G.map₂ (canonicalInverseTwoCell
+            (homOfLE (le_of_not_ge h)) ηAB)
+    exact liftedStrongTransInverseNaturality_naturality σ
+      (homOfLE (le_of_not_ge h)) ηAB
+
 /-- Choose a strong-naturality isomorphism for every target 1-morphism.
 Strict target identities use the canonical identity constraint, while every
 other arrow uses endpoint normalization.  Consequently the identity
 coherence law holds definitionally up to the standard bicategorical simp
-lemmas; 2-cell naturality and composition coherence remain separate
+lemmas.  Endpoint-normalized 2-cell naturality is proved above; compatibility
+across the special identity branch and composition coherence remain separate
 obligations. -/
 noncomputable def liftedStrongTransNaturality
     (σ : inclusion.comp F ⟶ inclusion.comp G)

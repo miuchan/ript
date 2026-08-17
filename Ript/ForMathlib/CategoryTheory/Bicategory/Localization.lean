@@ -336,6 +336,41 @@ def naturalityIsoOfIso (F G : C ⥤ᵖ D) {a b : C} {f g : a ⟶ b}
   whiskerRightIso (F.map₂Iso e.symm) appB ≪≫ α ≪≫
     whiskerLeftIso appA (G.map₂Iso e)
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Transporting two candidate constraints along a commuting pair of
+1-morphism isomorphisms preserves naturality in a 2-morphism. -/
+theorem naturalityIsoOfIso_naturality (F G : C ⥤ᵖ D)
+    {a b : C} {f₁ f₂ g₁ g₂ : a ⟶ b}
+    (θf : f₁ ⟶ f₂) (θg : g₁ ⟶ g₂)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α₁ : F.map f₁ ≫ appB ≅ appA ≫ G.map f₁)
+    (α₂ : F.map f₂ ≫ appB ≅ appA ≫ G.map f₂)
+    (e₁ : f₁ ≅ g₁) (e₂ : f₂ ≅ g₂)
+    (hα : F.map₂ θf ▷ appB ≫ α₂.hom =
+      α₁.hom ≫ appA ◁ G.map₂ θf)
+    (he : e₁.hom ≫ θg = θf ≫ e₂.hom) :
+    F.map₂ θg ▷ appB ≫
+        (naturalityIsoOfIso F G appA appB α₂ e₂).hom =
+      (naturalityIsoOfIso F G appA appB α₁ e₁).hom ≫
+        appA ◁ G.map₂ θg := by
+  have he_inv : θg ≫ e₂.inv = e₁.inv ≫ θf := by
+    rw [← cancel_epi e₁.hom]
+    simp only [Iso.hom_inv_id_assoc]
+    rw [← Category.assoc, he]
+    simp
+  have hα' := congrArg
+    (fun k => k ≫ appA ◁ G.map₂ e₂.hom) hα
+  simp only [Category.assoc] at hα'
+  dsimp [naturalityIsoOfIso]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv, Category.assoc]
+  rw [← comp_whiskerRight_assoc, ← F.map₂_comp, he_inv,
+    F.map₂_comp, comp_whiskerRight_assoc]
+  rw [hα']
+  rw [← whiskerLeft_comp, ← G.map₂_comp, ← he, G.map₂_comp,
+    whiskerLeft_comp]
+
 /-- Compose candidate strong-naturality isomorphisms.  The pseudofunctor
 comparison maps and bicategorical associators make the result a constraint at
 the composite source 1-morphism.  This is the constructor form of
@@ -351,6 +386,66 @@ def naturalityCompIsoOfIsos (F G : C ⥤ᵖ D)
     whiskerLeftIso (F.map f) β ≪≫ (α_ _ _ _).symm ≪≫
     whiskerRightIso α (G.map g) ≪≫ α_ _ _ _ ≪≫
     whiskerLeftIso appA (G.mapComp f g).symm
+
+/-- Composing candidate constraints preserves naturality in a 2-morphism of
+the second factor. -/
+theorem naturalityCompIsoOfIsos_naturality_right (F G : C ⥤ᵖ D)
+    {a b c : C} (f : a ⟶ b) {g h : b ⟶ c} (θ : g ⟶ h)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (βg : F.map g ≫ appC ≅ appB ≫ G.map g)
+    (βh : F.map h ≫ appC ≅ appB ≫ G.map h)
+    (hβ : F.map₂ θ ▷ appC ≫ βh.hom =
+      βg.hom ≫ appB ◁ G.map₂ θ) :
+    F.map₂ (f ◁ θ) ▷ appC ≫
+        (naturalityCompIsoOfIsos F G f h appA appB appC α βh).hom =
+      (naturalityCompIsoOfIsos F G f g appA appB appC α βg).hom ≫
+        appA ◁ G.map₂ (f ◁ θ) := by
+  have hα :
+      (F.map f ◁ appB ◁ G.map₂ θ) ≫
+          (α_ (F.map f) appB (G.map h)).inv ≫
+          α.hom ▷ G.map h ≫
+          (α_ appA (G.map f) (G.map h)).hom =
+        (α_ (F.map f) appB (G.map g)).inv ≫
+          α.hom ▷ G.map g ≫
+          (α_ appA (G.map f) (G.map g)).hom ≫
+          appA ◁ G.map f ◁ G.map₂ θ := by
+    rw [associator_inv_naturality_right_assoc]
+    rw [whisker_exchange_assoc]
+    rw [associator_naturality_right]
+  have hα' := congrArg
+    (fun k => k ≫ appA ◁ (G.mapComp f h).inv) hα
+  simp only [Category.assoc] at hα'
+  rw [F.map₂_whisker_left, G.map₂_whisker_left]
+  dsimp [naturalityCompIsoOfIsos]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    comp_whiskerRight, whiskerLeft_comp, Category.assoc,
+    inv_hom_whiskerRight_assoc]
+  calc
+    _ = (F.mapComp f g).hom ▷ appC ≫
+          (α_ (F.map f) (F.map g) appC).hom ≫
+          F.map f ◁ (F.map₂ θ ▷ appC ≫ βh.hom) ≫
+          (α_ (F.map f) appB (G.map h)).inv ≫
+          α.hom ▷ G.map h ≫
+          (α_ appA (G.map f) (G.map h)).hom ≫
+          appA ◁ (G.mapComp f h).inv := by
+      simp only [whiskerLeft_comp]
+      dsimp
+      bicategory
+    _ = (F.mapComp f g).hom ▷ appC ≫
+          (α_ (F.map f) (F.map g) appC).hom ≫
+          F.map f ◁ (βg.hom ≫ appB ◁ G.map₂ θ) ≫
+          (α_ (F.map f) appB (G.map h)).inv ≫
+          α.hom ▷ G.map h ≫
+          (α_ appA (G.map f) (G.map h)).hom ≫
+          appA ◁ (G.mapComp f h).inv := by rw [hβ]
+    _ = _ := by
+      simp only [whiskerLeft_comp]
+      dsimp
+      simp only [Category.assoc]
+      rw [hα']
+      simp
 
 /-- Derive the strong-naturality isomorphism at the chosen inverse of an
 adjoint equivalence from a constraint at its forward 1-morphism.

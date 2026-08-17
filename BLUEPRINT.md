@@ -4330,8 +4330,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   isomorphisms, supplies the inverse-generator constraint and is proved equal
   on homs to `mateEquiv`; composition with the retained constraint handles all
   reverse arrows. Endpoint normal form selects these constraints for arbitrary
-  target arrows. Naturality in 2-cells and the identity and composition laws
-  remain to be proved before these data form a target strong transformation.
+  target arrows. The endpoint-normalized constraints are natural in every
+  target 2-cell, including the freely adjoined inverse branch, and the public
+  all-arrow candidate satisfies identity coherence. Compatibility between its
+  special identity branch and endpoint normalization, plus composition
+  coherence, remain before these data form a target strong transformation.
   It remains a
   parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
@@ -4371,9 +4374,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   codiscrete classification for its free-groupoid coordinate, and fully
   faithful local precomposition. Every 1-morphism-level constraint for a
   prospective strong-transformation lift is explicit; its identity coherence
-  law and 2-cell naturality on every forward canonical arrow are proved.
-  Naturality across inverse arrows, composition coherence, arbitrary lifts
-  outside that closure, and local essential surjectivity are not yet proved.
+  law and endpoint-normalized 2-cell naturality on both forward and inverse
+  arrows are proved. Identity-branch compatibility, composition coherence,
+  arbitrary lifts outside that closure, and local essential surjectivity are
+  not yet proved.
   The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
@@ -5697,9 +5701,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     1-morphism. The completed walking coordinate itself is now proved thin:
     every signed
     path reduces to the unique arrow determined by its endpoints, yielding an
-    explicit equivalence with the codiscrete groupoid on `Fin 2`. This finite
-    normal form is the next input for extending source strong transformations
-    across the inverse. Arbitrary nonseparable mixed-coordinate biessential
+    explicit equivalence with the codiscrete groupoid on `Fin 2`. Source strong
+    transformations now extend to explicit object components and candidate
+    constraints on every target arrow. Those endpoint-normalized constraints
+    satisfy 2-cell naturality in both the forward and inverse branches, and the
+    public identity-specialized candidate satisfies identity coherence;
+    identity-branch compatibility and composition coherence remain. Arbitrary
+    nonseparable mixed-coordinate biessential
     factorization outside that closure and local essential surjectivity remain
     open, so this is not an existence proof for the
     desired resource-process higher localization.
