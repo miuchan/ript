@@ -87,8 +87,9 @@ Ript 同时编译了未截断研究目标的精确定义：双范畴 localizatio
 自然性同构。带任意保留坐标的正向箭头直接复用源自然性；反向箭头把显式可逆 mate 与保留坐标约束
 复合；端点规范形覆盖全部目标箭头。现在已证明完整的恒等 coherence，也证明端点规范约束对任意目标
 2-胞的自然性，包括自由添加的逆向箭头。现在进一步证明了严格恒等箭头处的端点约束等于规范恒等
-约束，因此公共全箭头约束跨越其恒等分支也满足 2-胞自然性；只剩复合 coherence 才能把这些数据组成
-目标强变换。walking 自由群胚本身
+约束，因此公共全箭头约束跨越其恒等分支也满足 2-胞自然性。inclusion 像中任意一对箭头的复合
+coherence 现已证明，从而覆盖带任意保留坐标的规范正向—正向情形；在把这些数据组成目标强变换前，
+只剩涉及自由加入逆元的混合复合情形。walking 自由群胚本身
 现在也有规范形定理：每条带符号路径都等于其端点唯一决定的
 态射，因此该补全是 thin 的，并与 `Fin 2` 上的 codiscrete 群胚显式范畴等价。作为互补，对任意群胚 `G`，
 每个 walking-arrow 函子 `K : Arrow ⥤ G` 都诱导一个只依赖局部化坐标的标记反转伪函子；它通过
@@ -1058,11 +1059,18 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | 正向提升约束对每个保留坐标 2-胞都满足自然性。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | 预期目标强变换在逆生成箭头处的约束，是其正向约束的显式可逆双范畴 mate。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransInverseNaturality_naturality` | 自由添加的逆向箭头约束对每个保留坐标 2-胞都满足自然性。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_inverse_of_not_le` | 真正逆向的端点规范约束恰好等于逆 mate 约束。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_inclusion` | 在 inclusion 像中的每个箭头上，端点规范化恢复原始源约束。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_naturality` | 端点规范化为每个目标箭头给出满足 2-胞自然性的约束，并同时覆盖正向与逆向分支。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_iso` | 端点规范约束可沿任意目标 2-同构作规范搬运。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_comp_inclusion` | 端点规范约束对 inclusion 像中的任意一对箭头满足复合 coherence。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_id_eq` | 严格恒等箭头处的端点规范约束等于规范强变换恒等约束。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality` | 端点规范形配合规范恒等分支，为每个目标 1-态射选择候选强自然性同构。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id` | 公共全箭头候选满足完整的强变换恒等 coherence。 |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | 公共全箭头约束对每个目标 2-胞都满足自然性，包括严格恒等分支；复合 coherence 仍开放。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_iso` | 公共全箭头约束可沿任意目标 2-同构搬运。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | 公共全箭头约束对每个目标 2-胞都满足自然性，包括严格恒等分支。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inclusion` | 公共约束对 inclusion 像中的任意一对箭头满足复合 coherence。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_forward` | 带任意保留坐标的规范正向—正向复合 coherence 已成立；含自由逆元的混合情形仍开放。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | 一个具体的标记反转伪函子在仍检测不可逆 Boolean discard 的同时通过目标分解。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限确定性 discard 是不可逆模型 2-胞，其两个端点经同伦截断后仍不相同。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 从完整模型双范畴到局部离散目标的每个伪函子都识别 discard 两个端点的像。 |
@@ -1193,7 +1201,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 | 成本精确模型 localization | 成本反射模型态射的可逆 2-胞饱和，再取同伦类 | 形式反转每个饱和标记类 | 不可计算语义证明层 | 精确标记下降定理与从 `Pith` 出发的规范伪函子；真正的 Mathlib Gabriel--Zisman 普遍性质；具体不可逆 2-胞证明它不是高阶 localization |
-| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，预复合局部充满忠实，并为预期强变换提升的每个目标 1-态射重建候选约束；恒等 coherence 以及跨越正向、逆向与严格恒等分支的全箭头 2-胞自然性已证明，复合 coherence、该闭包之外任意不可分离混合坐标分解和局部本质满射仍开放 |
+| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，预复合局部充满忠实，并为预期强变换提升的每个目标 1-态射重建候选约束；恒等 coherence、全箭头 2-胞自然性以及 inclusion 像中任意一对箭头（从而包括规范正向—正向情形）的复合 coherence 已证明，含自由逆元的混合复合、该闭包之外任意不可分离混合坐标分解和局部本质满射仍开放 |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；对所有内部恒等的 Mathlib localization；不是 Rezk completion |

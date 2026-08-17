@@ -36,8 +36,11 @@ identity coherence law is now proved, as is 2-cell naturality for every
 endpoint-normalized arrow, including the freely adjoined inverse.  The
 endpoint constraint is now also proved equal to the canonical identity
 constraint, so the public all-arrow constraint is natural across its strict
-identity branch.  Composition coherence, local essential surjectivity, and
-arbitrary nonseparable biessential factorization remain open.
+identity branch.  Composition coherence is proved whenever both arrows lie
+in the inclusion image, and hence for every canonical forward-forward pair.
+The mixed cases involving the freely adjoined inverse, local essential
+surjectivity, and arbitrary nonseparable biessential factorization remain
+open.
 -/
 
 set_option autoImplicit false
@@ -1009,23 +1012,52 @@ theorem liftedStrongTransEndpointNaturality_forward
   rfl
 
 set_option backward.isDefEq.respectTransparency false in
-/-- On the image of a source identity, endpoint normalization is exactly
-the original source strong-naturality constraint. -/
+/-- On a genuinely reverse canonical arrow, endpoint normalization agrees
+with the inverse constraint obtained by mates.  The strict endpoint-order
+hypothesis excludes the degenerate inverse of an identity. -/
+theorem liftedStrongTransEndpointNaturality_inverse_of_not_le
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {x y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : x ⟶ y) (h : ¬ y ≤ x) (A : Type) :
+    liftedStrongTransEndpointNaturality σ (canonicalInverseHom f A) =
+      liftedStrongTransInverseNaturality σ f A := by
+  have hx : (CategoryTheory.FreeGroupoid.mk y :
+      Ript.Examples.WalkingLocalization.Completion).as.as = y := rfl
+  have hy : (CategoryTheory.FreeGroupoid.mk x :
+      Ript.Examples.WalkingLocalization.Completion).as.as = x := rfl
+  ext
+  simp [liftedStrongTransEndpointNaturality, canonicalInverseHom,
+    canonicalTargetObject, hx, hy, h]
+  change (liftedStrongTransInverseNaturality σ
+      (homOfLE (le_of_not_ge h)) A).hom =
+    (liftedStrongTransInverseNaturality σ f A).hom
+  congr 2
+
+set_option backward.isDefEq.respectTransparency false in
+/-- On every arrow in the image of the inclusion, endpoint normalization is
+exactly the original source strong-naturality constraint. -/
+theorem liftedStrongTransEndpointNaturality_inclusion
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {S T : Source} (p : S ⟶ T) :
+    liftedStrongTransEndpointNaturality σ (inclusion.map p) =
+      σ.naturality p := by
+  rcases S with ⟨⟨x⟩, X'⟩
+  rcases T with ⟨⟨y⟩, Y'⟩
+  cases X'
+  cases Y'
+  rcases p with ⟨⟨f⟩, A⟩
+  change liftedStrongTransEndpointNaturality σ
+      (canonicalForwardHom f A) =
+    σ.naturality (canonicalSourceHom f A)
+  rw [liftedStrongTransEndpointNaturality_forward,
+    liftedStrongTransForwardNaturality_eq_source]
+
+/-- The inclusion-image theorem specializes to source identities. -/
 theorem liftedStrongTransEndpointNaturality_inclusion_id
     (σ : inclusion.comp F ⟶ inclusion.comp G) (S : Source) :
     liftedStrongTransEndpointNaturality σ (inclusion.map (𝟙 S)) =
       σ.naturality (𝟙 S) := by
-  rcases S with ⟨⟨x⟩, X'⟩
-  cases X'
-  ext
-  simp [liftedStrongTransEndpointNaturality,
-    canonicalSourceObject, canonicalSourceHom,
-    liftedStrongTransForwardNaturality_eq_source]
-  change (σ.naturality (𝟙 (LocallyDiscrete.mk x,
-      MonoidalSingleObj.star Type))).hom =
-    (σ.naturality (𝟙 (LocallyDiscrete.mk x,
-      MonoidalSingleObj.star Type))).hom
-  rfl
+  exact liftedStrongTransEndpointNaturality_inclusion σ (𝟙 S)
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Endpoint-normalized lifted constraints are natural in every target
@@ -1094,6 +1126,100 @@ theorem liftedStrongTransEndpointNaturality_naturality
             (homOfLE (le_of_not_ge h)) ηAB)
     exact liftedStrongTransInverseNaturality_naturality σ
       (homOfLE (le_of_not_ge h)) ηAB
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint-normalized constraints transport canonically across every
+2-isomorphism between parallel target 1-morphisms. -/
+theorem liftedStrongTransEndpointNaturality_iso
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Target} {f g : X ⟶ Y} (e : f ≅ g) :
+    Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+        (liftedStrongTransApp σ X) (liftedStrongTransApp σ Y)
+        (liftedStrongTransEndpointNaturality σ f) e =
+      liftedStrongTransEndpointNaturality σ g := by
+  apply Iso.ext
+  rw [← cancel_epi (F.map₂ e.hom ▷ liftedStrongTransApp σ Y)]
+  dsimp [Pseudofunctor.StrongTrans.naturalityIsoOfIso]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom]
+  change F.map₂ e.hom ▷ liftedStrongTransApp σ Y ≫
+      F.map₂ e.inv ▷ liftedStrongTransApp σ Y ≫
+        (liftedStrongTransEndpointNaturality σ f).hom ≫
+          liftedStrongTransApp σ X ◁ G.map₂ e.hom =
+    F.map₂ e.hom ▷ liftedStrongTransApp σ Y ≫
+      (liftedStrongTransEndpointNaturality σ g).hom
+  rw [← Category.assoc, ← comp_whiskerRight, ← F.map₂_comp]
+  simp only [Iso.hom_inv_id, F.map₂_id, id_whiskerRight,
+    Category.id_comp]
+  exact (liftedStrongTransEndpointNaturality_naturality σ e.hom).symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint-normalized constraints satisfy composition coherence whenever
+both factors lie in the image of the inclusion.  Naturality across the
+inclusion's compositor cancels the extra mapped compositor from the source
+strong-transformation law. -/
+theorem liftedStrongTransEndpointNaturality_comp_inclusion
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {S T U : Source} (p : S ⟶ T) (q : T ⟶ U) :
+    (liftedStrongTransEndpointNaturality σ
+        (inclusion.map p ≫ inclusion.map q)).hom ≫
+          liftedStrongTransApp σ (inclusion.obj S) ◁
+            (G.mapComp (inclusion.map p) (inclusion.map q)).hom =
+      (F.mapComp (inclusion.map p) (inclusion.map q)).hom ▷
+            liftedStrongTransApp σ (inclusion.obj U) ≫
+        (α_ _ _ _).hom ≫
+        F.map (inclusion.map p) ◁
+          (liftedStrongTransEndpointNaturality σ (inclusion.map q)).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransEndpointNaturality σ (inclusion.map p)).hom ▷
+            G.map (inclusion.map q) ≫
+        (α_ _ _ _).hom := by
+  rcases S with ⟨⟨x⟩, X'⟩
+  rcases T with ⟨⟨y⟩, Y'⟩
+  rcases U with ⟨⟨z⟩, Z'⟩
+  cases X'
+  cases Y'
+  cases Z'
+  change
+    (liftedStrongTransEndpointNaturality σ
+        (inclusion.map p ≫ inclusion.map q)).hom ≫
+          σ.app (LocallyDiscrete.mk x, PUnit.unit) ◁
+            (G.mapComp (inclusion.map p) (inclusion.map q)).hom =
+      (F.mapComp (inclusion.map p) (inclusion.map q)).hom ▷
+          σ.app (LocallyDiscrete.mk z, PUnit.unit) ≫
+        (α_ (F.map (inclusion.map p)) (F.map (inclusion.map q))
+          (σ.app (LocallyDiscrete.mk z, PUnit.unit))).hom ≫
+        F.map (inclusion.map p) ◁
+          (liftedStrongTransEndpointNaturality σ (inclusion.map q)).hom ≫
+        (α_ (F.map (inclusion.map p))
+          (σ.app (LocallyDiscrete.mk y, PUnit.unit))
+          (G.map (inclusion.map q))).inv ≫
+        (liftedStrongTransEndpointNaturality σ (inclusion.map p)).hom ▷
+            G.map (inclusion.map q) ≫
+        (α_ (σ.app (LocallyDiscrete.mk x, PUnit.unit))
+          (G.map (inclusion.map p)) (G.map (inclusion.map q))).hom
+  let θ := (inclusion.mapComp p q).hom
+  have hη := liftedStrongTransEndpointNaturality_naturality σ θ
+  rw [liftedStrongTransEndpointNaturality_inclusion] at hη
+  change
+    F.map₂ θ ▷ σ.app (LocallyDiscrete.mk z, PUnit.unit) ≫
+        (liftedStrongTransEndpointNaturality σ
+          (inclusion.map p ≫ inclusion.map q)).hom =
+      (σ.naturality (p ≫ q)).hom ≫
+        σ.app (LocallyDiscrete.mk x, PUnit.unit) ◁ G.map₂ θ at hη
+  have hcomp := σ.naturality_comp p q
+  have hp := congrArg Iso.hom
+    (liftedStrongTransEndpointNaturality_inclusion σ p)
+  have hq := congrArg Iso.hom
+    (liftedStrongTransEndpointNaturality_inclusion σ q)
+  rw [hp, hq]
+  rw [← cancel_epi (F.map₂ (inclusion.mapComp p q).hom ▷
+    σ.app (LocallyDiscrete.mk z, PUnit.unit))]
+  rw [← Category.assoc]
+  rw [hη]
+  simpa [Pseudofunctor.comp, PrelaxFunctor.comp,
+    PrelaxFunctorStruct.comp, Prefunctor.comp, θ, Category.assoc,
+    whiskerLeft_comp, comp_whiskerRight] using hcomp
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Endpoint normalization satisfies the target identity law on every
@@ -1218,6 +1344,19 @@ theorem liftedStrongTransNaturality_eq_endpoint
     · simp [liftedStrongTransNaturality, hf]
   · simp [liftedStrongTransNaturality, hXY]
 
+/-- The public all-arrow constraints transport canonically across every
+2-isomorphism between parallel target 1-morphisms. -/
+theorem liftedStrongTransNaturality_iso
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Target} {f g : X ⟶ Y} (e : f ≅ g) :
+    Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+        (liftedStrongTransApp σ X) (liftedStrongTransApp σ Y)
+        (liftedStrongTransNaturality σ f) e =
+      liftedStrongTransNaturality σ g := by
+  rw [liftedStrongTransNaturality_eq_endpoint,
+    liftedStrongTransNaturality_eq_endpoint]
+  exact liftedStrongTransEndpointNaturality_iso σ e
+
 set_option backward.isDefEq.respectTransparency false in
 /-- The public all-arrow lifted constraint is natural in every target
 2-morphism, including 2-cells that meet its strict-identity branch. -/
@@ -1231,6 +1370,57 @@ theorem liftedStrongTransNaturality_naturality
   rw [liftedStrongTransNaturality_eq_endpoint,
     liftedStrongTransNaturality_eq_endpoint]
   exact liftedStrongTransEndpointNaturality_naturality σ η
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The public all-arrow constraints satisfy composition coherence on any
+pair of arrows in the image of the inclusion. -/
+theorem liftedStrongTransNaturality_comp_inclusion
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {S T U : Source} (p : S ⟶ T) (q : T ⟶ U) :
+    (liftedStrongTransNaturality σ
+        (inclusion.map p ≫ inclusion.map q)).hom ≫
+          liftedStrongTransApp σ (inclusion.obj S) ◁
+            (G.mapComp (inclusion.map p) (inclusion.map q)).hom =
+      (F.mapComp (inclusion.map p) (inclusion.map q)).hom ▷
+            liftedStrongTransApp σ (inclusion.obj U) ≫
+        (α_ _ _ _).hom ≫
+        F.map (inclusion.map p) ◁
+          (liftedStrongTransNaturality σ (inclusion.map q)).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ (inclusion.map p)).hom ▷
+            G.map (inclusion.map q) ≫
+        (α_ _ _ _).hom := by
+  rw [liftedStrongTransNaturality_eq_endpoint,
+    liftedStrongTransNaturality_eq_endpoint,
+    liftedStrongTransNaturality_eq_endpoint]
+  exact liftedStrongTransEndpointNaturality_comp_inclusion σ p q
+
+/-- In particular, the lifted constraints satisfy composition coherence on
+every pair of canonical forward arrows, with arbitrary retained-coordinate
+1-morphisms. -/
+theorem liftedStrongTransNaturality_comp_forward
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {x y z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : x ⟶ y) (g : y ⟶ z) (A B : Type) :
+    (liftedStrongTransNaturality σ
+        (canonicalForwardHom f A ≫ canonicalForwardHom g B)).hom ≫
+          liftedStrongTransApp σ (canonicalTargetObject x) ◁
+            (G.mapComp (canonicalForwardHom f A)
+              (canonicalForwardHom g B)).hom =
+      (F.mapComp (canonicalForwardHom f A)
+          (canonicalForwardHom g B)).hom ▷
+            liftedStrongTransApp σ (canonicalTargetObject z) ≫
+        (α_ _ _ _).hom ≫
+        F.map (canonicalForwardHom f A) ◁
+          (liftedStrongTransNaturality σ
+            (canonicalForwardHom g B)).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ
+          (canonicalForwardHom f A)).hom ▷
+            G.map (canonicalForwardHom g B) ≫
+        (α_ _ _ _).hom := by
+  exact liftedStrongTransNaturality_comp_inclusion σ
+    (canonicalSourceHom f A) (canonicalSourceHom g B)
 
 /-- The free groupoid on the walking arrow is thin: there is exactly one
 morphism between each pair of objects. -/
