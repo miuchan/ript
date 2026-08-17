@@ -26,7 +26,7 @@ Segal data, genuine matching fibrations, and the actual completeness map's
 `SSet.NerveEquivalenceWitness` in `SSet.GroupoidalCompleteSegal`. Remaining
 work is broader infrastructure: the pinned Mathlib release has neither a
 simplicial-set weak-equivalence class nor a completed Quillen model structure,
-so a Mathlib-native standard complete-Segal instance cannot yet be stated. A
+so a Mathlib-native standard complete-Segal instance cannot yet be stated.
 The exact localization target is no longer informal: the compiled predicate
 `Bicategory.MorphismProperty.IsBicategoricalLocalization` requires marked
 1-morphisms to become adjoint equivalences, biessential factorization of every
@@ -35,6 +35,18 @@ transformations and modifications. Its Ript specialization is
 `IsCostExactBicategoricalLocalization`. What remains open is constructing a
 pseudofunctor that satisfies this predicate for the full resource-process
 bicategory; no existence proposition is silently assumed.
+
+The first complete construction against that predicate is now kernel checked.
+Identity precomposition is an adjoint equivalence of pseudofunctors and an
+equivalence on each local category of strong transformations and
+modifications. Consequently the identity pseudofunctor is a bicategorical
+localization exactly when every marked arrow is already an adjoint
+equivalence. This validates the full universal-property interface without
+weakening it. It does not solve Ript's nontrivial case: the concrete zero-cost
+discrete embedding is proved not to be an adjoint equivalence, and therefore
+the identity pseudofunctor is proved not to be the cost-exact bicategorical
+localization. A genuine construction must adjoin at least that missing
+inverse while retaining noninvertible 2-cells.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

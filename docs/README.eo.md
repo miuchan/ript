@@ -123,9 +123,13 @@ loke diskreta celo pruviĝas identigi la bildojn de tiuj finpunktoj. Ript ankaŭ
 kompilas la precizan netranĉitan esplorcelon: dukategoria lokaliza predikato
 postulanta mark-inversigon al adjunktaj ekvivalentoj, biesencan faktoradon de
 ĉiu inversiganta pseŭdofunktoro, kaj lokajn ekvivalentojn je fortaj transformoj
-kaj modifoj. Tio specifas sed ankoraŭ ne konstruas la deziratan lokalizon. La
-ekzistanta ponto do ne estas dukategoria, Dwyer--Kan-a, simplicia aŭ
-Rezk-lokalizo.
+kaj modifoj. Identeca antaŭkunmeto nun estas eksplicite konstruita kiel adjunkta
+ekvivalento de pseŭdofunktoroj kaj kiel ekvivalento en ĉiu loka kategorio. Do la
+identeca pseŭdofunktoro estas vera lokalizo precize kiam ĉiuj markitaj sagoj jam
+estas adjunktaj ekvivalentoj. La konkreta nulkosta markita enigo ne estas tia
+ekvivalento, do identeco ne povas esti la kost-ekzakta lokalizo de Ript. La
+netriviala konstruo restas malfermita, kaj la ekzistanta ponto ankoraŭ ne estas
+dukategoria, Dwyer--Kan-a, simplicia aŭ Rezk-lokalizo.
 Etapo 11 aldonas intence malgrandan, senaksioman, interne univalentan procez-
 universon. Profundaj kodoj por malpleno, unuo, sumo, tensoro kaj atomaj
 interfacoj portas apartajn sintaksojn por struktura ekvivalento kaj interna
@@ -1296,12 +1300,18 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | Reprezentita sago estas markita post malsuprenigo precize kiam la origina dukategoria marko validas ĝis inversigebla 2-ĉelo. |
 | `CategoryTheory.Pseudofunctor.precomposition` | Antaŭkunmeto estas pseŭdofunktoro kiu konservas fortajn transformojn kaj modifojn. |
 | `CategoryTheory.Pseudofunctor.localPrecomposition` | En ĉiu loka Hom-kategorio antaŭkunmeto funktore mapas fortajn transformojn kaj iliajn modifojn. |
+| `CategoryTheory.Pseudofunctor.idCompEquivalence` | Identeca antaŭkunmeto ligiĝas al ĉiu pseŭdofunktoro per eksplicita adjunkta ekvivalento. |
+| `CategoryTheory.Pseudofunctor.localPrecomposition_id_isEquivalence` | Identeca antaŭkunmeto estas ekvivalento en ĉiu loka kategorio de fortaj transformoj kaj modifoj. |
+| `CategoryTheory.Bicategory.MorphismProperty.equivalences_isBicategoricalLocalization_id` | La identeca pseŭdofunktoro estas plene konstruita dukategoria lokalizo ĉe ĉiuj adjunktaj ekvivalentoj. |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | La homotopikategoria marko estas precize la inversigebla-2-ĉela saturiĝo de kostreflekto. |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | Ĉiu vera pli-alta kost-ekzakta lokalizo mapas ĉiun saturite markitan modelmorfion al adjunkta ekvivalento. |
+| `Ript.Higher.costExactIdentity_isBicategoricalLocalization_iff` | Identeco estas la kost-ekzakta lokalizo de Ript precize kiam ĉiu saturite kost-ekzakta modelmorfismo jam estas adjunkta ekvivalento. |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | La kanona Gabriel--Zisman-funktoro formale inversigas ĉiun modelmorfion kun kost-reflekta reprezentanto. |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | La kanona pseŭdofunktoro el `Pith` mapas ĉiun saturite kost-ekzaktan sagon al ordinara izomorfio. |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | Funktoroj el la lokalizo ekvivalentas al funktoroj inversigantaj ĉiujn markitajn sagojn. |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | Konkreta nulkosta diskreta markita sago ne estas izomorfio antaŭ lokalizo. |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence` | La sama markita modelmorfismo ne estas dukategoria adjunkta ekvivalento. |
+| `Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization` | La identeca pseŭdofunktoro do ne estas la kost-ekzakta dukategoria lokalizo de Ript. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finia determinisma forĵeto estas neinversigebla modela 2-ĉelo kies finpunktoj restas malsamaj post homotopia tranĉo. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Ĉiu plena pseŭdofunktoro al loke diskreta celo identigas la bildojn de la du finpunktoj de forĵeto. |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | Interna idento ekvivalentas al interna struktura ekvivalento en la kvocienta universo. |
@@ -1411,7 +1421,7 @@ eksperimente validigita aŭ publikigita kiel finita fizika teorio.
 | 12, grupoida lokaliza fundamento | Lokalizaj modeloj per idento, skeletokompletigo kaj limigita Yoneda je ĉiuj internaj identecoj, kun Mathlib-universalaj ecoj de funktorkategorioj | **PROVED** |
 | 12, simplicia fundamento | Kategoria nervo, kompleta Kan-kornplenigo, strikta Segal-rekonstruo, kvazaŭkategoria kaj 2-koskeleta strukturo, kaj reakiro de la homotopikategorio | **PROVED** |
 | 12, klasifika-diagrama fundamento | Rezk-klasifika diagramo, vertikalaj kaj horizontalaj grupoidaj/Kan-aj strukturoj, striktaj eksteraj Segal-ekvivalentoj, ekzakta projekt-loka grupoida kompleta-Segal-a pakado, natura simplaĵ-mapospaca prezento, veraj randaj kongruaj limesoj kaj kongru-mapaj fibrecoj | **PROVED** |
-| 12, pli-alta lokaliza specifo | Mark-inversigo al adjunktaj ekvivalentoj, pseŭdofunktora antaŭkunmeto, lokaj ekvivalentoj je fortaj transformoj/modifoj, kost-ekzakta specialigo kaj loke diskreta 2-ĉela obstrukco | **PROVED** |
+| 12, pli-alta lokaliza specifo | Mark-inversigo al adjunktaj ekvivalentoj, pseŭdofunktora antaŭkunmeto, konstruita identeca-lokaliza bazkazo, kost-ekzakta specialigo kaj loke diskretaj kaj identec-kandidataj obstrukcoj | **PROVED** |
 | 12, pli-alta lokaliza konstruo | Plena rimed-proceza pseŭdofunktoro plenumanta la kompilitan dukategorian lokalizan predikaton, plus Mathlib-denaska simplicia malfort-ekvivalenta/norma kompleta-Segal-a komparo | **OPEN RESEARCH** |
 
 La realigita modelsubteno estas intence mallarĝa:
@@ -2003,7 +2013,7 @@ kompilitajn difinojn, ĉefajn pruvojn, plenumeblan evidenton kie konvene, kaj
 - [x] Monoidaj naturaj transformaj 2-ĉeloj, vertikala/horizontala kunmeto kaj interchange
 - [x] Modelaj asociantoj, unuigiloj, kvinangulo, triangulo kaj transporto per kost-ekzakta ekvivalento
 - [x] Kostmarko saturita laŭ inversigeblaj 2-ĉeloj, preciza homotopia malsuprenigo, kanona `Pith`-pseŭdofunktoro kaj Gabriel--Zisman-lokalizo, kun neinversigeblaj markita-saga kaj 2-ĉela atestoj
-- [x] Plena dudimensia lokaliza predikato, antaŭkunmeto je pseŭdofunktoroj/fortaj transformoj/modifoj kaj loke diskreta forĵeta obstrukco
+- [x] Plena dudimensia lokaliza predikato, identeca-lokaliza bazkonstruo, antaŭkunmeto je pseŭdofunktoroj/fortaj transformoj/modifoj, kaj loke diskretaj forĵetaj kaj identec-kandidataj obstrukcoj
 - [x] Profundaj interfackodoj kun apartaj sintaksoj de struktura ekvivalento kaj interna idento
 - [x] Kvocienta grupoido, interna univalenteco, ĝusteco/reflekto, transporto kaj nedistingeblo
 - [x] Tiphavaj profundaj procezoj kun reindeksado, ekvacia ĝusteco kaj ekzakta Bulea tensor-simetria ekzemplo

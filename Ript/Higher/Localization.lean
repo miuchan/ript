@@ -128,6 +128,18 @@ theorem IsCostExactBicategoricalLocalization.map_costReflecting_isEquivalence
     (hF : costReflectingArrows R F) : Bicategory.IsEquivalence (Q.map F) :=
   hQ.inverts F (Bicategory.MorphismProperty.mem_saturate _ hF)
 
+/-- The identity pseudofunctor is a higher cost-exact localization exactly in
+the degenerate case where every saturated cost-exact model morphism is already
+an adjoint equivalence.  Thus any genuinely new formal inverse forces the
+localization construction to change the source bicategory nontrivially. -/
+theorem costExactIdentity_isBicategoricalLocalization_iff :
+    IsCostExactBicategoricalLocalization
+      (Pseudofunctor.id (ProcessModel.{u, v, w} R)) ↔
+      ∀ {M N : ProcessModel.{u, v, w} R} (F : M ⟶ N),
+        costExactArrows R F → Bicategory.IsEquivalence F :=
+  Bicategory.MorphismProperty.isBicategoricalLocalization_id_iff
+    (costExactArrows R)
+
 /-- Cost-exact arrows in the model homotopy category are the quotient classes
 that have a cost-reflecting representative. -/
 def costExactMorphisms (R : Type w) [AddCommMonoid R] [PartialOrder R] :

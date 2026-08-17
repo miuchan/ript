@@ -130,9 +130,14 @@ discrete target is now proved to identify the images of those endpoints.
 Ript also compiles the exact untruncated research target: a marked
 bicategorical-localization predicate requiring adjoint-equivalence inversion,
 biessential factorization of inverting pseudofunctors, and local equivalences
-on strong transformations and modifications. This specifies, but does not yet
-construct, the desired higher localization. The existing bridge is therefore
-not a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
+on strong transformations and modifications. Identity precomposition is now
+constructed as an adjoint equivalence of pseudofunctors and as an equivalence
+on every local category. Consequently, the identity pseudofunctor is a genuine
+localization exactly when every marked arrow is already an adjoint
+equivalence. The concrete zero-cost marked embedding is not such an
+equivalence, so identity is ruled out as Ript's cost-exact localization. The
+nontrivial construction remains open, and the existing bridge is therefore not
+a bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
 Stage 11 adds a deliberately small, axiom-free, internally univalent process
 universe. Deep codes for empty, unit, sum, tensor, and atomic interfaces carry
 separate syntax for structural equivalence and internal identity. Their
@@ -1374,12 +1379,18 @@ informal summaries; the Lean declarations are authoritative.
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | Descent marks a represented arrow exactly when the original bicategorical mark holds up to an invertible 2-cell. |
 | `CategoryTheory.Pseudofunctor.precomposition` | Precomposition is a pseudofunctor between pseudofunctor bicategories, retaining strong transformations and modifications. |
 | `CategoryTheory.Pseudofunctor.localPrecomposition` | On each local hom-category, precomposition maps strong transformations and their modifications functorially. |
+| `CategoryTheory.Pseudofunctor.idCompEquivalence` | Identity precomposition is connected to every pseudofunctor by an explicit adjoint equivalence. |
+| `CategoryTheory.Pseudofunctor.localPrecomposition_id_isEquivalence` | Identity precomposition is an equivalence on every local category of strong transformations and modifications. |
+| `CategoryTheory.Bicategory.MorphismProperty.equivalences_isBicategoricalLocalization_id` | The identity pseudofunctor is a fully constructed bicategorical localization at all adjoint equivalences. |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | The homotopy-category mark is exactly the invertible-2-cell saturation of cost reflection. |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | Any genuine higher cost-exact localization sends every saturated marked model morphism to an adjoint equivalence. |
+| `Ript.Higher.costExactIdentity_isBicategoricalLocalization_iff` | Identity is Ript's cost-exact localization exactly when every saturated cost-exact model morphism is already an adjoint equivalence. |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | The canonical Gabriel--Zisman functor formally inverts every model arrow with a cost-reflecting representative. |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | The canonical pseudofunctor from the pith maps every saturated cost-exact arrow to an ordinary isomorphism. |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | Functors out of the localization are equivalent to functors that invert all marked cost-exact arrows. |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | A concrete zero-cost discrete marked arrow is not already invertible before localization. |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence` | The same marked model morphism is not a bicategorical adjoint equivalence. |
+| `Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization` | The identity pseudofunctor is therefore not Ript's cost-exact bicategorical localization. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finite deterministic discard is a noninvertible model 2-cell whose endpoints remain distinct after homotopy truncation. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Every full pseudofunctor to a locally discrete target identifies the images of discard's two endpoint model morphisms. |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | Internal identity is equivalent to internal structural equivalence in the quotient universe. |
@@ -1489,7 +1500,7 @@ finished physical theory.
 | 12, groupoidal localization foundation | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | **PROVED** |
 | 12, simplicial foundation | Categorical nerve, complete Kan horn filling, strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | **PROVED** |
 | 12, classifying-diagram foundation | Rezk classifying diagram, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, a natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | **PROVED** |
-| 12, higher-localization specification | Adjoint-equivalence mark inversion, pseudofunctor precomposition, local equivalence on strong transformations/modifications, cost-exact specialization, and a locally-discrete 2-cell obstruction | **PROVED** |
+| 12, higher-localization specification | Adjoint-equivalence mark inversion, pseudofunctor precomposition, a constructed identity-localization base case, cost-exact specialization, and locally-discrete and identity-candidate obstructions | **PROVED** |
 | 12, higher-localization construction | A full resource-process pseudofunctor satisfying the compiled bicategorical-localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | **OPEN RESEARCH** |
 
 Implemented model support is intentionally narrow:
@@ -2075,7 +2086,7 @@ updated assumption audit.
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
 - [x] Invertible-2-cell-saturated cost mark, exact homotopy descent, canonical `Pith` pseudofunctor, and Gabriel--Zisman localization, including noninvertible marked-arrow and 2-cell witnesses
-- [x] Full 2-dimensional localization predicate, precomposition on pseudofunctors/strong transformations/modifications, and locally-discrete discard obstruction
+- [x] Full 2-dimensional localization predicate, identity-localization base construction, precomposition on pseudofunctors/strong transformations/modifications, and locally-discrete and identity-candidate obstructions
 - [x] Deep interface codes with distinct equivalence and internal-identity syntax
 - [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
 - [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example

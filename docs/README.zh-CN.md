@@ -74,8 +74,10 @@ Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、
 仍然不同；现在还证明了从完整模型双范畴到任意局部离散目标的伪函子都必须识别这两个端点的像。
 Ript 同时编译了未截断研究目标的精确定义：双范畴 localization 谓词要求把标记 1-胞映为伴随
 等价、让每个反转标记的伪函子本质分解，并在强变换与 modification 的局部范畴上给出等价。
-这精确规定了目标，但尚未构造满足它的 localization。因此现有桥接不是双范畴、Dwyer--Kan、
-simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
+现在已经显式构造出恒等预复合的伪函子伴随等价，并证明它在每个局部范畴上都是等价。因此，恒等
+伪函子恰在所有标记箭头本来就是伴随等价时构成真正的 localization。具体的零成本标记嵌入并非
+伴随等价，因而恒等伪函子不可能是 Ript 的成本精确 localization。非平凡构造仍未完成，现有桥接
+也仍不是双范畴、Dwyer--Kan、simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
 的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
 带等价重索引的深嵌入过程语言具有 soundness 定理。它是集合层、1-截断模型，不假设外部
@@ -991,12 +993,18 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | 下降后代表态射被标记，当且仅当原双范畴标记在某个可逆 2-胞代表上成立。 |
 | `CategoryTheory.Pseudofunctor.precomposition` | 预复合构成伪函子，并保留强伪自然变换与 modification。 |
 | `CategoryTheory.Pseudofunctor.localPrecomposition` | 预复合在每个局部 Hom 上函子化强变换及其 modification。 |
+| `CategoryTheory.Pseudofunctor.idCompEquivalence` | 恒等预复合通过显式伴随等价与任意伪函子相连。 |
+| `CategoryTheory.Pseudofunctor.localPrecomposition_id_isEquivalence` | 恒等预复合在强变换与 modification 的每个局部范畴上都是等价。 |
+| `CategoryTheory.Bicategory.MorphismProperty.equivalences_isBicategoricalLocalization_id` | 恒等伪函子给出在全部伴随等价处的完整双范畴 localization 构造。 |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | 同伦范畴中的标记精确等于成本反射在可逆 2-胞下的饱和。 |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | 任意真正的高阶成本精确 localization 都把每条饱和标记模型态射映为伴随等价。 |
+| `Ript.Higher.costExactIdentity_isBicategoricalLocalization_iff` | 恒等伪函子是 Ript 成本精确 localization，当且仅当每条饱和成本精确模型态射本来就是伴随等价。 |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | 规范 Gabriel--Zisman 函子形式反转所有具有成本反射代表元的模型态射。 |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | 从 `Pith` 出发的规范伪函子把每条饱和成本精确箭头映为普通同构。 |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | 从 localization 出发的函子等价于反转全部标记态射的函子。 |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | 一个具体零成本离散标记态射在 localization 前并非同构。 |
+| `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence` | 同一个标记模型态射并非双范畴伴随等价。 |
+| `Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization` | 因此恒等伪函子不是 Ript 的成本精确双范畴 localization。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限确定性 discard 是不可逆模型 2-胞，其两个端点经同伦截断后仍不相同。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 从完整模型双范畴到局部离散目标的每个伪函子都识别 discard 两个端点的像。 |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe 中的内部恒等等价于内部结构等价。 |
@@ -1103,7 +1111,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 12，群胚 localization 基础 | 恒等、骨架补全与限制 Yoneda 函子对全部内部恒等的 Mathlib localization 模型及函子范畴普遍性质 | **PROVED** |
 | 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
 | 12，classifying-diagram 基础 | Rezk classifying diagram、纵横群胚/Kan 结构、严格外层 Segal 等价、精确项目内群胚型 complete-Segal 封装、自然单形映射表示、真实边界 matching limit 与 matching-map fibration | **PROVED** |
-| 12，高阶 localization 规格 | 到伴随等价的标记反转、伪函子预复合、强变换/modification 上的局部等价、成本精确特化与局部离散 2-胞障碍 | **PROVED** |
+| 12，高阶 localization 规格 | 到伴随等价的标记反转、伪函子预复合、已构造的恒等 localization 基例、成本精确特化，以及局部离散和恒等候选障碍 | **PROVED** |
 | 12，高阶 localization 构造 | 满足已编译双范畴 localization 谓词的完整资源过程伪函子，以及 Mathlib 原生 simplicial 弱等价/标准 complete-Segal 比较 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
@@ -1611,7 +1619,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
 - [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
 - [x] 可逆 2-胞饱和的成本标记、精确同伦下降、规范 `Pith` 伪函子与 Gabriel--Zisman localization，含不可逆标记态射及 2-胞见证
-- [x] 完整二维 localization 谓词、伪函子/强变换/modification 上的预复合与局部离散 discard 障碍
+- [x] 完整二维 localization 谓词、恒等 localization 基础构造、伪函子/强变换/modification 上的预复合，以及局部离散 discard 与恒等候选障碍
 - [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例

@@ -170,6 +170,31 @@ theorem unitToNatModelHom_not_isIso :
   have h01 : (0 : Nat) = 1 := congrArg Multiplicative.toAdd hEq
   exact Nat.zero_ne_one h01
 
+/-- The marked discrete embedding is not an adjoint equivalence in the model
+bicategory.  Otherwise its forward arrow would already be invertible in the
+homotopy category, contradicting the explicit essential-surjectivity
+obstruction above. -/
+theorem unitToNatModelHom_not_isEquivalence :
+    ¬ CategoryTheory.Bicategory.IsEquivalence
+      (B := ProcessModel.{0, 0, 0} Nat) unitToNatModelHom := by
+  rintro ⟨⟨e, he⟩⟩
+  apply unitToNatModelHom_not_isIso
+  rw [← he]
+  exact (CategoryTheory.Bicategory.HomotopyCategory.isoOfEquivalence e).isIso_hom
+
+/-- The identity pseudofunctor on the full model bicategory is not the
+cost-exact bicategorical localization.  The higher construction must really
+adjoin an inverse to `unitToNatModelHom`; it cannot satisfy the universal
+property merely by reusing the source bicategory unchanged. -/
+theorem costExactIdentity_not_isBicategoricalLocalization :
+    ¬ IsCostExactBicategoricalLocalization
+      (Pseudofunctor.id (ProcessModel.{0, 0, 0} Nat)) := by
+  intro h
+  apply unitToNatModelHom_not_isEquivalence
+  exact h.map_costReflecting_isEquivalence unitToNatModelHom (by
+    change CostReflecting unitToNatModelHom
+    infer_instance)
+
 attribute [nolint docBlame] discreteSymmetric instHasProcessCostDiscreteNat
   unitSourceSymmetric unitTargetSymmetric
 

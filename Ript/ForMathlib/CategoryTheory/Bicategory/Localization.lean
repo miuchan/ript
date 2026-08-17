@@ -213,6 +213,96 @@ def Pseudofunctor.localPrecomposition (Q : B ⥤ᵖ C) (F G : C ⥤ᵖ D) :
   map_id _ := by ext X; rfl
   map_comp _ _ := by ext X; rfl
 
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The canonical strong transformation from precomposition by the identity
+pseudofunctor back to the original pseudofunctor.  Its object components are
+identities; the explicit transformation is necessary because pseudofunctor
+composition is not definitionally unital in its coherence fields. -/
+noncomputable def Pseudofunctor.idCompStrongTrans (F : B ⥤ᵖ C) :
+    (Pseudofunctor.id B).comp F ⟶ F where
+  app X := 𝟙 (F.obj X)
+  naturality f := (ρ_ (F.map f)) ≪≫ (λ_ (F.map f)).symm
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The inverse-direction strong transformation for identity
+precomposition. -/
+noncomputable def Pseudofunctor.idCompStrongTransInv (F : B ⥤ᵖ C) :
+    F ⟶ (Pseudofunctor.id B).comp F where
+  app X := 𝟙 (F.obj X)
+  naturality f := (ρ_ (F.map f)) ≪≫ (λ_ (F.map f)).symm
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- Precomposition by the identity pseudofunctor is adjoint equivalent to
+the original pseudofunctor. -/
+noncomputable def Pseudofunctor.idCompEquivalence (F : B ⥤ᵖ C) :
+    (Pseudofunctor.id B).comp F ≌ F :=
+  Bicategory.Equivalence.mkOfAdjointifyCounit
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := 𝟙 ((Pseudofunctor.id B).comp F))
+      (θ := F.idCompStrongTrans ≫ F.idCompStrongTransInv)
+      (fun X => (ρ_ (𝟙 (F.obj X))).symm)
+      (by
+        intro a b f
+        dsimp [Pseudofunctor.idCompStrongTrans,
+          Pseudofunctor.idCompStrongTransInv]
+        bicategory))
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := F.idCompStrongTransInv ≫ F.idCompStrongTrans)
+      (θ := 𝟙 F)
+      (fun X => ρ_ (𝟙 (F.obj X)))
+      (by
+        intro a b f
+        dsimp [Pseudofunctor.idCompStrongTrans,
+          Pseudofunctor.idCompStrongTransInv]
+        bicategory))
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- Identity precomposition is an equivalence on every local category of
+strong transformations and modifications.  Essential surjectivity is proved
+by conjugating a strong transformation with the explicit identity-composition
+adjoint equivalences; fullness and faithfulness retain modification
+components exactly. -/
+theorem Pseudofunctor.localPrecomposition_id_isEquivalence
+    (F G : B ⥤ᵖ C) :
+    ((Pseudofunctor.id B).localPrecomposition F G).IsEquivalence where
+  faithful :=
+    { map_injective := by
+        intro η θ Γ Δ h
+        apply Pseudofunctor.StrongTrans.homCategory.ext
+        intro X
+        exact congrArg (fun k => k.as.app X) h }
+  full :=
+    { map_surjective := by
+        intro η θ Γ
+        let Δ : η ⟶ θ :=
+          ⟨{ app := fun X => Γ.as.app X
+             naturality := fun f => Γ.as.naturality f }⟩
+        refine ⟨Δ, ?_⟩
+        ext X
+        rfl }
+  essSurj :=
+    { mem_essImage := by
+        intro η
+        let eF := F.idCompEquivalence
+        let eG := G.idCompEquivalence
+        let θ : F ⟶ G := eF.inv ≫ η ≫ eG.hom
+        refine ⟨θ, ⟨Pseudofunctor.StrongTrans.isoMk
+          (η := (Pseudofunctor.id B).localPrecomposition F G |>.obj θ)
+          (θ := η)
+          (fun X => λ_ (η.app X ≫ 𝟙 (G.obj X)) ≪≫ ρ_ (η.app X)) ?_⟩⟩
+        intro a b f
+        dsimp [θ, eF, eG, Pseudofunctor.idCompEquivalence,
+          Pseudofunctor.idCompStrongTrans,
+          Pseudofunctor.idCompStrongTransInv,
+          Pseudofunctor.localPrecomposition,
+          Pseudofunctor.StrongTrans.prewhisker,
+          Bicategory.Equivalence.mkOfAdjointifyCounit]
+        bicategory }
+
 namespace Bicategory.MorphismProperty
 
 /-- A pseudofunctor is a bicategorical localization at `W` when it sends the
@@ -238,6 +328,38 @@ structure IsBicategoricalLocalization (W : MorphismProperty B) (Q : B ⥤ᵖ C) 
   transformations and modifications. -/
   local_equivalence : ∀ (E : Type u₃) [Bicategory.{w₃, v₃} E]
     (F G : C ⥤ᵖ E), (Q.localPrecomposition F G).IsEquivalence
+
+/-- The marking consisting precisely of bicategorical equivalence
+1-morphisms. -/
+def equivalences : MorphismProperty B :=
+  fun {_ _} f => Bicategory.IsEquivalence f
+
+/-- If every marked arrow is already a bicategorical equivalence, the
+identity pseudofunctor is a genuine bicategorical localization.  This fills
+all three parts of the universal property: inversion, factorization, and
+local equivalence on strong transformations and modifications. -/
+theorem isBicategoricalLocalization_id (W : MorphismProperty B)
+    (hW : ∀ ⦃X Y : B⦄ (f : X ⟶ Y), W f → Bicategory.IsEquivalence f) :
+    W.IsBicategoricalLocalization (Pseudofunctor.id B) where
+  inverts := (W.isInvertedBy_id_iff).2 hW
+  lift _ _ F _ := ⟨F, ⟨F.idCompEquivalence⟩⟩
+  local_equivalence _ _ F G :=
+    Pseudofunctor.localPrecomposition_id_isEquivalence F G
+
+/-- The identity pseudofunctor is a bicategorical localization at `W` if and
+only if every marked arrow was already an equivalence. -/
+theorem isBicategoricalLocalization_id_iff (W : MorphismProperty B) :
+    W.IsBicategoricalLocalization (Pseudofunctor.id B) ↔
+      ∀ ⦃X Y : B⦄ (f : X ⟶ Y), W f → Bicategory.IsEquivalence f :=
+  ⟨fun h => (W.isInvertedBy_id_iff).1 h.inverts,
+    W.isBicategoricalLocalization_id⟩
+
+/-- The identity pseudofunctor is the bicategorical localization at the class
+of arrows that are already adjoint equivalences. -/
+theorem equivalences_isBicategoricalLocalization_id :
+    (equivalences : MorphismProperty B).IsBicategoricalLocalization
+      (Pseudofunctor.id B) :=
+  equivalences.isBicategoricalLocalization_id (by intros; assumption)
 
 end Bicategory.MorphismProperty
 
