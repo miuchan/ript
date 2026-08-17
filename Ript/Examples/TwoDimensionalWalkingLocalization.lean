@@ -1,5 +1,7 @@
 import Mathlib.CategoryTheory.Bicategory.SingleObj
+import Mathlib.CategoryTheory.CodiscreteCategory
 import Mathlib.CategoryTheory.Monoidal.Types.Basic
+import Mathlib.Tactic.FinCases
 import Ript.Examples.WalkingLocalization
 import Ript.ForMathlib.CategoryTheory.Bicategory.Product
 
@@ -18,10 +20,16 @@ arrow acquires an explicit inverse, while Boolean discard remains a
 noninvertible 2-cell.  The pseudofunctor is faithful on every source
 2-morphism, and its target is formally proved not to be locally discrete.
 
+The freely completed walking coordinate is further normalized here: every
+arrow is uniquely determined by its two endpoints, and the completion is
+equivalent to the codiscrete groupoid on `Fin 2`.  This removes path ambiguity
+without making the product target locally discrete, because the retained
+function-valued coordinate still has noninvertible 2-cells.
+
 This is still a parameterized vertical slice, not the full bicategorical
-localization of Ript's resource-process bicategory.  In particular, the
-biessential factorization and local-equivalence fields of the general
-localization predicate are not claimed here.
+localization of Ript's resource-process bicategory.  Local precomposition is
+fully faithful, but local essential surjectivity and arbitrary nonseparable
+biessential factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -522,6 +530,146 @@ theorem pathToCompletion_neg
     congr 1
     rw [← Groupoid.inv_eq_inv]
     rfl
+
+/-- The canonical morphism between two endpoints of the walking-arrow
+completion.  It is the original forward arrow when the endpoints are
+ordered, and the inverse of the reverse ordered arrow otherwise. -/
+noncomputable def canonicalCompletionHom
+    (X Y : Ript.Examples.WalkingLocalization.Arrow) :
+    CategoryTheory.FreeGroupoid.mk X ⟶
+      CategoryTheory.FreeGroupoid.mk Y :=
+  if h : X ≤ Y then
+    CategoryTheory.FreeGroupoid.homMk (homOfLE h)
+  else
+    inv (CategoryTheory.FreeGroupoid.homMk
+      (homOfLE (le_of_not_ge h)))
+
+/-- The canonical completion endomorphism is the identity. -/
+@[simp]
+theorem canonicalCompletionHom_self
+    (X : Ript.Examples.WalkingLocalization.Arrow) :
+    canonicalCompletionHom X X = CategoryStruct.id _ := by
+  simp [canonicalCompletionHom]
+
+/-- Every forward generator is the canonical morphism between its
+endpoints. -/
+theorem homMk_eq_canonicalCompletionHom
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    CategoryTheory.FreeGroupoid.homMk f =
+      canonicalCompletionHom X Y := by
+  rw [canonicalCompletionHom, dif_pos f.le]
+  congr
+
+/-- The inverse of every forward generator is the canonical morphism in the
+opposite direction. -/
+theorem inv_homMk_eq_canonicalCompletionHom
+    {X Y : Ript.Examples.WalkingLocalization.Arrow} (f : X ⟶ Y) :
+    inv (CategoryTheory.FreeGroupoid.homMk f) =
+      canonicalCompletionHom Y X := by
+  rw [homMk_eq_canonicalCompletionHom]
+  fin_cases X <;> fin_cases Y <;> simp [canonicalCompletionHom]
+
+/-- Canonical completion morphisms compose by their endpoints. -/
+@[simp]
+theorem canonicalCompletionHom_comp
+    (X Y Z : Ript.Examples.WalkingLocalization.Arrow) :
+    canonicalCompletionHom X Y ≫ canonicalCompletionHom Y Z =
+      canonicalCompletionHom X Z := by
+  fin_cases X <;> fin_cases Y <;> fin_cases Z <;>
+    simp [canonicalCompletionHom]
+
+/-- Every signed path in the walking arrow reduces to the canonical morphism
+between its endpoints. -/
+theorem pathToCompletion_eq_canonicalCompletionHom
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (p : Quiver.Path (V := Quiver.Symmetrify
+      Ript.Examples.WalkingLocalization.Arrow) X Y) :
+    pathToCompletion p = canonicalCompletionHom X Y := by
+  induction p with
+  | nil =>
+      exact (pathToCompletion_nil X).trans
+        (canonicalCompletionHom_self X).symm
+  | @cons Y Z p q ih =>
+      cases q with
+      | inl f =>
+          change pathToCompletion p ≫
+              CategoryTheory.FreeGroupoid.homMk f =
+            canonicalCompletionHom X Z
+          rw [ih, homMk_eq_canonicalCompletionHom]
+          exact canonicalCompletionHom_comp X Y Z
+      | inr f =>
+          let qneg : Quiver.Path (V := Quiver.Symmetrify
+              Ript.Examples.WalkingLocalization.Arrow) Y Z :=
+            f.toNegPath
+          change pathToCompletion p ≫ pathToCompletion qneg =
+            canonicalCompletionHom X Z
+          have hneg : pathToCompletion qneg =
+              inv (CategoryTheory.FreeGroupoid.homMk f) :=
+            pathToCompletion_neg f
+          rw [ih, hneg, inv_homMk_eq_canonicalCompletionHom]
+          exact canonicalCompletionHom_comp X Y Z
+
+/-- Every morphism in the walking-arrow completion is determined by its two
+endpoints. -/
+theorem completion_hom_eq_canonical
+    {X Y : Ript.Examples.WalkingLocalization.Completion} (f : X ⟶ Y) :
+    f = canonicalCompletionHom X.as.as Y.as.as := by
+  apply CategoryTheory.Quotient.induction
+    (CategoryTheory.FreeGroupoid.homRel
+      Ript.Examples.WalkingLocalization.Arrow)
+    (P := fun {X Y} f ↦
+      f = canonicalCompletionHom X.as.as Y.as.as)
+  intro X Y f
+  apply CategoryTheory.Quotient.induction
+    (@Quiver.FreeGroupoid.redStep
+      Ript.Examples.WalkingLocalization.Arrow _)
+    (P := fun {X Y} f ↦
+      (CategoryTheory.Quotient.functor
+        (CategoryTheory.FreeGroupoid.homRel
+          Ript.Examples.WalkingLocalization.Arrow)).map f =
+            canonicalCompletionHom X.as Y.as)
+  intro X Y p
+  exact pathToCompletion_eq_canonicalCompletionHom p
+
+/-- The free groupoid on the walking arrow is thin: there is exactly one
+morphism between each pair of objects. -/
+noncomputable instance walkingCompletionIsThin :
+    Quiver.IsThin Ript.Examples.WalkingLocalization.Completion :=
+  fun _ _ ↦
+    ⟨fun f g ↦ by
+      rw [completion_hom_eq_canonical f,
+        completion_hom_eq_canonical g]⟩
+
+/-- Forget a completed walking-arrow object to its endpoint in the
+codiscrete two-object category. -/
+noncomputable def completionToCodiscrete :
+    Ript.Examples.WalkingLocalization.Completion ⥤
+      Codiscrete Ript.Examples.WalkingLocalization.Arrow :=
+  Codiscrete.functor (fun X ↦ X.as.as)
+
+/-- Realize the unique codiscrete arrow by the canonical arrow in the
+walking-arrow completion. -/
+noncomputable def codiscreteToCompletion :
+    Codiscrete Ript.Examples.WalkingLocalization.Arrow ⥤
+      Ript.Examples.WalkingLocalization.Completion where
+  obj X := CategoryTheory.FreeGroupoid.mk X.as
+  map {X Y} _ := canonicalCompletionHom X.as Y.as
+  map_id X := canonicalCompletionHom_self X.as
+  map_comp _ _ := (canonicalCompletionHom_comp _ _ _).symm
+
+/-- The walking-arrow completion is exactly the codiscrete groupoid on its
+two endpoints, up to categorical equivalence.  Thus the localization adds
+one reverse arrow but no additional path ambiguity. -/
+noncomputable def completionCodiscreteEquivalence :
+    Ript.Examples.WalkingLocalization.Completion ≌
+      Codiscrete Ript.Examples.WalkingLocalization.Arrow where
+  functor := completionToCodiscrete
+  inverse := codiscreteToCompletion
+  unitIso := NatIso.ofComponents
+    (fun X ↦ eqToIso (CategoryTheory.FreeGroupoid.eq_mk X))
+    (fun _ ↦ Subsingleton.elim _ _)
+  counitIso := NatIso.ofComponents (fun X ↦ Iso.refl X)
+    (fun _ ↦ Subsingleton.elim _ _)
 
 /-- Naturality extends from signed generators to every symmetrized path. -/
 theorem liftedModificationApp_naturality_path
