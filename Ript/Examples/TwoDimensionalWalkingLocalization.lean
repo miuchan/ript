@@ -38,9 +38,11 @@ endpoint constraint is now also proved equal to the canonical identity
 constraint, so the public all-arrow constraint is natural across its strict
 identity branch.  Composition coherence is proved whenever both arrows lie
 in the inclusion image, and hence for every canonical forward-forward pair.
-The mixed cases involving the freely adjoined inverse, local essential
-surjectivity, and arbitrary nonseparable biessential factorization remain
-open.
+At constructor level, the inverse-generator mate followed by an arbitrary
+retained-coordinate constraint is now proved to recover the public constraint
+on its raw composite.  The remaining public-factor mixed cases involving the
+freely adjoined inverse, local essential surjectivity, and arbitrary
+nonseparable biessential factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -1154,6 +1156,31 @@ theorem liftedStrongTransEndpointNaturality_iso
   exact (liftedStrongTransEndpointNaturality_naturality σ e.hom).symm
 
 set_option backward.isDefEq.respectTransparency false in
+/-- The explicitly composed inverse-generator and retained-coordinate
+constraint is the endpoint-normalized constraint on that raw composite.
+Injectivity of transport across `canonicalInverseComparison` recovers the
+constraint before normalization. -/
+theorem liftedStrongTransEndpointNaturality_inverseComposite
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) (A : Type) :
+    liftedStrongTransEndpointNaturality σ
+        ((generatorEquivalence f).inv ≫
+          canonicalForwardHom (𝟙 X) A) =
+      liftedStrongTransInverseCompositeNaturality σ f A := by
+  apply Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective
+    (F := F) (G := G)
+    (liftedStrongTransApp σ (canonicalTargetObject Y))
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (canonicalInverseComparison f A)
+  dsimp only
+  rw [liftedStrongTransEndpointNaturality_iso]
+  change liftedStrongTransEndpointNaturality σ
+      (canonicalInverseHom f A) =
+    liftedStrongTransInverseNaturality σ f A
+  exact liftedStrongTransEndpointNaturality_inverse_of_not_le σ f h A
+
+set_option backward.isDefEq.respectTransparency false in
 /-- Endpoint-normalized constraints satisfy composition coherence whenever
 both factors lie in the image of the inclusion.  Naturality across the
 inclusion's compositor cancels the extra mapped compositor from the source
@@ -1358,6 +1385,20 @@ theorem liftedStrongTransNaturality_iso
   exact liftedStrongTransEndpointNaturality_iso σ e
 
 set_option backward.isDefEq.respectTransparency false in
+/-- The public constraint on the raw inverse-generator/retained composite is
+the explicitly composed constraint. -/
+theorem liftedStrongTransNaturality_inverseComposite
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) (A : Type) :
+    liftedStrongTransNaturality σ
+        ((generatorEquivalence f).inv ≫
+          canonicalForwardHom (𝟙 X) A) =
+      liftedStrongTransInverseCompositeNaturality σ f A := by
+  rw [liftedStrongTransNaturality_eq_endpoint]
+  exact liftedStrongTransEndpointNaturality_inverseComposite σ f h A
+
+set_option backward.isDefEq.respectTransparency false in
 /-- The public all-arrow lifted constraint is natural in every target
 2-morphism, including 2-cells that meet its strict-identity branch. -/
 theorem liftedStrongTransNaturality_naturality
@@ -1421,6 +1462,37 @@ theorem liftedStrongTransNaturality_comp_forward
         (α_ _ _ _).hom := by
   exact liftedStrongTransNaturality_comp_inclusion σ
     (canonicalSourceHom f A) (canonicalSourceHom g B)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Constructor-level composition coherence holds for the inverse-generator
+mate followed by an arbitrary retained-coordinate constraint.  The factors
+on the right are exactly the mate and forward constraints used to construct
+the public constraint on their raw composite. -/
+theorem liftedStrongTransNaturality_comp_inverseGenerator_retained
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) (A : Type) :
+    (liftedStrongTransNaturality σ
+        ((generatorEquivalence f).inv ≫
+          canonicalForwardHom (𝟙 X) A)).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+          (G.mapComp (generatorEquivalence f).inv
+            (canonicalForwardHom (𝟙 X) A)).hom =
+      (F.mapComp (generatorEquivalence f).inv
+          (canonicalForwardHom (𝟙 X) A)).hom ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (α_ _ _ _).hom ≫
+        F.map (generatorEquivalence f).inv ◁
+          (liftedStrongTransForwardNaturality σ (𝟙 X) A).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransGeneratorInverseNaturality σ f).hom ▷
+          G.map (canonicalForwardHom (𝟙 X) A) ≫
+        (α_ _ _ _).hom := by
+  rw [liftedStrongTransNaturality_inverseComposite σ f h A]
+  simp [liftedStrongTransInverseCompositeNaturality,
+    Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos,
+    Category.assoc]
+  rfl
 
 /-- The free groupoid on the walking arrow is thin: there is exactly one
 morphism between each pair of objects. -/

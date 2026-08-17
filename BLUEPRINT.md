@@ -4332,9 +4332,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   reverse arrows. Endpoint normal form selects these constraints for arbitrary
   target arrows. The endpoint-normalized constraints are natural in every
   target 2-cell, including the freely adjoined inverse branch, and the public
-  all-arrow candidate satisfies identity coherence. Compatibility between its
-  special identity branch and endpoint normalization, plus composition
-  coherence, remain before these data form a target strong transformation.
+  all-arrow candidate satisfies identity coherence and agrees with endpoint
+  normalization. Composition coherence holds on every inclusion-image pair.
+  Transport across a fixed target 2-isomorphism is now proved injective on
+  candidate constraints; using that cancellation, the inverse-generator mate
+  followed by any retained-coordinate constraint is proved to recover the
+  public constraint on its raw composite. The remaining public-factor mixed
+  inverse laws remain before these data form a target strong transformation.
   It remains a
   parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
@@ -4377,9 +4381,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   law and endpoint-normalized 2-cell naturality on both forward and inverse
   arrows are proved, and the public identity branch is proved equal to endpoint
   normalization. Composition coherence is proved for every pair in the
-  inclusion image, hence for every canonical forward-forward pair. Mixed
-  compositions involving the freely adjoined inverse, arbitrary lifts outside
-  that closure, and local essential surjectivity are not yet proved.
+  inclusion image, hence for every canonical forward-forward pair. The
+  inverse-generator mate followed by an arbitrary retained constraint also
+  satisfies constructor-level composition coherence and recovers the public
+  constraint on its raw composite. The remaining public-factor mixed inverse
+  laws, arbitrary lifts outside that closure, and local essential surjectivity
+  are not yet proved.
   The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
@@ -5710,8 +5717,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     public identity-specialized candidate satisfies identity coherence and
     agrees with endpoint normalization. The constraints satisfy composition
     coherence on every pair in the inclusion image, including every canonical
-    forward-forward pair; mixed compositions involving the freely adjoined
-    inverse remain. Arbitrary
+    forward-forward pair. Constructor-level coherence is also proved for an
+    inverse-generator mate followed by any retained-coordinate constraint;
+    the remaining public-factor mixed compositions involving the freely
+    adjoined inverse remain. Arbitrary
     nonseparable mixed-coordinate biessential
     factorization outside that closure and local essential surjectivity remain
     open, so this is not an existence proof for the

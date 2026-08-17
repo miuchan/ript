@@ -371,6 +371,28 @@ theorem naturalityIsoOfIso_naturality (F G : C ⥤ᵖ D)
   rw [← whiskerLeft_comp, ← G.map₂_comp, ← he, G.map₂_comp,
     whiskerLeft_comp]
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Transport of candidate strong-naturality isomorphisms across a fixed
+2-isomorphism is injective.  This allows a constraint to be recovered after
+normalizing its source 1-morphism by an invertible 2-cell. -/
+theorem naturalityIsoOfIso_injective (F G : C ⥤ᵖ D)
+    {a b : C} {f g : a ⟶ b}
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (e : f ≅ g) :
+    Function.Injective
+      (fun α : F.map f ≫ appB ≅ appA ≫ G.map f =>
+        naturalityIsoOfIso F G appA appB α e) := by
+  intro α β h
+  apply Iso.ext
+  have hhom := congrArg Iso.hom h
+  dsimp [naturalityIsoOfIso] at hhom
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv] at hhom
+  rw [← cancel_epi (F.map₂ e.inv ▷ appB)]
+  rw [← cancel_mono (appA ◁ G.map₂ e.hom)]
+  simpa only [Category.assoc] using hhom
+
 /-- Compose candidate strong-naturality isomorphisms.  The pseudofunctor
 comparison maps and bicategorical associators make the result a constraint at
 the composite source 1-morphism.  This is the constructor form of
