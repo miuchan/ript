@@ -90,8 +90,11 @@ has explicit object components and a candidate strong-naturality isomorphism
 for every target 1-morphism. Forward arrows reuse source naturality with an
 arbitrary retained coordinate; reverse arrows compose an explicit invertible
 mate with the retained-coordinate constraint; endpoint normal form covers all
-target arrows. Naturality in 2-cells plus the identity and composition laws
-have not yet been assembled into a target strong transformation. What remains
+target arrows. Naturality in every target 2-cell and the identity law are
+compiled, as is composition coherence for every pair in the inclusion image
+and hence every canonical forward-forward pair. Mixed compositions involving
+the freely adjoined inverse have not yet been assembled; after those cases,
+the data can be packaged as a target strong transformation. What also remains
 open is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the

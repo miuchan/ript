@@ -4375,9 +4375,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   faithful local precomposition. Every 1-morphism-level constraint for a
   prospective strong-transformation lift is explicit; its identity coherence
   law and endpoint-normalized 2-cell naturality on both forward and inverse
-  arrows are proved. Identity-branch compatibility, composition coherence,
-  arbitrary lifts outside that closure, and local essential surjectivity are
-  not yet proved.
+  arrows are proved, and the public identity branch is proved equal to endpoint
+  normalization. Composition coherence is proved for every pair in the
+  inclusion image, hence for every canonical forward-forward pair. Mixed
+  compositions involving the freely adjoined inverse, arbitrary lifts outside
+  that closure, and local essential surjectivity are not yet proved.
   The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
@@ -5705,8 +5707,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     transformations now extend to explicit object components and candidate
     constraints on every target arrow. Those endpoint-normalized constraints
     satisfy 2-cell naturality in both the forward and inverse branches, and the
-    public identity-specialized candidate satisfies identity coherence;
-    identity-branch compatibility and composition coherence remain. Arbitrary
+    public identity-specialized candidate satisfies identity coherence and
+    agrees with endpoint normalization. The constraints satisfy composition
+    coherence on every pair in the inclusion image, including every canonical
+    forward-forward pair; mixed compositions involving the freely adjoined
+    inverse remain. Arbitrary
     nonseparable mixed-coordinate biessential
     factorization outside that closure and local essential surjectivity remain
     open, so this is not an existence proof for the
