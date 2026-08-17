@@ -479,6 +479,8 @@ set_option autoImplicit false
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_endpoint
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard

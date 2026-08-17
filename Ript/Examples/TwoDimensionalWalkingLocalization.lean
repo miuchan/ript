@@ -59,9 +59,11 @@ forward arrows and genuinely reverse arrows are explicit.  An identity
 comparison is now defined at every target object.  Composition comparisons are
 compiled for all eight endpoint-normalized pairs: forward/forward, both
 retained/inverse orders, and both inverse/forward cancellation orders with
-arbitrary retained coordinates.  Packaging those branches into one all-arrow
-comparison, proving the pseudofunctor coherence laws, and constructing the
-resulting arbitrary nonseparable biessential factorization still remain open;
+arbitrary retained coordinates.  Endpoint normalization now packages those
+branches into one comparison for every composable target-arrow pair, with
+compiled reduction equations exposing all eight branches.  Proving the
+pseudofunctor coherence laws and constructing the resulting arbitrary
+nonseparable biessential factorization still remain open;
 consequently the global `lift` field of the bicategorical-localization
 predicate is not yet claimed.
 -/
@@ -4385,6 +4387,208 @@ noncomputable def generalLiftMapCompForwardInverse
     whiskerLeftIso
       ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A))
       (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf B)).symm
+
+/-- A target arrow in the unique normal form determined by its two walking
+endpoints and its retained-coordinate type. -/
+noncomputable def canonicalEndpointHom
+    (X Y : Ript.Examples.WalkingLocalization.Arrow) (A : Type) :
+    canonicalTargetObject X ⟶ canonicalTargetObject Y :=
+  (canonicalCompletionHom X Y).toLoc ×ₘ A
+
+/-- Composition comparison for endpoint-normal target arrows.  Equality
+tests, rather than large elimination from `Fin 2`, select the eight compiled
+canonical branches.  This keeps the result in the target bicategory's full
+universe and leaves each branch definitionally available for coherence. -/
+noncomputable def generalLiftEndpointMapComp
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (X Y Z : Ript.Examples.WalkingLocalization.Arrow) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalEndpointHom X Y A ≫ canonicalEndpointHom Y Z B) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalEndpointHom X Y A) ≫
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalEndpointHom Y Z B) := by
+  classical
+  by_cases hX : X = 0
+  · subst X
+    by_cases hY : Y = 0
+    · subst Y
+      by_cases hZ : Z = 0
+      · subst Z
+        exact generalLiftMapCompForward F hF
+          (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow))
+          (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A B
+      · have hZ' : Z = 1 := by fin_cases Z <;> simp_all
+        subst Z
+        exact generalLiftMapCompForward F hF
+          (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow))
+          Ript.Examples.WalkingLocalization.arrow A B
+    · have hY' : Y = 1 := by fin_cases Y <;> simp_all
+      subst Y
+      by_cases hZ : Z = 0
+      · subst Z
+        exact generalLiftMapCompForwardInverse F hF
+          Ript.Examples.WalkingLocalization.arrow (by decide) A B
+      · have hZ' : Z = 1 := by fin_cases Z <;> simp_all
+        subst Z
+        exact generalLiftMapCompForward F hF
+          Ript.Examples.WalkingLocalization.arrow
+          (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A B
+  · have hX' : X = 1 := by fin_cases X <;> simp_all
+    subst X
+    by_cases hY : Y = 0
+    · subst Y
+      by_cases hZ : Z = 0
+      · subst Z
+        exact generalLiftMapCompInverseRetained F hF
+          Ript.Examples.WalkingLocalization.arrow (by decide) A B
+      · have hZ' : Z = 1 := by fin_cases Z <;> simp_all
+        subst Z
+        exact generalLiftMapCompInverseForward F hF
+          Ript.Examples.WalkingLocalization.arrow (by decide) A B
+    · have hY' : Y = 1 := by fin_cases Y <;> simp_all
+      subst Y
+      by_cases hZ : Z = 0
+      · subst Z
+        exact generalLiftMapCompRetainedInverse F hF
+          Ript.Examples.WalkingLocalization.arrow (by decide) A B
+      · have hZ' : Z = 1 := by fin_cases Z <;> simp_all
+        subst Z
+        exact generalLiftMapCompForward F hF
+          (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow))
+          (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A B
+
+/-- The endpoint comparison at `0 → 0 → 0` is the forward/forward
+branch. -/
+theorem generalLiftEndpointMapComp_zero_zero_zero
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 0 0 0 A B =
+      generalLiftMapCompForward F hF
+        (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow))
+        (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `0 → 0 → 1` is the forward/forward
+branch. -/
+theorem generalLiftEndpointMapComp_zero_zero_one
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 0 0 1 A B =
+      generalLiftMapCompForward F hF
+        (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow))
+        Ript.Examples.WalkingLocalization.arrow A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `0 → 1 → 0` is forward/inverse
+cancellation. -/
+theorem generalLiftEndpointMapComp_zero_one_zero
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 0 1 0 A B =
+      generalLiftMapCompForwardInverse F hF
+        Ript.Examples.WalkingLocalization.arrow (by decide) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `0 → 1 → 1` is the forward/forward
+branch. -/
+theorem generalLiftEndpointMapComp_zero_one_one
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 0 1 1 A B =
+      generalLiftMapCompForward F hF
+        Ript.Examples.WalkingLocalization.arrow
+        (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `1 → 0 → 0` is the inverse/retained
+branch. -/
+theorem generalLiftEndpointMapComp_one_zero_zero
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 1 0 0 A B =
+      generalLiftMapCompInverseRetained F hF
+        Ript.Examples.WalkingLocalization.arrow (by decide) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `1 → 0 → 1` is inverse/forward
+cancellation. -/
+theorem generalLiftEndpointMapComp_one_zero_one
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 1 0 1 A B =
+      generalLiftMapCompInverseForward F hF
+        Ript.Examples.WalkingLocalization.arrow (by decide) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `1 → 1 → 0` is the retained/inverse
+branch. -/
+theorem generalLiftEndpointMapComp_one_one_zero
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 1 1 0 A B =
+      generalLiftMapCompRetainedInverse F hF
+        Ript.Examples.WalkingLocalization.arrow (by decide) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- The endpoint comparison at `1 → 1 → 1` is the forward/forward
+branch. -/
+theorem generalLiftEndpointMapComp_one_one_one
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (A B : Type) :
+    generalLiftEndpointMapComp F hF 1 1 1 A B =
+      generalLiftMapCompForward F hF
+        (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow))
+        (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A B := by
+  simp [generalLiftEndpointMapComp]
+  congr
+
+/-- Composition comparison for every composable pair of target arrows.
+Objects are first rewritten to their canonical free-groupoid representatives;
+thinness then rewrites both walking-coordinate arrows to their endpoint normal
+forms, where `generalLiftEndpointMapComp` supplies the relevant one of the
+eight compiled comparisons. -/
+noncomputable def generalLiftMapComp
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Target} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    (generalLiftPrelaxFunctor F hF).map (f ≫ g) ≅
+      (generalLiftPrelaxFunctor F hF).map f ≫
+        (generalLiftPrelaxFunctor F hF).map g := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  rcases Z with ⟨⟨Z⟩, Z'⟩
+  cases X'
+  cases Y'
+  cases Z'
+  let x : Ript.Examples.WalkingLocalization.Arrow := X.as.as
+  let y : Ript.Examples.WalkingLocalization.Arrow := Y.as.as
+  let z : Ript.Examples.WalkingLocalization.Arrow := Z.as.as
+  have hX : X = CategoryTheory.FreeGroupoid.mk x :=
+    CategoryTheory.FreeGroupoid.eq_mk X
+  have hY : Y = CategoryTheory.FreeGroupoid.mk y :=
+    CategoryTheory.FreeGroupoid.eq_mk Y
+  have hZ : Z = CategoryTheory.FreeGroupoid.mk z :=
+    CategoryTheory.FreeGroupoid.eq_mk Z
+  cases hX
+  cases hY
+  cases hZ
+  rcases f with ⟨⟨f⟩, A⟩
+  rcases g with ⟨⟨g⟩, B⟩
+  have hf : f = canonicalCompletionHom x y :=
+    completion_hom_eq_canonical f
+  have hg : g = canonicalCompletionHom y z :=
+    completion_hom_eq_canonical g
+  cases hf
+  cases hg
+  exact generalLiftEndpointMapComp F hF x y z A B
+
+/-- On endpoint-normal arrows, the all-arrow comparison reduces
+definitionally to the explicit eight-branch comparison. -/
+theorem generalLiftMapComp_endpoint
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (X Y Z : Ript.Examples.WalkingLocalization.Arrow) (A B : Type) :
+    generalLiftMapComp F hF (canonicalEndpointHom X Y A)
+        (canonicalEndpointHom Y Z B) =
+      generalLiftEndpointMapComp F hF X Y Z A B := by
+  rfl
 
 end ArbitraryLiftPrelaxAction
 

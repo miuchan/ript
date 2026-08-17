@@ -5795,8 +5795,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     equivalences now give a compiled target `PrelaxFunctor` action. It has an
     identity comparison at every object and composition comparisons for all
     eight endpoint-normalized pairs: four forward/forward shapes, both
-    retained/inverse orders, and both inverse/forward cancellations. Packaging
-    these branches as one all-arrow comparison, proving the pseudofunctor
-    coherence laws, and constructing the resulting nonseparable biessential
-    factorization remain open, so this is not yet an existence proof for the
-    desired resource-process higher localization.
+    retained/inverse orders, and both inverse/forward cancellations. Endpoint
+    normalization now packages these branches as one comparison for every
+    composable target-arrow pair, with reduction theorems for all eight cases.
+    Proving the pseudofunctor coherence laws and constructing the resulting
+    nonseparable biessential factorization remain open, so this is not yet an
+    existence proof for the desired resource-process higher localization.
