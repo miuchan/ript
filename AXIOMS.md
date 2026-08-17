@@ -296,6 +296,8 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Pseudofunctor.StrongTrans.mate_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityAt_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.localPrecomposition_faithful_of_obj_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -320,7 +322,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_eq_source` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalInverseComparison_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransInverseCompositeNaturality_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransInverseNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransInverseNaturality_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransEndpointNaturality_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
