@@ -100,11 +100,15 @@ For an arbitrary (possibly nonseparable) marking-inverting source
 pseudofunctor, chosen adjoint equivalences on the images of the marked walking
 arrows now determine a compiled `PrelaxFunctor` action on every target object,
 1-morphism, and 2-morphism. Its forward and genuinely reverse 1-/2-morphism
-equations are explicit. What remains open is to construct the identity and
-composition comparison isomorphisms, prove their pseudofunctor coherence, and
-then build the source-factorization adjoint equivalence. This is the missing
-global `lift` field, and the corresponding construction for the full
-resource-process bicategory remains downstream.
+equations are explicit. Its identity comparison is compiled at every object,
+and composition comparisons are compiled for all eight endpoint-normalized
+pairs: the four forward/forward shapes, both retained/inverse orders, and both
+inverse/forward cancellation orders with arbitrary retained coordinates. What
+remains open is to package these branches as one all-arrow comparison, prove
+the pseudofunctor unit, associativity, and whiskering laws, and then build the
+source-factorization adjoint equivalence. This is the missing global `lift`
+field, and the corresponding construction for the full resource-process
+bicategory remains downstream.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

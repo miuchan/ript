@@ -55,8 +55,12 @@ modifications lift as well, so precomposition is an equivalence on every local
 category.  For an arbitrary marking-inverting source pseudofunctor, the chosen
 endpoint equivalences now also determine a compiled `PrelaxFunctor` action on
 all target objects, 1-morphisms, and 2-morphisms.  Its equations on canonical
-forward arrows and genuinely reverse arrows are explicit.  Identity and
-composition comparison isomorphisms, their pseudofunctor coherence, and the
+forward arrows and genuinely reverse arrows are explicit.  An identity
+comparison is now defined at every target object.  Composition comparisons are
+compiled for all eight endpoint-normalized pairs: forward/forward, both
+retained/inverse orders, and both inverse/forward cancellation orders with
+arbitrary retained coordinates.  Packaging those branches into one all-arrow
+comparison, proving the pseudofunctor coherence laws, and constructing the
 resulting arbitrary nonseparable biessential factorization still remain open;
 consequently the global `lift` field of the bicategorical-localization
 predicate is not yet claimed.
@@ -3987,6 +3991,400 @@ theorem generalLiftPrelaxFunctor_map₂_inverse
   rw [dif_neg hf]
   dsimp [generalLiftReverseHomFunctor]
   congr 2
+
+/-- The canonical source arrow with identity data in both coordinates is
+isomorphic to the strict source identity. -/
+noncomputable def canonicalSourceIdentityComparison
+    (X : Ript.Examples.WalkingLocalization.Arrow) :
+    canonicalSourceHom (𝟙 X)
+        (𝟙 (MonoidalSingleObj.star (Type))) ≅
+      𝟙 (canonicalSourceObject X) :=
+  eqToIso (by rfl)
+
+/-- Identity comparison for the arbitrary lift at a canonical endpoint.  It
+normalizes the strict target identity to a canonical forward arrow, reuses the
+source action, and then applies the source pseudofunctor's unit comparison. -/
+noncomputable def generalLiftCanonicalMapId
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (X : Ript.Examples.WalkingLocalization.Arrow) :
+    (generalLiftPrelaxFunctor F hF).map
+        (𝟙 (canonicalTargetObject X)) ≅
+      𝟙 ((generalLiftPrelaxFunctor F hF).obj
+        (canonicalTargetObject X)) :=
+  (generalLiftPrelaxFunctor F hF).map₂Iso
+      (canonicalForwardIdentityComparison X).symm ≪≫
+    eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+      (𝟙 (MonoidalSingleObj.star (Type)))) ≪≫
+    F.map₂Iso (canonicalSourceIdentityComparison X) ≪≫
+    F.mapId (canonicalSourceObject X)
+
+/-- Identity comparison for the arbitrary lift at every target object.  Target
+objects have canonical walking-arrow representatives, so no new object-level
+choice is needed. -/
+noncomputable def generalLiftMapId
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Target) :
+    (generalLiftPrelaxFunctor F hF).map (𝟙 X) ≅
+      𝟙 ((generalLiftPrelaxFunctor F hF).obj X) := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  rw [CategoryTheory.FreeGroupoid.eq_mk X]
+  exact generalLiftCanonicalMapId F hF X.as.as
+
+/-- On a canonical target endpoint, the general identity comparison reduces
+definitionally to its explicit four-stage normalization chain. -/
+theorem generalLiftMapId_canonical
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (X : Ript.Examples.WalkingLocalization.Arrow) :
+    generalLiftMapId F hF (canonicalTargetObject X) =
+      generalLiftCanonicalMapId F hF X := by
+  rfl
+
+/-- Canonical source arrows compose by composing their walking arrows and
+forming the cartesian product of their retained coordinates. -/
+noncomputable def canonicalSourceCompositionComparison
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A B : Type) :
+    canonicalSourceHom f A ≫ canonicalSourceHom g B ≅
+      canonicalSourceHom (f ≫ g) (A × B) :=
+  eqToIso (by rfl)
+
+/-- The analogous composition comparison after free-groupoid completion. -/
+noncomputable def canonicalForwardCompositionComparison
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A B : Type) :
+    canonicalForwardHom f A ≫ canonicalForwardHom g B ≅
+      canonicalForwardHom (f ≫ g) (A × B) :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    exact ((CategoryTheory.FreeGroupoid.of
+      Ript.Examples.WalkingLocalization.Arrow).map_comp f g).symm))
+    (Iso.refl _)
+
+/-- Source pseudofunctor composition, expressed on canonical source arrows. -/
+noncomputable def generalLiftForwardMapCompSource
+    (F : Source ⥤ᵖ E)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A B : Type) :
+    F.map (canonicalSourceHom (f ≫ g) (A × B)) ≅
+      F.map (canonicalSourceHom f A) ≫
+        F.map (canonicalSourceHom g B) :=
+  F.map₂Iso (canonicalSourceCompositionComparison f g A B).symm ≪≫
+    F.mapComp (canonicalSourceHom f A) (canonicalSourceHom g B)
+
+/-- Composition comparison for two canonical forward target arrows.  This
+discharges all four endpoint triples whose two factors both come from the
+walking-arrow source. -/
+noncomputable def generalLiftMapCompForward
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom f A ≫ canonicalForwardHom g B) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom g B) :=
+  (generalLiftPrelaxFunctor F hF).map₂Iso
+      (canonicalForwardCompositionComparison f g A B) ≪≫
+    eqToIso (generalLiftPrelaxFunctor_map_forward F hF (f ≫ g) (A × B)) ≪≫
+    generalLiftForwardMapCompSource F f g A B ≪≫
+    whiskerRightIso
+        (eqToIso (generalLiftPrelaxFunctor_map_forward F hF f A)).symm
+        (F.map (canonicalSourceHom g B)) ≪≫
+    whiskerLeftIso
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A))
+      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF g B)).symm
+
+/-- A canonical inverse arrow followed by a retained-coordinate endomorphism
+normalizes to one inverse arrow with product retained coordinate. -/
+noncomputable def canonicalInverseRetainedCompositionComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    canonicalInverseHom f A ≫ canonicalForwardHom (𝟙 X) B ≅
+      canonicalInverseHom f (A × B) :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change inv (CategoryTheory.FreeGroupoid.homMk f) ≫
+        CategoryTheory.FreeGroupoid.homMk (𝟙 X) =
+      inv (CategoryTheory.FreeGroupoid.homMk f)
+    simp)) (Iso.refl _)
+
+/-- Composition comparison for a genuine inverse arrow followed by a
+retained-coordinate endomorphism. -/
+noncomputable def generalLiftMapCompInverseRetained
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalInverseHom f A ≫ canonicalForwardHom (𝟙 X) B) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom (𝟙 X) B) :=
+  (generalLiftPrelaxFunctor F hF).map₂Iso
+      (canonicalInverseRetainedCompositionComparison f A B) ≪≫
+    eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × B)) ≪≫
+    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    whiskerRightIso
+      (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf A)).symm
+      (F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
+    whiskerLeftIso
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A))
+      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) B)).symm
+
+/-- A source generator followed by a retained-coordinate endomorphism
+normalizes through the cartesian left unitor. -/
+noncomputable def canonicalSourceGeneratorRetainedComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type))) ≫
+        canonicalSourceHom (𝟙 Y) A ≅
+      canonicalSourceHom f A :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change f ≫ 𝟙 Y = f
+    simp)) (MonoidalCategory.leftUnitor A)
+
+/-- A retained-coordinate endomorphism followed by a source generator
+normalizes through the cartesian right unitor. -/
+noncomputable def canonicalSourceRetainedGeneratorComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    canonicalSourceHom (𝟙 X) A ≫
+        canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type))) ≅
+      canonicalSourceHom f A :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change 𝟙 X ≫ f = f
+    simp)) (MonoidalCategory.rightUnitor A)
+
+/-- The source pseudofunctor's image of retained data slides across the image
+of the marked forward generator. -/
+noncomputable def generalLiftForwardSlidingSource
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftSourceEquivalence F hF f).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) A) ≅
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+        (generalLiftSourceEquivalence F hF f).hom :=
+  (F.map₂Iso (canonicalSourceGeneratorRetainedComparison f A).symm ≪≫
+    F.mapComp
+      (canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type))))
+      (canonicalSourceHom (𝟙 Y) A)).symm ≪≫
+  (F.map₂Iso (canonicalSourceRetainedGeneratorComparison f A).symm ≪≫
+    F.mapComp
+      (canonicalSourceHom (𝟙 X) A)
+      (canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type)))))
+
+/-- Taking the invertible mate of forward sliding lets retained data slide
+across the chosen inverse. -/
+noncomputable def generalLiftInverseSlidingSource
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) A) ≅
+      F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        (generalLiftSourceEquivalence F hF f).inv :=
+  Pseudofunctor.StrongTrans.inverseNaturalityIso
+    (Pseudofunctor.id E) (Pseudofunctor.id E)
+    (generalLiftSourceEquivalence F hF f)
+    (F.map (canonicalSourceHom (𝟙 X) A))
+    (F.map (canonicalSourceHom (𝟙 Y) A))
+    (generalLiftForwardSlidingSource F hF f A)
+
+/-- A retained-coordinate endomorphism followed by a canonical inverse arrow
+normalizes to one inverse arrow with product retained coordinate. -/
+noncomputable def canonicalRetainedInverseCompositionComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    canonicalForwardHom (𝟙 Y) A ≫ canonicalInverseHom f B ≅
+      canonicalInverseHom f (A × B) :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change CategoryTheory.FreeGroupoid.homMk (𝟙 Y) ≫
+        inv (CategoryTheory.FreeGroupoid.homMk f) =
+      inv (CategoryTheory.FreeGroupoid.homMk f)
+    simp)) (Iso.refl _)
+
+/-- Composition comparison for a retained-coordinate endomorphism followed by
+a genuine inverse arrow. -/
+noncomputable def generalLiftMapCompRetainedInverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom (𝟙 Y) A ≫ canonicalInverseHom f B) ≅
+      (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom (𝟙 Y) A) ≫
+        (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f B) :=
+  (generalLiftPrelaxFunctor F hF).map₂Iso
+      (canonicalRetainedInverseCompositionComparison f A B) ≪≫
+    eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × B)) ≪≫
+    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    whiskerRightIso (generalLiftInverseSlidingSource F hF f A)
+      (F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
+    α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+      (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
+    whiskerRightIso
+      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) A)).symm
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
+    whiskerLeftIso
+      ((generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom (𝟙 Y) A))
+      (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf B)).symm
+
+/-- The image of a source generator with retained data factors through the
+chosen forward equivalence and retained data at its codomain. -/
+noncomputable def generalLiftForwardFactorizationSource
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map (canonicalSourceHom f A) ≅
+      (generalLiftSourceEquivalence F hF f).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) A) :=
+  F.map₂Iso (canonicalSourceGeneratorRetainedComparison f A).symm ≪≫
+    F.mapComp
+      (canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type))))
+      (canonicalSourceHom (𝟙 Y) A)
+
+/-- The same image also factors through retained data at the domain followed
+by the chosen forward equivalence. -/
+noncomputable def generalLiftRetainedForwardFactorizationSource
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map (canonicalSourceHom f A) ≅
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+        (generalLiftSourceEquivalence F hF f).hom :=
+  F.map₂Iso (canonicalSourceRetainedGeneratorComparison f A).symm ≪≫
+    F.mapComp
+      (canonicalSourceHom (𝟙 X) A)
+      (canonicalSourceHom f (𝟙 (MonoidalSingleObj.star (Type))))
+
+/-- A canonical inverse followed by the matching forward arrow cancels in the
+completed walking coordinate and retains both coordinates at the codomain. -/
+noncomputable def canonicalInverseForwardCompositionComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    canonicalInverseHom f A ≫ canonicalForwardHom f B ≅
+      canonicalForwardHom (𝟙 Y) (A × B) :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change inv (CategoryTheory.FreeGroupoid.homMk f) ≫
+        CategoryTheory.FreeGroupoid.homMk f =
+      CategoryTheory.FreeGroupoid.homMk (𝟙 Y)
+    simp)) (Iso.refl _)
+
+/-- A canonical forward arrow followed by its matching inverse cancels in the
+completed walking coordinate and retains both coordinates at the domain. -/
+noncomputable def canonicalForwardInverseCompositionComparison
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    canonicalForwardHom f A ≫ canonicalInverseHom f B ≅
+      canonicalForwardHom (𝟙 X) (A × B) :=
+  Iso.prod (eqToIso (by
+    apply Discrete.ext
+    change CategoryTheory.FreeGroupoid.homMk f ≫
+        inv (CategoryTheory.FreeGroupoid.homMk f) =
+      CategoryTheory.FreeGroupoid.homMk (𝟙 X)
+    simp)) (Iso.refl _)
+
+/-- Composition comparison for a canonical inverse followed by the matching
+forward arrow. -/
+noncomputable def generalLiftMapCompInverseForward
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalInverseHom f A ≫ canonicalForwardHom f B) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f B) :=
+  (generalLiftPrelaxFunctor F hF).map₂Iso
+      (canonicalInverseForwardCompositionComparison f A B) ≪≫
+    eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (A × B)) ≪≫
+    generalLiftForwardMapCompSource F (𝟙 Y) (𝟙 Y) A B ≪≫
+    (λ_ (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+      F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
+    whiskerRightIso (generalLiftSourceEquivalence F hF f).counit.symm
+      (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+    α_ (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftSourceEquivalence F hF f).hom
+      (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
+    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (whiskerRightIso (generalLiftForwardSlidingSource F hF f A)
+        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
+    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      ((generalLiftSourceEquivalence F hF f).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
+    whiskerLeftIso
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) A))
+      (generalLiftForwardFactorizationSource F hF f B).symm ≪≫
+    whiskerRightIso
+      (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf A)).symm
+      (F.map (canonicalSourceHom f B)) ≪≫
+    whiskerLeftIso
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A))
+      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF f B)).symm
+
+/-- Composition comparison for a canonical forward arrow followed by the
+matching inverse. -/
+noncomputable def generalLiftMapCompForwardInverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom f A ≫ canonicalInverseHom f B) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f B) :=
+  (generalLiftPrelaxFunctor F hF).map₂Iso
+      (canonicalForwardInverseCompositionComparison f A B) ≪≫
+    eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) (A × B)) ≪≫
+    generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B ≪≫
+    whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+      (λ_ (F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+      (whiskerRightIso (generalLiftSourceEquivalence F hF f).unit
+        (F.map (canonicalSourceHom (𝟙 X) B))) ≪≫
+    whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) B))) ≪≫
+    (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+      (generalLiftSourceEquivalence F hF f).hom
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    whiskerRightIso
+      (generalLiftRetainedForwardFactorizationSource F hF f A).symm
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
+    whiskerRightIso
+      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF f A)).symm
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
+    whiskerLeftIso
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A))
+      (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf B)).symm
 
 end ArbitraryLiftPrelaxAction
 
