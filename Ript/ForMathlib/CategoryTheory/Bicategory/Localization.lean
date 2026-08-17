@@ -337,6 +337,18 @@ def naturalityIsoOfIso (F G : C ⥤ᵖ D) {a b : C} {f g : a ⟶ b}
     whiskerLeftIso appA (G.map₂Iso e)
 
 set_option backward.isDefEq.respectTransparency false in
+/-- Transporting a candidate constraint along the reflexive isomorphism does
+not change it. -/
+theorem naturalityIsoOfIso_refl (F G : C ⥤ᵖ D)
+    {a b : C} (f : a ⟶ b)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f) :
+    naturalityIsoOfIso F G appA appB α (Iso.refl f) = α := by
+  apply Iso.ext
+  simp [naturalityIsoOfIso]
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
 /-- Transporting two candidate constraints along a commuting pair of
 1-morphism isomorphisms preserves naturality in a 2-morphism. -/
 theorem naturalityIsoOfIso_naturality (F G : C ⥤ᵖ D)
@@ -408,6 +420,33 @@ def naturalityCompIsoOfIsos (F G : C ⥤ᵖ D)
     whiskerLeftIso (F.map f) β ≪≫ (α_ _ _ _).symm ≪≫
     whiskerRightIso α (G.map g) ≪≫ α_ _ _ _ ≪≫
     whiskerLeftIso appA (G.mapComp f g).symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- A candidate constraint satisfying the strong-transformation composition
+equation is the constraint constructed from its two factors.  This packages
+the hom-level coherence field as an equality of naturality isomorphisms. -/
+theorem naturalityCompIsoOfIsos_eq_of_coherence (F G : C ⥤ᵖ D)
+    {a b c : C} (f : a ⟶ b) (g : b ⟶ c)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (β : F.map g ≫ appC ≅ appB ≫ G.map g)
+    (γ : F.map (f ≫ g) ≫ appC ≅ appA ≫ G.map (f ≫ g))
+    (hγ : γ.hom ≫ appA ◁ (G.mapComp f g).hom =
+      (F.mapComp f g).hom ▷ appC ≫ (α_ _ _ _).hom ≫
+        F.map f ◁ β.hom ≫ (α_ _ _ _).inv ≫
+        α.hom ▷ G.map g ≫ (α_ _ _ _).hom) :
+    naturalityCompIsoOfIsos F G f g appA appB appC α β = γ := by
+  apply Iso.ext
+  dsimp [naturalityCompIsoOfIsos]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom]
+  calc
+    _ = (γ.hom ≫ appA ◁ (G.mapComp f g).hom) ≫
+          appA ◁ (G.mapComp f g).inv := by
+      rw [hγ]
+      simp only [Category.assoc]
+    _ = γ.hom := by simp
 
 /-- The canonical candidate strong-naturality isomorphism at an identity
 1-morphism, determined by the pseudofunctor unit comparisons and unitors. -/
