@@ -4339,9 +4339,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   right factor, is transitive, and satisfies the right-unit normalization law.
   Consequently the public constraint on a strict inverse generator is exactly
   its mate constructor, and a public inverse-generator factor followed by any
-  retained-coordinate factor satisfies composition coherence. Other mixed
-  inverse composition orders remain before these data form a target strong
-  transformation.
+  retained-coordinate factor satisfies composition coherence. The law is now
+  also packaged as equality of candidate isomorphisms and transported to the
+  canonical inverse arrow. For the opposite retained-then-inverse order, both
+  product-unitor comparisons, its composite candidate, its transport to the
+  canonical inverse arrow, and the equality of the two forward factorizations
+  are compiled. The remaining mate-sliding law is an exact
+  `STATEMENT_FORMALIZED` proposition; the two generator-cancellation orders
+  also remain before these data form a target strong transformation.
   It remains a
   parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
@@ -4382,6 +4387,46 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `naturalityIsoOfIso_comp_right`, `naturalityIsoOfIso_trans`, the endpoint
   normal form, and the inverse mate constructor. Status: `PROVED`.
   Computability: noncomputable proof layer. Axiom audit:
+  `[propext, Classical.choice, Quot.sound]`. Source:
+  `Ript/Examples/TwoDimensionalWalkingLocalization.lean`.
+- Retained/inverse composition conjecture:
+
+  ```lean
+  def TwoDimensionalWalkingLocalization.
+      LiftedStrongTransRetainedInverseCompositionCoherence
+      (σ : inclusion.comp F ⟶ inclusion.comp G)
+      {X Y : WalkingLocalization.Arrow}
+      (f : X ⟶ Y) (A : Type) : Prop :=
+    (liftedStrongTransNaturality σ
+        (canonicalForwardHom (𝟙 Y) A ≫
+          (generatorEquivalence f).inv)).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+          (G.mapComp (canonicalForwardHom (𝟙 Y) A)
+            (generatorEquivalence f).inv).hom =
+      (F.mapComp (canonicalForwardHom (𝟙 Y) A)
+          (generatorEquivalence f).inv).hom ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (α_ _ _ _).hom ≫
+        F.map (canonicalForwardHom (𝟙 Y) A) ◁
+          (liftedStrongTransNaturality σ
+            (generatorEquivalence f).inv).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ
+          (canonicalForwardHom (𝟙 Y) A)).hom ▷
+            G.map (generatorEquivalence f).inv ≫
+        (α_ _ _ _).hom
+  ```
+
+  Natural-language statement: a retained-coordinate endomorphism followed by
+  the freely adjoined inverse generator must satisfy the public
+  strong-transformation composition equation. Prerequisites already compiled
+  are `naturalityIsoOfIso_refl`,
+  `naturalityCompIsoOfIsos_eq_of_coherence`, the two forward product-unitor
+  transports, and the retained-then-inverse candidate transported to the
+  canonical inverse arrow. The missing proof is the mate-sliding square that
+  sends equality of the two forward factorizations to equality of the two
+  inverse factorizations. Status: `STATEMENT_FORMALIZED`. Computability:
+  noncomputable proof layer. Axiom audit of the proposition definition:
   `[propext, Classical.choice, Quot.sound]`. Source:
   `Ript/Examples/TwoDimensionalWalkingLocalization.lean`.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor

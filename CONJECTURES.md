@@ -6,7 +6,12 @@ whose proofs are not yet kernel checked. An active entry must carry the marker
 
 ## Current register
 
-There are currently no active `FORMALIZED_BUT_UNPROVED` propositions.
+- `FORMALIZED_BUT_UNPROVED` —
+  `Ript.Examples.TwoDimensionalWalkingLocalization.LiftedStrongTransRetainedInverseCompositionCoherence`:
+  the public all-arrow constraint must satisfy composition coherence when an
+  arbitrary retained-coordinate endomorphism is followed by the freely
+  adjoined inverse generator. The proposition itself is compiled; no theorem
+  currently inhabits it.
 
 This does **not** mean that Ript's research program is complete. The open tracks
 in the README and blueprint include broader measurable models, heterogeneous
@@ -97,9 +102,15 @@ also compiled: the inverse-generator mate followed by any retained-coordinate
 constraint recovers the public constraint on its raw composite. Its factors
 have now also been normalized to the public constraints themselves, proving
 the public-factor composition law for a strict inverse generator followed by
-an arbitrary retained arrow. Other mixed composition orders involving the
-freely adjoined inverse have not yet been assembled; after those cases, the
-data can be packaged as a target strong transformation. What also remains open
+an arbitrary retained arrow. The hom-level law is now also packaged as an
+equality of candidate isomorphisms and transported to the canonical inverse
+arrow. For the opposite order, both product-unitor comparisons, the retained-
+then-inverse candidate, its canonical inverse transport, and the equality of
+the two forward factorizations are compiled. The remaining mate-sliding
+equation is recorded exactly by
+`LiftedStrongTransRetainedInverseCompositionCoherence` and is not yet proved.
+The two generator-cancellation orders also remain before the data can be
+packaged as a target strong transformation. What also remains open
 is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the
