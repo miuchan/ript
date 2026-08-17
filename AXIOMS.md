@@ -275,6 +275,18 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.WalkingLocalization.inverse_comp_inclusion_map_arrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
 | `Ript.Examples.WalkingLocalization.arrow_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
 | `Ript.Examples.WalkingLocalization.inclusion_genuinely_adds_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalization.lean` |
+| `CategoryTheory.Pseudofunctor.prod` | `[propext]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Product.lean` |
+| `CategoryTheory.Bicategory.Equivalence.prod` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Product.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.markedArrow_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map_markedArrow_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionMapMarkedArrowCompInverseIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inverseCompInclusionMapMarkedArrowIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map₂_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_map₂_discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.target_not_isLocallyDiscrete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_adds_inverse_and_retains_noninvertible_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
@@ -612,11 +624,16 @@ constructive step: Mathlib's free groupoid adjoins an explicit inverse to a
 source arrow that is proved not to be a bicategorical equivalence. Both
 inverse laws, the ordinary `Functor.IsLocalization` instance, and the induced
 bicategorical mark inversion are kernel checked. This validates a genuine
-inverse-adjoining slice, but its locally discrete target does not retain
-arbitrary noninvertible 2-cells and has not been proved to satisfy the full
-bicategorical predicate. These audited declarations have the same exact
-`[propext, Classical.choice, Quot.sound]` footprint. No existence theorem for
-the nontrivial full resource-process higher localization is claimed.
+inverse-adjoining slice. The parameterized two-dimensional refinement now
+takes its product with the single-object bicategory of types and functions.
+Its target is proved not locally discrete, its map on all source 2-cells is
+injective, and a concrete Boolean discard 2-cell remains noninvertible after
+the walking coordinate is localized. `Pseudofunctor.prod` itself uses only
+`[propext]`; the remaining audited declarations have the exact
+`[propext, Classical.choice, Quot.sound]` footprint. The refinement has not
+been proved to satisfy biessential factorization or local equivalence, so no
+existence theorem for the nontrivial full resource-process higher
+localization is claimed.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

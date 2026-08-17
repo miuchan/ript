@@ -53,13 +53,19 @@ walking arrow is represented by the preorder category `Fin 2`; its generator
 is proved not to be a bicategorical equivalence in the locally discrete
 source. Mathlib's free-groupoid localization supplies an explicit reverse
 arrow, both inverse equations, and an ordinary `Functor.IsLocalization`
-instance. Ript proves that ordinary inversion transports to adjoint-equivalence
-inversion by the induced pseudofunctor. This resolves construction of the
-mark-inversion field in a nontrivial locally discrete case. It does not yet
-resolve the open part: a construction for the full resource-process
-bicategory must preserve arbitrary noninvertible 2-cells and establish
-biessential factorization and local equivalence on transformations and
-modifications.
+instance. Ript proves that ordinary inversion transports to
+adjoint-equivalence inversion by the induced pseudofunctor.
+
+The next parameterized slice removes the locally discrete target restriction.
+Ript takes the product with the single-object bicategory of types and
+functions, localizes only the walking coordinate, proves the resulting
+pseudofunctor faithful on every source 2-cell, and proves a concrete Boolean
+discard 2-cell remains noninvertible in the target. Thus genuine inverse
+addition and noninvertible 2-cell retention now coexist in one compiled
+bicategorical construction. What remains open is not that controlled
+retention example, but a construction for the full resource-process
+bicategory together with biessential factorization and local equivalence on
+strong transformations and modifications.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

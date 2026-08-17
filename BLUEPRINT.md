@@ -221,7 +221,7 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, a fully constructed identity base case, a walking-arrow inverse-adjoining construction, cost-exact specialization, and concrete obstructions | PROVED |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, a non-locally-discrete parameterized inverse-adjoining construction retaining noninvertible 2-cells, cost-exact specialization, and concrete obstructions | PROVED |
 | 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -4169,6 +4169,22 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
         Bicategory.IsEquivalence
           (WalkingLocalization.inclusion.map WalkingLocalization.arrow.toLoc)
 
+  def Pseudofunctor.prod (F : B ⥤ᵖ C) (G : D ⥤ᵖ E) :
+      (B × D) ⥤ᵖ (C × E)
+
+  theorem TwoDimensionalWalkingLocalization.inclusion_map₂_injective
+      (η θ : f ⟶ g)
+      (h : inclusion.map₂ η = inclusion.map₂ θ) : η = θ
+
+  theorem TwoDimensionalWalkingLocalization.target_not_isLocallyDiscrete :
+      ¬ Bicategory.IsLocallyDiscrete Target
+
+  theorem TwoDimensionalWalkingLocalization.inclusion_adds_inverse_and_retains_noninvertible_twoCell :
+      (¬ Bicategory.IsEquivalence markedArrow) ∧
+        Bicategory.IsEquivalence (inclusion.map markedArrow) ∧
+          (¬ IsIso discardTwoCell) ∧
+            ¬ IsIso (inclusion.map₂ discardTwoCell)
+
   theorem HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard
       (F : ProcessModel Nat ⥤ᵖ LocallyDiscrete C) :
       F.map (ModelHom.id finiteZeroCostModel) =
@@ -4199,6 +4215,17 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   inversion into the mark-inversion field of the bicategorical interface.
   This construction is intentionally not claimed to retain noninvertible
   source 2-cells or to satisfy the other two fields of the full predicate.
+- Two-dimensional parameterized construction: the walking source and target
+  are each multiplied by `MonoidalSingleObj (Type)`, whose 1-morphisms are
+  types and whose 2-morphisms are functions. The componentwise product
+  pseudofunctor localizes the walking coordinate and leaves the second
+  coordinate unchanged. Its marked generator acquires an explicit inverse
+  with both composites 2-isomorphic to identities; its map on every source
+  2-cell is injective; Boolean discard is noninvertible before and after the
+  map; and the target is formally not locally discrete. This proves that
+  inverse addition and noninvertible 2-cell retention can coexist. It remains
+  a parameterized slice: biessential factorization and local equivalence have
+  not been proved, and the source is not the resource-process bicategory.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
   additive `0` in `Multiplicative Nat`; target object `1` is not in the
@@ -4237,7 +4264,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/MorphismProperty.lean`,
   `Ript/ForMathlib/CategoryTheory/Bicategory/PithToHomotopy.lean`,
+  `Ript/ForMathlib/CategoryTheory/Bicategory/Product.lean`,
   `Ript/Examples/WalkingLocalization.lean`,
+  `Ript/Examples/TwoDimensionalWalkingLocalization.lean`,
   `Ript/Higher/Localization.lean`, and
   `Ript/Examples/HigherLocalization.lean`, and
   `Ript/Examples/HigherNoninvertibleTwoCell.lean`.
@@ -5526,10 +5555,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     pseudofunctor is a genuine localization exactly for markings already made
     of adjoint equivalences. The concrete cost-reflecting discrete embedding
     is not an equivalence, which rules out that identity candidate for Ript.
-    The walking-arrow/free-groupoid example now genuinely adjoins a missing
+    The walking-arrow/free-groupoid example genuinely adjoins a missing
     inverse and verifies both inverse equations plus the induced
-    bicategorical mark inversion. Because that example is locally discrete,
-    it still does not retain arbitrary 2-cells or prove biessential/local
-    universality. This is a verified inverse-adjoining base construction and
-    a stronger obstruction, not an existence proof for the desired
-    nontrivial resource-process higher localization.
+    bicategorical mark inversion. Its parameterized product with the
+    single-object bicategory of types is no longer locally discrete: the map
+    is faithful on 2-cells and retains a concrete noninvertible Boolean
+    discard while adjoining the inverse. This is a verified two-dimensional
+    inverse-adjoining construction, but it does not yet prove biessential or
+    local universality and is not an existence proof for the desired
+    resource-process higher localization.
