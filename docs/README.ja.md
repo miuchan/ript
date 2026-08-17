@@ -85,7 +85,10 @@ localization になるのは、すべての印付き射が既に随伴同値で�
 非可逆であることを証明します。任意の標的双圏について、保持された座標のみに依存する各 pseudofunctor
 は標的を通る明示的因子化を持ちます。前合成は strong transformation と modification の全局所圏で
 充満忠実です。modification の成分を始域から持ち上げ、mate 計算により生成射の自然性を自由に追加した
-逆射へ延長し、path 帰納と積分解によって全標的射へ拡張します。walking 自由 groupoid 自体にも正規形を
+逆射へ延長し、path 帰納と積分解によって全標的射へ拡張します。未完成の対象持ち上げ方向では、始域の
+strong transformation から標的の対象成分を復元し、生成射の制約を前向きに移送できるようになりました。
+自由に追加した逆射の制約は明示的な可逆 mate で与えられます。これらを標的 strong transformation に
+まとめるには、保持座標の射および合成との整合性がなお必要です。walking 自由 groupoid 自体にも正規形を
 証明しました。各符号付き path は端点で一意に定まる射に等しく、補完は thin であり、`Fin 2` 上の
 codiscrete groupoid と明示的に圏同値です。
 これと相補的に、任意の groupoid `G` への各 walking-arrow 関手は、局所化される座標のみに依存する
@@ -1104,6 +1107,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | walking-arrow 補完は `Fin 2` 上の codiscrete groupoid と圏同値です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | 前合成後の各 modification は自由に追加した逆射を越えて延長できます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | 前合成は全局所圏で充満忠実です。局所同値に残るのは局所本質的全射性だけです。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | 予定される標的 strong transformation の逆生成射制約は、前向き制約から得られる明示的な可逆双圏 mate です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | 具体的な標識反転 pseudofunctor は非可逆 Boolean discard を検出したまま標的を通って因子化します。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限決定論的 discard は非可逆なモデル 2-射で、その両端は homotopy truncation 後も異なります。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 完全なモデル双圏から局所離散な標的への全 pseudofunctor は discard の両端の像を同一視します。 |

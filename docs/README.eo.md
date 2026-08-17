@@ -140,7 +140,11 @@ havas eksplicitan faktoradon tra la celo. Antaŭkunmeto estas nun plene fidela e
 ĉiu loka kategorio de fortaj transformoj kaj modifoj: modifaj komponantoj leviĝas
 el la fonto, natureco etendiĝas de antaŭaj generatoroj al iliaj libere aldonitaj
 inversoj per mate-kalkulo, kaj poste al ĉiuj celaj sagoj per voja indukto kaj
-produkta malkompono. La libera grupoido de la marŝanta sago nun havas ankaŭ
+produkta malkompono. Por la ankoraŭ mankanta objekt-leva direkto, fonta forta
+transformo nun determinas celajn objektajn komponantojn kaj ĝia genera kondiĉo
+transportiĝas antaŭen; eksplicita inversigebla mate donas la kondiĉon ĉe la
+libere aldonita inverso. Kongrueco kun konservit-koordinataj sagoj kaj kunmeto
+ankoraŭ necesas antaŭ ol tiuj datumoj formas celan fortan transformon. La libera grupoido de la marŝanta sago nun havas ankaŭ
 normalformon: ĉiu signumita vojo egalas la solan morfion difinitan de siaj
 finpunktoj, do la kompletigo estas maldika kaj eksplicite kategorie ekvivalenta
 al la kodiskreta grupoido sur `Fin 2`. Komplemente, por ĉiu grupoido
@@ -1371,6 +1375,7 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | La marŝant-saga kompletigo estas kategorie ekvivalenta al la kodiskreta grupoido sur `Fin 2`. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | Ĉiu modifo post antaŭkunmeto etendiĝas trans la libere aldonitan inverson. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | Antaŭkunmeto estas plene fidela en ĉiu loka kategorio; por loka ekvivalento restas nur loka esenca surĵeteco. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | La invers-generatora kondiĉo de la eventuala cela forta transformo estas eksplicita inversigebla dukategoria mate de ĝia antaŭa kondiĉo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | Konkreta mark-inversiga pseŭdofunktoro faktoriĝas tra la celo dum ĝi ankoraŭ detektas neinversigeblan Bulean forĵeton. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finia determinisma forĵeto estas neinversigebla modela 2-ĉelo kies finpunktoj restas malsamaj post homotopia tranĉo. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Ĉiu plena pseŭdofunktoro al loke diskreta celo identigas la bildojn de la du finpunktoj de forĵeto. |

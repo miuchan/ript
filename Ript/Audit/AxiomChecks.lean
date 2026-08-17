@@ -335,6 +335,8 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.mateEquiv_precomp
 #print axioms CategoryTheory.Bicategory.mateEquiv_postcomp
 #print axioms CategoryTheory.Pseudofunctor.StrongTrans.mate_naturality
+#print axioms CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_hom
+#print axioms CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_eq
 #print axioms CategoryTheory.Pseudofunctor.StrongTrans.naturalityAt_inv
 #print axioms CategoryTheory.Pseudofunctor.localPrecomposition_faithful_of_obj_surjective
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_inverts
@@ -356,6 +358,7 @@ set_option autoImplicit false
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateFactorization
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_inverts
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization
