@@ -5798,6 +5798,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     retained/inverse orders, and both inverse/forward cancellations. Endpoint
     normalization now packages these branches as one comparison for every
     composable target-arrow pair, with reduction theorems for all eight cases.
+    Four additional compiled equalities expose the forward/reverse hom-functor
+    selected by each endpoint pair, and a canonical endpoint 2-cell constructor
+    uniformly represents retained-coordinate morphisms in all four directions.
     Proving the pseudofunctor coherence laws and constructing the resulting
     nonseparable biessential factorization remain open, so this is not yet an
     existence proof for the desired resource-process higher localization.

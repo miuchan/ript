@@ -102,7 +102,7 @@ codiscrete groupoid と明示的に圏同値です。
 始域 pseudofunctor の標識反転と因子化は随伴同値のもとで不変であることも証明されました。したがって
 結果は可分離族の replete 閉包全体、すなわち定義上は成分ごとの積でない実装まで含みます。その閉包外でも、
 任意の標識反転始域 pseudofunctor は、全標的対象・1-射・2-射上のコンパイル済み `PrelaxFunctor` 作用を定めます。
-標準前向き射は始域作用を再利用し、真に逆向きの射は選択した逆同値を用います。全対象の恒等比較、8 種の端点標準形合成比較、および全ての合成可能な標的射対を覆う一つの比較はコンパイル済みです。全射比較は定義的に端点形へ帰着し、8 本の分岐帰着等式も証明済みです。残る作業は pseudofunctor coherence を証明し、
+標準前向き射は始域作用を再利用し、真に逆向きの射は選択した逆同値を用います。全対象の恒等比較、8 種の端点標準形合成比較、および全ての合成可能な標的射対を覆う一つの比較はコンパイル済みです。全射比較は定義的に端点形へ帰着し、8 本の分岐帰着等式も証明済みです。さらに、4 本の端点 hom-functor 帰着定理と一様な端点 2-射コンストラクタが、残る coherence 証明に必要な前向き／逆向き作用を明示します。残る作業は pseudofunctor coherence を証明し、
 始域因子化の随伴同値を構成することです。この未解決の大域的な双本質因子化フィールドのため、現行の橋も完全な双圏的、
 Dwyer--Kan、simplicial、Rezk localization ではありません。
 Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
@@ -1115,11 +1115,16 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | 保持成分が恒等なら、混合 lift は非可逆 Boolean discard を引き続き検出します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | 一つの定理が標識反転、混合座標因子化、正しい逆射解釈、非可逆 2-射の保持をまとめます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceEquivalence_hom` | 各始域 walking 射について、選択した像の同値の前向き 1-射は元の pseudofunctor の像そのものです。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_zero_zero` | 端点対 `0 → 0` では、任意 hom-functor は前向き恒等作用へ帰着します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_zero_one` | 端点対 `0 → 1` では、任意 hom-functor は前向き生成射作用へ帰着します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_one_zero` | 端点対 `1 → 0` では、任意 hom-functor は選択された逆生成射作用へ帰着します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_one_one` | 端点対 `1 → 1` では、任意 hom-functor は前向き恒等作用へ帰着します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor` | 任意の標識反転始域 pseudofunctor は、pseudofunctor coherence を与える前の段階で、標的の対象・1-射・2-射上の関手的作用を定めます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_forward` | 任意の prelax 作用は標準前向き射上で始域 pseudofunctor の作用を再利用します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_inverse` | 真に逆向きの射では、任意の prelax 作用は選択した逆射に保持座標の像を続けます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_forward` | 前向き保持座標 2-射の作用は始域作用と異種等しいです。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_inverse` | 逆向き保持座標 2-射の作用は、選択した逆射による始域作用の左 whiskering です。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | 一つの端点標準コンストラクタが 4 種すべての walking 方向の保持座標 2-射を表します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | 任意の lift は全標的対象で恒等比較を持ちます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | 一つの比較が、両因子が標準前向き射である 4 種の端点形状をすべて覆います。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | 標準逆射に保持データを続ける合成比較が構成済みです。 |

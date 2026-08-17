@@ -106,7 +106,10 @@ pairs: the four forward/forward shapes, both retained/inverse orders, and both
 inverse/forward cancellation orders with arbitrary retained coordinates.
 Endpoint normalization now packages those branches as one comparison for every
 composable target-arrow pair, and eight reduction theorems expose the selected
-canonical comparison. What remains open is to prove the pseudofunctor unit,
+canonical comparison. The four endpoint hom-functors now also reduce to their
+forward or reverse implementations by compiled equalities, and one canonical
+endpoint 2-cell constructor covers retained-coordinate morphisms in every
+direction. What remains open is to prove the pseudofunctor unit,
 associativity, and whiskering laws, and then build the source-factorization
 adjoint equivalence. This is the missing global `lift`
 field, and the corresponding construction for the full resource-process

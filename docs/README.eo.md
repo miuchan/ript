@@ -171,6 +171,9 @@ inversan ekvivalenton. La identeca komparo je ĉiu objekto, ĉiuj ok
 finpunkt-normaligitaj kunmetaj komparoj, kaj unu komparo por ĉiu kunmetebla
 paro de celaj sagoj nun estas kompilitaj. La ĉiusaga komparo difine reduktiĝas
 al la finpunkta formo, kaj la ok branĉaj reduktaj ekvacioj estas pruvitaj.
+Kvar finpunktaj hom-funktoraj reduktaj teoremoj kaj unu unuforma finpunkta
+2-ĉela konstruilo nun eksplicitas la antaŭan aŭ inversan agon bezonatan por la
+restantaj koherpruvoj.
 Restas pruvi la pseŭdofunktorajn koherleĝojn,
 poste konstrui la adjunktan ekvivalenton de la
 fonta faktorado. Ĝuste tiu mankanta tutmonda biesenca faktoriga kampo
@@ -1390,11 +1393,16 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | Kun identeca konservita komponanto, la miksita levo ankoraŭ detektas neinversigeblan Bulean forĵeton. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | Unu teoremo kunigas mark-inversigon, miks-koordinatan faktoradon, ĝustan interpreton de la inverso kaj konservon de neinversigebla 2-ĉelo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceEquivalence_hom` | Por ĉiu fonta walking-sago, la antaŭa 1-morfio de la elektita bilda ekvivalento estas precize la bildo sub la origina pseŭdofunktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_zero_zero` | Ĉe la finpunktparo `0 → 0`, la arbitra hom-funktoro reduktiĝas al la antaŭa identeca ago. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_zero_one` | Ĉe la finpunktparo `0 → 1`, la arbitra hom-funktoro reduktiĝas al la antaŭa genera ago. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_one_zero` | Ĉe la finpunktparo `1 → 0`, la arbitra hom-funktoro reduktiĝas al la elektita invers-genera ago. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_one_one` | Ĉe la finpunktparo `1 → 1`, la arbitra hom-funktoro reduktiĝas al la antaŭa identeca ago. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor` | Ĉiu arbitra mark-inversiga fonta pseŭdofunktoro determinas funktoran celan agon je objektoj, 1-morfioj kaj 2-ĉeloj antaŭ ol pseŭdofunktora kohero estas liverita. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_forward` | La arbitra prelaksa ago reuzas la fontan pseŭdofunktoron ĉe kanonaj antaŭaj sagoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_inverse` | Ĉe vere inversa sago, la arbitra prelaksa ago uzas la elektitan inversan morfion sekvatan de la bildo de la konservita koordinato. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_forward` | La ago je antaŭa konservit-koordinata 2-ĉelo estas heterogene egala al la fonta ago. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_inverse` | La ago je inversa konservit-koordinata 2-ĉelo estas maldekstra whiskering de la fonta ago per la elektita inverso. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | Unu finpunkt-normala konstruilo prezentas konservit-koordinatajn 2-ĉelojn en ĉiuj kvar walking-direktoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | La arbitra levo havas identecan komparon je ĉiu cela objekto. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | Unu komparo kovras ĉiujn kvar finpunktajn formojn kies ambaŭ faktoroj estas kanonaj antaŭaj sagoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | Kanona inversa sago sekvata de konservita datumo havas la bezonatan kunmetan komparon. |
