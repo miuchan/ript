@@ -310,6 +310,46 @@ theorem mateEquiv_counit
       rw [adj₂.left_triangle]
       bicategory
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the source unit, a mate, and the inverse target unit recovers the
+canonical unitor comparison.  This is the unit half of the mate
+correspondence, stated with explicit bicategorical associators. -/
+theorem mateEquiv_unit
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g : a ⟶ c} {h : b ⟶ d}
+    (unit₂ : 𝟙 c ≅ l₂ ≫ r₂) (hunit₂ : unit₂.hom = adj₂.unit)
+    (γ : g ≫ l₂ ≅ l₁ ≫ h) :
+    adj₁.unit ▷ g ≫
+        (α_ l₁ r₁ g).hom ≫
+        l₁ ◁ mateEquiv adj₁ adj₂ γ.hom ≫
+        (α_ l₁ h r₂).inv ≫
+        γ.inv ▷ r₂ ≫
+        (α_ g l₂ r₂).hom ≫
+        g ◁ unit₂.inv =
+      (λ_ g).hom ≫ (ρ_ g).inv := by
+  let β := mateEquiv adj₁ adj₂ γ.hom
+  have hmate :
+      adj₁.homEquiv₁.symm β =
+        adj₂.homEquiv₂ γ.hom ≫ (α_ l₁ h r₂).hom :=
+    (mateEquiv_eq_iff adj₁ adj₂ γ.hom β).mp rfl
+  have hprefix :
+      (((λ_ g).inv ≫ adj₁.unit ▷ g) ≫
+          (α_ l₁ r₁ g).hom) ≫
+          l₁ ◁ mateEquiv adj₁ adj₂ γ.hom =
+        adj₁.homEquiv₁.symm β := by
+    simpa only [Category.assoc] using
+      (Adjunction.homEquiv₁_symm_apply adj₁ β).symm
+  rw [← cancel_epi (λ_ g).inv]
+  simp only [Iso.inv_hom_id_assoc]
+  simp only [← Category.assoc]
+  rw [hprefix, hmate]
+  simp
+  rw [Adjunction.homEquiv₂_apply]
+  rw [← hunit₂]
+  simp
+
 namespace IsEquivalence
 
 /-- Being an adjoint equivalence is invariant under a 2-isomorphism of
@@ -985,6 +1025,55 @@ theorem inverseNaturalityIso_comp_hom_counit (F G : C ⥤ᵖ D)
     (λ_ appB).hom
   slice_lhs 2 3 => rw [← comp_whiskerRight, F.map₂_inv_hom]
   simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Composing a forward strong-naturality constraint with its mate-derived
+inverse and transporting across the inverse unit yields the canonical
+identity constraint. -/
+theorem hom_comp_inverseNaturalityIso_unit (F G : C ⥤ᵖ D)
+    {a b : C} (e : a ≌ b)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (α : F.map e.hom ≫ appB ≅ appA ≫ G.map e.hom) :
+    naturalityIsoOfIso F G appA appA
+        (naturalityCompIsoOfIsos F G e.hom e.inv
+          appA appB appA α (inverseNaturalityIso F G e appA appB α))
+        e.unit.symm =
+      identityNaturalityIso F G a appA := by
+  apply Iso.ext
+  dsimp [naturalityIsoOfIso, naturalityCompIsoOfIsos,
+    identityNaturalityIso]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv]
+  rw [inverseNaturalityIso_hom]
+  rw [← cancel_epi ((F.mapId a).inv ▷ appA)]
+  rw [← cancel_mono (appA ◁ (G.mapId a).hom)]
+  simp only [Category.assoc]
+  simp
+  rw [← comp_whiskerRight_assoc, ← comp_whiskerRight_assoc]
+  have hF :
+      ((F.mapId a).inv ≫ F.map₂ e.unit.hom) ≫
+          (F.mapComp e.hom e.inv).hom =
+        (F.mapAdjunction e.toAdjunction).unit := by
+    rw [Category.assoc]
+    rfl
+  rw [hF]
+  rw [← whiskerLeft_comp, ← whiskerLeft_comp]
+  have hG :
+      ((G.mapComp e.hom e.inv).inv ≫ G.map₂ e.unit.inv) ≫
+          (G.mapId a).hom =
+        (G.mapEquivalence e).unit.inv := rfl
+  have hG' :
+      (G.mapComp e.hom e.inv).inv ≫ G.map₂ e.unit.inv ≫
+          (G.mapId a).hom =
+        (G.mapEquivalence e).unit.inv := by
+    rw [← Category.assoc]
+    exact hG
+  rw [hG']
+  exact Bicategory.mateEquiv_unit
+    (F.mapAdjunction e.toAdjunction)
+    (G.mapAdjunction e.toAdjunction)
+    (G.mapEquivalence e).unit rfl α.symm
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Strong-transformation composition coherence slides across a chosen

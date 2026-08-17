@@ -4348,8 +4348,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   pseudofunctors, and the induced strong-transformation sliding theorem now
   prove the public retained-then-inverse composition law for every walking
   arrow. The inverse-generator/forward-generator cancellation order is now
-  proved by the mate-counit identity; the opposite cancellation order remains before these data
-  form a target strong transformation.
+  proved by the mate-counit identity, and the forward-generator/inverse-generator
+  order is proved by the corresponding mate-unit identity. Packaging these
+  constructor laws as a target strong transformation is the next step.
   It remains a
   parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local

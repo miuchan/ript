@@ -112,9 +112,10 @@ strong-transformation mate-sliding theorem proves
 walking arrow. A general `mateEquiv_counit` theorem now identifies a mate
 followed by the corresponding forward constraint after counit transport.
 Its walking instance proves the public inverse-generator/forward-generator
-composition law. The opposite forward-generator/inverse-generator
-cancellation order remains before the data can be packaged as a target strong
-transformation. What also remains open
+composition law. The corresponding `mateEquiv_unit` theorem proves the
+opposite public forward-generator/inverse-generator cancellation law after
+inverse-unit transport. The next remaining step is to package the completed
+constructor coherence laws as a target strong transformation. What also remains open
 is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the

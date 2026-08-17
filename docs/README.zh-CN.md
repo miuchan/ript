@@ -93,7 +93,7 @@ coherence 现已证明，从而覆盖带任意保留坐标的规范正向—正�
 把这两个因子识别为公共全箭头约束，因此相应的公共因子复合律也已编译为 hom 方程和候选同构运输等式。
 对于相反的“保留坐标后接逆生成元”次序，两个乘积单位子比较、候选复合、到规范逆箭头的运输，以及两种
 正向分解的等式都已编译；双边 mate 滑移、伪函子保持 mate 以及相应的强变换滑移定理现已证明该次序对
-每条 walking 箭头都满足公共复合律。通用的 mate–counit 恒等式现已证明第一种生成元消去次序：严格逆生成元后接其正向生成元满足公共复合律。在把这些数据组成目标强变换前，仍需证明相反的“正向后接逆元”消去次序。walking 自由群胚本身
+每条 walking 箭头都满足公共复合律。通用的 mate–counit 恒等式现已证明第一种生成元消去次序：严格逆生成元后接其正向生成元满足公共复合律；对称的 mate–unit 恒等式也证明了相反次序：严格正向生成元后接其逆元同样满足公共复合律。下一步是把这些已完成的构造子 coherence 律组装成目标强变换。walking 自由群胚本身
 现在也有规范形定理：每条带符号路径都等于其端点唯一决定的
 态射，因此该补全是 thin 的，并与 `Fin 2` 上的 codiscrete 群胚显式范畴等价。作为互补，对任意群胚 `G`，
 每个 walking-arrow 函子 `K : Arrow ⥤ G` 都诱导一个只依赖局部化坐标的标记反转伪函子；它通过
@@ -1028,7 +1028,9 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `CategoryTheory.Pseudofunctor.FactorsThrough.trans` | 通过某伪函子的分解可沿源伪函子伴随等价传递。 |
 | `CategoryTheory.Bicategory.mateEquiv_sliding` | 左伴随平方之间的交换方块经 mate 变为对应右伴随平方的交换方块。 |
 | `CategoryTheory.Bicategory.mateEquiv_counit` | mate 后接目标 counit 等于原方块后接源 counit，且显式包含双范畴 coherence。 |
+| `CategoryTheory.Bicategory.mateEquiv_unit` | 源 unit 后接 mate 与目标 unit 的逆，得到规范单位子比较。 |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_comp_hom_counit` | mate 导出的逆约束后接正向约束，沿 counit 运输后得到规范恒等约束。 |
+| `CategoryTheory.Pseudofunctor.StrongTrans.hom_comp_inverseNaturalityIso_unit` | 正向约束后接 mate 导出的逆约束，沿逆 unit 运输后得到规范恒等约束。 |
 | `CategoryTheory.Pseudofunctor.map_mateEquiv` | 伪函子保持双范畴 mate，包括全部合成器与单位子 coherence。 |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding` | 正向复合 coherence 可沿伴随等价滑移为 mate 导出的逆向约束。 |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective` | 沿固定可逆目标 2-胞搬运时，候选强自然性约束的映射是单射。 |
@@ -1082,8 +1084,11 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_forward` | 每个规范正向箭头上的公共约束就是原始源约束。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_generatorInverse` | 在严格反向箭头上，公共约束恰好是逆生成元 mate。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorCancellation_counit` | 逆生成元后接正向生成元的自然性沿 counit 运输到规范恒等约束。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorCancellation_unit` | 正向生成元后接逆生成元的自然性沿逆 unit 运输到规范恒等约束。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_inverseGenerator_generator` | 运输的单射性把复合的公共消去候选与原始复合上的公共约束识别起来。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_generator` | 严格逆生成元后接其正向生成元时，公共复合 coherence 律成立。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_generator_inverseGenerator` | 逆 unit 运输的单射性把相反次序的公共消去候选与原始复合上的公共约束识别起来。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_generator_inverseGenerator` | 严格正向生成元后接其逆元时，公共复合 coherence 律成立。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_iso` | 公共全箭头约束可沿任意目标 2-同构搬运。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseComposite` | 逆生成元/保留坐标原始复合上的公共约束等于其显式构造器级复合。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | 公共全箭头约束对每个目标 2-胞都满足自然性，包括严格恒等分支。 |
@@ -1227,7 +1232,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 | 成本精确模型 localization | 成本反射模型态射的可逆 2-胞饱和，再取同伦类 | 形式反转每个饱和标记类 | 不可计算语义证明层 | 精确标记下降定理与从 `Pith` 出发的规范伪函子；真正的 Mathlib Gabriel--Zisman 普遍性质；具体不可逆 2-胞证明它不是高阶 localization |
-| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，预复合局部充满忠实，并为预期强变换提升的每个目标 1-态射重建候选约束；恒等 coherence、全箭头 2-胞自然性、inclusion 像中任意一对箭头的复合 coherence、两个逆元/保留坐标次序的公共因子 coherence，以及“逆生成元后接正向生成元”的消去律都已证明；相反的正向—逆元消去次序、该闭包之外任意不可分离混合坐标分解和局部本质满射仍开放 |
+| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，预复合局部充满忠实，并为预期强变换提升的每个目标 1-态射重建候选约束；恒等 coherence、全箭头 2-胞自然性、inclusion 像中任意一对箭头的复合 coherence、两个逆元/保留坐标次序的公共因子 coherence，以及两个生成元消去次序都已证明；目标强变换的正式组装、该闭包之外任意不可分离混合坐标分解和局部本质满射仍开放 |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；对所有内部恒等的 Mathlib localization；不是 Rezk completion |
