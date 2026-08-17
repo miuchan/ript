@@ -103,10 +103,12 @@ arrows now determine a compiled `PrelaxFunctor` action on every target object,
 equations are explicit. Its identity comparison is compiled at every object,
 and composition comparisons are compiled for all eight endpoint-normalized
 pairs: the four forward/forward shapes, both retained/inverse orders, and both
-inverse/forward cancellation orders with arbitrary retained coordinates. What
-remains open is to package these branches as one all-arrow comparison, prove
-the pseudofunctor unit, associativity, and whiskering laws, and then build the
-source-factorization adjoint equivalence. This is the missing global `lift`
+inverse/forward cancellation orders with arbitrary retained coordinates.
+Endpoint normalization now packages those branches as one comparison for every
+composable target-arrow pair, and eight reduction theorems expose the selected
+canonical comparison. What remains open is to prove the pseudofunctor unit,
+associativity, and whiskering laws, and then build the source-factorization
+adjoint equivalence. This is the missing global `lift`
 field, and the corresponding construction for the full resource-process
 bicategory remains downstream.
 

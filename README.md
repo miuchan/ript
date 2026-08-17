@@ -178,10 +178,12 @@ are not definitionally componentwise pairs. Beyond that closure, every
 arbitrary marking-inverting source pseudofunctor now determines a compiled
 `PrelaxFunctor` action on all target objects, 1-morphisms, and 2-morphisms;
 canonical forward arrows reuse the source action, while genuinely reverse
-arrows use a chosen inverse equivalence. Its all-object identity comparison and
-all eight endpoint-normalized composition comparisons are now compiled. The
-remaining work is to package one all-arrow composition comparison, prove the
-pseudofunctor coherence laws, and then construct the source-factorization
+arrows use a chosen inverse equivalence. Its all-object identity comparison,
+all eight endpoint-normalized composition comparisons, and one comparison for
+every composable target-arrow pair are now compiled. The all-arrow comparison
+reduces definitionally to the endpoint form, whose eight branch equations are
+proved. The remaining work is to prove the pseudofunctor coherence laws and
+then construct the source-factorization
 adjoint equivalence. That missing global
 biessential-factorization field is why the existing bridge is not yet a
 bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
@@ -1480,6 +1482,8 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | Retained data followed by a canonical inverse has the required comparison, using the inverse mate of forward sliding. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | A canonical inverse followed by its matching forward arrow compares through the chosen equivalence counit. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse` | A canonical forward arrow followed by its matching inverse compares through the chosen equivalence unit. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp` | Endpoint normalization supplies a composition comparison for every composable pair of target arrows. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_endpoint` | The all-arrow comparison reduces definitionally to the explicit eight-branch endpoint comparison. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedSource_has_factorization` | Every pseudofunctor depending only on the retained coordinate factors through the localization target, for every target bicategory. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Precomposition is faithful on all local categories of strong transformations and modifications. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | Every morphism in the completed walking coordinate equals the canonical morphism determined by its endpoints. |
@@ -1658,7 +1662,7 @@ Implemented model support is intentionally narrow:
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 | Cost-exact model localization | Invertible-2-cell saturation of cost-reflecting model morphisms; then homotopy classes | Formal inversion of every saturated marked class | Noncomputable semantic proof layer | Exact mark-descent theorem and canonical pseudofunctor from `Pith`; genuine Mathlib Gabriel--Zisman universal property; a concrete noninvertible 2-cell proves why the construction is not a higher localization |
-| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse; proves endpoint normal form, thinness, and equivalence with the codiscrete groupoid on `Fin 2`; retains noninvertible Boolean discard; factors every retained-coordinate pseudofunctor, every groupoid-valued localized-coordinate functor, every separable mixed family `K × H`, and their full adjoint-equivalence closure; maps the formal inverse correctly; packages every source strong transformation as a target strong transformation; lifts modifications; and proves precomposition is an equivalence on every local category. Every arbitrary marking-inverting source pseudofunctor also has a compiled target `PrelaxFunctor` action, an all-object identity comparison, and all eight endpoint-normalized composition comparisons; all-arrow packaging, coherence, and the resulting nonseparable factorization remain open |
+| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse; proves endpoint normal form, thinness, and equivalence with the codiscrete groupoid on `Fin 2`; retains noninvertible Boolean discard; factors every retained-coordinate pseudofunctor, every groupoid-valued localized-coordinate functor, every separable mixed family `K × H`, and their full adjoint-equivalence closure; maps the formal inverse correctly; packages every source strong transformation as a target strong transformation; lifts modifications; and proves precomposition is an equivalence on every local category. Every arbitrary marking-inverting source pseudofunctor also has a compiled target `PrelaxFunctor` action, an all-object identity comparison, and one all-arrow composition comparison reducing to all eight endpoint-normalized cases; coherence and the resulting nonseparable factorization remain open |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; Mathlib localization at every internal identity; not a Rezk completion |
@@ -2222,7 +2226,7 @@ updated assumption audit.
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
 - [x] Invertible-2-cell-saturated cost mark, exact homotopy descent, canonical `Pith` pseudofunctor, and Gabriel--Zisman localization, including noninvertible marked-arrow and 2-cell witnesses
-- [x] Full 2-dimensional localization predicate, identity and walking-arrow base constructions, endpoint-normal-form/thin/codiscrete classification of the completed walking coordinate, a non-locally-discrete inverse-adjoining slice with retained-, localized-, separable mixed-coordinate, and replete-equivalence-closure lift families, local precomposition equivalences, and an arbitrary marking-inverting target `PrelaxFunctor` action; pseudofunctor coherence and the resulting nonseparable factorization remain open
+- [x] Full 2-dimensional localization predicate, identity and walking-arrow base constructions, endpoint-normal-form/thin/codiscrete classification of the completed walking coordinate, a non-locally-discrete inverse-adjoining slice with retained-, localized-, separable mixed-coordinate, and replete-equivalence-closure lift families, local precomposition equivalences, and an arbitrary marking-inverting target `PrelaxFunctor` action with all-object identity and all-arrow composition comparisons; pseudofunctor coherence and the resulting nonseparable factorization remain open
 - [x] Deep interface codes with distinct equivalence and internal-identity syntax
 - [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
 - [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example
