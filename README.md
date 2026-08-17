@@ -182,7 +182,9 @@ arrows use a chosen inverse equivalence. Its all-object identity comparison,
 all eight endpoint-normalized composition comparisons, and one comparison for
 every composable target-arrow pair are now compiled. The all-arrow comparison
 reduces definitionally to the endpoint form, whose eight branch equations are
-proved. The remaining work is to prove the pseudofunctor coherence laws and
+proved. Four endpoint hom-functor reduction theorems and one uniform endpoint
+2-cell constructor now expose the exact forward/reverse action needed by the
+remaining coherence proofs. The remaining work is to prove the pseudofunctor coherence laws and
 then construct the source-factorization
 adjoint equivalence. That missing global
 biessential-factorization field is why the existing bridge is not yet a
@@ -1471,11 +1473,16 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_map₂_discardTwoCell_not_isIso` | With identity retained component, the mixed lift still detects noninvertible Boolean discard. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard` | One theorem packages mark inversion, mixed-coordinate factorization, correct inverse interpretation, and retained noninvertible 2-cell behavior. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceEquivalence_hom` | For every source walking arrow, the chosen image equivalence has exactly the original pseudofunctor image as its forward 1-morphism. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_zero_zero` | At endpoint pair `0 → 0`, the arbitrary hom-functor is the forward identity action. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_zero_one` | At endpoint pair `0 → 1`, the arbitrary hom-functor is the forward generator action. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_one_zero` | At endpoint pair `1 → 0`, the arbitrary hom-functor is the chosen reverse-generator action. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftHomFunctor_one_one` | At endpoint pair `1 → 1`, the arbitrary hom-functor is the forward identity action. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor` | Every arbitrary marking-inverting source pseudofunctor determines a functorial target action on objects, 1-morphisms, and 2-morphisms before pseudofunctor coherence is supplied. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_forward` | The arbitrary prelax action reuses the source pseudofunctor on canonical forward arrows. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_inverse` | On a genuinely reverse arrow, the arbitrary prelax action uses the chosen inverse followed by the retained-coordinate image. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_forward` | The forward retained-coordinate 2-cell action is heterogeneously equal to the source action. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_inverse` | The reverse retained-coordinate 2-cell action is left whiskering of the source action by the chosen inverse. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | One endpoint-normal constructor represents retained-coordinate 2-cells in all four walking directions. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | The arbitrary lift has an identity comparison at every target object. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | One comparison handles all four endpoint triples whose two factors are canonical forward arrows. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | A canonical inverse followed by retained data has the required composition comparison. |

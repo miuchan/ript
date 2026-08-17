@@ -3896,6 +3896,50 @@ noncomputable def generalLiftHomFunctor
   · exact generalLiftReverseHomFunctor F hF
       (homOfLE (le_of_not_ge h))
 
+/-- The arbitrary hom-category action at `0 → 0` is the forward action for
+the walking identity. -/
+theorem generalLiftHomFunctor_zero_zero
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    generalLiftHomFunctor F hF (canonicalTargetObject 0)
+        (canonicalTargetObject 0) =
+      generalLiftForwardHomFunctor F
+        (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) := by
+  simp [generalLiftHomFunctor, canonicalTargetObject]
+  congr
+
+/-- The arbitrary hom-category action at `0 → 1` is the forward action for
+the walking generator. -/
+theorem generalLiftHomFunctor_zero_one
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    generalLiftHomFunctor F hF (canonicalTargetObject 0)
+        (canonicalTargetObject 1) =
+      generalLiftForwardHomFunctor F
+        Ript.Examples.WalkingLocalization.arrow := by
+  simp [generalLiftHomFunctor, canonicalTargetObject]
+  congr
+
+/-- The arbitrary hom-category action at `1 → 0` is the reverse action for
+the walking generator. -/
+theorem generalLiftHomFunctor_one_zero
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    generalLiftHomFunctor F hF (canonicalTargetObject 1)
+        (canonicalTargetObject 0) =
+      generalLiftReverseHomFunctor F hF
+        Ript.Examples.WalkingLocalization.arrow := by
+  simp [generalLiftHomFunctor, canonicalTargetObject]
+  congr
+
+/-- The arbitrary hom-category action at `1 → 1` is the forward action for
+the walking identity. -/
+theorem generalLiftHomFunctor_one_one
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    generalLiftHomFunctor F hF (canonicalTargetObject 1)
+        (canonicalTargetObject 1) =
+      generalLiftForwardHomFunctor F
+        (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) := by
+  simp [generalLiftHomFunctor, canonicalTargetObject]
+  congr
+
 /-- The arbitrary lift already defines a functor on every hom-category.  This
 is the complete object/1-cell/2-cell action prior to pseudofunctor coherence. -/
 noncomputable def generalLiftPrelaxFunctor
@@ -4394,6 +4438,15 @@ noncomputable def canonicalEndpointHom
     (X Y : Ript.Examples.WalkingLocalization.Arrow) (A : Type) :
     canonicalTargetObject X ⟶ canonicalTargetObject Y :=
   (canonicalCompletionHom X Y).toLoc ×ₘ A
+
+/-- A retained-coordinate 2-morphism between endpoint-normal target arrows.
+Unlike the forward-only helper, this definition also covers the formally
+adjoined reverse endpoint. -/
+noncomputable def canonicalEndpointTwoCell
+    (X Y : Ript.Examples.WalkingLocalization.Arrow)
+    {A B : Type} (η : A ⟶ B) :
+    canonicalEndpointHom X Y A ⟶ canonicalEndpointHom X Y B :=
+  (𝟙 _, η)
 
 /-- Composition comparison for endpoint-normal target arrows.  Equality
 tests, rather than large elimination from `Fin 2`, select the eight compiled

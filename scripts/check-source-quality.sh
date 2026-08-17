@@ -121,76 +121,68 @@ if [[ "$markdown_table_errors" -ne 0 ]]; then
   exit 1
 fi
 
-# The canonical capability matrix is deliberately split into narrow GFM tables
-# so it remains usable in mobile and strict Markdown renderers. Its combined
-# schema is public API: validate every header, separator, row, and model key.
+# The canonical capability matrix uses native HTML tables because some public
+# CommonMark renderers do not enable the GFM table extension. Its combined
+# schema is public API: validate every table identity, header, row width, and
+# repeated model key so it cannot silently degrade into raw pipe-delimited text.
 if ! awk '
-  function pipe_count(line, copy) {
+  function cell_count(line, copy) {
     copy = line
-    return gsub(/\|/, "", copy)
+    return gsub(/<td>/, "", copy)
   }
 
   function model_name(line, value) {
     value = line
-    sub(/^\|[[:space:]]*/, "", value)
-    sub(/[[:space:]]*\|.*$/, "", value)
+    sub(/^.*<th scope="row">/, "", value)
+    sub(/<\/th>.*$/, "", value)
     return value
   }
 
-  function start_matrix(expected_separator) {
-    table += 1
-    header_line[table] = NR
-    expected_pipes = pipe_count($0)
-    separator[table] = expected_separator
-    in_matrix = 1
-    if (NR > 1 && previous != "") {
-      printf "Source quality check failed: MODEL_MATRIX.md capability table at row %d must start after a blank line\n", NR
-      failed = 1
-    }
+  BEGIN {
+    expected_id[1] = "process-structure"
+    expected_id[2] = "semantic-capabilities"
+    expected_id[3] = "computability"
+    expected_cells[1] = 4
+    expected_cells[2] = 4
+    expected_cells[3] = 1
+    expected_header[1] = "    <tr><th scope=\"col\">Model</th><th scope=\"col\">Sequential</th><th scope=\"col\">Tensor</th><th scope=\"col\">Discard</th><th scope=\"col\">Copy</th></tr>"
+    expected_header[2] = "    <tr><th scope=\"col\">Model</th><th scope=\"col\">Convex</th><th scope=\"col\">Causal</th><th scope=\"col\">Decision</th><th scope=\"col\">Thermal</th></tr>"
+    expected_header[3] = "    <tr><th scope=\"col\">Model</th><th scope=\"col\">Status</th></tr>"
   }
 
   {
-    if ($0 == "| Model | Sequential | Tensor | Discard | Copy |") {
-      start_matrix("| --- | --- | --- | --- | --- |")
-      previous = $0
-      next
-    }
-    if ($0 == "| Model | Convex | Causal | Decision | Thermal |") {
-      start_matrix("| --- | --- | --- | --- | --- |")
-      previous = $0
-      next
-    }
-    if ($0 == "| Model | Status |") {
-      start_matrix("| --- | --- |")
-      previous = $0
-      next
-    }
-
-    if (in_matrix && NR == header_line[table] + 1) {
-      if ($0 != separator[table]) {
-        printf "Source quality check failed: MODEL_MATRIX.md has a malformed capability separator at row %d\n", NR
+    if ($0 ~ /^<table data-ript-matrix="[^"]+">$/) {
+      table += 1
+      id = $0
+      sub(/^<table data-ript-matrix="/, "", id)
+      sub(/">$/, "", id)
+      if (id != expected_id[table]) {
+        printf "Source quality check failed: MODEL_MATRIX.md capability table %d has id %s; expected %s\n", table, id, expected_id[table]
         failed = 1
       }
-      previous = $0
+      in_matrix = 1
       next
     }
 
-    if (in_matrix && NR > header_line[table] + 1 && /^\|/) {
+    if (in_matrix && $0 == expected_header[table]) {
+      headers[table] += 1
+      next
+    }
+
+    if (in_matrix && $0 ~ /^    <tr><th scope="row">/) {
       rows[table] += 1
-      if (pipe_count($0) != expected_pipes) {
-        printf "Source quality check failed: MODEL_MATRIX.md capability row %d has %d columns; expected %d\n", NR, pipe_count($0) - 1, expected_pipes - 1
+      if ($0 !~ /<\/tr>$/ || cell_count($0) != expected_cells[table]) {
+        printf "Source quality check failed: MODEL_MATRIX.md capability row %d has %d data cells; expected %d\n", NR, cell_count($0), expected_cells[table]
         failed = 1
       }
       models[table, rows[table]] = model_name($0)
-      previous = $0
       next
     }
 
-    if (in_matrix && NR > header_line[table] + 1) {
+    if (in_matrix && $0 == "</table>") {
       in_matrix = 0
+      closed[table] += 1
     }
-
-    previous = $0
   }
 
   END {
@@ -199,6 +191,10 @@ if ! awk '
       failed = 1
     }
     for (current = 1; current <= 3; current += 1) {
+      if (headers[current] != 1 || closed[current] != 1) {
+        printf "Source quality check failed: MODEL_MATRIX.md capability table %d is not a complete semantic HTML table\n", current
+        failed = 1
+      }
       if (rows[current] != 14) {
         printf "Source quality check failed: MODEL_MATRIX.md capability table %d has %d rows; expected 14\n", current, rows[current]
         failed = 1
