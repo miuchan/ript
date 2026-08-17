@@ -167,8 +167,10 @@ realigojn kiuj ne estas difine komponantaj produktoj. Eĉ ekster tiu fermo,
 ĉiu arbitra mark-inversiga fonta pseŭdofunktoro nun determinas kompilitan
 celan `PrelaxFunctor`-agon je ĉiuj objektoj, 1-morfioj kaj 2-ĉeloj. Kanonaj
 antaŭaj sagoj reuzas la fontan agon, dum vere inversaj sagoj uzas elektitan
-inversan ekvivalenton. Restas liveri la identecajn kaj kunmetajn komparajn
-izomorfiojn kaj ilian koheron, poste konstrui la adjunktan ekvivalenton de la
+inversan ekvivalenton. La identeca komparo je ĉiu objekto kaj ĉiuj ok
+finpunkt-normaligitaj kunmetaj komparoj nun estas kompilitaj. Restas paki ilin
+kiel unu ĉiusagan kunmetan komparon, pruvi la pseŭdofunktorajn koherleĝojn,
+poste konstrui la adjunktan ekvivalenton de la
 fonta faktorado. Ĝuste tiu mankanta tutmonda biesenca faktoriga kampo
 signifas, ke la ekzistanta ponto ankoraŭ ne estas plena dukategoria,
 Dwyer--Kan-a, simplicia aŭ Rezk-lokalizo.
@@ -1391,6 +1393,12 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map_inverse` | Ĉe vere inversa sago, la arbitra prelaksa ago uzas la elektitan inversan morfion sekvatan de la bildo de la konservita koordinato. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_forward` | La ago je antaŭa konservit-koordinata 2-ĉelo estas heterogene egala al la fonta ago. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPrelaxFunctor_map₂_inverse` | La ago je inversa konservit-koordinata 2-ĉelo estas maldekstra whiskering de la fonta ago per la elektita inverso. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | La arbitra levo havas identecan komparon je ĉiu cela objekto. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | Unu komparo kovras ĉiujn kvar finpunktajn formojn kies ambaŭ faktoroj estas kanonaj antaŭaj sagoj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | Kanona inversa sago sekvata de konservita datumo havas la bezonatan kunmetan komparon. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | Konservita datumo sekvata de kanona inverso estas komparata per la inversa mate de antaŭa glitado. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | Kanona inverso sekvata de sia kongrua antaŭa sago estas komparata per la counit de la elektita ekvivalento. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse` | Kanona antaŭa sago sekvata de sia kongrua inverso estas komparata per la unit de la elektita ekvivalento. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Antaŭkunmeto estas fidela en ĉiuj lokaj kategorioj de fortaj transformoj kaj modifoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | Ĉiu morfio en la kompletigita marŝanta koordinato egalas la kanonan morfion difinitan de siaj finpunktoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | La marŝant-saga kompletigo estas kategorie ekvivalenta al la kodiskreta grupoido sur `Fin 2`. |
@@ -1568,7 +1576,7 @@ La realigita modelsubteno estas intence mallarĝa:
 | Klasika-kvantuma malfaziga subkategorio | Jes; malfaziga idento | Jes | Ekzakta stokasta fonto; matrica pruva semantiko | Fidela mezur-prepara bildo, ekzakta diagonala statevoluo, konservo de kunmeto kaj tensoro |
 | Rimed-indeksita modeldukategorio | Fortaj plektitaj monoidaj modelfunktoroj | Horizontala kunmeto de monoidaj 2-ĉeloj | Pruva tavolo | Fiksa rimedtipo; identoj, kunmeto, interchange, asociantoj/unuigiloj, kvinangulo/triangulo, kost-ekzaktaj ekvivalentoj |
 | Kost-ekzakta modellokalizo | Inversigebla-2-ĉela saturiĝo de kost-reflektaj modelmorfioj, poste homotopiklasoj | Formala inversigo de ĉiu saturite markita klaso | Nekomputebla semantika pruva tavolo | Preciza mark-malsupreniga teoremo kaj kanona pseŭdofunktoro el `Pith`; vera Mathlib-a Gabriel--Zisman universala eco; konkreta neinversigebla 2-ĉelo pruvas kial ĝi ne estas pli-alta lokalizo |
-| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, pruvas finpunktan normalformon, maldikecon kaj ekvivalenton kun la kodiskreta grupoido sur `Fin 2`, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĉiun apartigeblan miks-familion `K × H` kaj ĝian tutan adjunkt-ekvivalentan fermon, ĝuste interpretas la formalan inverson, formale pakas ĉiun fontan fortan transformon kiel celan fortan transformon, levas modifojn kaj pruvas ke antaŭkunmeto estas ekvivalento en ĉiu loka kategorio; ĉiu arbitra mark-inversiga fonta pseŭdofunktoro havas kompilitan celan `PrelaxFunctor`-agon, dum pseŭdofunktora kohero kaj la fina neapartigebla faktorado restas malfermitaj |
+| Dudimensia marŝanta lokalizo | Liber-grupoida inversigo en unu koordinato | Produkto kun la unuobjekta dukategorio de tipoj | Nekomputebla pruva tavolo | Aldonas eksplicitan mankantan inverson, pruvas finpunktan normalformon, maldikecon kaj ekvivalenton kun la kodiskreta grupoido sur `Fin 2`, faktorigas ĉiun konservit-koordinatan pseŭdofunktoron, ĉiun grupoid-valoran lokalizat-koordinatan funktoron, ĉiun apartigeblan miks-familion `K × H` kaj ĝian tutan adjunkt-ekvivalentan fermon, ĝuste interpretas la formalan inverson, formale pakas ĉiun fontan fortan transformon kiel celan fortan transformon, levas modifojn kaj pruvas ke antaŭkunmeto estas ekvivalento en ĉiu loka kategorio; ĉiu arbitra mark-inversiga fonta pseŭdofunktoro havas kompilitan celan `PrelaxFunctor`-agon, ĉiuobjektan identecan komparon kaj ĉiujn ok finpunkt-normaligitajn kunmetajn komparojn; ĉiusaga pakado, pseŭdofunktora kohero kaj la fina neapartigebla faktorado restas malfermitaj |
 | Interne univalenta profunda universo | Tiphavaj profundaj procezoj | Suma/tensora sintakso kaj reindeksado | Kruda sintakso plenumebla; kvocienta pruva tavolo | Malgranda aro-semantiko, grupoidaj identoj, interna univalenteco kaj ĝusteco; sen ekstera univalenteco aŭ pli-altaj vojoj |
 | Tranĉita objektokompletigo | Invariantaj mapoj/predikatoj sur kompletigitaj interfacoj | Kompletigitaj sumo kaj tensoro | Kvocientaj eliminiloj komputas el liveritaj invariantoj | Egaleco precize kaptas nuran internan identecon/ekvivalenton; sen reprezentelekto |
 | Skeleta grupoidokompletigo | Funktoroj el skeleta interna grupoido | Strukturo heredita per kategoria ekvivalento | Nekomputebla semantika tavolo | Ĉiuj aŭtomorfioj konservitaj; elektitaj reprezentantoj; Mathlib-lokalizo je ĉiu interna identeco; ne Rezk-kompletigo |

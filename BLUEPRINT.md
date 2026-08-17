@@ -5784,18 +5784,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     every signed
     path reduces to the unique arrow determined by its endpoints, yielding an
     explicit equivalence with the codiscrete groupoid on `Fin 2`. Source strong
-    transformations now extend to explicit object components and candidate
-    constraints on every target arrow. Those endpoint-normalized constraints
-    satisfy 2-cell naturality in both the forward and inverse branches, and the
-    public identity-specialized candidate satisfies identity coherence and
-    agrees with endpoint normalization. The constraints satisfy composition
-    coherence on every pair in the inclusion image, including every canonical
-    forward-forward pair. The inverse-generator mate followed by any
-    retained-coordinate constraint now both recovers the public composite
-    constraint and satisfies composition coherence using the public factor
-    constraints themselves. Other mixed composition orders involving the
-    freely adjoined inverse remain. Arbitrary
-    nonseparable mixed-coordinate biessential
-    factorization outside that closure and local essential surjectivity remain
-    open, so this is not an existence proof for the
+    transformations extend to genuine target strong transformations: their
+    endpoint-normalized constraints satisfy identity coherence, 2-cell
+    naturality, and every composition law, including both mixed orders and
+    both generator-cancellation orders with arbitrary retained coordinates.
+    Modifications lift as well, restriction recovers the original source
+    transformation up to invertible modification, and precomposition is an
+    equivalence on every local category. For an arbitrary, possibly
+    nonseparable, marking-inverting source pseudofunctor, chosen image
+    equivalences now give a compiled target `PrelaxFunctor` action. It has an
+    identity comparison at every object and composition comparisons for all
+    eight endpoint-normalized pairs: four forward/forward shapes, both
+    retained/inverse orders, and both inverse/forward cancellations. Packaging
+    these branches as one all-arrow comparison, proving the pseudofunctor
+    coherence laws, and constructing the resulting nonseparable biessential
+    factorization remain open, so this is not yet an existence proof for the
     desired resource-process higher localization.
