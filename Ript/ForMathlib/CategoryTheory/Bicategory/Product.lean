@@ -66,6 +66,13 @@ end Bicategory.Equivalence
 
 namespace Pseudofunctor
 
+/-- Postcompose the strict first projection from a product bicategory with a
+pseudofunctor.  This packages pseudofunctors which depend only on the first
+coordinate. -/
+noncomputable def fstComp (D : Type u₃) [Bicategory.{w₃, v₃} D]
+    (H : B ⥤ᵖ C) : (B × D) ⥤ᵖ C :=
+  (Bicategory.Prod.fst B D).toPseudofunctor.comp H
+
 /-- Postcompose the strict second projection from a product bicategory with a
 pseudofunctor.  This packages pseudofunctors which depend only on the retained
 second coordinate. -/

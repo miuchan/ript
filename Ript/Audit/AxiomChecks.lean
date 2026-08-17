@@ -318,6 +318,7 @@ set_option autoImplicit false
 #print axioms Ript.Examples.WalkingLocalization.inclusion_genuinely_adds_inverse
 #print axioms CategoryTheory.Pseudofunctor.prod
 #print axioms CategoryTheory.Bicategory.Equivalence.prod
+#print axioms CategoryTheory.Pseudofunctor.fstComp
 #print axioms CategoryTheory.Pseudofunctor.prodIdSndCompEquivalence
 #print axioms CategoryTheory.Pseudofunctor.localPrecomposition_faithful_of_obj_surjective
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_inverts
@@ -332,6 +333,11 @@ set_option autoImplicit false
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_adds_inverse_and_retains_noninvertible_twoCell
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_obj_surjective
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateFactorization
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_inverts
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateLift_map_inverse
+#print axioms Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinate_inverts_factors_and_maps_inverse
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.retainedSource_inverts
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.retainedFactorization
 #print axioms Ript.Examples.TwoDimensionalWalkingLocalization.retainedSource_has_factorization

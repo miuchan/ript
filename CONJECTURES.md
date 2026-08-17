@@ -65,12 +65,16 @@ addition and noninvertible 2-cell retention now coexist in one compiled
 bicategorical construction. The first universal-property fragments are now
 also compiled. For every target bicategory, every pseudofunctor that depends
 only on the retained coordinate inverts the marking and factors through the
-localization target up to an adjoint equivalence. Precomposition is faithful
-on every local category of strong transformations and modifications because
-the inclusion is surjective on objects. What remains open is factorization of
-an arbitrary marking-inverting pseudofunctor, local fullness and essential
-surjectivity, and ultimately the corresponding construction for the full
-resource-process bicategory.
+localization target up to an adjoint equivalence. A complementary family now
+handles the coordinate being localized: every functor from the walking arrow
+to an arbitrary groupoid induces a marking-inverting pseudofunctor, factors
+through the free-groupoid target, and sends the formally adjoined inverse to
+the actual inverse of the generator's image. Precomposition is faithful on
+every local category of strong transformations and modifications because the
+inclusion is surjective on objects. What remains open is factorization of an
+arbitrary mixed-coordinate marking-inverting pseudofunctor, local fullness and
+essential surjectivity, and ultimately the corresponding construction for the
+full resource-process bicategory.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's
