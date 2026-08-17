@@ -291,6 +291,10 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Bicategory.Equivalence.prod` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Product.lean` |
 | `CategoryTheory.Pseudofunctor.fstComp` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Product.lean` |
 | `CategoryTheory.Pseudofunctor.prodIdSndCompEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Product.lean` |
+| `CategoryTheory.Bicategory.mateEquiv_precomp` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Bicategory.mateEquiv_postcomp` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.mate_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.naturalityAt_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.localPrecomposition_faithful_of_obj_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.markedArrow_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -304,6 +308,8 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_adds_inverse_and_retains_noninvertible_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_obj_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -683,13 +689,17 @@ adjoint equivalent to a separable mixed source automatically inverts the
 marking and factors through the localization target, even when its
 implementation is not definitionally a componentwise pair.
 Precomposition is faithful on every local category because the inclusion is
-surjective on objects. `Pseudofunctor.prod` and `Pseudofunctor.pair` themselves
-use only `[propext]`; the remaining audited declarations have the exact
+surjective on objects. It is now also full: modification components lift from
+the source, naturality extends from forward generators to their chosen
+inverses by a mates calculation, then through signed paths, the free-groupoid
+quotient, and the retained coordinate. Thus precomposition is locally fully
+faithful. `Pseudofunctor.prod` and `Pseudofunctor.pair` themselves use only
+`[propext]`; the remaining audited declarations have the exact
 `[propext, Classical.choice, Quot.sound]` footprint. Arbitrary nonseparable
 mixed-coordinate inverting pseudofunctors outside this replete closure have
-not yet been lifted, and local fullness plus essential surjectivity remain
-unproved, so no existence theorem for the nontrivial full resource-process
-higher localization is claimed.
+not yet been lifted, and local essential surjectivity remains unproved, so no
+existence theorem for the nontrivial full resource-process higher localization
+is claimed.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and
