@@ -31,9 +31,11 @@ localization of Ript's resource-process bicategory.  Local precomposition is
 fully faithful.  For the next local-essential-surjectivity step, the source
 constraints now determine strong-naturality isomorphisms for every target
 1-morphism: forward arrows reuse source naturality with arbitrary retained
-coordinates, while reverse arrows use an explicit invertible mate.  The three
-full strong-transformation coherence laws, local essential surjectivity, and
-arbitrary nonseparable biessential factorization remain open.
+coordinates, while reverse arrows use an explicit invertible mate.  The
+identity coherence law is now proved, as is 2-cell naturality for every
+forward canonical arrow.  Naturality across inverse arrows, composition
+coherence, local essential surjectivity, and arbitrary nonseparable
+biessential factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -497,6 +499,36 @@ theorem liftedStrongTransForwardNaturality_eq_source
       σ.naturality (canonicalSourceHom f A) :=
   rfl
 
+/-- A retained-coordinate 2-morphism between canonical source arrows with a
+fixed walking coordinate. -/
+def canonicalSourceTwoCell
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    canonicalSourceHom f A ⟶ canonicalSourceHom f B :=
+  (𝟙 _, η)
+
+/-- The corresponding retained-coordinate 2-morphism between canonical
+forward target arrows. -/
+def canonicalForwardTwoCell
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    canonicalForwardHom f A ⟶ canonicalForwardHom f B :=
+  (𝟙 _, η)
+
+/-- Forward lifted constraints are natural in every retained-coordinate
+2-morphism. -/
+theorem liftedStrongTransForwardNaturality_naturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    F.map₂ (canonicalForwardTwoCell f η) ▷
+          liftedStrongTransApp σ (canonicalTargetObject Y) ≫
+          (liftedStrongTransForwardNaturality σ f B).hom =
+      (liftedStrongTransForwardNaturality σ f A).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject X) ◁
+          G.map₂ (canonicalForwardTwoCell f η) :=
+  σ.naturality_naturality (canonicalSourceTwoCell f η)
+
 /-- The source naturality isomorphism at a walking generator transports to
 the corresponding forward generator in the completion. -/
 noncomputable def liftedStrongTransGeneratorNaturality
@@ -800,12 +832,25 @@ theorem completion_hom_eq_canonical
   intro X Y p
   exact pathToCompletion_eq_canonicalCompletionHom p
 
-/-- Choose a strong-naturality isomorphism for every target 1-morphism.
-Endpoint normalization selects the original source constraint in the forward
-case and the extended invertible mate in the reverse case.  These are all the
-1-morphism-level data of the prospective target strong transformation; its
-identity, composition, and 2-cell coherence are separate obligations. -/
-noncomputable def liftedStrongTransNaturality
+/-- The canonical strong-naturality isomorphism forced at a target identity
+1-morphism.  This is the identity constraint used by every strong
+transformation, expressed directly in terms of the two target
+pseudofunctors' unit comparisons. -/
+noncomputable def liftedStrongTransIdentityNaturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G) (X : Target) :
+    F.map (𝟙 X) ≫ liftedStrongTransApp σ X ≅
+      liftedStrongTransApp σ X ≫ G.map (𝟙 X) :=
+  whiskerRightIso (F.mapId X) (liftedStrongTransApp σ X) ≪≫
+    (λ_ (liftedStrongTransApp σ X)) ≪≫
+    (ρ_ (liftedStrongTransApp σ X)).symm ≪≫
+    whiskerLeftIso (liftedStrongTransApp σ X) (G.mapId X).symm
+
+/-- Choose a fallback strong-naturality isomorphism for every target
+1-morphism by endpoint normalization.  The original source constraint is
+used in the forward case and the extended invertible mate in the reverse
+case.  `liftedStrongTransNaturality` below replaces its value on strict
+target identities by the canonical identity constraint. -/
+noncomputable def liftedStrongTransEndpointNaturality
     (σ : inclusion.comp F ⟶ inclusion.comp G)
     {X Y : Target} (f : X ⟶ Y) :
     F.map f ≫ liftedStrongTransApp σ Y ≅
@@ -838,6 +883,47 @@ noncomputable def liftedStrongTransNaturality
     rw [hf]
     exact liftedStrongTransInverseNaturality σ
       (homOfLE (le_of_not_ge h)) A
+
+/-- Choose a strong-naturality isomorphism for every target 1-morphism.
+Strict target identities use the canonical identity constraint, while every
+other arrow uses endpoint normalization.  Consequently the identity
+coherence law holds definitionally up to the standard bicategorical simp
+lemmas; 2-cell naturality and composition coherence remain separate
+obligations. -/
+noncomputable def liftedStrongTransNaturality
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Target} (f : X ⟶ Y) :
+    F.map f ≫ liftedStrongTransApp σ Y ≅
+      liftedStrongTransApp σ X ≫ G.map f := by
+  classical
+  by_cases hXY : X = Y
+  · subst Y
+    by_cases hf : f = 𝟙 X
+    · subst f
+      exact liftedStrongTransIdentityNaturality σ X
+    · exact liftedStrongTransEndpointNaturality σ f
+  · exact liftedStrongTransEndpointNaturality σ f
+
+/-- The all-arrow constraint specializes to the canonical identity
+constraint on every target object. -/
+@[simp]
+theorem liftedStrongTransNaturality_id_eq
+    (σ : inclusion.comp F ⟶ inclusion.comp G) (X : Target) :
+    liftedStrongTransNaturality σ (𝟙 X) =
+      liftedStrongTransIdentityNaturality σ X := by
+  simp [liftedStrongTransNaturality]
+
+/-- The lifted all-arrow constraint satisfies the strong-transformation
+identity coherence law. -/
+theorem liftedStrongTransNaturality_id
+    (σ : inclusion.comp F ⟶ inclusion.comp G) (X : Target) :
+    (liftedStrongTransNaturality σ (𝟙 X)).hom ≫
+          liftedStrongTransApp σ X ◁ (G.mapId X).hom =
+      (F.mapId X).hom ▷ liftedStrongTransApp σ X ≫
+        (λ_ (liftedStrongTransApp σ X)).hom ≫
+        (ρ_ (liftedStrongTransApp σ X)).inv := by
+  simp [liftedStrongTransNaturality,
+    liftedStrongTransIdentityNaturality]
 
 /-- The free groupoid on the walking arrow is thin: there is exactly one
 morphism between each pair of objects. -/

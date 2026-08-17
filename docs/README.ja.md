@@ -88,8 +88,9 @@ localization になるのは、すべての印付き射が既に随伴同値で�
 逆射へ延長し、path 帰納と積分解によって全標的射へ拡張します。未完成の対象持ち上げ方向では、始域の
 strong transformation から標的の対象成分と、全標的 1-射に対する strong-naturality 同型候補を復元します。
 任意の保持座標を持つ前向き射では始域の自然性を再利用し、逆向き射では明示的な可逆 mate と保持座標制約を
-合成し、端点正規形ですべての標的射を覆います。標的 strong transformation にまとめるには、2-射自然性、
-恒等、合成の三つの coherence がなお必要です。walking 自由 groupoid 自体にも正規形を
+合成し、端点正規形ですべての標的射を覆います。完全な恒等 coherence と、任意の保持座標関数に対する
+すべての標準前向き射の 2-射自然性は証明済みです。逆向き射の 2-射自然性と合成 coherence は未解決です。
+walking 自由 groupoid 自体にも正規形を
 証明しました。各符号付き path は端点で一意に定まる射に等しく、補完は thin であり、`Fin 2` 上の
 codiscrete groupoid と明示的に圏同値です。
 これと相補的に、任意の groupoid `G` への各 walking-arrow 関手は、局所化される座標のみに依存する
@@ -1109,8 +1110,10 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | 前合成後の各 modification は自由に追加した逆射を越えて延長できます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | 前合成は全局所圏で充満忠実です。局所同値に残るのは局所本質的全射性だけです。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_eq_source` | 任意の保持座標を持つ前向き制約は、定義上元の始域 strong-naturality 制約です。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | 前向き lift 制約は任意の保持座標 2-射に関して自然です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | 予定される標的 strong transformation の逆生成射制約は、前向き制約から得られる明示的な可逆双圏 mate です。 |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality` | 端点正規形は全標的 1-射に strong-naturality 同型候補を選びます。三つの coherence は未解決です。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality` | 端点正規形と標準恒等分岐により、全標的 1-射に strong-naturality 同型候補を選びます。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id` | 全射候補は strong transformation の完全な恒等 coherence を満たします。逆向き射の 2-射自然性と合成 coherence は未解決です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | 具体的な標識反転 pseudofunctor は非可逆 Boolean discard を検出したまま標的を通って因子化します。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限決定論的 discard は非可逆なモデル 2-射で、その両端は homotopy truncation 後も異なります。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 完全なモデル双圏から局所離散な標的への全 pseudofunctor は discard の両端の像を同一視します。 |
@@ -1242,7 +1245,7 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | 古典量子脱位相化部分圏 | 可；脱位相化恒等 | 可 | 正確な確率源；行列証明意味論 | 忠実な測定—準備像、厳密な対角状態発展、合成・テンソル保存 |
 | 資源添字付きモデル双圏 | 強 braided monoidal モデル関手 | モノイダル 2-射の水平合成 | 証明層 | 固定資源型；恒等、合成、interchange、結合子/単位子、五角形/三角形、コスト完全同値 |
 | コスト完全モデル localization | コスト反映モデル射の可逆 2-射飽和と homotopy 類 | 各飽和標識類の形式的反転 | 非計算的意味論証明層 | 正確な標識降下定理と `Pith` からの標準 pseudofunctor；真の Mathlib Gabriel--Zisman 普遍性；具体的な非可逆 2-射が高次 localization でない理由を示す |
-| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、端点正規形・thin 性・`Fin 2` 上の codiscrete groupoid との同値を証明し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` とその随伴同値閉包を因子化し、形式的逆射を正しく解釈し、前合成は局所充満忠実で、予定される strong-transformation lift の全標的 1-射に制約候補を再構成する；三つの coherence、その閉包外の任意の非可分離混合座標因子化・局所本質的全射性は未解決 |
+| 2 次元 walking localization | 一方の座標で自由 groupoid 反転 | 型の一対象双圏との積 | 非計算的証明層 | 明示的な欠落逆射を追加し、端点正規形・thin 性・`Fin 2` 上の codiscrete groupoid との同値を証明し、非可逆 Boolean discard を保持し、全保持座標 pseudofunctor、全 groupoid 値局所化座標関手、全可分離混合族 `K × H` とその随伴同値閉包を因子化し、形式的逆射を正しく解釈し、前合成は局所充満忠実で、予定される strong-transformation lift の全標的 1-射に制約候補を再構成する；恒等 coherence と全標準前向き射の保持座標 2-射自然性は証明済みで、逆向き射の 2-射自然性・合成 coherence・その閉包外の任意の非可分離混合座標因子化・局所本質的全射性は未解決 |
 | 内部ユニバレントな深い universe | 型付き深いプロセス | sum/tensor 構文と再添字付け | 生構文は実行可能；商証明層 | 小さな集合意味論、groupoid 同一性、内部 univalence と健全性；外部 univalence・高次 path なし |
 | Truncated 対象 completion | completion インターフェース上の不変写像/述語 | completion 後の sum と tensor | 明示的不変量から商消去が計算 | 等式は内部同一性/同値の単なる存在を正確に表す；代表選択なし |
 | Skeletal groupoid completion | skeletal 内部 groupoid からの関手 | 圏同値を通して構造を継承 | 非計算的意味論層 | 全自己同型を保持；全内部同一射に関する Mathlib localization；Rezk completion ではない |

@@ -318,9 +318,12 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_eq_source` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransInverseNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
