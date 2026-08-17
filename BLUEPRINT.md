@@ -4253,6 +4253,18 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       (F G : Target ⥤ᵖ E) :
       (inclusion.localPrecomposition F G).Faithful
 
+  theorem TwoDimensionalWalkingLocalization.completion_hom_eq_canonical
+      {X Y : WalkingLocalization.Completion} (f : X ⟶ Y) :
+      f = canonicalCompletionHom X.as.as Y.as.as
+
+  def TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence :
+      WalkingLocalization.Completion ≌
+        Codiscrete WalkingLocalization.Arrow
+
+  theorem TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full
+      (F G : Target ⥤ᵖ E) :
+      (inclusion.localPrecomposition F G).Full
+
   theorem TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard :
       marking.IsInvertedBy retainedCoordinate ∧
         (∃ G : Target ⥤ᵖ Cell,
@@ -4297,6 +4309,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   2-cell is injective; Boolean discard is noninvertible before and after the
   map; and the target is formally not locally discrete. This proves that
   inverse addition and noninvertible 2-cell retention can coexist. For every
+  signed path in the completed walking coordinate, endpoint normalization now
+  proves that its quotient morphism is the unique canonical arrow. Thus the
+  free completion is thin and categorically equivalent to the codiscrete
+  groupoid on `Fin 2`; this controls path representatives without erasing the
+  noninvertible function-valued 2-cells in the product target. For every
   target bicategory, every pseudofunctor depending only on the retained
   coordinate now has an explicit factorization through the target up to an
   adjoint equivalence. Adjoint-equivalence composition, reversal, and
@@ -4304,9 +4321,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   replete, so every pseudofunctor adjoint equivalent to a separable mixed
   source also inverts and factors even when it is not definitionally a pair.
   Surjectivity on objects also makes precomposition faithful on every local
-  category. It remains a parameterized slice: arbitrary inverting
+  category, while the mate/path/product argument lifts every modification and
+  makes it full. It remains a parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
-  fullness and essential surjectivity remain open, and the source is not the
+  essential surjectivity remains open, and the source is not the
   resource-process bicategory.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
@@ -4338,9 +4356,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   Its identity base case is fully constructed, proving that the interface is
   inhabited and that all three fields interact correctly. The parameterized
   walking slice now supplies genuine `lift` witnesses, their full
-  adjoint-equivalence closure, and the faithful part of every local
-  precomposition functor, but not arbitrary lifts outside that closure, local
-  fullness, or local essential surjectivity. The identity
+  adjoint-equivalence closure, a canonical endpoint normal form and
+  codiscrete classification for its free-groupoid coordinate, and fully
+  faithful local precomposition, but not arbitrary lifts outside that closure
+  or local essential surjectivity. The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
   complete-Segal, or Rezk universal property is claimed.
@@ -5660,7 +5679,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     pseudofunctors: modifications lift across the free inverse because mate
     naturality extends the forward-generator equation to its chosen inverse,
     after which path induction and product decomposition cover every target
-    1-morphism. Arbitrary nonseparable mixed-coordinate biessential
+    1-morphism. The completed walking coordinate itself is now proved thin:
+    every signed
+    path reduces to the unique arrow determined by its endpoints, yielding an
+    explicit equivalence with the codiscrete groupoid on `Fin 2`. This finite
+    normal form is the next input for extending source strong transformations
+    across the inverse. Arbitrary nonseparable mixed-coordinate biessential
     factorization outside that closure and local essential surjectivity remain
     open, so this is not an existence proof for the
     desired resource-process higher localization.

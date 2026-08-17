@@ -81,7 +81,12 @@ inverse correctly; with the identity retained component it still detects the
 noninvertible Boolean discard. Marking inversion and factorization are now
 proved invariant under adjoint equivalence of source pseudofunctors, so this
 result covers the entire replete closure of the separable family rather than
-only literal componentwise pairs. What remains open is factorization of an
+only literal componentwise pairs. The free-groupoid coordinate now also has a
+kernel-checked endpoint normal form: every signed path represents the unique
+morphism between its endpoints, the completion is thin, and it is explicitly
+equivalent to the codiscrete groupoid on `Fin 2`. This removes path-representative
+ambiguity for the next strong-transformation extension without proving that
+extension itself. What remains open is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the
 corresponding construction for the full resource-process bicategory.
