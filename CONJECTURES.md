@@ -6,12 +6,10 @@ whose proofs are not yet kernel checked. An active entry must carry the marker
 
 ## Current register
 
-- `FORMALIZED_BUT_UNPROVED` —
-  `Ript.Examples.TwoDimensionalWalkingLocalization.LiftedStrongTransRetainedInverseCompositionCoherence`:
-  the public all-arrow constraint must satisfy composition coherence when an
-  arbitrary retained-coordinate endomorphism is followed by the freely
-  adjoined inverse generator. The proposition itself is compiled; no theorem
-  currently inhabits it.
+There are currently no active `FORMALIZED_BUT_UNPROVED` propositions. This
+does not make the broader research program complete; open construction tracks
+remain recorded below, in `BLUEPRINT.md`, and in the README without being
+silently promoted to Lean propositions.
 
 This does **not** mean that Ript's research program is complete. The open tracks
 in the README and blueprint include broader measurable models, heterogeneous
@@ -106,11 +104,13 @@ an arbitrary retained arrow. The hom-level law is now also packaged as an
 equality of candidate isomorphisms and transported to the canonical inverse
 arrow. For the opposite order, both product-unitor comparisons, the retained-
 then-inverse candidate, its canonical inverse transport, and the equality of
-the two forward factorizations are compiled. The remaining mate-sliding
-equation is recorded exactly by
-`LiftedStrongTransRetainedInverseCompositionCoherence` and is not yet proved.
-The two generator-cancellation orders also remain before the data can be
-packaged as a target strong transformation. What also remains open
+the two forward factorizations are compiled. Pseudofunctors are now proved to
+preserve mates with their compositor and unitor coherence; the resulting
+strong-transformation mate-sliding theorem proves
+`liftedStrongTransNaturality_comp_retainedInverse`, which inhabits the former
+`LiftedStrongTransRetainedInverseCompositionCoherence` proposition for every
+walking arrow. The two generator-cancellation orders remain before the data
+can be packaged as a target strong transformation. What also remains open
 is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the

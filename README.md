@@ -169,10 +169,11 @@ the corresponding public-factor composition law is compiled as well, both as
 a hom equation and as an equality of transported candidate isomorphisms. For
 the opposite retained-then-inverse order, both product-unitor comparisons, the
 candidate composite, its canonical inverse transport, and the equality of the
-two forward factorizations are now compiled. The remaining mate-sliding law is
-recorded exactly as a `FORMALIZED_BUT_UNPROVED` proposition. The two generator
-cancellation orders must also be established before these data form a target
-strong transformation.
+two forward factorizations are now compiled. Two-sided mate sliding,
+pseudofunctor preservation of mates, and the induced strong-transformation
+sliding theorem now prove the public retained-then-inverse composition law for
+every walking arrow. The two generator cancellation orders must still be
+established before these data form a target strong transformation.
 The walking free groupoid itself is now normalized as well:
 every signed path is the unique morphism determined by its endpoints, making
 the completion thin and explicitly equivalent to the codiscrete groupoid on
@@ -1441,6 +1442,9 @@ informal summaries; the Lean declarations are authoritative.
 | `CategoryTheory.Bicategory.MorphismProperty.locallyDiscrete_isInvertedBy` | Ordinary inversion transports to bicategorical adjoint-equivalence inversion under the induced pseudofunctor. |
 | `CategoryTheory.Bicategory.MorphismProperty.IsInvertedBy.of_equivalence` | Marking inversion is preserved when a source pseudofunctor is replaced by an adjoint-equivalent one. |
 | `CategoryTheory.Pseudofunctor.FactorsThrough.trans` | Factorization through a pseudofunctor extends across an adjoint equivalence of source pseudofunctors. |
+| `CategoryTheory.Bicategory.mateEquiv_sliding` | A commuting square between left-adjoint squares becomes the corresponding commuting square between their right-adjoint mates. |
+| `CategoryTheory.Pseudofunctor.map_mateEquiv` | Pseudofunctors preserve bicategorical mates, including all compositor and unitor coherence. |
+| `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding` | Forward composition coherence slides to the mate-derived inverse constraint across an adjoint equivalence. |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective` | Transport across a fixed invertible target 2-cell is injective on candidate strong-naturality constraints. |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | The homotopy-category mark is exactly the invertible-2-cell saturation of cost reflection. |
 | `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | Any genuine higher cost-exact localization sends every saturated marked model morphism to an adjoint equivalence. |
@@ -1495,13 +1499,15 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseComposite` | The public constraint on an inverse-generator/retained raw composite equals its explicit constructor-level composite. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | The public all-arrow constraint is natural in every target 2-morphism, including its strict-identity branch. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inclusion` | The public constraints satisfy composition coherence on every pair of inclusion-image arrows. |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_forward` | Canonical forward-forward composition coherence holds with arbitrary retained coordinates; mixed inverse cases remain. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_forward` | Canonical forward-forward composition coherence holds with arbitrary retained coordinates. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_generatorRetained_transport` | Generator-then-retained forward composition transports to the public combined forward constraint. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_retainedGenerator_transport` | Retained-then-generator forward composition transports to the same public combined forward constraint. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_retained` | Constructor-level composition coherence holds for the inverse-generator mate followed by any retained-coordinate constraint. |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_retained_public` | The same inverse-generator/retained composition law holds using the public constraint on both factors; other mixed inverse orders remain. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_retained_public` | The inverse-generator/retained composition law holds using the public constraint on both factors. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseGeneratorRetained_transport` | The public inverse-generator/retained composite transports to the public canonical inverse-arrow constraint. |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.LiftedStrongTransRetainedInverseCompositionCoherence` | Exact retained-then-inverse public composition proposition; `FORMALIZED_BUT_UNPROVED`. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransRetainedInverse_sliding` | The retained-then-inverse candidate slides to the inverse-then-retained candidate through the canonical mate comparison. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.LiftedStrongTransRetainedInverseCompositionCoherence` | Exact retained-then-inverse public composition proposition, inhabited below. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_retainedInverse` | Proves the retained-then-inverse public composition proposition for every walking arrow. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedCoordinate_inverts_factors_and_retains_discard` | A concrete marking-inverting pseudofunctor factors through the target while still detecting noninvertible Boolean discard. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finite deterministic discard is a noninvertible model 2-cell whose endpoints remain distinct after homotopy truncation. |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | Every full pseudofunctor to a locally discrete target identifies the images of discard's two endpoint model morphisms. |
@@ -1635,7 +1641,7 @@ Implemented model support is intentionally narrow:
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
 | Cost-exact model localization | Invertible-2-cell saturation of cost-reflecting model morphisms; then homotopy classes | Formal inversion of every saturated marked class | Noncomputable semantic proof layer | Exact mark-descent theorem and canonical pseudofunctor from `Pith`; genuine Mathlib Gabriel--Zisman universal property; a concrete noninvertible 2-cell proves why the construction is not a higher localization |
-| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse; proves endpoint normal form, thinness, and equivalence with the codiscrete groupoid on `Fin 2`; retains noninvertible Boolean discard; factors every retained-coordinate pseudofunctor, every groupoid-valued localized-coordinate functor, every separable mixed family `K × H`, and their full adjoint-equivalence closure; maps the formal inverse correctly; has locally fully faithful precomposition; and reconstructs a candidate constraint for every target 1-morphism of a prospective strong-transformation lift, with identity coherence, all-arrow 2-cell naturality, composition coherence for every inclusion-image pair, and public-factor coherence for a strict inverse generator followed by any retained constraint proved; the opposite retained-then-inverse candidate and both forward normalizations are compiled, while its exact mate-sliding proposition is formalized but unproved; the two cancellation orders, arbitrary nonseparable mixed-coordinate lifts outside that closure, and local essential surjectivity remain open |
+| Two-dimensional walking localization | Free-groupoid inversion in one coordinate | Product with the single-object bicategory of types | Noncomputable proof layer | Adds an explicit missing inverse; proves endpoint normal form, thinness, and equivalence with the codiscrete groupoid on `Fin 2`; retains noninvertible Boolean discard; factors every retained-coordinate pseudofunctor, every groupoid-valued localized-coordinate functor, every separable mixed family `K × H`, and their full adjoint-equivalence closure; maps the formal inverse correctly; has locally fully faithful precomposition; and reconstructs a candidate constraint for every target 1-morphism of a prospective strong-transformation lift, with identity coherence, all-arrow 2-cell naturality, composition coherence for every inclusion-image pair, and public-factor coherence in both inverse/retained orders proved by mate sliding; the two cancellation orders, arbitrary nonseparable mixed-coordinate lifts outside that closure, and local essential surjectivity remain open |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; Mathlib localization at every internal identity; not a Rezk completion |
