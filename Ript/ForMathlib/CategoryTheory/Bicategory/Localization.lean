@@ -737,6 +737,125 @@ def naturalityCompIsoOfIsos (F G : C ⥤ᵖ D)
     whiskerLeftIso appA (G.mapComp f g).symm
 
 set_option backward.isDefEq.respectTransparency false in
+/-- Candidate strong-naturality constraints compose associatively, after
+transporting the left-associated source 1-morphism across the bicategorical
+associator.  This is the constructor-level associativity needed to bootstrap
+composition coherence from generators to longer composites. -/
+theorem naturalityCompIsoOfIsos_assoc (F G : C ⥤ᵖ D)
+    {a b c d : C} (f : a ⟶ b) (g : b ⟶ c) (h : c ⟶ d)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c) (appD : F.obj d ⟶ G.obj d)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (β : F.map g ≫ appC ≅ appB ≫ G.map g)
+    (γ : F.map h ≫ appD ≅ appC ≫ G.map h) :
+    naturalityIsoOfIso F G appA appD
+        (naturalityCompIsoOfIsos F G (f ≫ g) h
+          appA appC appD
+          (naturalityCompIsoOfIsos F G f g appA appB appC α β) γ)
+        (α_ f g h) =
+      naturalityCompIsoOfIsos F G f (g ≫ h)
+        appA appB appD α
+        (naturalityCompIsoOfIsos F G g h appB appC appD β γ) := by
+  apply Iso.ext
+  dsimp [naturalityIsoOfIso, naturalityCompIsoOfIsos]
+  simp only [Iso.trans_hom, whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv]
+  simp
+  bicategory
+  simp only [Iso.trans_hom, whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom]
+  simp
+  have hF := congrArg (fun k => k ▷ appD)
+    (F.mapComp_assoc_right_hom f g h)
+  simp only [comp_whiskerRight] at hF
+  have hslideF :
+      (α_ (F.map (f ≫ g)) (F.map h) appD).hom ≫
+          F.map (f ≫ g) ◁ γ.hom ≫
+          (α_ (F.map (f ≫ g)) appC (G.map h)).inv ≫
+          (F.mapComp f g).hom ▷ appC ▷ G.map h =
+        (F.mapComp f g).hom ▷ F.map h ▷ appD ≫
+          (α_ (F.map f ≫ F.map g) (F.map h) appD).hom ≫
+          (F.map f ≫ F.map g) ◁ γ.hom ≫
+          (α_ (F.map f ≫ F.map g) appC (G.map h)).inv := by
+    symm
+    rw [associator_naturality_left_assoc]
+    rw [← whisker_exchange_assoc]
+    rw [associator_inv_naturality_left]
+  have hcoreG :
+      α.hom ▷ (G.map g ≫ G.map h) ≫
+          (appA ≫ G.map f) ◁ (G.mapComp g h).inv =
+        (F.map f ≫ appB) ◁ (G.mapComp g h).inv ≫
+          α.hom ▷ G.map (g ≫ h) :=
+    (whisker_exchange α.hom (G.mapComp g h).inv).symm
+  have hslideG :
+      (α_ (F.map f) (appB ≫ G.map g) (G.map h)).inv ≫
+          (α_ (F.map f) appB (G.map g)).inv ▷ G.map h ≫
+          α.hom ▷ G.map g ▷ G.map h ≫
+          (α_ (appA ≫ G.map f) (G.map g) (G.map h)).hom ≫
+          (α_ appA (G.map f) (G.map g ≫ G.map h)).hom ≫
+          appA ◁ G.map f ◁ (G.mapComp g h).inv =
+        F.map f ◁ (α_ appB (G.map g) (G.map h)).hom ≫
+          F.map f ◁ appB ◁ (G.mapComp g h).inv ≫
+          (α_ (F.map f) appB (G.map (g ≫ h))).inv ≫
+          α.hom ▷ G.map (g ≫ h) ≫
+          (α_ appA (G.map f) (G.map (g ≫ h))).hom := by
+    calc
+      _ = F.map f ◁ (α_ appB (G.map g) (G.map h)).hom ≫
+            (α_ (F.map f) appB (G.map g ≫ G.map h)).inv ≫
+            α.hom ▷ (G.map g ≫ G.map h) ≫
+            (appA ≫ G.map f) ◁ (G.mapComp g h).inv ≫
+            (α_ appA (G.map f) (G.map (g ≫ h))).hom := by
+              bicategory
+      _ = F.map f ◁ (α_ appB (G.map g) (G.map h)).hom ≫
+            (α_ (F.map f) appB (G.map g ≫ G.map h)).inv ≫
+            (F.map f ≫ appB) ◁ (G.mapComp g h).inv ≫
+            α.hom ▷ G.map (g ≫ h) ≫
+            (α_ appA (G.map f) (G.map (g ≫ h))).hom := by
+              slice_lhs 3 4 => rw [hcoreG]
+              simp only [Category.assoc]
+      _ = _ := by
+        bicategory
+  calc
+    _ = F.map₂ (α_ f g h).inv ▷ appD ≫
+          (F.mapComp (f ≫ g) h).hom ▷ appD ≫
+          ((F.mapComp f g).hom ▷ F.map h) ▷ appD ≫
+          (α_ (F.map f) (F.map g) (F.map h)).hom ▷ appD ≫
+          (α_ (F.map f) (F.map g ≫ F.map h) appD).hom ≫
+          F.map f ◁ (α_ (F.map g) (F.map h) appD).hom ≫
+          F.map f ◁ F.map g ◁ γ.hom ≫
+          F.map f ◁ (α_ (F.map g) appC (G.map h)).inv ≫
+          F.map f ◁ β.hom ▷ G.map h ≫
+          (α_ (F.map f) (appB ≫ G.map g) (G.map h)).inv ≫
+          (α_ (F.map f) appB (G.map g)).inv ▷ G.map h ≫
+          α.hom ▷ G.map g ▷ G.map h ≫
+          (α_ (appA ≫ G.map f) (G.map g) (G.map h)).hom ≫
+          (α_ appA (G.map f) (G.map g ≫ G.map h)).hom ≫
+          appA ◁ G.map f ◁ (G.mapComp g h).inv ≫
+          appA ◁ (G.mapComp f (g ≫ h)).inv := by
+            slice_lhs 3 6 => rw [hslideF]
+            bicategory
+    _ = (F.mapComp f (g ≫ h)).hom ▷ appD ≫
+          (F.map f ◁ (F.mapComp g h).hom) ▷ appD ≫
+          (α_ (F.map f) (F.map g ≫ F.map h) appD).hom ≫
+          F.map f ◁ (α_ (F.map g) (F.map h) appD).hom ≫
+          F.map f ◁ F.map g ◁ γ.hom ≫
+          F.map f ◁ (α_ (F.map g) appC (G.map h)).inv ≫
+          F.map f ◁ β.hom ▷ G.map h ≫
+          (α_ (F.map f) (appB ≫ G.map g) (G.map h)).inv ≫
+          (α_ (F.map f) appB (G.map g)).inv ▷ G.map h ≫
+          α.hom ▷ G.map g ▷ G.map h ≫
+          (α_ (appA ≫ G.map f) (G.map g) (G.map h)).hom ≫
+          (α_ appA (G.map f) (G.map g ≫ G.map h)).hom ≫
+          appA ◁ G.map f ◁ (G.mapComp g h).inv ≫
+          appA ◁ (G.mapComp f (g ≫ h)).inv := by
+            slice_lhs 0 3 => rw [← hF]
+            simp only [Category.assoc]
+    _ = _ := by
+      slice_lhs 8 13 => rw [hslideG]
+      bicategory
+
+set_option backward.isDefEq.respectTransparency false in
 /-- A candidate constraint satisfying the strong-transformation composition
 equation is the constraint constructed from its two factors.  This packages
 the hom-level coherence field as an equality of naturality isomorphisms. -/
@@ -771,6 +890,76 @@ noncomputable def identityNaturalityIso (F G : C ⥤ᵖ D) (a : C)
   whiskerRightIso (F.mapId a) appA ≪≫
     (λ_ appA) ≪≫ (ρ_ appA).symm ≪≫
       whiskerLeftIso appA (G.mapId a).symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Composing candidate constraints preserves naturality in a 2-morphism of
+the first factor.  This is the left-factor counterpart of
+`naturalityCompIsoOfIsos_naturality_right`. -/
+theorem naturalityCompIsoOfIsos_naturality_left (F G : C ⥤ᵖ D)
+    {a b c : C} {f g : a ⟶ b} (θ : f ⟶ g) (h : b ⟶ c)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c)
+    (αf : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (αg : F.map g ≫ appB ≅ appA ≫ G.map g)
+    (β : F.map h ≫ appC ≅ appB ≫ G.map h)
+    (hα : F.map₂ θ ▷ appB ≫ αg.hom =
+      αf.hom ≫ appA ◁ G.map₂ θ) :
+    F.map₂ (θ ▷ h) ▷ appC ≫
+        (naturalityCompIsoOfIsos F G g h appA appB appC αg β).hom =
+      (naturalityCompIsoOfIsos F G f h appA appB appC αf β).hom ≫
+        appA ◁ G.map₂ (θ ▷ h) := by
+  rw [F.map₂_whisker_right, G.map₂_whisker_right]
+  dsimp [naturalityCompIsoOfIsos]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, comp_whiskerRight, whiskerLeft_comp,
+    Category.assoc]
+  simp
+  apply (cancel_epi ((F.mapComp f h).hom ▷ appC)).mpr
+  rw [← cancel_mono (appA ◁ (G.mapComp g h).hom)]
+  simp
+  have hcoreF :
+      F.map f ◁ β.hom ≫ F.map₂ θ ▷ (appB ≫ G.map h) =
+        F.map₂ θ ▷ (F.map h ≫ appC) ≫ F.map g ◁ β.hom :=
+    whisker_exchange (F.map₂ θ) β.hom
+  have hslideF :
+      F.map₂ θ ▷ F.map h ▷ appC ≫
+          (α_ (F.map g) (F.map h) appC).hom ≫
+          F.map g ◁ β.hom ≫
+          (α_ (F.map g) appB (G.map h)).inv =
+        (α_ (F.map f) (F.map h) appC).hom ≫
+          F.map f ◁ β.hom ≫
+          (α_ (F.map f) appB (G.map h)).inv ≫
+          F.map₂ θ ▷ appB ▷ G.map h := by
+    calc
+      _ = (α_ (F.map f) (F.map h) appC).hom ≫
+            F.map₂ θ ▷ (F.map h ≫ appC) ≫
+            F.map g ◁ β.hom ≫
+            (α_ (F.map g) appB (G.map h)).inv := by
+              bicategory
+      _ = (α_ (F.map f) (F.map h) appC).hom ≫
+            F.map f ◁ β.hom ≫
+            F.map₂ θ ▷ (appB ≫ G.map h) ≫
+            (α_ (F.map g) appB (G.map h)).inv := by
+              slice_lhs 2 3 => rw [← hcoreF]
+              simp only [Category.assoc]
+      _ = _ := by
+        bicategory
+  calc
+    _ = (α_ (F.map f) (F.map h) appC).hom ≫
+          F.map f ◁ β.hom ≫
+          (α_ (F.map f) appB (G.map h)).inv ≫
+          (F.map₂ θ ▷ appB ≫ αg.hom) ▷ G.map h ≫
+          (α_ appA (G.map g) (G.map h)).hom := by
+            slice_lhs 1 4 => rw [hslideF]
+            bicategory
+    _ = (α_ (F.map f) (F.map h) appC).hom ≫
+          F.map f ◁ β.hom ≫
+          (α_ (F.map f) appB (G.map h)).inv ≫
+          (αf.hom ≫ appA ◁ G.map₂ θ) ▷ G.map h ≫
+          (α_ appA (G.map g) (G.map h)).hom := by
+            rw [hα]
+    _ = _ := by
+      bicategory
 
 /-- Composing candidate constraints preserves naturality in a 2-morphism of
 the second factor. -/
@@ -831,6 +1020,50 @@ theorem naturalityCompIsoOfIsos_naturality_right (F G : C ⥤ᵖ D)
       simp only [Category.assoc]
       rw [hα']
       simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Transporting a composed candidate constraint along an isomorphism of its
+first factor is the same as transporting that factor before composition. -/
+theorem naturalityIsoOfIso_comp_left (F G : C ⥤ᵖ D)
+    {a b c : C} {f g : a ⟶ b} (e : f ≅ g) (h : b ⟶ c)
+    (appA : F.obj a ⟶ G.obj a) (appB : F.obj b ⟶ G.obj b)
+    (appC : F.obj c ⟶ G.obj c)
+    (α : F.map f ≫ appB ≅ appA ≫ G.map f)
+    (β : F.map h ≫ appC ≅ appB ≫ G.map h) :
+    naturalityIsoOfIso F G appA appC
+        (naturalityCompIsoOfIsos F G f h
+          appA appB appC α β)
+        (whiskerRightIso e h) =
+      naturalityCompIsoOfIsos F G g h appA appB appC
+        (naturalityIsoOfIso F G appA appB α e) β := by
+  have hα :
+      F.map₂ e.hom ▷ appB ≫
+          (naturalityIsoOfIso F G appA appB α e).hom =
+        α.hom ≫ appA ◁ G.map₂ e.hom := by
+    dsimp [naturalityIsoOfIso]
+    simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+      Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+      PrelaxFunctor.map₂Iso_inv]
+    rw [← Category.assoc]
+    rw [← comp_whiskerRight, ← F.map₂_comp]
+    simp only [Iso.hom_inv_id, F.map₂_id, id_whiskerRight,
+      Category.id_comp]
+  have hcomp :=
+    naturalityCompIsoOfIsos_naturality_left
+      F G e.hom h appA appB appC α
+      (naturalityIsoOfIso F G appA appB α e) β hα
+  apply Iso.ext
+  rw [← cancel_epi (F.map₂ (e.hom ▷ h) ▷ appC)]
+  dsimp [naturalityIsoOfIso]
+  simp only [whiskerRightIso_hom, whiskerLeftIso_hom,
+    Iso.symm_hom, PrelaxFunctor.map₂Iso_hom,
+    PrelaxFunctor.map₂Iso_inv]
+  rw [← Category.assoc, ← comp_whiskerRight, ← F.map₂_comp]
+  have he_inv : (whiskerRightIso e h).inv = e.inv ▷ h := rfl
+  rw [he_inv, ← comp_whiskerRight, e.hom_inv_id,
+    id_whiskerRight, F.map₂_id]
+  simp only [id_whiskerRight, Category.id_comp]
+  exact hcomp.symm
 
 set_option backward.isDefEq.respectTransparency false in
 /-- Composing a candidate constraint with the canonical identity constraint

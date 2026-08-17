@@ -308,8 +308,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_eq_of_coherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos_right_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_comp_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_comp_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_trans` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityAt_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
@@ -388,6 +391,22 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseGeneratorRetained_transport` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_retainedInverse_public` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_retainedInverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_assoc_bootstrap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_assoc_unbootstrap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_of_iso_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_of_iso_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_inverse_retained` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_retained_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_canonicalInverse_canonicalForward` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_canonicalForward_canonicalInverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTrans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransRestrictionIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedModificationApp_naturality_endpoint` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full_endpoint` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_essSurj` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -767,36 +786,28 @@ adjoint equivalent to a separable mixed source automatically inverts the
 marking and factors through the localization target, even when its
 implementation is not definitionally a componentwise pair.
 Precomposition is faithful on every local category because the inclusion is
-surjective on objects. It is now also full: modification components lift from
-the source, naturality extends from forward generators to their chosen
-inverses by a mates calculation, then through signed paths, the free-groupoid
-quotient, and the retained coordinate. Thus precomposition is locally fully
-faithful. The next object-lifting step now supplies a candidate
-strong-naturality isomorphism for every target 1-morphism. Forward arrows with
-arbitrary retained coordinates reuse the source constraint definitionally;
-reverse arrows compose the explicit invertible mate with the retained
-constraint and transport across the product unitor. Endpoint normal form then
-selects between those cases for every target arrow. Naturality in all target
-2-cells and the identity law are proved. Composition coherence is proved for
-every pair in the inclusion image, including every canonical forward-forward
-pair. Transport across a fixed target 2-isomorphism is injective on candidate
-constraints. Candidate transport now also commutes with composition in the
-right factor, composes transitively, and cancels a canonical identity factor
-through the right unitor. These laws identify the public inverse-generator
-constraint with its mate constructor and prove public-factor composition
-coherence when that inverse generator is followed by any retained-coordinate
-arrow. Other mixed inverse composition orders and therefore local essential
-surjectivity remain open. The mate constructor does
-not invoke choice directly; the audited declarations still include the ambient
-Mathlib dependencies `[propext, Classical.choice, Quot.sound]`.
+surjective on objects, and modification components lift from the source across
+the chosen inverse, so it is full as well. A source strong transformation now
+supplies canonical object components and naturality isomorphisms on every
+target arrow. Mate identities prove both generator-cancellation orders;
+associator transport and invariance under an isomorphism of either factor
+extend coherence to both endpoint-changing cancellation orders with arbitrary
+retained coordinates. Thinness of the walking completion reduces every target
+pair to those compiled cases. The data therefore package as a genuine target
+strong transformation, and an invertible modification identifies its
+restriction with the source transformation. This proves local essential
+surjectivity and hence that precomposition is an equivalence on every local
+category. Every new flagship declaration audits with the ambient Mathlib
+dependencies `[propext, Classical.choice, Quot.sound]` and introduces no
+project axiom.
 `Pseudofunctor.prod` and
 `Pseudofunctor.pair` themselves use only
 `[propext]`; the remaining audited declarations have the exact
 `[propext, Classical.choice, Quot.sound]` footprint. Arbitrary nonseparable
 mixed-coordinate inverting pseudofunctors outside this replete closure have
-not yet been lifted, and local essential surjectivity remains unproved, so no
-existence theorem for the nontrivial full resource-process higher localization
-is claimed.
+not yet been lifted. That missing global biessential-factorization field means
+no existence theorem for the nontrivial full resource-process higher
+localization is claimed.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

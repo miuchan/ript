@@ -81,19 +81,12 @@ Ript 同时编译了未截断研究目标的精确定义：双范畴 localizatio
 普通 localization 普遍性质和诱导的双范畴标记反转。参数化改进进一步与“类型和函数”的单对象
 双范畴取积：目标被证明不是局部离散的，映射在全部源 2-胞上忠实，Boolean discard 在 walking
 坐标局部化后仍不可逆。对任意目标双范畴，每个只依赖保留坐标的伪函子现在都有通过目标的显式
-分解。预复合在每个强变换与 modification 的局部范畴上现已充满忠实：modification 分量可从源
-提升，生成箭头的自然性通过 mate 演算延伸到自由加入的逆元，再通过路径归纳和积分解覆盖全部
-目标箭头。对于尚缺的对象提升方向，源强变换现在决定目标对象分量，并为每个目标 1-态射给出候选强
-自然性同构。带任意保留坐标的正向箭头直接复用源自然性；反向箭头把显式可逆 mate 与保留坐标约束
-复合；端点规范形覆盖全部目标箭头。现在已证明完整的恒等 coherence，也证明端点规范约束对任意目标
-2-胞的自然性，包括自由添加的逆向箭头。现在进一步证明了严格恒等箭头处的端点约束等于规范恒等
-约束，因此公共全箭头约束跨越其恒等分支也满足 2-胞自然性。inclusion 像中任意一对箭头的复合
-coherence 现已证明，从而覆盖带任意保留坐标的规范正向—正向情形。逆生成元 mate 后接任意保留坐标
-约束的构造器级混合族也已证明会恢复其原始复合上的公共约束。恒等 transport 与右单位规范化进一步
-把这两个因子识别为公共全箭头约束，因此相应的公共因子复合律也已编译为 hom 方程和候选同构运输等式。
-对于相反的“保留坐标后接逆生成元”次序，两个乘积单位子比较、候选复合、到规范逆箭头的运输，以及两种
-正向分解的等式都已编译；双边 mate 滑移、伪函子保持 mate 以及相应的强变换滑移定理现已证明该次序对
-每条 walking 箭头都满足公共复合律。通用的 mate–counit 恒等式现已证明第一种生成元消去次序：严格逆生成元后接其正向生成元满足公共复合律；对称的 mate–unit 恒等式也证明了相反次序：严格正向生成元后接其逆元同样满足公共复合律。下一步是把这些已完成的构造子 coherence 律组装成目标强变换。walking 自由群胚本身
+分解。预复合在每个强变换与 modification 的局部范畴上现已构成等价。源 modification 分量可以跨越
+自由加入的逆元提升；源强变换则确定目标对象分量和每个目标 1-态射上的规范自然性同构。mate 恒等式
+处理两个生成元消去次序，结合子运输和沿因子同构的不变性进一步覆盖两种带任意保留坐标的跨端点消去。
+walking 补全的 thin 性把其余所有目标复合归约到这些已证明情形。所得数据已正式组装为目标强变换，
+并由可逆 modification 证明其限制恢复原始源强变换；配合已有的充满忠实性，这同时证明局部本质满射
+和局部等价。walking 自由群胚本身
 现在也有规范形定理：每条带符号路径都等于其端点唯一决定的
 态射，因此该补全是 thin 的，并与 `Fin 2` 上的 codiscrete 群胚显式范畴等价。作为互补，对任意群胚 `G`，
 每个 walking-arrow 函子 `K : Arrow ⥤ G` 都诱导一个只依赖局部化坐标的标记反转伪函子；它通过
@@ -102,8 +95,8 @@ coherence 现已证明，从而覆盖带任意保留坐标的规范正向—正�
 分解；其提升正确解释形式逆元，而保留分量取恒等时仍检测不可逆 Boolean discard。现在还证明了
 源伪函子的标记反转与分解都在伴随等价下保持，因此结论覆盖可分离族的整个 replete 闭包，包括
 定义上不是逐分量积的实现。完整资源过程构造仍须分解该闭包之外任意不可分离混合坐标的
-反转标记伪函子，并证明局部本质满射；现有桥接仍不是完整的双范畴、Dwyer--Kan、
-simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
+反转标记伪函子。正是这个尚缺的全局双本质分解字段，使现有桥接仍不是完整的双范畴、
+Dwyer--Kan、simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
 的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
 带等价重索引的深嵌入过程语言具有 soundness 定理。它是集合层、1-截断模型，不假设外部
@@ -1066,7 +1059,11 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | walking 补全中的每个态射都等于由其两个端点决定的规范态射。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | walking-arrow 补全与 `Fin 2` 上的 codiscrete 群胚范畴等价。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_full` | 预复合后的每个 modification 都能跨越自由加入的逆元延拓。 |
-| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | 预复合在每个局部范畴上充满忠实；要得到局部等价只剩局部本质满射。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusionLocalPrecompositionFullyFaithful` | 预复合在强变换与 modification 的每个局部范畴上充满忠实。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTrans` | 每个源强变换都延拓为满足全部恒等、自然性与复合律的真正目标强变换。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransRestrictionIso` | 提升后的目标强变换限制回源后，通过可逆 modification 恢复原始强变换。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_essSurj` | 预复合在每个局部范畴的对象上本质满射。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_isEquivalence` | 预复合在强变换与 modification 的每个局部范畴上构成等价。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_eq_source` | 带任意保留坐标的正向约束在定义上就是原源强自然性约束。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransForwardNaturality_naturality` | 正向提升约束对每个保留坐标 2-胞都满足自然性。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorInverseNaturality_hom` | 预期目标强变换在逆生成箭头处的约束，是其正向约束的显式可逆双范畴 mate。 |
@@ -1232,7 +1229,7 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 经典量子退相干子范畴 | 是；退相干恒等 | 是 | 精确随机源；矩阵证明语义 | 忠实测量—制备像、精确对角态演化、复合与 tensor 保持 |
 | 资源索引模型双范畴 | 强编织模型函子 | 幺半群 2-胞的横向复合 | 证明层 | 固定资源类型；恒等、复合、interchange、结合子/单位子、五边形/三角与成本精确等价 |
 | 成本精确模型 localization | 成本反射模型态射的可逆 2-胞饱和，再取同伦类 | 形式反转每个饱和标记类 | 不可计算语义证明层 | 精确标记下降定理与从 `Pith` 出发的规范伪函子；真正的 Mathlib Gabriel--Zisman 普遍性质；具体不可逆 2-胞证明它不是高阶 localization |
-| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，预复合局部充满忠实，并为预期强变换提升的每个目标 1-态射重建候选约束；恒等 coherence、全箭头 2-胞自然性、inclusion 像中任意一对箭头的复合 coherence、两个逆元/保留坐标次序的公共因子 coherence，以及两个生成元消去次序都已证明；目标强变换的正式组装、该闭包之外任意不可分离混合坐标分解和局部本质满射仍开放 |
+| 二维 walking localization | 在一个坐标中作自由群胚反转 | 与类型单对象双范畴取积 | 不可计算证明层 | 加入显式缺失逆元，证明端点规范形、thin 性与同 `Fin 2` 上 codiscrete 群胚的等价，保留不可逆 Boolean discard，分解每个保留坐标伪函子、每个取值于群胚的局部化坐标函子、每个可分离混合族 `K × H` 及其完整伴随等价闭包，正确解释形式逆元，把每个源强变换正式组装为目标强变换，提升 modification，并证明预复合在每个局部范畴上构成等价；该闭包之外任意不可分离混合坐标分解仍开放 |
 | 内部单值深嵌入 universe | 带类型的深嵌入过程 | sum/tensor 语法与重索引 | 原始语法可执行；商证明层 | 小型集合语义、群胚恒等、内部单值性与 soundness；无外部 univalence 或高阶路径 |
 | 截断对象补全 | 补全接口上的不变量映射/谓词 | 补全后的 sum 与 tensor | 商消去器从显式不变量计算 | 相等精确刻画内部恒等/等价非空；不选择代表元 |
 | 骨架群胚补全 | 从 skeletal 内部群胚出发的函子 | 通过范畴等价继承结构 | 不可计算语义层 | 保留全部自同构；对所有内部恒等的 Mathlib localization；不是 Rezk completion |
@@ -1718,7 +1715,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
 - [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
 - [x] 可逆 2-胞饱和的成本标记、精确同伦下降、规范 `Pith` 伪函子与 Gabriel--Zisman localization，含不可逆标记态射及 2-胞见证
-- [x] 完整二维 localization 谓词、恒等与 walking-arrow 基础构造、walking 补全的端点规范形/thin/codiscrete 分类、具有保留坐标、局部化坐标、可分离混合坐标和伴随等价 replete 闭包分解及局部充满忠实预复合的非局部离散逆元加入切片，以及恒等候选障碍；该闭包之外任意不可分离混合坐标分解和局部本质满射仍开放
+- [x] 完整二维 localization 谓词、恒等与 walking-arrow 基础构造、walking 补全的端点规范形/thin/codiscrete 分类、具有保留坐标、局部化坐标、可分离混合坐标和伴随等价 replete 闭包分解及局部预复合等价的非局部离散逆元加入切片，以及恒等候选障碍；该闭包之外任意不可分离混合坐标分解仍开放
 - [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
