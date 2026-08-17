@@ -23,6 +23,7 @@ import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
+import Ript.Examples.WalkingLocalization
 import Ript.Univalent.ClassifyingDiagram
 import Ript.Univalent.Localization
 import Ript.Models.Decision.SemanticValue
@@ -295,6 +296,8 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Pseudofunctor.idCompEquivalence
 #print axioms CategoryTheory.Pseudofunctor.localPrecomposition_id_isEquivalence
 #print axioms CategoryTheory.Bicategory.MorphismProperty.equivalences_isBicategoricalLocalization_id
+#print axioms CategoryTheory.LocallyDiscrete.equivalenceOfIsIso
+#print axioms CategoryTheory.Bicategory.MorphismProperty.locallyDiscrete_isInvertedBy
 #print axioms Ript.Higher.costExactMorphisms_isMultiplicative
 #print axioms Ript.Higher.costExactMorphisms_homMk_iff
 #print axioms Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence
@@ -307,6 +310,11 @@ set_option autoImplicit false
 #print axioms Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso
 #print axioms Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence
 #print axioms Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization
+#print axioms Ript.Examples.WalkingLocalization.inclusionFunctor_isLocalization
+#print axioms Ript.Examples.WalkingLocalization.inclusion_map_arrow_comp_inverse
+#print axioms Ript.Examples.WalkingLocalization.inverse_comp_inclusion_map_arrow
+#print axioms Ript.Examples.WalkingLocalization.arrow_not_isEquivalence
+#print axioms Ript.Examples.WalkingLocalization.inclusion_genuinely_adds_inverse
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne
 #print axioms Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard

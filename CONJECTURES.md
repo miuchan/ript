@@ -48,6 +48,19 @@ the identity pseudofunctor is proved not to be the cost-exact bicategorical
 localization. A genuine construction must adjoin at least that missing
 inverse while retaining noninvertible 2-cells.
 
+The first genuinely inverse-adjoining slice is also kernel checked. The
+walking arrow is represented by the preorder category `Fin 2`; its generator
+is proved not to be a bicategorical equivalence in the locally discrete
+source. Mathlib's free-groupoid localization supplies an explicit reverse
+arrow, both inverse equations, and an ordinary `Functor.IsLocalization`
+instance. Ript proves that ordinary inversion transports to adjoint-equivalence
+inversion by the induced pseudofunctor. This resolves construction of the
+mark-inversion field in a nontrivial locally discrete case. It does not yet
+resolve the open part: a construction for the full resource-process
+bicategory must preserve arbitrary noninvertible 2-cells and establish
+biessential factorization and local equivalence on transformations and
+modifications.
+
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's
 `Functor.IsLocalization` predicate at all internal identity morphisms, and

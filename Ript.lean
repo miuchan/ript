@@ -35,6 +35,7 @@ import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
 import Ript.Examples.UnivalentProcessUniverse
 import Ript.Examples.UnivalentSimplicial
+import Ript.Examples.WalkingLocalization
 import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
 import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
