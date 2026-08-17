@@ -221,7 +221,7 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained-coordinate lifts and local faithfulness | PROVED |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained- and localized-coordinate lift families plus local faithfulness | PROVED |
 | 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -4172,6 +4172,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   def Pseudofunctor.prod (F : B ⥤ᵖ C) (G : D ⥤ᵖ E) :
       (B × D) ⥤ᵖ (C × E)
 
+  def Pseudofunctor.fstComp (D : Type u) (H : B ⥤ᵖ C) :
+      (B × D) ⥤ᵖ C
+
   def Pseudofunctor.prodIdSndCompEquivalence (Q : B ⥤ᵖ C)
       (H : D ⥤ᵖ E) :
       (Q.prod (Pseudofunctor.id D)).comp (Pseudofunctor.sndComp C H) ≌
@@ -4198,6 +4201,16 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       (H : Cell ⥤ᵖ E) :
       ∃ G : Target ⥤ᵖ E,
         Nonempty (inclusion.comp G ≌ retainedSource H)
+
+  theorem TwoDimensionalWalkingLocalization.localizedCoordinateSource_has_factorization
+      (K : WalkingLocalization.Arrow ⥤ G) :
+      ∃ H : Target ⥤ᵖ LocallyDiscrete G,
+        Nonempty (inclusion.comp H ≌ localizedCoordinateSource K)
+
+  theorem TwoDimensionalWalkingLocalization.localizedCoordinateLift_map_inverse
+      (K : WalkingLocalization.Arrow ⥤ G) :
+      (localizedCoordinateLift K).map inverse =
+        (inv (K.map WalkingLocalization.arrow)).toLoc
 
   theorem TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful
       (F G : Target ⥤ᵖ E) :
@@ -5591,8 +5604,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     single-object bicategory of types is no longer locally discrete: the map
     is faithful on 2-cells and retains a concrete noninvertible Boolean
     discard while adjoining the inverse. Every retained-coordinate
-    pseudofunctor now has an explicit target factorization, and
-    precomposition is locally faithful for arbitrary target pseudofunctors.
-    Arbitrary biessential factorization, local fullness, and local essential
-    surjectivity remain open, so this is not an existence proof for the
-    desired resource-process higher localization.
+    pseudofunctor now has an explicit target factorization. Independently,
+    every groupoid-valued functor of the localized walking coordinate factors
+    through the free-groupoid target and maps the formal inverse to the
+    original image inverse. Precomposition is locally faithful for arbitrary
+    target pseudofunctors. Arbitrary mixed-coordinate biessential
+    factorization, local fullness, and local essential surjectivity remain
+    open, so this is not an existence proof for the desired resource-process
+    higher localization.

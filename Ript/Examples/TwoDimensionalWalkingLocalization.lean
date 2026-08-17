@@ -191,6 +191,136 @@ theorem inclusion_obj_surjective : Function.Surjective inclusion.obj := by
   cases Y
   exact ⟨(LocallyDiscrete.mk X.as.as, MonoidalSingleObj.star (Type)), rfl⟩
 
+section LocalizedCoordinateLift
+
+variable {G : Type u} [Groupoid.{v} G]
+
+/-- A source pseudofunctor obtained from an arbitrary functor out of the
+walking arrow while ignoring the retained coordinate.  The groupoid target
+makes every image 1-morphism an adjoint equivalence. -/
+noncomputable def localizedCoordinateSource
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    Source ⥤ᵖ LocallyDiscrete G :=
+  Pseudofunctor.fstComp Cell K.toPseudofunctor
+
+/-- Extend a groupoid-valued walking-arrow functor across the freely adjoined
+inverse, then ignore the retained coordinate. -/
+noncomputable def localizedCoordinateLift
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    Target ⥤ᵖ LocallyDiscrete G :=
+  Pseudofunctor.fstComp Cell
+    (CategoryTheory.FreeGroupoid.lift K).toPseudofunctor
+
+/-- The forward strong transformation witnessing the free-groupoid
+factorization of a localized-coordinate pseudofunctor. -/
+noncomputable def localizedCoordinateFactorizationHom
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    inclusion.comp (localizedCoordinateLift K) ⟶
+      localizedCoordinateSource K where
+  app X := 𝟙 _
+  naturality f := eqToIso (by
+    apply Discrete.ext
+    change (CategoryTheory.FreeGroupoid.lift K).map
+        ((CategoryTheory.FreeGroupoid.of _).map f.1.as) ≫ 𝟙 _ =
+      𝟙 _ ≫ K.map f.1.as
+    simp)
+  naturality_naturality η := by cat_disch
+  naturality_id X := by cat_disch
+  naturality_comp f g := by cat_disch
+
+/-- The inverse strong transformation for the free-groupoid factorization. -/
+noncomputable def localizedCoordinateFactorizationInv
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    localizedCoordinateSource K ⟶
+      inclusion.comp (localizedCoordinateLift K) where
+  app X := 𝟙 _
+  naturality f := eqToIso (by
+    apply Discrete.ext
+    change K.map f.1.as ≫ 𝟙 _ =
+      𝟙 _ ≫ (CategoryTheory.FreeGroupoid.lift K).map
+        ((CategoryTheory.FreeGroupoid.of _).map f.1.as)
+    simp)
+  naturality_naturality η := by cat_disch
+  naturality_id X := by cat_disch
+  naturality_comp f g := by cat_disch
+
+/-- Every groupoid-valued pseudofunctor depending only on the coordinate
+being localized factors through the two-dimensional walking localization up
+to an adjoint equivalence of pseudofunctors. -/
+noncomputable def localizedCoordinateFactorization
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    inclusion.comp (localizedCoordinateLift K) ≌
+      localizedCoordinateSource K :=
+  Bicategory.Equivalence.mkOfAdjointifyCounit
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := 𝟙 (inclusion.comp (localizedCoordinateLift K)))
+      (θ := localizedCoordinateFactorizationHom K ≫
+        localizedCoordinateFactorizationInv K)
+      (fun X =>
+        (ρ_ (𝟙 ((inclusion.comp (localizedCoordinateLift K)).obj X))).symm)
+      (by
+        intro a b f
+        dsimp [localizedCoordinateFactorizationHom,
+          localizedCoordinateFactorizationInv]
+        cat_disch))
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := localizedCoordinateFactorizationInv K ≫
+        localizedCoordinateFactorizationHom K)
+      (θ := 𝟙 (localizedCoordinateSource K))
+      (fun X => ρ_ (𝟙 ((localizedCoordinateSource K).obj X)))
+      (by
+        intro a b f
+        dsimp [localizedCoordinateFactorizationHom,
+          localizedCoordinateFactorizationInv]
+        cat_disch))
+
+/-- Every groupoid-valued localized-coordinate pseudofunctor inverts the
+whole product marking. -/
+theorem localizedCoordinateSource_inverts
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    marking.IsInvertedBy (localizedCoordinateSource K) := by
+  intro X Y f _
+  exact LocallyDiscrete.isEquivalence_of_groupoid _
+
+/-- A second, orthogonal family of witnesses for the `lift` shape: arbitrary
+groupoid-valued functors of the coordinate being localized factor through
+the target.  Unlike `retainedSource_has_factorization`, this family uses the
+formal inverse adjoined by the free groupoid. -/
+theorem localizedCoordinateSource_has_factorization
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    ∃ H : Target ⥤ᵖ LocallyDiscrete G,
+      Nonempty (inclusion.comp H ≌ localizedCoordinateSource K) :=
+  ⟨localizedCoordinateLift K, ⟨localizedCoordinateFactorization K⟩⟩
+
+/-- The extended pseudofunctor sends the formally adjoined inverse to the
+actual inverse of the original walking-arrow image. -/
+theorem localizedCoordinateLift_map_inverse
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    (localizedCoordinateLift K).map inverse =
+      (inv (K.map Ript.Examples.WalkingLocalization.arrow)).toLoc := by
+  apply Discrete.ext
+  change (CategoryTheory.FreeGroupoid.lift K).map
+      (inv (CategoryTheory.FreeGroupoid.homMk
+        Ript.Examples.WalkingLocalization.arrow)) =
+    inv (K.map Ript.Examples.WalkingLocalization.arrow)
+  simp
+
+/-- A groupoid-valued pseudofunctor of the localized coordinate both
+inverts the marking and factors through the target, with the new inverse
+mapped to the chosen groupoid inverse. -/
+theorem localizedCoordinate_inverts_factors_and_maps_inverse
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    marking.IsInvertedBy (localizedCoordinateSource K) ∧
+      (∃ H : Target ⥤ᵖ LocallyDiscrete G,
+        Nonempty (inclusion.comp H ≌ localizedCoordinateSource K)) ∧
+      (localizedCoordinateLift K).map inverse =
+        (inv (K.map Ript.Examples.WalkingLocalization.arrow)).toLoc :=
+  ⟨localizedCoordinateSource_inverts K,
+    localizedCoordinateSource_has_factorization K,
+    localizedCoordinateLift_map_inverse K⟩
+
+end LocalizedCoordinateLift
+
 section RetainedCoordinateLift
 
 variable {E : Type u} [Bicategory.{w, v} E]
