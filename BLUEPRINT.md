@@ -155,6 +155,17 @@ flowchart LR
   MonoidalTermModel --> HigherModels["Examples.HigherModels"]
   ModelEquivalence --> HigherModels
   HigherModels --> Audit
+  ModelBicategory --> ModelHomotopy["ForMathlib.Bicategory.HomotopyCategory"]
+  ModelHomotopy --> BicatMarks["ForMathlib.Bicategory.MorphismProperty"]
+  ModelHomotopy --> PithBridge["ForMathlib.Bicategory.PithToHomotopy"]
+  BicatMarks --> ModelLocalization["Higher.Localization"]
+  PithBridge --> ModelLocalization
+  ModelEquivalence --> ModelLocalization
+  ModelLocalization --> HigherLocalization["Examples.HigherLocalization"]
+  FiniteFunctionMonoidal --> HigherTwoCell["Examples.HigherNoninvertibleTwoCell"]
+  ModelLocalization --> HigherTwoCell
+  HigherLocalization --> Audit
+  HigherTwoCell --> Audit
   UnivalentSyntax["Univalent.Syntax"] --> UnivalentModel["Univalent.Model"]
   UnivalentModel --> UnivalentSoundness["Univalent.Soundness"]
   UnivalentSoundness --> UnivalentBoundary["Univalent.Boundary"]
@@ -201,7 +212,7 @@ Every node in this graph is an existing compiled module.
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
-| 10 (ordinary model localization) | Homotopy 1-category, multiplicative cost-exact marking, Mathlib Gabriel--Zisman universal property, and a noninvertible marked arrow | PROVED |
+| 10 (ordinary model localization) | Invertible-2-cell-saturated cost-exact marking, exact homotopy descent, canonical pith pseudofunctor, Mathlib Gabriel--Zisman universal property, and noninvertible marked-arrow/2-cell witnesses | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
 | 12 (presheaf foundation) | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | PROVED |
@@ -4075,9 +4086,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 
 - Natural-language statement: quotienting parallel model 1-cells by
   invertible monoidal 2-cells turns the model bicategory into an ordinary
-  homotopy category. A morphism class is marked when it has a
-  `CostReflecting` representative. These marks contain identities and are
-  closed under composition, so Mathlib's Gabriel--Zisman construction gives a
+  homotopy category. Raw cost reflection is a multiplicative property of
+  representatives; `costExactArrows` is its explicit closure under invertible
+  2-cells. The descent theorem proves that this saturated bicategorical mark
+  is exactly the property of having a cost-reflecting representative in the
+  homotopy category. Mathlib's Gabriel--Zisman construction then gives a
   canonical localization with its standard functor-category universal
   property.
 - Lean interfaces:
@@ -4088,10 +4101,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   theorem HomotopyCategory.homMk_eq_iff (f g : X ⟶ Y) :
       HomotopyCategory.homMk f = HomotopyCategory.homMk g ↔ Nonempty (f ≅ g)
 
+  def Bicategory.MorphismProperty.saturate (W) :
+      Bicategory.MorphismProperty B
+
+  theorem Bicategory.MorphismProperty.toHomotopy_homMk_iff (W) (f) :
+      W.toHomotopy (HomotopyCategory.homMk f) ↔ W.saturate f
+
   noncomputable def HomotopyCategory.equivalenceOfIsIso
       (f : X ⟶ Y) [IsIso (HomotopyCategory.homMk f)] : X ≌ Y
 
   def costExactMorphisms R : MorphismProperty (ModelHomotopyCategory R)
+
+  theorem costExactMorphisms_homMk_iff (F) :
+      costExactMorphisms R (HomotopyCategory.homMk F) ↔ costExactArrows R F
 
   abbrev costExactLocalizationFunctor R :
       ModelHomotopyCategory R ⥤ CostExactLocalization R
@@ -4099,32 +4121,48 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   noncomputable def costExactLocalizationFunctorEquivalence (E) :
       (CostExactLocalization R ⥤ E) ≌
         (costExactMorphisms R).FunctorsInverting E
+
+  noncomputable def costExactPithLocalization R :
+      Pith (ProcessModel R) ⥤ᵖ LocallyDiscrete (CostExactLocalization R)
   ```
 
 - Construction: local hom-categories are quotiented by Mathlib's
   `isIsomorphicSetoid`. Whiskering makes composition well defined, and the
   bicategorical left/right unitors and associator prove the ordinary category
-  laws. `CostReflecting` is proved stable under identity and composition.
-  Mathlib's canonical `MorphismProperty.Q` then carries an actual
-  `Functor.IsLocalization` instance.
+  laws. `CostReflecting` is proved stable under identity and composition; its
+  2-isomorphism saturation is consequently multiplicative and invariant under
+  invertible 2-cells. The canonical `Pith` pseudofunctor records the exact
+  higher-to-ordinary truncation, and Mathlib's `MorphismProperty.Q` carries an
+  actual `Functor.IsLocalization` instance.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
   additive `0` in `Multiplicative Nat`; target object `1` is not in the
   essential image. It is cost-reflecting and hence marked, while
   `unitToNatModelHom_not_isIso` proves its homotopy class is not already an
   isomorphism.
+- Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
+  cartesian discard is a monoidal natural transformation from the identity
+  model morphism to the constant-terminal model morphism. Its `Bool`
+  component cannot be invertible, and the two endpoint 1-morphisms remain
+  distinct in the homotopy category.
 - Status: `PROVED` for this ordinary localization of the homotopy 1-category.
 - Computability: the quotient inverse representative and the constructed
   localization are noncomputable semantic objects. The discrete source data
   and zero-cost witness are concrete; the noninvertibility proof is
   proposition-level.
 - Scope boundary: noninvertible 2-cells are discarded before localization.
+  A pseudofunctor from the full model bicategory to this locally discrete
+  target cannot extend the displayed pith bridge across the concrete discard
+  2-cell, because its endpoints have distinct homotopy classes.
   No bicategorical, Dwyer--Kan, simplicial, complete-Segal, or Rezk universal
   property is claimed.
 - Sources:
   `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean`,
+  `Ript/ForMathlib/CategoryTheory/Bicategory/MorphismProperty.lean`,
+  `Ript/ForMathlib/CategoryTheory/Bicategory/PithToHomotopy.lean`,
   `Ript/Higher/Localization.lean`, and
-  `Ript/Examples/HigherLocalization.lean`.
+  `Ript/Examples/HigherLocalization.lean`, and
+  `Ript/Examples/HigherNoninvertibleTwoCell.lean`.
 
 ### Explicit non-claims for Stage 10
 

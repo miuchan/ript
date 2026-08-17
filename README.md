@@ -113,14 +113,21 @@ pentagon, and triangle coherence. Cost-exact equivalences preserve budgets and
 the serial/parallel core laws under an explicit cost-reflection hypothesis.
 The first non-groupoidal localization slice is now compiled too. Ript forms
 the ordinary homotopy category of the model bicategory by quotienting model
-morphisms by invertible monoidal 2-cells, marks every class with a
-cost-reflecting representative, and applies Mathlib's Gabriel--Zisman
-construction. The canonical functor has a genuine `Functor.IsLocalization`
-instance and the standard functor-category universal property. A zero-cost
-discrete example proves that one marked arrow is not already invertible, so
-this construction adds a real formal inverse. This is deliberately a
-1-categorical localization after 2-isomorphism truncation, not yet a
-bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
+morphisms by invertible monoidal 2-cells. The raw cost-reflecting arrows are
+now separated from their explicit closure under invertible 2-cells; a theorem
+identifies that saturated bicategorical mark exactly with the classes marked
+in the homotopy category. Mathlib's Gabriel--Zisman construction then gives a
+genuine `Functor.IsLocalization` instance and the standard functor-category
+universal property. The canonical higher-to-ordinary map is formalized as a
+pseudofunctor from Mathlib's `Pith`—the maximal locally groupoidal part of the
+model bicategory—to the locally discrete localization, and every saturated
+marked arrow is proved to map to an isomorphism. A zero-cost discrete marked
+arrow is not invertible before localization, so the construction adds a real
+formal inverse. Separately, finite deterministic discard is a concrete
+noninvertible monoidal 2-cell whose endpoints remain distinct in the homotopy
+category. This proves why the bridge must discard noninvertible 2-cells before
+localizing. It is therefore not a bicategorical, Dwyer--Kan, simplicial, or
+Rezk localization.
 Stage 11 adds a deliberately small, axiom-free, internally univalent process
 universe. Deep codes for empty, unit, sum, tensor, and atomic interfaces carry
 separate syntax for structural equivalence and internal identity. Their
@@ -1358,9 +1365,13 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Higher.ModelHom.map_tensor_cost_le` | Cost-exact model morphisms transport the parallel core bound with the source costs. |
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | The forward morphism of a cost-exact bicategorical equivalence preserves process costs. |
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | A represented arrow is invertible in the homotopy category only if it is a bicategorical equivalence. |
+| `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | Descent marks a represented arrow exactly when the original bicategorical mark holds up to an invertible 2-cell. |
+| `Ript.Higher.costExactMorphisms_homMk_iff` | The homotopy-category mark is exactly the invertible-2-cell saturation of cost reflection. |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | The canonical Gabriel--Zisman functor formally inverts every model arrow with a cost-reflecting representative. |
+| `Ript.Higher.costExactPithLocalization_map_isIso` | The canonical pseudofunctor from the pith maps every saturated cost-exact arrow to an ordinary isomorphism. |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | Functors out of the localization are equivalent to functors that invert all marked cost-exact arrows. |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | A concrete zero-cost discrete marked arrow is not already invertible before localization. |
+| `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | Finite deterministic discard is a noninvertible model 2-cell whose endpoints remain distinct after homotopy truncation. |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | Internal identity is equivalent to internal structural equivalence in the quotient universe. |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | Two internal identities are equal exactly when their interpreted equivalences are equal. |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | Equality of raw paths in the quotient model implies equality of their external interpretations. |
@@ -1461,7 +1472,7 @@ finished physical theory.
 | 9, finite quantum channels | Complex density matrices, TP Kraus channels, tensor/interchange, trace discard, causal uniqueness, and finite complete positivity | **PROVED** |
 | 9, quantum extension | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory | **PROVED** |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | **PROVED** |
-| 10, ordinary model localization | Homotopy 1-category, multiplicative cost-exact mark, Mathlib localization universal property, and a genuinely noninvertible marked arrow | **PROVED** |
+| 10, ordinary model localization | Invertible-2-cell-saturated cost-exact mark, exact descent to the homotopy 1-category, canonical pith pseudofunctor, Mathlib localization universal property, a noninvertible marked arrow, and a noninvertible model 2-cell | **PROVED** |
 | 11 | Axiom-free deep interface/process syntax, quotient groupoid, internal univalence, soundness, and indiscernibility | **PROVED** |
 | 12, truncated foundation | Choice-free object completion, skeletal groupoid completion, universal descent, and executable invariants | **PROVED** |
 | 12, presheaf foundation | Fully faithful Yoneda semantics, representable identity/equivalence correspondence, and essential-image envelope | **PROVED** |
@@ -1489,7 +1500,7 @@ Implemented model support is intentionally narrow:
 | Finite quantum Kraus channels | Kraus category | Yes | Matrix proof layer; basis labels executable | Complex PSD trace-one states, canonical channel tensor, trace discard, arbitrary finite identity-amplification CP, no copying |
 | Classical quantum dephasing subcategory | Yes; dephasing identity | Yes | Exact stochastic source; matrix proof semantics | Faithful measurement--preparation image, exact diagonal-state evolution, composition and tensor preservation |
 | Resource-indexed model bicategory | Strong braided model functors | Horizontal composition of monoidal 2-cells | Proof layer | Fixed resource type; identities, composition, interchange, associator/unitor, pentagon/triangle, cost-exact equivalences |
-| Cost-exact model localization | Model morphisms modulo invertible monoidal 2-cells | Formal inversion of every class with a cost-reflecting representative | Noncomputable semantic proof layer | Genuine Mathlib Gabriel--Zisman localization and functor-category universal property; truncates noninvertible 2-cells and is not a higher localization |
+| Cost-exact model localization | Invertible-2-cell saturation of cost-reflecting model morphisms; then homotopy classes | Formal inversion of every saturated marked class | Noncomputable semantic proof layer | Exact mark-descent theorem and canonical pseudofunctor from `Pith`; genuine Mathlib Gabriel--Zisman universal property; a concrete noninvertible 2-cell proves why the construction is not a higher localization |
 | Internally univalent deep universe | Typed deep processes | Sum/tensor syntax and reindexing | Executable raw syntax; quotient proof layer | Small set semantics, groupoid identities, internal univalence and soundness; no external univalence or higher paths |
 | Truncated object completion | Invariant maps/predicates from completed interfaces | Completed sum and tensor | Quotient eliminators compute from supplied invariants | Equality exactly captures mere internal identity/equivalence; no representative choice |
 | Skeletal groupoid completion | Functors from a skeletal internal groupoid | Structure inherited through categorical equivalence | Noncomputable semantic layer | All automorphisms retained; Mathlib localization at every internal identity; not a Rezk completion |
@@ -2052,7 +2063,7 @@ updated assumption audit.
 - [x] Resource-indexed model 0-cells and resource-nonincreasing strong braided monoidal 1-cells
 - [x] Monoidal-natural-transformation 2-cells, vertical/horizontal composition, and interchange
 - [x] Model associators, unitors, pentagon, triangle, and cost-exact equivalence transport
-- [x] Homotopy 1-category and Gabriel--Zisman localization at cost-reflecting model morphisms, including a noninvertible marked example
+- [x] Invertible-2-cell-saturated cost mark, exact homotopy descent, canonical `Pith` pseudofunctor, and Gabriel--Zisman localization, including noninvertible marked-arrow and 2-cell witnesses
 - [x] Deep interface codes with distinct equivalence and internal-identity syntax
 - [x] Quotient groupoid, internal univalence, soundness/reflection, transport, and indiscernibility
 - [x] Typed deep processes with reindexing, equational soundness, and an exact Boolean tensor-symmetry example

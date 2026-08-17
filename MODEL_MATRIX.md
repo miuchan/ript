@@ -175,17 +175,20 @@ a bicategory, not additional operations inside any one semantic model.
 | 2-cells | Monoidal natural transformations | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, whiskering, and interchange |
 | Coherence | Mathlib bicategory coherence specialized to model functors | Structural 2-cells do not silently alter the model-cost contract | Pentagon and triangle laws |
 | Equivalence | Bicategorical equivalence plus explicit cost reflection in both directions | Forward and inverse functors preserve every process cost exactly | Budget preservation/reflection and transport of serial and parallel core bounds |
-| Homotopy 1-category | Model morphisms modulo invertible monoidal 2-cells | Cost-reflecting representatives are closed under identity and composition | Bicategorical unitors/associator descend to strict ordinary category laws |
-| Cost-exact localization | Mathlib Gabriel--Zisman localization of the model homotopy category | Formally inverts every class with a cost-reflecting representative | Genuine `Functor.IsLocalization` and functor-category universal property; a zero-cost discrete marked arrow is proved noninvertible beforehand |
+| Homotopy 1-category | Model morphisms modulo invertible monoidal 2-cells | Raw cost reflection is multiplicative; its invertible-2-cell saturation is explicit | Bicategorical unitors/associator descend to strict ordinary category laws; saturated marking descends exactly to marked quotient classes |
+| Cost-exact localization | Mathlib Gabriel--Zisman localization of the model homotopy category | Formally inverts every saturated cost-exact class | Genuine `Functor.IsLocalization`; canonical pseudofunctor from `Pith`; marked arrows map to isomorphisms; a noninvertible marked arrow and a noninvertible 2-cell expose nontriviality and truncation |
 
 This layer is a bicategory of models for a fixed resource type and uniform
 universes. It is not an `(∞,1)`-category, does not provide univalence, and does
 not turn a Lean equivalence `Equiv α β` into an equality `α = β`. Ordinary
 bicategorical equivalence alone also does not imply numerical cost equality:
 `CostExactModelEquivalence` requires cost reflection explicitly. The
-localization is ordinary and noncomputable: it first discards noninvertible
-2-cells, so it is not a bicategorical, Dwyer--Kan, simplicial, or Rezk
-localization.
+localization is ordinary and noncomputable: the canonical higher bridge starts
+from `Pith`, which retains only invertible 2-cells. A concrete finite
+deterministic discard 2-cell has endpoints that remain distinct in the
+homotopy category, proving why the bridge cannot extend to the full
+bicategory with this locally discrete target. It is therefore not a
+bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
 
 ## Internally univalent deep layer
 
