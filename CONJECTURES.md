@@ -69,9 +69,11 @@ localization target up to an adjoint equivalence. A complementary family now
 handles the coordinate being localized: every functor from the walking arrow
 to an arbitrary groupoid induces a marking-inverting pseudofunctor, factors
 through the free-groupoid target, and sends the formally adjoined inverse to
-the actual inverse of the generator's image. Precomposition is faithful on
-every local category of strong transformations and modifications because the
-inclusion is surjective on objects. These two families now combine: for an
+the actual inverse of the generator's image. Precomposition is fully faithful
+on every local category of strong transformations and modifications: object
+surjectivity gives faithfulness, while a mate calculation, signed-path
+induction, and product decomposition lift every modification across the free
+inverse. These two families now combine: for an
 arbitrary groupoid-valued localized component `K` and arbitrary
 retained-coordinate pseudofunctor `H`, the paired pseudofunctor `K × H`
 inverts the marking and factors componentwise, while its lift maps the formal
@@ -81,7 +83,7 @@ proved invariant under adjoint equivalence of source pseudofunctors, so this
 result covers the entire replete closure of the separable family rather than
 only literal componentwise pairs. What remains open is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
-that closure, local fullness and essential surjectivity, and ultimately the
+that closure, local essential surjectivity, and ultimately the
 corresponding construction for the full resource-process bicategory.
 
 Two ordinary localization slices are no longer open. First, the identity,

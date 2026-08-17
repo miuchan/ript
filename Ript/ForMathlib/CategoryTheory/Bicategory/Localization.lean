@@ -1,4 +1,4 @@
-import Mathlib.CategoryTheory.Bicategory.Adjunction.Basic
+import Mathlib.CategoryTheory.Bicategory.Adjunction.Mate
 import Mathlib.CategoryTheory.Bicategory.Functor.LocallyDiscrete
 import Mathlib.CategoryTheory.Bicategory.FunctorBicategory.Pseudo
 import Mathlib.CategoryTheory.MorphismProperty.IsInvertedBy
@@ -106,6 +106,48 @@ theorem replaceHom_hom {X Y : B} (e : X ≌ Y)
   rfl
 
 end Equivalence
+
+/-- Taking mates commutes with precomposition by a 2-morphism on the left
+vertical edge of a square. -/
+theorem mateEquiv_precomp
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g g' : a ⟶ c} {h : b ⟶ d} (γ : g ⟶ g')
+    (α : g' ≫ l₂ ⟶ l₁ ≫ h) :
+    mateEquiv adj₁ adj₂ (γ ▷ l₂ ≫ α) =
+      r₁ ◁ γ ≫ mateEquiv adj₁ adj₂ α := by
+  simp only [mateEquiv_apply']
+  calc
+    _ = 𝟙 _ ⊗≫
+          r₁ ◁ (g ◁ adj₂.unit ≫ γ ▷ (l₂ ≫ r₂)) ⊗≫
+            r₁ ◁ α ▷ r₂ ⊗≫ adj₁.counit ▷ h ▷ r₂ ⊗≫ 𝟙 _ := by
+      bicategory
+    _ = 𝟙 _ ⊗≫
+          r₁ ◁ (γ ▷ 𝟙 c ≫ g' ◁ adj₂.unit) ⊗≫
+            r₁ ◁ α ▷ r₂ ⊗≫ adj₁.counit ▷ h ▷ r₂ ⊗≫ 𝟙 _ := by
+      rw [whisker_exchange]
+    _ = _ := by bicategory
+
+/-- Taking mates commutes with postcomposition by a 2-morphism on the right
+vertical edge of a square. -/
+theorem mateEquiv_postcomp
+    {a b c d : B} {l₁ : a ⟶ b} {r₁ : b ⟶ a}
+    {l₂ : c ⟶ d} {r₂ : d ⟶ c}
+    (adj₁ : l₁ ⊣ r₁) (adj₂ : l₂ ⊣ r₂)
+    {g : a ⟶ c} {h h' : b ⟶ d} (α : g ≫ l₂ ⟶ l₁ ≫ h)
+    (δ : h ⟶ h') :
+    mateEquiv adj₁ adj₂ (α ≫ l₁ ◁ δ) =
+      mateEquiv adj₁ adj₂ α ≫ δ ▷ r₂ := by
+  simp only [mateEquiv_apply']
+  calc
+    _ = 𝟙 _ ⊗≫ r₁ ◁ g ◁ adj₂.unit ⊗≫ r₁ ◁ α ▷ r₂ ⊗≫
+          ((r₁ ≫ l₁) ◁ δ ≫ adj₁.counit ▷ h') ▷ r₂ ⊗≫ 𝟙 _ := by
+      bicategory
+    _ = 𝟙 _ ⊗≫ r₁ ◁ g ◁ adj₂.unit ⊗≫ r₁ ◁ α ▷ r₂ ⊗≫
+          (adj₁.counit ▷ h ≫ 𝟙 b ◁ δ) ▷ r₂ ⊗≫ 𝟙 _ := by
+      rw [whisker_exchange]
+    _ = _ := by bicategory
 
 namespace IsEquivalence
 
@@ -274,6 +316,131 @@ def isoAppAt {η θ : F ⟶ G} (e : η ≅ θ) (X : C) : η.app X ≅ θ.app X w
   inv := e.inv.as.app X
   hom_inv_id := congrArg (fun k => k.as.app X) e.hom_inv_id
   inv_hom_id := congrArg (fun k => k.as.app X) e.inv_hom_id
+
+/-- The modification naturality equation for a proposed family of object
+components, restricted to a single 1-morphism.  Packaging the equation lets
+free constructions establish it by generators, inverses, and composition. -/
+def NaturalityAt (η θ : F ⟶ G)
+    (app : ∀ X, η.app X ⟶ θ.app X)
+    {a b : C} (f : a ⟶ b) : Prop :=
+  F.map f ◁ app b ≫ (θ.naturality f).hom =
+    (η.naturality f).hom ≫ app a ▷ G.map f
+
+/-- Every proposed family of modification components is natural at identity
+1-morphisms. -/
+theorem naturalityAt_id (η θ : F ⟶ G)
+    (app : ∀ X, η.app X ⟶ θ.app X) (a : C) :
+    NaturalityAt η θ app (𝟙 a) := by
+  rw [NaturalityAt, naturality_id_hom, naturality_id_hom]
+  simp only [← Category.assoc]
+  rw [whisker_exchange (F.mapId a).hom (app a)]
+  simp only [Category.assoc]
+  rw [whisker_exchange (app a) (G.mapId a).inv]
+  bicategory
+
+/-- Naturality of proposed modification components is closed under
+composition of 1-morphisms. -/
+theorem naturalityAt_comp (η θ : F ⟶ G)
+    (app : ∀ X, η.app X ⟶ θ.app X)
+    {a b c : C} {f : a ⟶ b} {g : b ⟶ c}
+    (hf : NaturalityAt η θ app f) (hg : NaturalityAt η θ app g) :
+    NaturalityAt η θ app (f ≫ g) := by
+  simp only [NaturalityAt] at hf hg ⊢
+  rw [naturality_comp_hom, naturality_comp_hom]
+  simp only [← Category.assoc]
+  rw [whisker_exchange (F.mapComp f g).hom (app c)]
+  simp only [Category.assoc]
+  rw [whisker_exchange (app a) (G.mapComp f g).inv]
+  rw [← cancel_epi ((F.mapComp f g).inv ▷ η.app c)]
+  rw [← cancel_mono (θ.app a ◁ (G.mapComp f g).hom)]
+  simp
+  simp only [← Category.assoc]
+  rw [← whiskerLeft_comp, hg]
+  simp only [Category.assoc]
+  simp only [whiskerLeft_comp]
+  rw [← cancel_epi (F.map f ◁ (η.naturality g).inv)]
+  simp
+  calc
+    _ = (α_ (F.map f) (η.app b) (G.map g)).inv ≫
+        ((F.map f ◁ app b ≫ (θ.naturality f).hom) ▷ G.map g) ≫
+          (α_ (θ.app a) (G.map f) (G.map g)).hom := by
+      bicategory
+    _ = (α_ (F.map f) (η.app b) (G.map g)).inv ≫
+        (((η.naturality f).hom ≫ app a ▷ G.map f) ▷ G.map g) ≫
+          (α_ (θ.app a) (G.map f) (G.map g)).hom := by
+      rw [hf]
+    _ = _ := by bicategory
+
+/-- Naturality of proposed modification components is invariant under a
+2-isomorphism between parallel 1-morphisms. -/
+theorem naturalityAt_of_iso (η θ : F ⟶ G)
+    (app : ∀ X, η.app X ⟶ θ.app X)
+    {a b : C} {f g : a ⟶ b} (e : f ≅ g)
+    (h : NaturalityAt η θ app f) :
+    NaturalityAt η θ app g := by
+  simp only [NaturalityAt] at h ⊢
+  rw [naturality_naturality_hom θ e,
+    naturality_naturality_hom η e]
+  simp only [← Category.assoc]
+  rw [whisker_exchange (F.map₂ e.inv) (app b)]
+  simp only [Category.assoc]
+  have h' := congrArg (fun k => k ≫ θ.app a ◁ G.map₂ e.hom) h
+  simp only [Category.assoc] at h'
+  rw [h']
+  rw [← whisker_exchange (app a) (G.map₂ e.hom)]
+
+/-- The naturality isomorphism of a strong transformation at the chosen
+inverse of an adjoint equivalence is the mate of its forward naturality
+isomorphism. -/
+theorem mate_naturality (η : F ⟶ G) {a b : C} (e : a ≌ b) :
+    mateEquiv (F.mapAdjunction e.toAdjunction)
+      (G.mapAdjunction e.toAdjunction)
+      (η.naturality e.hom).inv = (η.naturality e.inv).hom := by
+  rw [mateEquiv_eq_iff]
+  rw [Adjunction.homEquiv₁_symm_apply, Adjunction.homEquiv₂_apply]
+  rw [← cancel_mono ((α_ (F.map e.hom) (η.app b) (G.map e.inv)).inv ≫
+    (η.naturality e.hom).hom ▷ G.map e.inv)]
+  simp
+  rw [← cancel_mono ((α_ (η.app a) (G.map e.hom) (G.map e.inv)).hom ≫
+    η.app a ◁ (G.mapComp e.hom e.inv).inv)]
+  simp
+  rw [← naturality_comp_hom η e.hom e.inv]
+  rw [η.naturality_naturality e.toAdjunction.unit]
+  rw [naturality_id_hom]
+  simp
+
+/-- If proposed modification components are natural at the forward arrow of
+an adjoint equivalence, they are automatically natural at its chosen
+inverse.  This is the key extension step for modifications on a free
+groupoid. -/
+theorem naturalityAt_inv (η θ : F ⟶ G)
+    (app : ∀ X, η.app X ⟶ θ.app X)
+    {a b : C} (e : a ≌ b)
+    (h : NaturalityAt η θ app e.hom) :
+    NaturalityAt η θ app e.inv := by
+  simp only [NaturalityAt] at h ⊢
+  have h' :
+      app a ▷ G.map e.hom ≫ (θ.naturality e.hom).inv =
+        (η.naturality e.hom).inv ≫ F.map e.hom ◁ app b := by
+    rw [← cancel_epi (η.naturality e.hom).hom]
+    simp only [Iso.hom_inv_id_assoc]
+    rw [← Category.assoc, ← h]
+    simp
+  have hmateLeft :
+      mateEquiv (F.mapAdjunction e.toAdjunction)
+          (G.mapAdjunction e.toAdjunction)
+          (app a ▷ G.map e.hom ≫ (θ.naturality e.hom).inv) =
+        F.map e.inv ◁ app a ≫ (θ.naturality e.inv).hom := by
+    rw [Bicategory.mateEquiv_precomp]
+    rw [mate_naturality θ e]
+  have hmateRight :
+      mateEquiv (F.mapAdjunction e.toAdjunction)
+          (G.mapAdjunction e.toAdjunction)
+          ((η.naturality e.hom).inv ≫ F.map e.hom ◁ app b) =
+        (η.naturality e.inv).hom ≫ app b ▷ G.map e.inv := by
+    rw [Bicategory.mateEquiv_postcomp]
+    rw [mate_naturality η e]
+  rw [← hmateLeft, ← hmateRight, h']
 
 /-- Prewhisker a strong transformation by a pseudofunctor. -/
 @[simps app]
