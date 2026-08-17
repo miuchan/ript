@@ -42,9 +42,11 @@ At constructor level, the inverse-generator mate followed by an arbitrary
 retained-coordinate constraint is now proved to recover the public constraint
 on its raw composite.  Both inverse/retained orders now satisfy public-factor
 composition coherence.  The inverse-generator/forward-generator cancellation
-order is also proved by a general mate-counit identity and transport
-injectivity.  The opposite generator-cancellation order, local essential
-surjectivity, and arbitrary nonseparable biessential factorization remain open.
+order is proved by a general mate-counit identity and transport injectivity;
+the forward-generator/inverse-generator order is now proved symmetrically by
+a mate-unit identity.  Packaging the completed constructor laws as a target
+strong transformation, local essential surjectivity, and arbitrary
+nonseparable biessential factorization remain open.
 -/
 
 set_option autoImplicit false
@@ -1706,6 +1708,32 @@ theorem liftedStrongTransGeneratorCancellation_counit
       (liftedStrongTransApp σ (canonicalTargetObject Y))
       (liftedStrongTransGeneratorNaturality σ f)
 
+/-- A forward generator followed by its mate-derived inverse becomes the
+canonical identity constraint after transport across the inverse unit of the
+chosen generator equivalence. -/
+theorem liftedStrongTransGeneratorCancellation_unit
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    Pseudofunctor.StrongTrans.naturalityIsoOfIso F G
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+          (generatorEquivalence f).hom (generatorEquivalence f).inv
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransApp σ (canonicalTargetObject Y))
+          (liftedStrongTransApp σ (canonicalTargetObject X))
+          (liftedStrongTransGeneratorNaturality σ f)
+          (liftedStrongTransGeneratorInverseNaturality σ f))
+        (generatorEquivalence f).unit.symm =
+      liftedStrongTransIdentityNaturality σ
+        (canonicalTargetObject X) := by
+  exact Pseudofunctor.StrongTrans.hom_comp_inverseNaturalityIso_unit
+    F G (generatorEquivalence f)
+      (liftedStrongTransApp σ (canonicalTargetObject X))
+      (liftedStrongTransApp σ (canonicalTargetObject Y))
+      (liftedStrongTransGeneratorNaturality σ f)
+
 set_option backward.isDefEq.respectTransparency false in
 /-- For a strict reverse walking generator, the canonical composition of its
 public inverse and forward constraints is the public constraint on the raw
@@ -1766,6 +1794,72 @@ theorem liftedStrongTransNaturality_comp_inverseGenerator_generator
         (α_ _ _ _).hom := by
   have hcomp :=
     liftedStrongTransNaturality_compIso_inverseGenerator_generator
+      (F := F) (G := G) σ f h
+  rw [← hcomp]
+  simp [Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos,
+    Category.assoc]
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- For a strict walking generator, the canonical composition of its public
+forward and inverse constraints is the public constraint on the raw canceling
+composite.  Both sides are identified after transport across the inverse
+generator unit. -/
+theorem liftedStrongTransNaturality_compIso_generator_inverseGenerator
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) :
+    Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos F G
+        (generatorEquivalence f).hom (generatorEquivalence f).inv
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (liftedStrongTransApp σ (canonicalTargetObject Y))
+        (liftedStrongTransApp σ (canonicalTargetObject X))
+        (liftedStrongTransNaturality σ (generatorEquivalence f).hom)
+        (liftedStrongTransNaturality σ (generatorEquivalence f).inv) =
+      liftedStrongTransNaturality σ
+        ((generatorEquivalence f).hom ≫
+          (generatorEquivalence f).inv) := by
+  apply Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective F G
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (liftedStrongTransApp σ (canonicalTargetObject X))
+    (generatorEquivalence f).unit.symm
+  rw [liftedStrongTransNaturality_generator,
+    liftedStrongTransNaturality_generatorInverse σ f h]
+  have hleft := liftedStrongTransGeneratorCancellation_unit
+    (F := F) (G := G) σ f
+  have hright := liftedStrongTransNaturality_iso
+    (F := F) (G := G) σ (generatorEquivalence f).unit.symm
+  rw [liftedStrongTransNaturality_id_eq] at hright
+  exact hleft.trans hright.symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The public all-arrow constraint satisfies the strong-transformation
+composition equation for a strict forward generator followed by its inverse
+generator. -/
+theorem liftedStrongTransNaturality_comp_generator_inverseGenerator
+    (σ : inclusion.comp F ⟶ inclusion.comp G)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (h : ¬ Y ≤ X) :
+    (liftedStrongTransNaturality σ
+        ((generatorEquivalence f).hom ≫
+          (generatorEquivalence f).inv)).hom ≫
+        liftedStrongTransApp σ (canonicalTargetObject X) ◁
+          (G.mapComp (generatorEquivalence f).hom
+            (generatorEquivalence f).inv).hom =
+      (F.mapComp (generatorEquivalence f).hom
+          (generatorEquivalence f).inv).hom ▷
+          liftedStrongTransApp σ (canonicalTargetObject X) ≫
+        (α_ _ _ _).hom ≫
+        F.map (generatorEquivalence f).hom ◁
+          (liftedStrongTransNaturality σ
+            (generatorEquivalence f).inv).hom ≫
+        (α_ _ _ _).inv ≫
+        (liftedStrongTransNaturality σ
+          (generatorEquivalence f).hom).hom ▷
+            G.map (generatorEquivalence f).inv ≫
+        (α_ _ _ _).hom := by
+  have hcomp :=
+    liftedStrongTransNaturality_compIso_generator_inverseGenerator
       (F := F) (G := G) σ f h
   rw [← hcomp]
   simp [Pseudofunctor.StrongTrans.naturalityCompIsoOfIsos,
