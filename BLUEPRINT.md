@@ -4370,9 +4370,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   adjoint-equivalence closure, a canonical endpoint normal form and
   codiscrete classification for its free-groupoid coordinate, and fully
   faithful local precomposition. Every 1-morphism-level constraint for a
-  prospective strong-transformation lift is explicit, but its three coherence
-  laws, arbitrary lifts outside that closure, and local essential surjectivity
-  are not yet proved. The identity
+  prospective strong-transformation lift is explicit; its identity coherence
+  law and 2-cell naturality on every forward canonical arrow are proved.
+  Naturality across inverse arrows, composition coherence, arbitrary lifts
+  outside that closure, and local essential surjectivity are not yet proved.
+  The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
   complete-Segal, or Rezk universal property is claimed.
