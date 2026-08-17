@@ -221,7 +221,7 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
-| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained- and localized-coordinate lift families plus local faithfulness | PROVED |
+| 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained-, localized-, and separable mixed-coordinate lift families plus local faithfulness | PROVED |
 | 12 (higher-localization construction) | A pseudofunctor from the full resource-process bicategory satisfying the compiled bicategorical localization predicate, plus Mathlib-native simplicial weak-equivalence/standard complete-Segal comparison | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -4172,6 +4172,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   def Pseudofunctor.prod (F : B ⥤ᵖ C) (G : D ⥤ᵖ E) :
       (B × D) ⥤ᵖ (C × E)
 
+  def Pseudofunctor.pair (F : B ⥤ᵖ C) (G : B ⥤ᵖ D) :
+      B ⥤ᵖ (C × D)
+
+  def Pseudofunctor.pairEquivalence
+      (e : F ≌ F') (e' : G ≌ G') :
+      F.pair G ≌ F'.pair G'
+
   def Pseudofunctor.fstComp (D : Type u) (H : B ⥤ᵖ C) :
       (B × D) ⥤ᵖ C
 
@@ -4211,6 +4218,22 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
       (K : WalkingLocalization.Arrow ⥤ G) :
       (localizedCoordinateLift K).map inverse =
         (inv (K.map WalkingLocalization.arrow)).toLoc
+
+  theorem TwoDimensionalWalkingLocalization.separableMixedSource_has_factorization
+      (K : WalkingLocalization.Arrow ⥤ G) (H : Cell ⥤ᵖ E) :
+      ∃ L : Target ⥤ᵖ (LocallyDiscrete G × E),
+        Nonempty (inclusion.comp L ≌ separableMixedSource K H)
+
+  theorem TwoDimensionalWalkingLocalization.separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard
+      (K : WalkingLocalization.Arrow ⥤ G) :
+      marking.IsInvertedBy
+          (separableMixedSource K (Pseudofunctor.id Cell)) ∧
+        (∃ L, Nonempty (inclusion.comp L ≌
+          separableMixedSource K (Pseudofunctor.id Cell))) ∧
+        ((separableMixedLift K (Pseudofunctor.id Cell)).map inverse).1 =
+          (inv (K.map WalkingLocalization.arrow)).toLoc ∧
+        ¬ IsIso ((separableMixedSource K (Pseudofunctor.id Cell)).map₂
+          discardTwoCell)
 
   theorem TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful
       (F G : Target ⥤ᵖ E) :
@@ -5607,8 +5630,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     pseudofunctor now has an explicit target factorization. Independently,
     every groupoid-valued functor of the localized walking coordinate factors
     through the free-groupoid target and maps the formal inverse to the
-    original image inverse. Precomposition is locally faithful for arbitrary
-    target pseudofunctors. Arbitrary mixed-coordinate biessential
-    factorization, local fullness, and local essential surjectivity remain
-    open, so this is not an existence proof for the desired resource-process
-    higher localization.
+    original image inverse. A third family pairs these two constructions:
+    every separable mixed pseudofunctor `K × H`, with arbitrary
+    groupoid-valued localized component and arbitrary retained-coordinate
+    component, factors through the target; the identity-retained
+    specialization also keeps Boolean discard noninvertible. Precomposition
+    is locally faithful for arbitrary target pseudofunctors. Arbitrary
+    nonseparable mixed-coordinate biessential factorization, local fullness,
+    and local essential surjectivity remain open, so this is not an existence
+    proof for the desired resource-process higher localization.

@@ -34,7 +34,7 @@ open CategoryTheory.Bicategory
 open CategoryTheory.Prod
 open scoped CategoryTheory.Pseudofunctor.StrongTrans
 
-universe u v w
+universe u v w u₂ v₂ w₂
 
 /-- A one-object bicategory whose 1-cells are types and whose 2-cells are
 functions. -/
@@ -403,5 +403,112 @@ theorem retainedCoordinate_inverts_factors_and_retains_discard :
     retainedCoordinate_map₂_discardTwoCell_not_isIso⟩
 
 end RetainedCoordinateLift
+
+section SeparableMixedCoordinateLift
+
+variable {G : Type u} [Groupoid.{v} G]
+variable {E : Type u₂} [Bicategory.{w₂, v₂} E]
+
+/-- A separable mixed-coordinate pseudofunctor.  Its first component is an
+arbitrary groupoid-valued functor of the coordinate being localized, while
+its second component is an arbitrary pseudofunctor of the retained
+coordinate.  Unlike either preceding lift family, this construction depends
+on both coordinates. -/
+noncomputable def separableMixedSource
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) : Source ⥤ᵖ (LocallyDiscrete G × E) :=
+  (localizedCoordinateSource K).pair (retainedSource H)
+
+/-- Extend the localized component across the free groupoid and retain the
+second component unchanged. -/
+noncomputable def separableMixedLift
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) : Target ⥤ᵖ (LocallyDiscrete G × E) :=
+  (localizedCoordinateLift K).pair (retainedLift H)
+
+/-- A separable mixed-coordinate pseudofunctor factors through the
+two-dimensional walking localization.  The equivalence is the componentwise
+pairing of the localized- and retained-coordinate factorizations. -/
+noncomputable def separableMixedFactorization
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) :
+    inclusion.comp (separableMixedLift K H) ≌ separableMixedSource K H := by
+  change ((inclusion.comp (localizedCoordinateLift K)).pair
+      (inclusion.comp (retainedLift H))) ≌
+    (localizedCoordinateSource K).pair (retainedSource H)
+  exact Pseudofunctor.pairEquivalence
+    (localizedCoordinateFactorization K) (retainedFactorization H)
+
+/-- Every separable mixed-coordinate pseudofunctor sends the product marking
+to adjoint equivalences. -/
+theorem separableMixedSource_inverts
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) :
+    marking.IsInvertedBy (separableMixedSource K H) := by
+  intro X Y f hf
+  obtain ⟨⟨e₁, he₁⟩⟩ := localizedCoordinateSource_inverts K f hf
+  obtain ⟨⟨e₂, he₂⟩⟩ := retainedSource_inverts H f hf
+  exact ⟨⟨e₁.prod e₂, Prod.ext he₁ he₂⟩⟩
+
+/-- A separable family of genuinely mixed-coordinate witnesses for the
+`lift` field of bicategorical localization. -/
+theorem separableMixedSource_has_factorization
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) :
+    ∃ L : Target ⥤ᵖ (LocallyDiscrete G × E),
+      Nonempty (inclusion.comp L ≌ separableMixedSource K H) :=
+  ⟨separableMixedLift K H, ⟨separableMixedFactorization K H⟩⟩
+
+/-- The mixed lift interprets the formally adjoined inverse correctly in its
+localized first component, independently of the retained component. -/
+theorem separableMixedLift_map_inverse_fst
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G)
+    (H : Cell ⥤ᵖ E) :
+    ((separableMixedLift K H).map inverse).1 =
+      (inv (K.map Ript.Examples.WalkingLocalization.arrow)).toLoc := by
+  change (localizedCoordinateLift K).map inverse = _
+  exact localizedCoordinateLift_map_inverse K
+
+/-- Pairing with the identity retained coordinate preserves the concrete
+noninvertible Boolean discard 2-cell. -/
+theorem separableMixedIdentity_map₂_discardTwoCell_not_isIso
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    ¬ IsIso ((separableMixedSource K (Pseudofunctor.id Cell)).map₂
+      discardTwoCell) := by
+  intro h
+  have hSecond :
+      IsIso (((separableMixedSource K (Pseudofunctor.id Cell)).map₂
+        discardTwoCell).2) :=
+    (isIso_prod_iff
+      (f := (separableMixedSource K (Pseudofunctor.id Cell)).map₂
+        discardTwoCell)).1 h |>.2
+  have hInjective :=
+    (isIso_iff_bijective
+      ((separableMixedSource K (Pseudofunctor.id Cell)).map₂
+        discardTwoCell).2).1 hSecond |>.1
+  change Function.Injective (fun _ : Bool => PUnit.unit) at hInjective
+  exact Bool.false_ne_true (hInjective rfl)
+
+/-- The separable mixed family simultaneously supplies marking inversion,
+factorization, correct interpretation of the new inverse, and retention of a
+noninvertible 2-cell.  This is a mixed-coordinate fragment of the universal
+property, not the still-open arbitrary mixed-coordinate lift. -/
+theorem separableMixedIdentity_inverts_factors_maps_inverse_and_retains_discard
+    (K : Ript.Examples.WalkingLocalization.Arrow ⥤ G) :
+    marking.IsInvertedBy
+        (separableMixedSource K (Pseudofunctor.id Cell)) ∧
+      (∃ L : Target ⥤ᵖ (LocallyDiscrete G × Cell),
+        Nonempty (inclusion.comp L ≌
+          separableMixedSource K (Pseudofunctor.id Cell))) ∧
+      ((separableMixedLift K (Pseudofunctor.id Cell)).map inverse).1 =
+        (inv (K.map Ript.Examples.WalkingLocalization.arrow)).toLoc ∧
+      ¬ IsIso ((separableMixedSource K (Pseudofunctor.id Cell)).map₂
+        discardTwoCell) :=
+  ⟨separableMixedSource_inverts K _,
+    separableMixedSource_has_factorization K _,
+    separableMixedLift_map_inverse_fst K _,
+    separableMixedIdentity_map₂_discardTwoCell_not_isIso K⟩
+
+end SeparableMixedCoordinateLift
 
 end Ript.Examples.TwoDimensionalWalkingLocalization
