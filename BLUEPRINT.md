@@ -4335,15 +4335,55 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   all-arrow candidate satisfies identity coherence and agrees with endpoint
   normalization. Composition coherence holds on every inclusion-image pair.
   Transport across a fixed target 2-isomorphism is now proved injective on
-  candidate constraints; using that cancellation, the inverse-generator mate
-  followed by any retained-coordinate constraint is proved to recover the
-  public constraint on its raw composite. The remaining public-factor mixed
-  inverse laws remain before these data form a target strong transformation.
+  candidate constraints. Transport also commutes with composition in its
+  right factor, is transitive, and satisfies the right-unit normalization law.
+  Consequently the public constraint on a strict inverse generator is exactly
+  its mate constructor, and a public inverse-generator factor followed by any
+  retained-coordinate factor satisfies composition coherence. Other mixed
+  inverse composition orders remain before these data form a target strong
+  transformation.
   It remains a
   parameterized slice: arbitrary inverting
   pseudofunctors outside that replete closure have not been factored, local
   essential surjectivity remains open, and the source is not the
   resource-process bicategory.
+- Public inverse/retained composition theorem:
+
+  ```lean
+  theorem TwoDimensionalWalkingLocalization.
+      liftedStrongTransNaturality_comp_inverseGenerator_retained_public
+      (σ : inclusion.comp F ⟶ inclusion.comp G)
+      {X Y : WalkingLocalization.Arrow}
+      (f : X ⟶ Y) (h : ¬ Y ≤ X) (A : Type) :
+      (liftedStrongTransNaturality σ
+          ((generatorEquivalence f).inv ≫
+            canonicalForwardHom (𝟙 X) A)).hom ≫
+          liftedStrongTransApp σ (canonicalTargetObject Y) ◁
+            (G.mapComp (generatorEquivalence f).inv
+              (canonicalForwardHom (𝟙 X) A)).hom =
+        (F.mapComp (generatorEquivalence f).inv
+            (canonicalForwardHom (𝟙 X) A)).hom ▷
+            liftedStrongTransApp σ (canonicalTargetObject X) ≫
+          (α_ _ _ _).hom ≫
+          F.map (generatorEquivalence f).inv ◁
+            (liftedStrongTransNaturality σ
+              (canonicalForwardHom (𝟙 X) A)).hom ≫
+          (α_ _ _ _).inv ≫
+          (liftedStrongTransNaturality σ
+            (generatorEquivalence f).inv).hom ▷
+              G.map (canonicalForwardHom (𝟙 X) A) ≫
+          (α_ _ _ _).hom
+  ```
+
+  Natural-language statement: the public strong-naturality constraint on a
+  strict inverse walking generator followed by an arbitrary retained arrow is
+  coherent with the two public factor constraints. Prerequisites are
+  `identityNaturalityIso`, `naturalityCompIsoOfIsos_right_id`,
+  `naturalityIsoOfIso_comp_right`, `naturalityIsoOfIso_trans`, the endpoint
+  normal form, and the inverse mate constructor. Status: `PROVED`.
+  Computability: noncomputable proof layer. Axiom audit:
+  `[propext, Classical.choice, Quot.sound]`. Source:
+  `Ript/Examples/TwoDimensionalWalkingLocalization.lean`.
 - Nontriviality witness: `unitToNatModelHom` is a strong braided functor
   between zero-cost discrete models. It maps the unique source object to
   additive `0` in `Multiplicative Nat`; target object `1` is not in the
@@ -4383,10 +4423,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   normalization. Composition coherence is proved for every pair in the
   inclusion image, hence for every canonical forward-forward pair. The
   inverse-generator mate followed by an arbitrary retained constraint also
-  satisfies constructor-level composition coherence and recovers the public
-  constraint on its raw composite. The remaining public-factor mixed inverse
-  laws, arbitrary lifts outside that closure, and local essential surjectivity
-  are not yet proved.
+  recovers the public constraint on its raw composite; moreover, the public
+  inverse-generator and public retained constraints themselves satisfy that
+  composition law. Other mixed inverse orders, arbitrary lifts outside that
+  closure, and local essential surjectivity are not yet proved.
   The identity
   candidate is proved not to satisfy the predicate for the Ript cost-exact
   marking. No nontrivial full bicategorical, Dwyer--Kan, simplicial,
@@ -5717,10 +5757,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     public identity-specialized candidate satisfies identity coherence and
     agrees with endpoint normalization. The constraints satisfy composition
     coherence on every pair in the inclusion image, including every canonical
-    forward-forward pair. Constructor-level coherence is also proved for an
-    inverse-generator mate followed by any retained-coordinate constraint;
-    the remaining public-factor mixed compositions involving the freely
-    adjoined inverse remain. Arbitrary
+    forward-forward pair. The inverse-generator mate followed by any
+    retained-coordinate constraint now both recovers the public composite
+    constraint and satisfies composition coherence using the public factor
+    constraints themselves. Other mixed composition orders involving the
+    freely adjoined inverse remain. Arbitrary
     nonseparable mixed-coordinate biessential
     factorization outside that closure and local essential surjectivity remain
     open, so this is not an existence proof for the
