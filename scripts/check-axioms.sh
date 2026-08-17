@@ -10,7 +10,9 @@ if ! audit_output="$(lake env lean Ript/Audit/AxiomChecks.lean 2>&1)"; then
   exit 1
 fi
 
-if printf '%s\n' "$audit_output" | grep -Fq 'error:'; then
+# Do not feed `grep -q` through a pipeline under `pipefail`: once `grep`
+# finds a match, the producer can receive SIGPIPE and invert the result.
+if grep -Fq 'error:' <<< "$audit_output"; then
   printf '%s\n' "$audit_output" >&2
   exit 1
 fi
@@ -86,14 +88,14 @@ while IFS= read -r target; do
     exit 1
   fi
 
-  if ! printf '%s\n' "$documented_targets" | grep -Fqx "$target"; then
+  if ! grep -Fqx "$target" <<< "$documented_targets"; then
     printf 'AXIOMS.md is missing the audited theorem %s.\n' "$target" >&2
     exit 1
   fi
 done <<< "$audit_targets"
 
 while IFS= read -r target; do
-  if ! printf '%s\n' "$audit_targets" | grep -Fqx "$target"; then
+  if ! grep -Fqx "$target" <<< "$audit_targets"; then
     printf 'AXIOMS.md contains a stale theorem entry: %s.\n' "$target" >&2
     exit 1
   fi
