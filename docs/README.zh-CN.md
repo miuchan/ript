@@ -71,7 +71,10 @@ Pauli-X 量子比特证明。现在还包括规范信道 tensor、interchange、
 形式化为从 Mathlib `Pith`（模型双范畴的最大局部群胚部分）到局部离散 localization 的伪函子，
 并证明每条饱和标记箭头都映为同构。零成本离散标记箭头在 localization 前不可逆，所以这里确实
 加入了形式逆。另一个有限确定性例子给出具体的不可逆幺半群 2-胞，而且其两个端点在同伦范畴中
-仍然不同；这严格解释了桥接为何必须先丢弃不可逆 2-胞。因此它不是双范畴、Dwyer--Kan、
+仍然不同；现在还证明了从完整模型双范畴到任意局部离散目标的伪函子都必须识别这两个端点的像。
+Ript 同时编译了未截断研究目标的精确定义：双范畴 localization 谓词要求把标记 1-胞映为伴随
+等价、让每个反转标记的伪函子本质分解，并在强变换与 modification 的局部范畴上给出等价。
+这精确规定了目标，但尚未构造满足它的 localization。因此现有桥接不是双范畴、Dwyer--Kan、
 simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
 的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
@@ -100,7 +103,8 @@ matching 锥已证明为真实极限，所有 matching map 都是 fibration。Ma
 模型结构尚不存在；项目现已用精确的 `SSet.GroupoidalCompleteSegal` 结构封装这些结果，
 并进一步证明每条横向行都是 Kan，实际完备性映射带有明确的范畴等价 nerve 见证。固定版本
 Mathlib 尚无 simplicial set 弱等价或完整 Quillen 模型 API，因此 Mathlib 原生的标准
-complete-Segal-space 实例与完整资源过程双范畴的 localization 普遍性质仍然开放。
+complete-Segal-space 实例，以及构造满足已编译 localization 普遍性质谓词的完整资源过程
+伪函子，仍然开放。
 
 > [!IMPORTANT]
 > Ript 是早期研究软件。Stage 1–12 已实现的基础层均通过 Lean 内核检验；公共 API 尚未
@@ -985,12 +989,16 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Higher.CostExactModelEquivalence.hom_map_cost_eq` | 成本精确双范畴等价的正向态射保持过程成本。 |
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | 代表态射在同伦范畴中可逆时，它必为双范畴等价。 |
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | 下降后代表态射被标记，当且仅当原双范畴标记在某个可逆 2-胞代表上成立。 |
+| `CategoryTheory.Pseudofunctor.precomposition` | 预复合构成伪函子，并保留强伪自然变换与 modification。 |
+| `CategoryTheory.Pseudofunctor.localPrecomposition` | 预复合在每个局部 Hom 上函子化强变换及其 modification。 |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | 同伦范畴中的标记精确等于成本反射在可逆 2-胞下的饱和。 |
+| `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | 任意真正的高阶成本精确 localization 都把每条饱和标记模型态射映为伴随等价。 |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | 规范 Gabriel--Zisman 函子形式反转所有具有成本反射代表元的模型态射。 |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | 从 `Pith` 出发的规范伪函子把每条饱和成本精确箭头映为普通同构。 |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | 从 localization 出发的函子等价于反转全部标记态射的函子。 |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | 一个具体零成本离散标记态射在 localization 前并非同构。 |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | 有限确定性 discard 是不可逆模型 2-胞，其两个端点经同伦截断后仍不相同。 |
+| `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | 从完整模型双范畴到局部离散目标的每个伪函子都识别 discard 两个端点的像。 |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | 商 universe 中的内部恒等等价于内部结构等价。 |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | 两个内部恒等相等，当且仅当其解释出的等价相等。 |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | 原始 path 在商模型中相等会推出其外部解释相等。 |
@@ -1095,7 +1103,8 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | 12，群胚 localization 基础 | 恒等、骨架补全与限制 Yoneda 函子对全部内部恒等的 Mathlib localization 模型及函子范畴普遍性质 | **PROVED** |
 | 12，simplicial 基础 | 范畴 nerve、完整 Kan horn filling、strict Segal 重建、quasicategory、2-coskeletal 结构与同伦范畴恢复 | **PROVED** |
 | 12，classifying-diagram 基础 | Rezk classifying diagram、纵横群胚/Kan 结构、严格外层 Segal 等价、精确项目内群胚型 complete-Segal 封装、自然单形映射表示、真实边界 matching limit 与 matching-map fibration | **PROVED** |
-| 12，高阶扩展 | Mathlib 原生 simplicial 弱等价/标准 complete-Segal 封装与完整资源过程双范畴 localization | **OPEN RESEARCH** |
+| 12，高阶 localization 规格 | 到伴随等价的标记反转、伪函子预复合、强变换/modification 上的局部等价、成本精确特化与局部离散 2-胞障碍 | **PROVED** |
+| 12，高阶 localization 构造 | 满足已编译双范畴 localization 谓词的完整资源过程伪函子，以及 Mathlib 原生 simplicial 弱等价/标准 complete-Segal 比较 | **OPEN RESEARCH** |
 
 已经实现的模型能力刻意保持狭窄：
 
@@ -1602,6 +1611,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 幺半群自然变换 2-胞、纵向/横向复合与 interchange
 - [x] 模型结合子、单位子、五边形、三角与成本精确等价传递
 - [x] 可逆 2-胞饱和的成本标记、精确同伦下降、规范 `Pith` 伪函子与 Gabriel--Zisman localization，含不可逆标记态射及 2-胞见证
+- [x] 完整二维 localization 谓词、伪函子/强变换/modification 上的预复合与局部离散 discard 障碍
 - [x] 分离结构等价语法与内部恒等语法的深嵌入接口 code
 - [x] 商群胚、内部单值性、soundness/reflection、结构搬运与 indiscernibility
 - [x] 带重索引的深嵌入过程、等式 soundness 与精确 Boolean tensor 对称示例
@@ -1613,7 +1623,7 @@ Lake 包当前版本为 `0.1.0`，但尚未承诺稳定 API 或带标签版本�
 - [x] 实际 Rezk 完备性比较是范畴等价的 nerve
 - [x] 自然单形映射表示、真实边界 matching limit 与 matching-map fibration
 - [x] 带横向 Kan 行的精确项目内群胚型 complete-Segal 见证
-- [ ] Mathlib 原生 simplicial 弱等价/标准 complete-Segal 封装与带显式高阶 coherence 的完整资源过程双范畴 localization
+- [ ] 构造满足已编译双范畴 localization 谓词的完整资源过程伪函子，并建立 Mathlib 原生 simplicial 弱等价/标准 complete-Segal 比较
 
 这些复选框不承诺固定的发布顺序。任何扩展都必须保持现有串行边界，或清楚记录有意的
 破坏性变更。

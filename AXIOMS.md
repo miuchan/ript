@@ -250,8 +250,13 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Bicategory.HomotopyCategory.equivalenceOfIsIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/HomotopyCategory.lean` |
 | `CategoryTheory.Bicategory.MorphismProperty.toHomotopy_homMk_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MorphismProperty.lean` |
 | `CategoryTheory.Bicategory.HomotopyCategory.pithToHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PithToHomotopy.lean` |
+| `CategoryTheory.Pseudofunctor.mapEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.precomposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
+| `CategoryTheory.Pseudofunctor.localPrecomposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/Localization.lean` |
 | `Ript.Higher.costExactMorphisms_isMultiplicative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.IsCostExactBicategoricalLocalization.map_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.IsCostExactBicategoricalLocalization.map_costReflecting_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctor_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctor_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
@@ -259,6 +264,7 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
+| `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Univalent.UniverseModel.internalUnivalence` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
 | `Ript.Univalent.UniverseModel.identity_eq_iff_interpret_eq` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
 | `Ript.Univalent.UniverseModel.path_interpretation_sound` | `[propext, Quot.sound]` | `Ript/Univalent/Soundness.lean` |
@@ -575,6 +581,16 @@ dependencies of the ordinary semantic layer; they introduce no project axiom
 and no choice-derived executable data. Because noninvertible 2-cells are
 discarded before localization, this result is not a bicategorical,
 Dwyer--Kan, simplicial, or Rezk localization.
+The next higher-localization boundary is now kernel checked as an interface.
+`IsBicategoricalLocalization` requires marked 1-morphisms to become adjoint
+equivalences, provides biessential lifts of every inverting pseudofunctor, and
+requires local equivalences on strong transformations and modifications.
+Precomposition is implemented at all three levels. The discard example proves
+that every pseudofunctor into a locally discrete bicategory identifies its
+endpoint images, so such a target cannot retain the noninvertible 2-cell as
+data. These audited declarations have the same exact
+`[propext, Classical.choice, Quot.sound]` footprint. No existence theorem for
+the full higher localization is claimed.
 The internally univalent layer is an axiom-free deep embedding. Interface
 codes, structural equivalences, identity expressions, and typed process
 expressions are syntax. A small set-level model interprets raw paths and

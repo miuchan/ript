@@ -40,6 +40,7 @@ import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
 import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
+import Ript.ForMathlib.CategoryTheory.Bicategory.Localization
 import Ript.ForMathlib.CategoryTheory.Bicategory.MorphismProperty
 import Ript.ForMathlib.CategoryTheory.Bicategory.PithToHomotopy
 import Ript.ForMathlib.CategoryTheory.GroupoidInterval

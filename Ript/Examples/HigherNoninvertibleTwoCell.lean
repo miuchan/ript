@@ -21,10 +21,13 @@ set_option linter.checkUnivs false
 namespace Ript.Examples.HigherNoninvertibleTwoCell
 
 open CategoryTheory
+open CategoryTheory.Bicategory
 open CategoryTheory.Limits
 open Ript.Core
 open Ript.Higher
 open Ript.Models.FiniteFunction
+
+universe u v
 
 /-- Zero cost for all finite deterministic processes makes every structural
 map free as well. -/
@@ -186,5 +189,16 @@ theorem homotopy_classes_ne :
   intro h
   exact identity_not_isomorphic_constant
     ((CategoryTheory.Bicategory.HomotopyCategory.homMk_eq_iff _ _).1 h)
+
+/-- Every pseudofunctor from the full process-model bicategory to a locally
+discrete target identifies the two endpoints of discard.  This is the precise
+2-dimensional obstruction hidden by the ordinary bridge: a locally discrete
+target cannot retain the noninvertible discard 2-cell as nontrivial data. -/
+theorem locallyDiscrete_map_identifies_discard
+    {C : Type u} [Category.{v} C]
+    (F : ProcessModel.{1, 0, 0} Nat ⥤ᵖ LocallyDiscrete C) :
+    F.map (ModelHom.id finiteZeroCostModel) =
+      F.map constantUnitModelHom :=
+  LocallyDiscrete.eq_of_hom (F.map₂ discardTwoCell)
 
 end Ript.Examples.HigherNoninvertibleTwoCell
