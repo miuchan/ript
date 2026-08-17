@@ -46,9 +46,120 @@ def IsEquivalence {X Y : B} (f : X ⟶ Y) : Prop :=
 theorem isEquivalence_hom {X Y : B} (e : X ≌ Y) : IsEquivalence e.hom :=
   ⟨⟨e, rfl⟩⟩
 
+namespace Equivalence
+
+/-- The adjunction underlying a chosen adjoint equivalence. -/
+def toAdjunction {X Y : B} (e : X ≌ Y) : e.hom ⊣ e.inv where
+  unit := e.unit.hom
+  counit := e.counit.hom
+  left_triangle := e.left_triangle_hom
+  right_triangle := e.right_triangle_hom
+
+/-- Adjoint equivalences compose.  Mathlib already composes bicategorical
+adjunctions; this packages the invertible unit and counit at the level of its
+`Equivalence` structure. -/
+noncomputable def trans {X Y Z : B} (e : X ≌ Y) (e' : Y ≌ Z) : X ≌ Z := by
+  let η : 𝟙 X ≅ (e.hom ≫ e'.hom) ≫ (e'.inv ≫ e.inv) :=
+    e.unit ≪⊗≫
+      whiskerLeftIso e.hom (whiskerRightIso e'.unit e.inv) ≪⊗≫
+        Iso.refl _
+  let ε : (e'.inv ≫ e.inv) ≫ (e.hom ≫ e'.hom) ≅ 𝟙 Z :=
+    Iso.refl _ ≪⊗≫
+      whiskerLeftIso e'.inv (whiskerRightIso e.counit e'.hom) ≪⊗≫
+        e'.counit
+  exact mkOfAdjointifyCounit η ε
+
+/-- Reverse a chosen adjoint equivalence. -/
+noncomputable def symm {X Y : B} (e : X ≌ Y) : Y ≌ X :=
+  mkOfAdjointifyCounit e.counit.symm e.unit.symm
+
+/-- Replace the forward 1-morphism of an adjoint equivalence by an
+isomorphic 1-morphism. -/
+noncomputable def replaceHom {X Y : B} (e : X ≌ Y)
+    {f : X ⟶ Y} (h : e.hom ≅ f) : X ≌ Y :=
+  mkOfAdjointifyCounit
+    (e.unit ≪≫ whiskerRightIso h e.inv)
+    ((whiskerLeftIso e.inv h).symm ≪≫ e.counit)
+
+@[simp]
+theorem trans_hom {X Y Z : B} (e : X ≌ Y) (e' : Y ≌ Z) :
+    (e.trans e').hom = e.hom ≫ e'.hom :=
+  rfl
+
+@[simp]
+theorem trans_inv {X Y Z : B} (e : X ≌ Y) (e' : Y ≌ Z) :
+    (e.trans e').inv = e'.inv ≫ e.inv :=
+  rfl
+
+@[simp]
+theorem symm_hom {X Y : B} (e : X ≌ Y) : e.symm.hom = e.inv :=
+  rfl
+
+@[simp]
+theorem symm_inv {X Y : B} (e : X ≌ Y) : e.symm.inv = e.hom :=
+  rfl
+
+@[simp]
+theorem replaceHom_hom {X Y : B} (e : X ≌ Y)
+    {f : X ⟶ Y} (h : e.hom ≅ f) :
+    (e.replaceHom h).hom = f :=
+  rfl
+
+end Equivalence
+
+namespace IsEquivalence
+
+/-- Being an adjoint equivalence is invariant under a 2-isomorphism of
+1-morphisms. -/
+theorem of_iso {X Y : B} {f g : X ⟶ Y}
+    (hf : IsEquivalence f) (h : f ≅ g) : IsEquivalence g := by
+  obtain ⟨⟨e, he⟩⟩ := hf
+  exact ⟨⟨e.replaceHom (eqToIso he ≪≫ h), rfl⟩⟩
+
+/-- A composite of adjoint equivalences is an adjoint equivalence. -/
+theorem comp {X Y Z : B} {f : X ⟶ Y} {g : Y ⟶ Z}
+    (hf : IsEquivalence f) (hg : IsEquivalence g) :
+    IsEquivalence (f ≫ g) := by
+  obtain ⟨⟨e, he⟩⟩ := hf
+  obtain ⟨⟨e', he'⟩⟩ := hg
+  exact ⟨⟨e.trans e', by simp [he, he']⟩⟩
+
+/-- Cancel an adjoint equivalence from the right of a composite. -/
+theorem of_comp_right {X Y Z : B} {f : X ⟶ Y} {g : Y ⟶ Z}
+    (hfg : IsEquivalence (f ≫ g)) (hg : IsEquivalence g) :
+    IsEquivalence f := by
+  obtain ⟨⟨efg, hefg⟩⟩ := hfg
+  obtain ⟨⟨eg, heg⟩⟩ := hg
+  let h : (efg.trans eg.symm).hom ≅ f :=
+    whiskerRightIso (eqToIso hefg) eg.inv ≪≫
+      α_ f g eg.inv ≪≫
+        whiskerLeftIso f
+          (whiskerRightIso (eqToIso heg).symm eg.inv ≪≫ eg.unit.symm) ≪≫
+            ρ_ f
+  exact ⟨⟨(efg.trans eg.symm).replaceHom h, rfl⟩⟩
+
+end IsEquivalence
+
 end Bicategory
 
 namespace Pseudofunctor
+
+/-- A source pseudofunctor factors through `Q` when it is adjoint equivalent
+to the precomposition of some pseudofunctor out of the target of `Q`.  This is
+the exact object-level witness used by bicategorical localization. -/
+def FactorsThrough (Q : B ⥤ᵖ C) (F : B ⥤ᵖ D) : Prop :=
+  ∃ G : C ⥤ᵖ D, Nonempty (Q.comp G ≌ F)
+
+namespace FactorsThrough
+
+/-- Factorization through `Q` is replete: replacing the source
+pseudofunctor by an adjoint-equivalent one preserves the factorization. -/
+theorem trans {Q : B ⥤ᵖ C} {F F' : B ⥤ᵖ D}
+    (h : Q.FactorsThrough F) (e : F ≌ F') : Q.FactorsThrough F' := by
+  obtain ⟨G, ⟨e'⟩⟩ := h
+  exact ⟨G, ⟨e'.trans e⟩⟩
+
+end FactorsThrough
 
 /-- Pseudofunctors preserve adjoint equivalences. -/
 noncomputable def mapEquivalence (F : B ⥤ᵖ C)
@@ -156,6 +267,14 @@ namespace Pseudofunctor.StrongTrans
 
 variable {F G : C ⥤ᵖ D}
 
+/-- Evaluate an isomorphism of strong transformations at one source
+object. -/
+def isoAppAt {η θ : F ⟶ G} (e : η ≅ θ) (X : C) : η.app X ≅ θ.app X where
+  hom := e.hom.as.app X
+  inv := e.inv.as.app X
+  hom_inv_id := congrArg (fun k => k.as.app X) e.hom_inv_id
+  inv_hom_id := congrArg (fun k => k.as.app X) e.inv_hom_id
+
 /-- Prewhisker a strong transformation by a pseudofunctor. -/
 @[simps app]
 def prewhisker (Q : B ⥤ᵖ C) (η : F ⟶ G) : Q.comp F ⟶ Q.comp G where
@@ -214,7 +333,37 @@ def prewhisker (Q : B ⥤ᵖ C) (Γ : Modification η θ) :
 
 end Modification
 
+/-- Evaluate an adjoint equivalence of pseudofunctors at one source object.
+The resulting 1-morphism is again an adjoint equivalence. -/
+noncomputable def equivalenceApp {F G : C ⥤ᵖ D} (e : F ≌ G) (X : C) :
+    F.obj X ≌ G.obj X :=
+  Bicategory.Equivalence.mkOfAdjointifyCounit
+    (isoAppAt e.unit X) (isoAppAt e.counit X)
+
+@[simp]
+theorem equivalenceApp_hom {F G : C ⥤ᵖ D} (e : F ≌ G) (X : C) :
+    (equivalenceApp e X).hom = e.hom.app X :=
+  rfl
+
 end Pseudofunctor.StrongTrans
+
+namespace Bicategory.MorphismProperty
+
+/-- Inversion of a marking is invariant under an adjoint equivalence of
+pseudofunctors. -/
+theorem IsInvertedBy.of_equivalence (W : MorphismProperty B)
+    {F G : B ⥤ᵖ C} (hG : W.IsInvertedBy G) (e : F ≌ G) :
+    W.IsInvertedBy F := by
+  intro X Y f hf
+  let eX := Pseudofunctor.StrongTrans.equivalenceApp e X
+  let eY := Pseudofunctor.StrongTrans.equivalenceApp e Y
+  have hRight : IsEquivalence (e.hom.app X ≫ G.map f) :=
+    (isEquivalence_hom eX).comp (hG f hf)
+  have hLeft : IsEquivalence (F.map f ≫ e.hom.app Y) :=
+    hRight.of_iso (e.hom.naturality f).symm
+  exact hLeft.of_comp_right (isEquivalence_hom eY)
+
+end Bicategory.MorphismProperty
 
 /-- Precomposition by a pseudofunctor, retaining strong transformations and
 modifications rather than collapsing them to equalities. -/

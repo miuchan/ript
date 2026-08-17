@@ -76,10 +76,13 @@ arbitrary groupoid-valued localized component `K` and arbitrary
 retained-coordinate pseudofunctor `H`, the paired pseudofunctor `K × H`
 inverts the marking and factors componentwise, while its lift maps the formal
 inverse correctly; with the identity retained component it still detects the
-noninvertible Boolean discard. What remains open is factorization of an
-arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor, local
-fullness and essential surjectivity, and ultimately the corresponding
-construction for the full resource-process bicategory.
+noninvertible Boolean discard. Marking inversion and factorization are now
+proved invariant under adjoint equivalence of source pseudofunctors, so this
+result covers the entire replete closure of the separable family rather than
+only literal componentwise pairs. What remains open is factorization of an
+arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
+that closure, local fullness and essential surjectivity, and ultimately the
+corresponding construction for the full resource-process bicategory.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's
