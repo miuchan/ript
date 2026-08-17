@@ -1485,6 +1485,10 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | One endpoint-normal constructor represents retained-coordinate 2-cells in all four walking directions. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | The arbitrary lift has an identity comparison at every target object. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | One comparison handles all four endpoint triples whose two factors are canonical forward arrows. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_right` | The target-side forward composition comparison preserves every retained-coordinate 2-cell on its right factor. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | The target-side forward composition comparison preserves every retained-coordinate 2-cell on its left factor. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | The source pseudofunctor compositor satisfies the matching right naturality square. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | The source pseudofunctor compositor satisfies the matching left naturality square. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | A canonical inverse followed by retained data has the required composition comparison. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | Retained data followed by a canonical inverse has the required comparison, using the inverse mate of forward sliding. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | A canonical inverse followed by its matching forward arrow compares through the chosen equivalence counit. |

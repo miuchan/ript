@@ -4106,6 +4106,128 @@ noncomputable def canonicalForwardCompositionComparison
       Ript.Examples.WalkingLocalization.Arrow).map_comp f g).symm))
     (Iso.refl _)
 
+/-- The forward composition comparison is natural in a retained-coordinate
+2-morphism on its right factor. -/
+theorem canonicalForwardCompositionComparison_naturality_right
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (canonicalForwardHom f A ◁ canonicalForwardTwoCell g η) ≫
+          (canonicalForwardCompositionComparison f g A C).hom =
+      (canonicalForwardCompositionComparison f g A B).hom ≫
+        canonicalForwardTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Mapping the right naturality square through the arbitrary lift preserves
+its vertical composite. -/
+theorem generalLiftForwardMapCompTarget_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁ canonicalForwardTwoCell g η) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison f g A C).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison f g A B).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (f ≫ g)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) := by
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp,
+    canonicalForwardCompositionComparison_naturality_right,
+    (generalLiftPrelaxFunctor F hF).map₂_comp]
+
+/-- The source composition comparison has the same right naturality square
+before free-groupoid completion. -/
+theorem canonicalSourceCompositionComparison_naturality_right
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (canonicalSourceHom f A ◁ canonicalSourceTwoCell g η) ≫
+          (canonicalSourceCompositionComparison f g A C).hom =
+      (canonicalSourceCompositionComparison f g A B).hom ≫
+        canonicalSourceTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η) := by
+  rfl
+
+/-- Inverse form of right naturality, oriented for the first stage of the
+source pseudofunctor's composition comparison. -/
+theorem canonicalSourceCompositionComparison_naturality_right_inv
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    canonicalSourceTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η) ≫
+        (canonicalSourceCompositionComparison f g A C).symm.hom =
+      (canonicalSourceCompositionComparison f g A B).symm.hom ≫
+        (canonicalSourceHom f A ◁ canonicalSourceTwoCell g η) := by
+  rfl
+
+/-- The forward composition comparison is natural in a retained-coordinate
+2-morphism on its left factor. -/
+theorem canonicalForwardCompositionComparison_naturality_left
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (canonicalForwardTwoCell f η ▷ canonicalForwardHom g B) ≫
+          (canonicalForwardCompositionComparison f g C B).hom =
+      (canonicalForwardCompositionComparison f g A B).hom ≫
+        canonicalForwardTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B)) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Mapping the left naturality square through the arbitrary lift preserves
+its vertical composite. -/
+theorem generalLiftForwardMapCompTarget_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η ▷ canonicalForwardHom g B) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison f g C B).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison f g A B).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (f ≫ g)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) := by
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp,
+    canonicalForwardCompositionComparison_naturality_left,
+    (generalLiftPrelaxFunctor F hF).map₂_comp]
+
+/-- The source composition comparison has the corresponding left naturality
+square before free-groupoid completion. -/
+theorem canonicalSourceCompositionComparison_naturality_left
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (canonicalSourceTwoCell f η ▷ canonicalSourceHom g B) ≫
+          (canonicalSourceCompositionComparison f g C B).hom =
+      (canonicalSourceCompositionComparison f g A B).hom ≫
+        canonicalSourceTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B)) := by
+  rfl
+
+/-- Inverse form of left naturality, oriented for the first stage of the
+source pseudofunctor's composition comparison. -/
+theorem canonicalSourceCompositionComparison_naturality_left_inv
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    canonicalSourceTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B)) ≫
+        (canonicalSourceCompositionComparison f g C B).symm.hom =
+      (canonicalSourceCompositionComparison f g A B).symm.hom ≫
+        (canonicalSourceTwoCell f η ▷ canonicalSourceHom g B) := by
+  rfl
+
 /-- Source pseudofunctor composition, expressed on canonical source arrows. -/
 noncomputable def generalLiftForwardMapCompSource
     (F : Source ⥤ᵖ E)
@@ -4116,6 +4238,64 @@ noncomputable def generalLiftForwardMapCompSource
         F.map (canonicalSourceHom g B) :=
   F.map₂Iso (canonicalSourceCompositionComparison f g A B).symm ≪≫
     F.mapComp (canonicalSourceHom f A) (canonicalSourceHom g B)
+
+/-- The source-side forward composition comparison is natural in its right
+retained-coordinate 2-morphism. -/
+theorem generalLiftForwardMapCompSource_naturality_right
+    (F : Source ⥤ᵖ E)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    F.map₂ (canonicalSourceTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) ≫
+        (generalLiftForwardMapCompSource F f g A C).hom =
+      (generalLiftForwardMapCompSource F f g A B).hom ≫
+        F.map (canonicalSourceHom f A) ◁
+          F.map₂ (canonicalSourceTwoCell g η) := by
+  simp only [generalLiftForwardMapCompSource, Iso.trans_hom,
+    PrelaxFunctor.map₂Iso_hom]
+  have hmapComp :
+      F.map₂ (canonicalSourceHom f A ◁ canonicalSourceTwoCell g η) ≫
+          (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g C)).hom =
+        (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B)).hom ≫
+          F.map (canonicalSourceHom f A) ◁
+            F.map₂ (canonicalSourceTwoCell g η) :=
+    F.toOplax.mapComp_naturality_right
+      (canonicalSourceHom f A) (canonicalSourceTwoCell g η)
+  rw [← Category.assoc, ← F.map₂_comp,
+    canonicalSourceCompositionComparison_naturality_right_inv,
+    F.map₂_comp, Category.assoc, hmapComp, ← Category.assoc]
+
+/-- The source-side forward composition comparison is natural in its left
+retained-coordinate 2-morphism. -/
+theorem generalLiftForwardMapCompSource_naturality_left
+    (F : Source ⥤ᵖ E)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    F.map₂ (canonicalSourceTwoCell (f ≫ g)
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) ≫
+        (generalLiftForwardMapCompSource F f g C B).hom =
+      (generalLiftForwardMapCompSource F f g A B).hom ≫
+        F.map₂ (canonicalSourceTwoCell f η) ▷
+          F.map (canonicalSourceHom g B) := by
+  simp only [generalLiftForwardMapCompSource, Iso.trans_hom,
+    PrelaxFunctor.map₂Iso_hom]
+  have hmapComp :
+      F.map₂ (canonicalSourceTwoCell f η ▷ canonicalSourceHom g B) ≫
+          (F.mapComp (canonicalSourceHom f C)
+            (canonicalSourceHom g B)).hom =
+        (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B)).hom ≫
+          F.map₂ (canonicalSourceTwoCell f η) ▷
+            F.map (canonicalSourceHom g B) :=
+    F.toOplax.mapComp_naturality_left
+      (canonicalSourceTwoCell f η) (canonicalSourceHom g B)
+  rw [← Category.assoc, ← F.map₂_comp,
+    canonicalSourceCompositionComparison_naturality_left_inv,
+    F.map₂_comp, Category.assoc, hmapComp, ← Category.assoc]
 
 /-- Composition comparison for two canonical forward target arrows.  This
 discharges all four endpoint triples whose two factors both come from the

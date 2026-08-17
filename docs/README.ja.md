@@ -1127,6 +1127,10 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointTwoCell` | 一つの端点標準コンストラクタが 4 種すべての walking 方向の保持座標 2-射を表します。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapId` | 任意の lift は全標的対象で恒等比較を持ちます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | 一つの比較が、両因子が標準前向き射である 4 種の端点形状をすべて覆います。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_right` | 標的側の前向き合成比較は、右因子上の任意の保持座標 2-射を保存します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | 標的側の前向き合成比較は、左因子上の任意の保持座標 2-射を保存します。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | 始域 pseudofunctor の compositor は対応する右自然性平方を満たします。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | 始域 pseudofunctor の compositor は対応する左自然性平方を満たします。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | 標準逆射に保持データを続ける合成比較が構成済みです。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | 保持データに標準逆射を続ける比較は、前向きスライドの逆 mate から構成されます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | 標準逆射と対応する前向き射の合成は、選択同値の counit で比較されます。 |
