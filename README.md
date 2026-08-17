@@ -172,8 +172,11 @@ candidate composite, its canonical inverse transport, and the equality of the
 two forward factorizations are now compiled. Two-sided mate sliding,
 pseudofunctor preservation of mates, and the induced strong-transformation
 sliding theorem now prove the public retained-then-inverse composition law for
-every walking arrow. The two generator cancellation orders must still be
-established before these data form a target strong transformation.
+every walking arrow. A general mate-counit identity now proves the first
+generator cancellation order: a strict inverse generator followed by its
+forward generator satisfies the public composition law. The opposite
+forward-then-inverse order must still be established before these data form a
+target strong transformation.
 The walking free groupoid itself is now normalized as well:
 every signed path is the unique morphism determined by its endpoints, making
 the completion thin and explicitly equivalent to the codiscrete groupoid on
@@ -1443,7 +1446,9 @@ informal summaries; the Lean declarations are authoritative.
 | `CategoryTheory.Bicategory.MorphismProperty.IsInvertedBy.of_equivalence` | Marking inversion is preserved when a source pseudofunctor is replaced by an adjoint-equivalent one. |
 | `CategoryTheory.Pseudofunctor.FactorsThrough.trans` | Factorization through a pseudofunctor extends across an adjoint equivalence of source pseudofunctors. |
 | `CategoryTheory.Bicategory.mateEquiv_sliding` | A commuting square between left-adjoint squares becomes the corresponding commuting square between their right-adjoint mates. |
+| `CategoryTheory.Bicategory.mateEquiv_counit` | A mate followed by the target counit equals the original square followed by the source counit, with bicategorical coherence explicit. |
 | `CategoryTheory.Pseudofunctor.map_mateEquiv` | Pseudofunctors preserve bicategorical mates, including all compositor and unitor coherence. |
+| `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_comp_hom_counit` | The mate-derived inverse constraint followed by its forward constraint transports across the counit to the canonical identity constraint. |
 | `CategoryTheory.Pseudofunctor.StrongTrans.inverseNaturalityIso_sliding` | Forward composition coherence slides to the mate-derived inverse constraint across an adjoint equivalence. |
 | `CategoryTheory.Pseudofunctor.StrongTrans.naturalityIsoOfIso_injective` | Transport across a fixed invertible target 2-cell is injective on candidate strong-naturality constraints. |
 | `Ript.Higher.costExactMorphisms_homMk_iff` | The homotopy-category mark is exactly the invertible-2-cell saturation of cost reflection. |
@@ -1496,6 +1501,9 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_forward` | The public constraint on every canonical forward arrow is the original source constraint. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_generatorInverse` | On a strict reverse arrow, the public constraint is exactly the inverse-generator mate. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_iso` | The public all-arrow constraints transport across arbitrary target 2-isomorphisms. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransGeneratorCancellation_counit` | Inverse-generator then forward-generator naturality transports across the generator counit to the canonical identity constraint. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_compIso_inverseGenerator_generator` | Transport injectivity identifies the composed public cancellation candidate with the public constraint on the raw composite. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inverseGenerator_generator` | The public composition coherence law holds for a strict inverse generator followed by its forward generator. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_inverseComposite` | The public constraint on an inverse-generator/retained raw composite equals its explicit constructor-level composite. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_naturality` | The public all-arrow constraint is natural in every target 2-morphism, including its strict-identity branch. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.liftedStrongTransNaturality_comp_inclusion` | The public constraints satisfy composition coherence on every pair of inclusion-image arrows. |

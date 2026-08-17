@@ -4347,7 +4347,8 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   are compiled. Two-sided mate sliding, preservation of mates by
   pseudofunctors, and the induced strong-transformation sliding theorem now
   prove the public retained-then-inverse composition law for every walking
-  arrow. The two generator-cancellation orders still remain before these data
+  arrow. The inverse-generator/forward-generator cancellation order is now
+  proved by the mate-counit identity; the opposite cancellation order remains before these data
   form a target strong transformation.
   It remains a
   parameterized slice: arbitrary inverting

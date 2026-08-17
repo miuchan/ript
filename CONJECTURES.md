@@ -109,8 +109,12 @@ preserve mates with their compositor and unitor coherence; the resulting
 strong-transformation mate-sliding theorem proves
 `liftedStrongTransNaturality_comp_retainedInverse`, which inhabits the former
 `LiftedStrongTransRetainedInverseCompositionCoherence` proposition for every
-walking arrow. The two generator-cancellation orders remain before the data
-can be packaged as a target strong transformation. What also remains open
+walking arrow. A general `mateEquiv_counit` theorem now identifies a mate
+followed by the corresponding forward constraint after counit transport.
+Its walking instance proves the public inverse-generator/forward-generator
+composition law. The opposite forward-generator/inverse-generator
+cancellation order remains before the data can be packaged as a target strong
+transformation. What also remains open
 is factorization of an
 arbitrary nonseparable mixed-coordinate marking-inverting pseudofunctor outside
 that closure, local essential surjectivity, and ultimately the
