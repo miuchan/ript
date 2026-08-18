@@ -112,9 +112,11 @@ checks the documented axiom allowlist. Exact assumptions are recorded in
 
 The active frontier is the arbitrary two-dimensional walking-localization
 factorization. All-arrow naturality, both complete unit laws, and the
-source-normalized forward associativity core compile. Target transport and
-the remaining oplax associativity cases, pseudofunctor packaging, and the
-final adjoint equivalence remain open. See
+source-normalized forward associativity core compile. The canonical target
+comparison square, its image under the arbitrary target action, and the
+endpoint-transport associativity law now compile as well. Composing those
+layers into the complete forward branch, the remaining oplax associativity
+cases, pseudofunctor packaging, and the final adjoint equivalence remain open. See
 [RESEARCH_STATUS.md](docs/RESEARCH_STATUS.md) for the authoritative boundary.
 
 The Lake package version is `0.1.0`, with no stable API release or archival DOI

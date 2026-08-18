@@ -61,11 +61,12 @@ compiled for all eight endpoint-normalized pairs: forward/forward, both
 retained/inverse orders, and both inverse/forward cancellation orders with
 arbitrary retained coordinates.  Endpoint normalization now packages those
 branches into one comparison for every composable target-arrow pair, with
-compiled reduction equations exposing all eight branches.  Proving the
-source-normalized forward-forward three-fold associativity core now compiles;
-transporting associativity through the target action and discharging the
-remaining endpoint triples, packaging the pseudofunctor coherence laws, and
-constructing the resulting arbitrary
+compiled reduction equations exposing all eight branches.  The
+source-normalized forward-forward three-fold associativity core, the canonical
+target comparison square, its image under the arbitrary target action, and
+the seven-endpoint transport law now compile.  Composing target normalization
+with that transport, discharging the remaining endpoint triples, packaging
+the pseudofunctor coherence laws, and constructing the resulting arbitrary
 nonseparable biessential factorization still remain open;
 consequently the global `lift` field of the bicategorical-localization
 predicate is not yet claimed.
@@ -4151,6 +4152,81 @@ noncomputable def canonicalForwardCompositionComparison
       Ript.Examples.WalkingLocalization.Arrow).map_comp f g).symm))
     (Iso.refl _)
 
+/-- The canonical target forward composition comparisons satisfy the same
+three-fold associativity square as their source counterparts.  The completed
+walking coordinate is locally discrete, while the retained coordinate records
+the cartesian-product associator. -/
+theorem canonicalForwardCompositionComparison_associativity
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    ((canonicalForwardCompositionComparison f g A B).hom ▷
+          canonicalForwardHom h C) ≫
+        (canonicalForwardCompositionComparison (f ≫ g) h (A × B) C).hom ≫
+        canonicalForwardTwoCell ((f ≫ g) ≫ h)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom f A) (canonicalForwardHom g B)
+          (canonicalForwardHom h C)).hom ≫
+        (canonicalForwardHom f A ◁
+          (canonicalForwardCompositionComparison g h B C).hom) ≫
+        (canonicalForwardCompositionComparison f (g ≫ h) A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Inverse-oriented form of the canonical target forward associativity
+square.  This is the direction used when an arbitrary raw three-fold
+composite is normalized before its endpoint transports are applied. -/
+theorem canonicalForwardCompositionComparison_associativity_inv
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    canonicalForwardTwoCell ((f ≫ g) ≫ h)
+          (MonoidalCategory.associator A B C).hom ≫
+        (canonicalForwardCompositionComparison f (g ≫ h)
+          A (B × C)).symm.hom ≫
+        (canonicalForwardHom f A ◁
+          (canonicalForwardCompositionComparison g h B C).symm.hom) =
+      (canonicalForwardCompositionComparison (f ≫ g) h
+          (A × B) C).symm.hom ≫
+        ((canonicalForwardCompositionComparison f g A B).symm.hom ▷
+          canonicalForwardHom h C) ≫
+        (α_ (canonicalForwardHom f A) (canonicalForwardHom g B)
+          (canonicalForwardHom h C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action to the canonical forward
+associativity square preserves its three vertical composites. -/
+theorem generalLiftForwardMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardCompositionComparison f g A B).hom ▷
+            canonicalForwardHom h C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison (f ≫ g) h
+            (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell ((f ≫ g) ≫ h)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A) (canonicalForwardHom g B)
+            (canonicalForwardHom h C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁
+            (canonicalForwardCompositionComparison g h B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison f (g ≫ h)
+            A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalForwardCompositionComparison_associativity f g h A B C)
+
 /-- The forward composition comparison is natural in a retained-coordinate
 2-morphism on its right factor. -/
 theorem canonicalForwardCompositionComparison_naturality_right
@@ -4455,6 +4531,49 @@ theorem generalLiftForwardMapCompSource_associativity
       slice_lhs 3 6 => rw [hassoc]
       slice_lhs 2 3 => rw [hleft]
       simp only [Category.assoc]
+
+/-- Associativity of a compositor is preserved when every one-arrow and
+composite endpoint is transported through a chosen isomorphism.  This
+isolates the bicategorical associator naturality needed by the arbitrary
+lift's forward compositor. -/
+private theorem transportCompositor_associativity
+    {a b c d : E}
+    {q₀ p₀ : a ⟶ b} {q₁ p₁ : b ⟶ c} {q₂ p₂ : c ⟶ d}
+    {q₀₁ p₀₁ : a ⟶ c} {q₁₂ p₁₂ : b ⟶ d}
+    {qL pL qR pR : a ⟶ d}
+    (e₀ : q₀ ≅ p₀) (e₁ : q₁ ≅ p₁) (e₂ : q₂ ≅ p₂)
+    (e₀₁ : q₀₁ ≅ p₀₁) (e₁₂ : q₁₂ ≅ p₁₂)
+    (eL : qL ≅ pL) (eR : qR ≅ pR)
+    (c₀₁ : p₀₁ ⟶ p₀ ≫ p₁) (c₁₂ : p₁₂ ⟶ p₁ ≫ p₂)
+    (cL : pL ⟶ p₀₁ ≫ p₂) (cR : pR ⟶ p₀ ≫ p₁₂)
+    (aP : pL ⟶ pR) (aQ : qL ⟶ qR)
+    (ha : aQ ≫ eR.hom = eL.hom ≫ aP)
+    (hc : aP ≫ cR ≫ (p₀ ◁ c₁₂) =
+      cL ≫ (c₀₁ ▷ p₂) ≫ (α_ p₀ p₁ p₂).hom) :
+    aQ ≫
+        (eR.hom ≫ cR ≫ (e₀.inv ▷ p₁₂) ≫ (q₀ ◁ e₁₂.inv)) ≫
+        (q₀ ◁
+          (e₁₂.hom ≫ c₁₂ ≫ (e₁.inv ▷ p₂) ≫ (q₁ ◁ e₂.inv))) =
+      (eL.hom ≫ cL ≫ (e₀₁.inv ▷ p₂) ≫ (q₀₁ ◁ e₂.inv)) ≫
+        ((e₀₁.hom ≫ c₀₁ ≫ (e₀.inv ▷ p₁) ≫ (q₀ ◁ e₁.inv)) ▷ q₂) ≫
+        (α_ q₀ q₁ q₂).hom := by
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  rw [← Category.assoc, ha]
+  simp
+  rw [← whisker_exchange_assoc e₀.inv c₁₂]
+  slice_lhs 1 3 => rw [hc]
+  simp
+  rw [← whisker_exchange_assoc e₀₁.inv e₂.inv]
+  simp
+  rw [whisker_exchange_assoc c₀₁ e₂.inv]
+  rw [← associator_naturality_middle_assoc q₀ e₁.inv p₂]
+  rw [← associator_naturality_right q₀ q₁ e₂.inv]
+  rw [← associator_naturality_middle q₀ e₁.inv q₂]
+  slice_lhs 3 4 => rw [← Bicategory.comp_whiskerRight]
+  slice_rhs 4 5 => rw [← Bicategory.comp_whiskerRight]
+  slice_lhs 3 4 => rw [← whisker_exchange]
+  simp only [Category.assoc]
 
 private theorem comp_naturality_of_squares
     {C : Type u₂} [Category.{v₂} C]
@@ -4910,6 +5029,72 @@ theorem generalLiftForwardMapCompTransport_naturality_left
   exact comp_naturality_of_squares
     (generalLiftForwardMapCompCore_naturality_left F hF f g η B)
     (generalLiftForwardMapCompFactors_naturality_left F hF f g η B)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint transport stage of the arbitrary lift's forward compositor
+satisfies the three-fold associativity law.  The proof transports the already
+established source associativity square through all seven canonical endpoint
+isomorphisms. -/
+theorem generalLiftForwardMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell ((f ≫ g) ≫ h)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompTransport F hF f (g ≫ h)
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ◁
+          (generalLiftForwardMapCompTransport F hF g h B C).hom =
+      (generalLiftForwardMapCompTransport F hF (f ≫ g) h
+          (A × B) C).hom ≫
+        (generalLiftForwardMapCompTransport F hF f g A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom h C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom g B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom h C))).hom := by
+  have hwalking : (f ≫ g) ≫ h = f ≫ (g ≫ h) :=
+    Category.assoc f g h
+  rw [← hwalking]
+  simp only [generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom, Category.assoc]
+  simpa only [eqToIso.hom, eqToIso.inv, Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF g B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF h C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (f ≫ g) (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (g ≫ h) (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF ((f ≫ g) ≫ h)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF ((f ≫ g) ≫ h)
+        (A × (B × C))))
+    (c₀₁ := (generalLiftForwardMapCompSource F f g A B).hom)
+    (c₁₂ := (generalLiftForwardMapCompSource F g h B C).hom)
+    (cL := (generalLiftForwardMapCompSource F (f ≫ g) h
+      (A × B) C).hom)
+    (cR := (generalLiftForwardMapCompSource F f (g ≫ h)
+      A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell ((f ≫ g) ≫ h)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell ((f ≫ g) ≫ h)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF ((f ≫ g) ≫ h)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftForwardMapCompSource_associativity F f g h A B C)
 
 /-- Composition comparison for two canonical forward target arrows.  This
 discharges all four endpoint triples whose two factors both come from the

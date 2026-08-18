@@ -103,8 +103,10 @@ Ript は証明プレースホルダー、プロジェクト固有公理、コン
 実行し、公理許可リストを検査します。正確な依存は [AXIOMS.md](../AXIOMS.md) に記録されます。
 
 現在の最前線は任意の二次元 walking-localization 因子分解です。全射の自然性、完全な左右単位律、
-source 正規化された forward 結合律の中核はコンパイル済みです。target への移送と残りの oplax
-結合律、pseudofunctor 化、最終的な随伴同値は未完成です。
+source 正規化された forward 結合律の中核はコンパイル済みです。canonical target comparison の
+可換図、その任意の target action による像、endpoint-transport の結合律もコンパイル済みです。
+これらを完全な forward 分岐へ合成すること、残りの oplax 結合律、pseudofunctor 化、最終的な
+随伴同値は未完成です。
 権威ある境界は [RESEARCH_STATUS.md](RESEARCH_STATUS.md) を参照してください。
 
 Lake パッケージ版は `0.1.0` で、安定 API リリースやアーカイブ DOI はまだありません。研究成果では

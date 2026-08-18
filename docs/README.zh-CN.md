@@ -98,8 +98,9 @@ Mathlib 版本，将警告视为错误，执行代表性模型，并核对公理
 [AXIOMS.md](../AXIOMS.md)。
 
 当前前沿是任意二维 walking-localization 分解：所有箭头上的自然性、完整左右单位律和
-source 规范化的 forward 结合律核心已经编译；target 传输、其余 oplax 结合律情形、
-pseudofunctor 封装和最终伴随等价仍未完成。权威边界见
+source 规范化的 forward 结合律核心已经编译；canonical target comparison 方块、它在任意
+target action 下的像以及 endpoint-transport 结合律也已经编译。把这些层组合成完整 forward
+分支、其余 oplax 结合律情形、pseudofunctor 封装和最终伴随等价仍未完成。权威边界见
 [RESEARCH_STATUS.md](RESEARCH_STATUS.md)。
 
 Lake 包版本为 `0.1.0`，尚无稳定 API 版本或归档 DOI。研究成果应引用仓库及完整提交 SHA。

@@ -113,9 +113,11 @@ registritaj en [AXIOMS.md](../AXIOMS.md).
 
 La aktiva fronto estas la arbitra dudimensia walking-localization-faktorigo.
 Natureco por ĉiuj sagoj, ambaŭ plenaj unuleĝoj kaj la font-normaligita kerno
-de antaŭena asocieco jam kompiliĝas. Transporto al la celo kaj la ceteraj
-oplaksa-asociecaj kazoj, pseŭdofunktora pakado kaj la fina adjunkta ekvivalento
-restas malfermaj. Vidu la aŭtoritatan limon en
+de antaŭena asocieco jam kompiliĝas. Ankaŭ kompiliĝas la kanona cela
+kompara kvadrato, ĝia bildo sub arbitra cela ago kaj la asocieca leĝo de
+finpunkta transporto. Kunmeti tiujn tavolojn en la plenan antaŭenan branĉon,
+la ceteraj oplaksa-asociecaj kazoj, pseŭdofunktora pakado kaj la fina adjunkta
+ekvivalento restas malfermaj. Vidu la aŭtoritatan limon en
 [RESEARCH_STATUS.md](RESEARCH_STATUS.md).
 
 La Lake-pakaĵversio estas `0.1.0`; ankoraŭ ne ekzistas stabila API-eldono aŭ
