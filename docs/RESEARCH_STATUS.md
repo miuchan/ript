@@ -86,12 +86,15 @@ Already compiled:
 - the image of target associativity under the arbitrary target action and the
   forward endpoint-transport associativity law;
 - isomorphism normalization of either compositor input and the exact oplax
-  associativity equation for every triple of canonical forward arrows.
+  associativity equation for every triple of canonical forward arrows;
+- the canonical target, mapped target, inverse-whiskered source, endpoint
+  transport, branch-reduction, and exact oplax associativity laws for the
+  1-to-0-to-0-to-0 inverse/retained/retained endpoint sequence.
 
 Still required:
 
-- the endpoint-normalized associativity cases involving the freely adjoined
-  inverse;
+- the ten remaining endpoint-normalized associativity sequences involving the
+  freely adjoined inverse or a cancellation pair;
 - packaging as an oplax functor and then a pseudofunctor;
 - an adjoint equivalence identifying source restriction with the original
   marking-inverting pseudofunctor;

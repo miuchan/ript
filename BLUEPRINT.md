@@ -5830,8 +5830,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     forward implementation for every pair of canonical forward arrows. These
     results compose the normalization and transport stages into the exact
     oplax associativity equation for every triple of canonical forward arrows.
-    Proving the remaining endpoint-normalized oplax associativity cases that
-    involve the freely adjoined inverse, pseudofunctor packaging, and the
+    The 1-to-0-to-0-to-0 endpoint sequence now compiles as well: its canonical
+    inverse/retained target square, mapped square, inverse-whiskered source
+    law, seven endpoint transports, all-arrow branch reduction, and exact
+    oplax associativity equation are all proved. Proving the ten remaining
+    endpoint-normalized sequences involving inverse or cancellation arrows,
+    pseudofunctor packaging, and the
     resulting nonseparable biessential factorization remain open, so this is
     not yet an existence proof for the desired resource-process higher
     localization.
