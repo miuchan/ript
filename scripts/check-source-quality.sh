@@ -54,6 +54,49 @@ reject_matches \
   '\\operatorname' \
   '*.md'
 
+# Repository landing pages are navigation surfaces, not theorem ledgers. Keep
+# the four maintained language overviews concise and move durable detail into
+# task-focused documents or the formal status registers.
+while IFS=: read -r overview_file maximum_lines; do
+  actual_lines="$(wc -l < "$overview_file")"
+  if [[ "$actual_lines" -gt "$maximum_lines" ]]; then
+    printf 'Source quality check failed: %s has %d lines; overview limit is %d\n' \
+      "$overview_file" "$actual_lines" "$maximum_lines" >&2
+    exit 1
+  fi
+done <<'OVERVIEW_LIMITS'
+README.md:260
+docs/README.zh-CN.md:220
+docs/README.ja.md:220
+docs/README.eo.md:220
+OVERVIEW_LIMITS
+
+# Broken relative links make a split documentation set worse than one long
+# page. Validate every inline Markdown link while leaving remote URLs and
+# same-page anchors to their respective renderers.
+markdown_link_errors=0
+while IFS= read -r markdown_file; do
+  while IFS= read -r link_target; do
+    case "$link_target" in
+      ''|'#'*|http://*|https://*|mailto:*|data:*) continue ;;
+    esac
+
+    link_target="${link_target%%#*}"
+    link_target="${link_target#<}"
+    link_target="${link_target%>}"
+    resolved_path="$(dirname "$markdown_file")/$link_target"
+    if [[ ! -e "$resolved_path" ]]; then
+      printf 'Source quality check failed: %s links to missing %s\n' \
+        "$markdown_file" "$link_target" >&2
+      markdown_link_errors=1
+    fi
+  done < <(perl -ne 'while (/\]\(([^)]+)\)/g) { print "$1\n" }' "$markdown_file")
+done < <(git ls-files --cached --others --exclude-standard -- '*.md')
+
+if [[ "$markdown_link_errors" -ne 0 ]]; then
+  exit 1
+fi
+
 # Validate complete GFM table blocks, not just their separator rows. A single
 # missing separator or data cell makes GitHub render the whole block as raw
 # pipe-delimited prose, which is easy to miss in source review.
