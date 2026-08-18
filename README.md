@@ -187,12 +187,16 @@ proved. The complete forward/forward compositor, both mixed compositors
 compositors (inverse then forward, and forward then inverse) are also proved
 natural in either retained-coordinate variable. The proofs include every
 equality transport, associator, source compositor, mate-derived inverse
-sliding, and the chosen equivalence unit or counit. Naturality for the other
-three endpoint branches remains part of the coherence work.
-Four endpoint hom-functor reduction theorems and one uniform endpoint
-2-cell constructor now expose the exact forward/reverse action needed by the
-remaining coherence proofs. The remaining work is to prove the pseudofunctor coherence laws and
-then construct the source-factorization
+sliding, and the chosen equivalence unit or counit. These five families now
+assemble into left and right naturality for the unified comparison across all
+eight endpoint triples. Free-groupoid thinness and local discreteness then
+lift those equations to arbitrary target objects, arrows, and 2-cells, giving
+the exact all-arrow `mapComp` naturality laws required by an oplax functor.
+Four endpoint hom-functor reduction theorems, two forward/inverse endpoint
+identifications, and one uniform endpoint 2-cell constructor expose the exact
+normalization used by these proofs. The remaining work is to prove oplax
+associativity and both unit laws, package the pseudofunctor, and then construct
+the source-factorization
 adjoint equivalence. That missing global
 biessential-factorization field is why the existing bridge is not yet a
 bicategorical, Dwyer--Kan, simplicial, or Rezk localization.
@@ -1510,8 +1514,14 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse` | A canonical forward arrow followed by its matching inverse compares through the chosen equivalence unit. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse_naturality_right` | The complete forward-then-inverse cancellation compositor is natural in retained-coordinate 2-cells on its inverse right factor. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse_naturality_left` | The complete forward-then-inverse cancellation compositor is natural in retained-coordinate 2-cells on its forward left factor. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointHom_eq_forward` | Every ordered endpoint-normal arrow is the corresponding canonical forward arrow. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointHom_eq_inverse` | Reversing an ordered endpoint pair gives the corresponding canonical inverse arrow. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp` | Endpoint normalization supplies a composition comparison for every composable pair of target arrows. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_endpoint` | The all-arrow comparison reduces definitionally to the explicit eight-branch endpoint comparison. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftEndpointMapComp_naturality_right` | The unified endpoint comparison is natural in its right retained-coordinate 2-cell across all eight endpoint triples. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftEndpointMapComp_naturality_left` | The unified endpoint comparison is natural in its left retained-coordinate 2-cell across all eight endpoint triples. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_naturality_right` | The all-arrow comparison satisfies oplax right naturality for arbitrary target 2-cells. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_naturality_left` | The all-arrow comparison satisfies oplax left naturality for arbitrary target 2-cells. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.retainedSource_has_factorization` | Every pseudofunctor depending only on the retained coordinate factors through the localization target, for every target bicategory. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Precomposition is faithful on all local categories of strong transformations and modifications. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | Every morphism in the completed walking coordinate equals the canonical morphism determined by its endpoints. |

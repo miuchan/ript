@@ -177,11 +177,14 @@ konservita, kaj konservita poste inversa), kaj ambaŭ nuligaj komponiloj
 ambaŭ konservit-koordinataj variabloj. La pruvoj inkluzivas ĉiujn
 egalec-transportojn, asociilojn, fontajn komponilojn, la mate-derivitan
 inversan glitadon, kaj la elektitan unit aŭ counit de la ekvivalento. Natureco
-por la aliaj tri finpunktaj branĉoj restas parto de la kohera laboro.
-Kvar finpunktaj hom-funktoraj reduktaj teoremoj kaj unu unuforma finpunkta
-2-ĉela konstruilo nun eksplicitas la antaŭan aŭ inversan agon bezonatan por la
-restantaj koherpruvoj.
-Restas pruvi la pseŭdofunktorajn koherleĝojn,
+de tiuj kvin familioj nun kunmetiĝas en maldekstran kaj dekstran naturecon de
+la unuigita komparo tra ĉiuj ok finpunktaj triopoj. Maldikeco de la libera
+grupoido kaj loka diskreteco poste levas la ekvaciojn al arbitraj celaj
+objektoj, sagoj kaj 2-ĉeloj, liverante la plenajn oplaksajn `mapComp`-
+naturecleĝojn. Kvar finpunktaj hom-funktoraj reduktoj, du antaŭa/inversa
+finpunkta identigoj kaj unu unuforma finpunkta 2-ĉela konstruilo eksplicitas
+tiun normaligon. Restas pruvi oplaksan asociecon kaj ambaŭ unuecleĝojn,
+paki la pseŭdofunktoron,
 poste konstrui la adjunktan ekvivalenton de la
 fonta faktorado. Ĝuste tiu mankanta tutmonda biesenca faktoriga kampo
 signifas, ke la ekzistanta ponto ankoraŭ ne estas plena dukategoria,
@@ -1430,8 +1433,14 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse` | Kanona antaŭa sago sekvata de sia kongrua inverso estas komparata per la unit de la elektita ekvivalento. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse_naturality_right` | La plena antaŭa-poste-inversa nuliga komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia dekstra inversa faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse_naturality_left` | La plena antaŭa-poste-inversa nuliga komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia maldekstra antaŭa faktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointHom_eq_forward` | Ĉiu ordigita finpunkt-normala sago egalas la respondan kanonan antaŭan sagon. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalEndpointHom_eq_inverse` | Inversigi ordigitan finpunktan paron donas la respondan kanonan inversan sagon. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp` | Finpunkta normaligo liveras kunmetan komparon por ĉiu kunmetebla paro de celaj sagoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_endpoint` | La ĉiusaga komparo difine reduktiĝas al la eksplicita okbranĉa finpunkta komparo. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftEndpointMapComp_naturality_right` | La unuigita finpunkta komparo estas natura en la dekstra konservit-koordinata 2-ĉelo tra ĉiuj ok finpunktaj triopoj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftEndpointMapComp_naturality_left` | La unuigita finpunkta komparo estas natura en la maldekstra konservit-koordinata 2-ĉelo tra ĉiuj ok finpunktaj triopoj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_naturality_right` | La ĉiusaga komparo plenumas oplaksan dekstran naturecon por arbitraj celaj 2-ĉeloj. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_naturality_left` | La ĉiusaga komparo plenumas oplaksan maldekstran naturecon por arbitraj celaj 2-ĉeloj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Antaŭkunmeto estas fidela en ĉiuj lokaj kategorioj de fortaj transformoj kaj modifoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completion_hom_eq_canonical` | Ĉiu morfio en la kompletigita marŝanta koordinato egalas la kanonan morfion difinitan de siaj finpunktoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.completionCodiscreteEquivalence` | La marŝant-saga kompletigo estas kategorie ekvivalenta al la kodiskreta grupoido sur `Fin 2`. |

@@ -5802,10 +5802,17 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     and both inverse/forward cancellation orders now satisfy compiled left and
     right naturality in their retained coordinates; the two cancellation
     proofs expose the chosen equivalence unit/counit, source factorizations,
-    associators, and endpoint transports as named stages.
+    associators, and endpoint transports as named stages. Those five families
+    now assemble into uniform left and right naturality for the endpoint
+    comparison across all eight triples. Thinness of the completed walking
+    coordinate and uniqueness of its locally discrete 2-cells then transport
+    the result to arbitrary target objects, arrows, and 2-cells, proving the
+    exact `mapComp_naturality_left` and `mapComp_naturality_right` equations
+    required by an oplax functor.
     Four additional compiled equalities expose the forward/reverse hom-functor
     selected by each endpoint pair, and a canonical endpoint 2-cell constructor
     uniformly represents retained-coordinate morphisms in all four directions.
-    Proving the pseudofunctor coherence laws and constructing the resulting
+    Proving oplax associativity and both unit laws, packaging the invertible
+    comparisons as a pseudofunctor, and constructing the resulting
     nonseparable biessential factorization remain open, so this is not yet an
     existence proof for the desired resource-process higher localization.

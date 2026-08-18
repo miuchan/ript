@@ -7234,6 +7234,35 @@ noncomputable def canonicalEndpointTwoCell
     canonicalEndpointHom X Y A ⟶ canonicalEndpointHom X Y B :=
   (𝟙 _, η)
 
+/-- A canonical endpoint arrow in an ordered walking direction is exactly
+the corresponding forward arrow.  The statement is independent of the
+chosen proof that the walking endpoints are ordered. -/
+theorem canonicalEndpointHom_eq_forward
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    canonicalEndpointHom X Y A = canonicalForwardHom f A := by
+  apply Prod.ext
+  · change (canonicalCompletionHom X Y).toLoc =
+      (CategoryTheory.FreeGroupoid.homMk f).toLoc
+    rw [homMk_eq_canonicalCompletionHom]
+  · rfl
+
+/-- Reversing an ordered walking direction identifies the canonical endpoint
+arrow with the corresponding freely adjoined inverse arrow. -/
+theorem canonicalEndpointHom_eq_inverse
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    canonicalEndpointHom Y X A = canonicalInverseHom f A := by
+  apply Prod.ext
+  · change (canonicalCompletionHom Y X).toLoc =
+      (inv (CategoryTheory.FreeGroupoid.homMk f)).toLoc
+    rw [inv_homMk_eq_canonicalCompletionHom]
+  · rfl
+
+private theorem walkingArrow_eq_zero_or_one
+    (X : Ript.Examples.WalkingLocalization.Arrow) : X = 0 ∨ X = 1 := by
+  fin_cases X <;> simp
+
 /-- Composition comparison for endpoint-normal target arrows.  Equality
 tests, rather than large elimination from `Fin 2`, select the eight compiled
 canonical branches.  This keeps the result in the target bicategory's full
@@ -7380,6 +7409,203 @@ theorem generalLiftEndpointMapComp_one_one_one
   simp [generalLiftEndpointMapComp]
   congr
 
+/-- The endpoint-normal composition comparison is natural in every
+retained-coordinate 2-morphism on its right factor.  The proof covers all
+eight walking-endpoint triples and transports each one to its compiled
+forward, mixed, or cancellation compositor. -/
+theorem generalLiftEndpointMapComp_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (X Y Z : Ript.Examples.WalkingLocalization.Arrow) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalEndpointHom X Y A ◁
+            canonicalEndpointTwoCell Y Z η) ≫
+        (generalLiftEndpointMapComp F hF X Y Z A C).hom =
+      (generalLiftEndpointMapComp F hF X Y Z A B).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom X Y A) ◁
+          (generalLiftPrelaxFunctor F hF).map₂
+            (canonicalEndpointTwoCell Y Z η)) := by
+  rcases walkingArrow_eq_zero_or_one X with rfl | rfl <;>
+    rcases walkingArrow_eq_zero_or_one Y with rfl | rfl <;>
+      rcases walkingArrow_eq_zero_or_one Z with rfl | rfl
+  · rw [generalLiftEndpointMapComp_zero_zero_zero,
+      generalLiftEndpointMapComp_zero_zero_zero]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) B
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) C
+    exact generalLiftMapCompForward_naturality_right F hF (𝟙 0) (𝟙 0) A η
+  · rw [generalLiftEndpointMapComp_zero_zero_one,
+      generalLiftEndpointMapComp_zero_zero_one]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapCompForward_naturality_right F hF
+      (𝟙 0) Ript.Examples.WalkingLocalization.arrow A η
+  · rw [generalLiftEndpointMapComp_zero_one_zero,
+      generalLiftEndpointMapComp_zero_one_zero]
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapCompForwardInverse_naturality_right F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A η
+  · rw [generalLiftEndpointMapComp_zero_one_one,
+      generalLiftEndpointMapComp_zero_one_one]
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) B
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) C
+    exact generalLiftMapCompForward_naturality_right F hF
+      Ript.Examples.WalkingLocalization.arrow (𝟙 1) A η
+  · rw [generalLiftEndpointMapComp_one_zero_zero,
+      generalLiftEndpointMapComp_one_zero_zero]
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) B
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) C
+    exact generalLiftMapCompInverseRetained_naturality_right F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A η
+  · rw [generalLiftEndpointMapComp_one_zero_one,
+      generalLiftEndpointMapComp_one_zero_one]
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapCompInverseForward_naturality_right F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A η
+  · rw [generalLiftEndpointMapComp_one_one_zero,
+      generalLiftEndpointMapComp_one_one_zero]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapCompRetainedInverse_naturality_right F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A η
+  · rw [generalLiftEndpointMapComp_one_one_one,
+      generalLiftEndpointMapComp_one_one_one]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) B
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) C
+    exact generalLiftMapCompForward_naturality_right F hF (𝟙 1) (𝟙 1) A η
+
+/-- The endpoint-normal composition comparison is natural in every
+retained-coordinate 2-morphism on its left factor, uniformly across all eight
+walking-endpoint triples. -/
+theorem generalLiftEndpointMapComp_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (X Y Z : Ript.Examples.WalkingLocalization.Arrow) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalEndpointTwoCell X Y η ▷
+            canonicalEndpointHom Y Z B) ≫
+        (generalLiftEndpointMapComp F hF X Y Z C B).hom =
+      (generalLiftEndpointMapComp F hF X Y Z A B).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map₂
+            (canonicalEndpointTwoCell X Y η) ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom Y Z B)) := by
+  rcases walkingArrow_eq_zero_or_one X with rfl | rfl <;>
+    rcases walkingArrow_eq_zero_or_one Y with rfl | rfl <;>
+      rcases walkingArrow_eq_zero_or_one Z with rfl | rfl
+  · rw [generalLiftEndpointMapComp_zero_zero_zero,
+      generalLiftEndpointMapComp_zero_zero_zero]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) C
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact generalLiftMapCompForward_naturality_left F hF (𝟙 0) (𝟙 0) η B
+  · rw [generalLiftEndpointMapComp_zero_zero_one,
+      generalLiftEndpointMapComp_zero_zero_one]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) C
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    exact generalLiftMapCompForward_naturality_left F hF
+      (𝟙 0) Ript.Examples.WalkingLocalization.arrow η B
+  · rw [generalLiftEndpointMapComp_zero_one_zero,
+      generalLiftEndpointMapComp_zero_one_zero]
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    exact generalLiftMapCompForwardInverse_naturality_left F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) η B
+  · rw [generalLiftEndpointMapComp_zero_one_one,
+      generalLiftEndpointMapComp_zero_one_one]
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact generalLiftMapCompForward_naturality_left F hF
+      Ript.Examples.WalkingLocalization.arrow (𝟙 1) η B
+  · rw [generalLiftEndpointMapComp_one_zero_zero,
+      generalLiftEndpointMapComp_one_zero_zero]
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact generalLiftMapCompInverseRetained_naturality_left F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) η B
+  · rw [generalLiftEndpointMapComp_one_zero_one,
+      generalLiftEndpointMapComp_one_zero_one]
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    exact generalLiftMapCompInverseForward_naturality_left F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) η B
+  · rw [generalLiftEndpointMapComp_one_one_zero,
+      generalLiftEndpointMapComp_one_one_zero]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) C
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    exact generalLiftMapCompRetainedInverse_naturality_left F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) η B
+  · rw [generalLiftEndpointMapComp_one_one_one,
+      generalLiftEndpointMapComp_one_one_one]
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) C
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact generalLiftMapCompForward_naturality_left F hF (𝟙 1) (𝟙 1) η B
+
 /-- Composition comparison for every composable pair of target arrows.
 Objects are first rewritten to their canonical free-groupoid representatives;
 thinness then rewrites both walking-coordinate arrows to their endpoint normal
@@ -7428,6 +7654,144 @@ theorem generalLiftMapComp_endpoint
         (canonicalEndpointHom Y Z B) =
       generalLiftEndpointMapComp F hF X Y Z A B := by
   rfl
+
+private theorem generalLiftMapComp_naturality_right_canonicalObjects
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : canonicalTargetObject X ⟶ canonicalTargetObject Y)
+    {g h : canonicalTargetObject Y ⟶ canonicalTargetObject Z}
+    (η : g ⟶ h) :
+    (generalLiftPrelaxFunctor F hF).map₂ (f ◁ η) ≫
+        (generalLiftMapComp F hF f h).hom =
+      (generalLiftMapComp F hF f g).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftPrelaxFunctor F hF).map₂ η) := by
+  rcases f with ⟨⟨f⟩, A⟩
+  rcases g with ⟨⟨g⟩, B⟩
+  rcases h with ⟨⟨h⟩, C⟩
+  rcases η with ⟨η, ηret⟩
+  have hf : f = canonicalCompletionHom X Y :=
+    completion_hom_eq_canonical f
+  have hg : g = canonicalCompletionHom Y Z :=
+    completion_hom_eq_canonical g
+  have hh : h = canonicalCompletionHom Y Z :=
+    completion_hom_eq_canonical h
+  cases hf
+  cases hg
+  cases hh
+  have hη : η = 𝟙 _ := Subsingleton.elim _ _
+  cases hη
+  change
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalEndpointHom X Y A ◁
+            canonicalEndpointTwoCell Y Z ηret) ≫
+        (generalLiftEndpointMapComp F hF X Y Z A C).hom =
+      (generalLiftEndpointMapComp F hF X Y Z A B).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom X Y A) ◁
+          (generalLiftPrelaxFunctor F hF).map₂
+            (canonicalEndpointTwoCell Y Z ηret))
+  exact generalLiftEndpointMapComp_naturality_right F hF X Y Z A ηret
+
+private theorem generalLiftMapComp_naturality_left_canonicalObjects
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    {f h : canonicalTargetObject X ⟶ canonicalTargetObject Y}
+    (η : f ⟶ h) (g : canonicalTargetObject Y ⟶ canonicalTargetObject Z) :
+    (generalLiftPrelaxFunctor F hF).map₂ (η ▷ g) ≫
+        (generalLiftMapComp F hF h g).hom =
+      (generalLiftMapComp F hF f g).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map₂ η ▷
+          (generalLiftPrelaxFunctor F hF).map g) := by
+  rcases f with ⟨⟨f⟩, A⟩
+  rcases h with ⟨⟨h⟩, C⟩
+  rcases g with ⟨⟨g⟩, B⟩
+  rcases η with ⟨η, ηret⟩
+  have hf : f = canonicalCompletionHom X Y :=
+    completion_hom_eq_canonical f
+  have hh : h = canonicalCompletionHom X Y :=
+    completion_hom_eq_canonical h
+  have hg : g = canonicalCompletionHom Y Z :=
+    completion_hom_eq_canonical g
+  cases hf
+  cases hh
+  cases hg
+  have hη : η = 𝟙 _ := Subsingleton.elim _ _
+  cases hη
+  change
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalEndpointTwoCell X Y ηret ▷
+            canonicalEndpointHom Y Z B) ≫
+        (generalLiftEndpointMapComp F hF X Y Z C B).hom =
+      (generalLiftEndpointMapComp F hF X Y Z A B).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map₂
+            (canonicalEndpointTwoCell X Y ηret) ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom Y Z B))
+  exact generalLiftEndpointMapComp_naturality_left F hF X Y Z ηret B
+
+/-- The all-arrow composition comparison is natural in every target 2-cell
+on its right factor.  Free-groupoid thinness normalizes both walking
+representatives, and local discreteness removes the unique walking 2-cell,
+leaving the endpoint-normal naturality theorem. -/
+theorem generalLiftMapComp_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Target} (f : X ⟶ Y) {g h : Y ⟶ Z} (η : g ⟶ h) :
+    (generalLiftPrelaxFunctor F hF).map₂ (f ◁ η) ≫
+        (generalLiftMapComp F hF f h).hom =
+      (generalLiftMapComp F hF f g).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftPrelaxFunctor F hF).map₂ η) := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  rcases Z with ⟨⟨Z⟩, Z'⟩
+  cases X'
+  cases Y'
+  cases Z'
+  let x : Ript.Examples.WalkingLocalization.Arrow := X.as.as
+  let y : Ript.Examples.WalkingLocalization.Arrow := Y.as.as
+  let z : Ript.Examples.WalkingLocalization.Arrow := Z.as.as
+  have hX : X = CategoryTheory.FreeGroupoid.mk x :=
+    CategoryTheory.FreeGroupoid.eq_mk X
+  have hY : Y = CategoryTheory.FreeGroupoid.mk y :=
+    CategoryTheory.FreeGroupoid.eq_mk Y
+  have hZ : Z = CategoryTheory.FreeGroupoid.mk z :=
+    CategoryTheory.FreeGroupoid.eq_mk Z
+  cases hX
+  cases hY
+  cases hZ
+  exact generalLiftMapComp_naturality_right_canonicalObjects F hF f η
+
+/-- The all-arrow composition comparison is natural in every target 2-cell
+on its left factor, after the same endpoint and locally-discrete
+normalization used by the right naturality theorem. -/
+theorem generalLiftMapComp_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Target} {f h : X ⟶ Y} (η : f ⟶ h) (g : Y ⟶ Z) :
+    (generalLiftPrelaxFunctor F hF).map₂ (η ▷ g) ≫
+        (generalLiftMapComp F hF h g).hom =
+      (generalLiftMapComp F hF f g).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map₂ η ▷
+          (generalLiftPrelaxFunctor F hF).map g) := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  rcases Z with ⟨⟨Z⟩, Z'⟩
+  cases X'
+  cases Y'
+  cases Z'
+  let x : Ript.Examples.WalkingLocalization.Arrow := X.as.as
+  let y : Ript.Examples.WalkingLocalization.Arrow := Y.as.as
+  let z : Ript.Examples.WalkingLocalization.Arrow := Z.as.as
+  have hX : X = CategoryTheory.FreeGroupoid.mk x :=
+    CategoryTheory.FreeGroupoid.eq_mk X
+  have hY : Y = CategoryTheory.FreeGroupoid.mk y :=
+    CategoryTheory.FreeGroupoid.eq_mk Y
+  have hZ : Z = CategoryTheory.FreeGroupoid.mk z :=
+    CategoryTheory.FreeGroupoid.eq_mk Z
+  cases hX
+  cases hY
+  cases hZ
+  exact generalLiftMapComp_naturality_left_canonicalObjects F hF η g
 
 end ArbitraryLiftPrelaxAction
 
