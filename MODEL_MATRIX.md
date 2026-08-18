@@ -210,17 +210,22 @@ a bicategory, not additional operations inside any one semantic model.
 
 | Dimension | Implemented carrier | Resource contract | Proved structure |
 | --- | --- | --- | --- |
-| 0-cells | Symmetric monoidal categories with serial, parallel, and free structural cost laws over one fixed resource type `R` | Every process cost is valued in the same ordered additive commutative monoid | `ProcessModel R` packages all required instances with uniform universes |
-| 1-cells | Strong braided monoidal functors, represented as lax braided functors with invertible unit and tensor comparison maps | Mapping a process cannot increase its cost | Identities and composition; associator and left/right unitor isomorphisms |
-| 2-cells | Monoidal natural transformations | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, whiskering, and interchange |
+| 0-cells in one fibre | Symmetric monoidal categories with serial, parallel, and free structural cost laws over one resource type `R` | Every process cost in that fibre is valued in the same ordered additive commutative monoid | `ProcessModel R` packages all required instances with uniform universes |
+| Resource base change | Ordered additive homomorphisms `φ : R →+o S` | Serial, parallel, structural, and checked budget laws are transported by applying `φ` | Cost reindexing, model reindexing, identities, composition, and executable `Fin 4 → Nat` step projection |
+| Heterogeneous 1-cells | Strong braided monoidal functors from an `R`-model to an `S`-model | Target cost is at most `φ` of source cost | Identity-resource case, composition over `ψ.comp φ`, and transported budget certificates |
+| Heterogeneous 2-cells | Monoidal natural transformations between 1-cells over the same `φ` | No hidden numerical condition is inferred from naturality | Vertical identities and composition; a local category for each fixed resource map |
+| 1-cells in one fibre | Strong braided monoidal functors, represented as lax braided functors with invertible unit and tensor comparison maps | Mapping a process cannot increase its cost | Identities and composition; associator and left/right unitor isomorphisms |
+| 2-cells in one fibre | Monoidal natural transformations | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, whiskering, and interchange |
 | Coherence | Mathlib bicategory coherence specialized to model functors | Structural 2-cells do not silently alter the model-cost contract | Pentagon and triangle laws |
 | Equivalence | Bicategorical equivalence plus explicit cost reflection in both directions | Forward and inverse functors preserve every process cost exactly | Budget preservation/reflection and transport of serial and parallel core bounds |
 | Homotopy 1-category | Model morphisms modulo invertible monoidal 2-cells | Raw cost reflection is multiplicative; its invertible-2-cell saturation is explicit | Bicategorical unitors/associator descend to strict ordinary category laws; saturated marking descends exactly to marked quotient classes |
 | Cost-exact localization | Mathlib Gabriel--Zisman localization of the model homotopy category | Formally inverts every saturated cost-exact class | Genuine `Functor.IsLocalization`; canonical pseudofunctor from `Pith`; marked arrows map to isomorphisms; a noninvertible marked arrow and a noninvertible 2-cell expose nontriviality and truncation |
 | Parameterized walking localization | Product of the locally discrete walking arrow with the one-object bicategory of types and functions | All first-coordinate arrows are marked when the retained coordinate is already an adjoint equivalence | Free-groupoid inversion in the first coordinate; endpoint-normal-form theorem, thinness, and an explicit equivalence with the codiscrete groupoid on `Fin 2`; faithful action on 2-cells; retained-, localized-, and separable mixed-coordinate lift families together with their full adjoint-equivalence closure; every source strong transformation and modification lifts, and precomposition is an equivalence on every local category; every arbitrary marking-inverting source pseudofunctor now has a compiled `PrelaxFunctor` action on all target objects, 1-morphisms, and 2-morphisms, an all-object identity comparison, and one all-arrow composition comparison reducing to all eight endpoint-normalized pairs; pseudofunctor coherence and the resulting arbitrary nonseparable factorization remain open |
 
-This layer is a bicategory of models for a fixed resource type and uniform
-universes. It is not an `(∞,1)`-category, does not provide univalence, and does
+Each fixed-resource fibre is a bicategory of models with uniform universes.
+The heterogeneous layer now connects different fibres, but the total
+bicategory with heterogeneous horizontal 2-cell coherence has not yet been
+packaged. This layer is not an `(∞,1)`-category, does not provide univalence, and does
 not turn a Lean equivalence `Equiv α β` into an equality `α = β`. Ordinary
 bicategorical equivalence alone also does not imply numerical cost equality:
 `CostExactModelEquivalence` requires cost reflection explicitly. The

@@ -14,6 +14,7 @@ import Ript.Examples.HigherModels
 import Ript.Examples.HigherNoninvertibleTwoCell
 import Ript.Examples.QubitChannel
 import Ript.Examples.RationalGibbsSpectra
+import Ript.Examples.ResourceReindexing
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.StochasticSeparation
@@ -33,6 +34,7 @@ import Ript.Models.Probability.FiniteKL
 import Ript.Models.Probability.StochFunctor
 import Ript.Models.FiniteStochastic.Kleisli
 import Ript.Resource.ParallelBudget
+import Ript.Resource.Change
 import Ript.Semantics.Completeness
 import Ript.Semantics.MonoidalCompleteness
 import Ript.Semantics.MonoidalInitiality
@@ -162,6 +164,15 @@ set_option autoImplicit false
 #print axioms Ript.Models.Computation.Partial.ofTotal_resource
 #print axioms Ript.Examples.SimpleComputation.total_interpreter_cost_sound
 #print axioms Ript.Examples.SimpleComputation.partial_budget_checker_sound
+#print axioms Ript.Resource.withinBudget_reindex
+#print axioms Ript.Core.ResourceChangeFunctor.comp
+#print axioms Ript.Core.ResourceChangeFunctor.map_withinBudget
+#print axioms Ript.Higher.ProcessModel.reindex_cost
+#print axioms Ript.Higher.ResourceChangeModelHom.comp
+#print axioms Ript.Higher.ResourceChangeModelHom.map_withinBudget
+#print axioms Ript.Higher.ResourceChangeModelTransformation.comp_toNatTrans
+#print axioms Ript.Models.Computation.ComputationResource.stepsHom_of
+#print axioms Ript.Examples.ResourceReindexing.countedNot_twice_step_cost
 #print axioms Ript.Models.Causal.FiniteDAG.acyclic
 #print axioms Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized
 #print axioms Ript.Models.Causal.FiniteCausalModel.observational_factorization

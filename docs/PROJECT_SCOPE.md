@@ -11,6 +11,14 @@ Resource-sensitive theories must additionally specify how costs compose, which
 rewrites preserve them, and when syntactic estimates are semantically valid.
 Ript makes those obligations explicit in Lean.
 
+The governing research objective is a computable, machine-verifiable,
+univalent, higher-categorical resource-constrained information-process theory
+whose classical probabilistic, quantum, causal, computational, semantic, and
+thermodynamic realizations satisfy representation and completeness theorems.
+The repository is developed toward that full objective; its maturity notices
+mark what remains unproved rather than replacing the objective with a smaller
+one.
+
 The library is organized around five principles:
 
 - ordered additive resources track serial and parallel budgets;
@@ -34,8 +42,11 @@ and finite quantum channels.
 
 Higher layers organize process models into a bicategory, define cost-exact
 equivalences, study walking-localization constructions, and provide a bounded
-internal identity semantics. The [model capability matrix](../MODEL_MATRIX.md)
-records only implemented and compiled operations.
+internal identity semantics. Ordered additive resource changes now connect
+models whose costs use different resource algebras, with heterogeneous strong
+model morphisms and local monoidal 2-cell categories. The
+[model capability matrix](../MODEL_MATRIX.md) records only implemented and
+compiled operations.
 
 ## Trust model
 

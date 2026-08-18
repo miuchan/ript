@@ -57,6 +57,14 @@ bicategory. Cost-exact equivalences add explicit numerical reflection. An
 ordinary homotopy localization and multiple walking-localization test cases
 compile.
 
+Resource algebras no longer have to be globally identical merely to compare
+models. Ordered additive homomorphisms reindex serial, parallel, structural,
+and budget laws. Strong braided model morphisms across different resource
+algebras compose together with those homomorphisms, and monoidal natural
+transformations form the local categories over each fixed resource map. A
+four-dimensional computation cost now has an executable, theorem-backed
+projection to its `Nat` step count.
+
 ### A bounded internal univalent layer
 
 Deep syntax distinguishes internal identity from structural equivalence and
@@ -67,41 +75,46 @@ complete-Segal interface.
 
 ## Active frontier
 
-The immediate target is the arbitrary marking-inverting pseudofunctor out of
-the two-dimensional walking source.
+The governing objective is a computable, machine-verifiable, univalent,
+higher-categorical theory of resource-constrained information processes whose
+classical probabilistic, quantum, causal, computational, semantic, and
+thermodynamic realizations are connected by proved representation and
+completeness theorems.
 
-Already compiled:
+The current integration frontier is the total higher category over varying
+resource algebras. The following parts now compile:
 
-- action on all target objects, 1-morphisms, and 2-morphisms;
-- identity comparisons for all objects;
-- composition comparisons for all composable arrows;
-- endpoint-normalized formulas for all eight endpoint triples;
-- forward, mixed, and cancellation compositor naturality;
-- all-arrow left and right naturality after thinness normalization;
-- source and target unit factorizations;
-- complete oplax left- and right-unit coherence for every target arrow,
-  including the freely adjoined inverse.
-- the canonical source and target three-fold forward-composition squares;
-- the normalized source forward-compositor associativity law;
-- the image of target associativity under the arbitrary target action and the
-  forward endpoint-transport associativity law;
-- isomorphism normalization of either compositor input and the exact oplax
-  associativity equation for every triple of canonical forward arrows;
-- the canonical target, mapped target, inverse-whiskered source, endpoint
-  transport, branch-reduction, and exact oplax associativity laws for the
-  1-to-0-to-0-to-0 inverse/retained/retained endpoint sequence.
+- ordered-additive resource reindexing for process, parallel, structural, and
+  proof-carrying budget laws;
+- resource-changing functors, identity-resource compatibility, composition,
+  and budget transport;
+- reindexed `ProcessModel` objects and heterogeneous strong braided model
+  morphisms whose resource translations compose;
+- monoidal 2-cells and vertical local categories over each fixed resource
+  translation;
+- an executable projection from `Fin 4 → Nat` computation resources to the
+  single `Nat` step coordinate.
 
-Still required:
+The next theorem-bearing layers are:
 
-- the ten remaining endpoint-normalized associativity sequences involving the
-  freely adjoined inverse or a cancellation pair;
-- packaging as an oplax functor and then a pseudofunctor;
-- an adjoint equivalence identifying source restriction with the original
-  marking-inverting pseudofunctor;
-- the resulting arbitrary, nonseparable biessential-factorization field.
+- package resource algebras and their models into one total bicategorical
+  object, with horizontal composition and coherence for heterogeneous 2-cells;
+- give the common resource-process syntax interpretations into all six named
+  model families, with explicit hypotheses at analytic and finite boundaries;
+- formulate and prove model-specific representation, conservativity, and
+  completeness theorems, followed by genuinely cross-model comparison
+  theorems;
+- connect the total model bicategory to the internal univalent and simplicial
+  semantics without feeding noncomputable quotient choices into executable
+  models.
 
-Until those steps compile, the parameterized walking construction is not
-described as a complete bicategorical localization.
+The parameterized walking-localization construction remains an active
+supporting track. Its arbitrary lift has compiled object, 1-cell, 2-cell,
+identity, compositor, naturality, unit, forward associativity, and one
+inverse/retained/retained associativity branch. Ten inverse or cancellation
+endpoint sequences, pseudofunctor packaging, and the final nonseparable
+biessential factorization remain open; consequently no full bicategorical
+localization is claimed.
 
 ## Explicitly open or out of scope
 

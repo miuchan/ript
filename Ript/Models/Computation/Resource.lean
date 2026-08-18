@@ -1,5 +1,6 @@
 import Mathlib.Algebra.Order.Pi
 import Mathlib.Algebra.Order.Ring.Nat
+import Mathlib.Algebra.Order.Hom.Monoid
 import Mathlib.Data.Fintype.Basic
 import Mathlib.Data.Fin.VecNotation
 import Ript.Resource.Basic
@@ -61,6 +62,27 @@ def ComputationResource.storage (resource : ComputationResource) : Nat :=
 /-- The formal circuit-gate coordinate. -/
 def ComputationResource.gates (resource : ComputationResource) : Nat :=
   resource ResourceKind.gates
+
+/-- Project a multidimensional computation resource to its formal step count.
+This is an ordered additive homomorphism, so it can reindex every generic Ript
+cost and budget law from `ComputationResource` to the single-valued resource
+algebra `Nat`. -/
+def ComputationResource.stepsHom : ComputationResource →+o Nat where
+  toFun := ComputationResource.steps
+  map_zero' := rfl
+  map_add' _ _ := rfl
+  monotone' _ _ h := h ResourceKind.steps
+
+@[simp]
+theorem ComputationResource.stepsHom_apply (resource : ComputationResource) :
+    ComputationResource.stepsHom resource = resource.steps :=
+  rfl
+
+@[simp]
+theorem ComputationResource.stepsHom_of (steps queries storage gates : Nat) :
+    ComputationResource.stepsHom
+      (ComputationResource.of steps queries storage gates) = steps :=
+  rfl
 
 /-- Computation resources form the ordered additive resource algebra required
 by the generic budget layer. -/

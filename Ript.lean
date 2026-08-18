@@ -5,6 +5,7 @@ import Ript.Core.Convex
 import Ript.Core.CostedProcess
 import Ript.Core.Monotone
 import Ript.Core.ParallelCost
+import Ript.Core.ResourceChange
 import Ript.Core.Simulation
 import Ript.Core.StructuralCost
 import Ript.Examples.ApproximateErasure
@@ -24,6 +25,7 @@ import Ript.Examples.HigherNoninvertibleTwoCell
 import Ript.Examples.KleisliBits
 import Ript.Examples.QubitChannel
 import Ript.Examples.RationalGibbsSpectra
+import Ript.Examples.ResourceReindexing
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.SimpleDecision
@@ -53,6 +55,7 @@ import Ript.Higher.Equivalence
 import Ript.Higher.Localization
 import Ript.Higher.ModelBicategory
 import Ript.Higher.ModelHom
+import Ript.Higher.ResourceChange
 import Ript.Models.Causal.DAG
 import Ript.Models.Causal.FinStoch
 import Ript.Models.Causal.Intervention
@@ -96,9 +99,11 @@ import Ript.Models.Thermal.RationalGibbs
 import Ript.Models.Thermal.Work
 import Ript.Resource.Basic
 import Ript.Resource.Budget
+import Ript.Resource.Change
 import Ript.Resource.Filtration
 import Ript.Resource.Monotone
 import Ript.Resource.ParallelBudget
+import Ript.Resource.Reindexing
 import Ript.Semantics.Completeness
 import Ript.Semantics.Eval
 import Ript.Semantics.Interpretation

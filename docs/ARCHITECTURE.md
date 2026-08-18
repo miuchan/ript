@@ -12,6 +12,8 @@ Resource algebra
       ↓
 Costed process interfaces
       ↓
+Resource reindexing and heterogeneous model maps
+      ↓
 Executable syntax ──→ Semantics and term models
       ↓                        ↓
 Finite models ───────→ General semantic bridges
@@ -30,7 +32,7 @@ univalence to the layers above it.
 
 - ordered additive resources;
 - budgets and budgeted morphisms;
-- monotone transport;
+- monotone transport and ordered-additive change of resource algebra;
 - cost-induced and attained filtrations;
 - parallel-budget laws.
 
@@ -92,6 +94,13 @@ of which optional structures each model exports.
 - 0-cells are resource-indexed symmetric monoidal process models;
 - 1-cells are resource-nonincreasing strong braided monoidal functors;
 - 2-cells are monoidal natural transformations.
+
+That fixed-resource bicategory is one fibre of a broader compiled layer.
+`ResourceChangeModelHom` connects an `R`-model to an `S`-model over an ordered
+additive map `R →+o S`; these heterogeneous 1-cells compose with their resource
+maps, transport checked budgets, and have local categories of monoidal 2-cells
+over each fixed resource map. Packaging all fibres into one total bicategory is
+the next architectural step.
 
 The layer proves identities, composition, associators, unitors, interchange,
 and coherence using Mathlib's bicategory infrastructure. Numerical cost
