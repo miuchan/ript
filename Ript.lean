@@ -33,6 +33,7 @@ import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochBits
 import Ript.Examples.StochasticBits
 import Ript.Examples.StochasticSeparation
+import Ript.Examples.TotalResourceModels
 import Ript.Examples.TwoDimensionalWalkingLocalization
 import Ript.Examples.UnivalentCompletion
 import Ript.Examples.UnivalentPresheaf
@@ -56,6 +57,8 @@ import Ript.Higher.Localization
 import Ript.Higher.ModelBicategory
 import Ript.Higher.ModelHom
 import Ript.Higher.ResourceChange
+import Ript.Higher.TotalModelBicategory
+import Ript.Higher.TotalModelCoherence
 import Ript.Models.Causal.DAG
 import Ript.Models.Causal.FinStoch
 import Ript.Models.Causal.Intervention

@@ -136,6 +136,36 @@ def id (M : ProcessModel.{u, v, w₁} R) :
     infer_instance
   map_cost_le _ := le_rfl
 
+/-- The canonical identity-on-processes morphism from a model to its resource
+reindexing.  Its cost comparison is exact by construction. -/
+def toReindex (φ : R →+o S) (M : ProcessModel.{u, v, w₁} R) :
+    ResourceChangeModelHom φ M (M.reindex φ) := by
+  dsimp [ProcessModel.reindex]
+  exact
+    { toLaxBraided := LaxBraidedFunctor.of (𝟭 M)
+      unit_isIso := by
+        change IsIso (𝟙 _)
+        infer_instance
+      tensor_isIso := by
+        intro X Y
+        change IsIso (𝟙 _)
+        infer_instance
+      map_cost_le := fun _ ↦ le_rfl }
+
+@[simp]
+theorem toReindex_toFunctor (φ : R →+o S)
+    (M : ProcessModel.{u, v, w₁} R) :
+    (toReindex φ M).toFunctor = 𝟭 M :=
+  rfl
+
+/-- Reindexing changes only the resource interpretation, so the canonical
+morphism preserves translated costs exactly. -/
+theorem toReindex_map_cost_eq (φ : R →+o S)
+    (M : ProcessModel.{u, v, w₁} R) {X Y : M} (f : X ⟶ Y) :
+    (M.reindex φ).costed.cost ((toReindex φ M).toFunctor.map f) =
+      φ (M.costed.cost f) :=
+  rfl
+
 /-- Composition combines the strong model maps and composes their resource
 translations. -/
 def comp {φ : R →+o S} {ψ : S →+o T}

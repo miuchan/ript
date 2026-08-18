@@ -167,6 +167,12 @@ flowchart LR
   ResourceReindexing --> HigherResourceChange
   ModelHom --> HigherResourceChange
   HigherResourceChange --> ResourceReindexingExample
+  HigherResourceChange --> TotalModelBicategory["Higher.TotalModelBicategory"]
+  TotalModelBicategory --> TotalModelCoherence["Higher.TotalModelCoherence"]
+  MonoidalTermModel --> TotalResourceModels["Examples.TotalResourceModels"]
+  ComputationResource --> TotalResourceModels
+  TotalModelCoherence --> TotalResourceModels
+  TotalResourceModels --> Audit
   ModelHom --> ModelBicategory["Higher.ModelBicategory"]
   ModelBicategory --> ModelCoherence["Higher.Coherence"]
   ModelCoherence --> ModelEquivalence["Higher.Equivalence"]
@@ -232,7 +238,8 @@ Every node in this graph is an existing compiled module.
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
-| 10 (heterogeneous resources) | Ordered-additive cost reindexing, resource-changing functors, reindexed process models, heterogeneous strong braided model morphisms, fixed-map monoidal 2-cell categories, and executable multidimensional-to-scalar budget transport | PROVED |
+| 10 (heterogeneous resources) | Ordered-additive cost reindexing, resource-changing functors, reindexed process models, heterogeneous strong braided model morphisms, and executable multidimensional-to-scalar budget transport | PROVED |
+| 10 (total resource-model bicategory) | Bundled resource algebras and models, resource-changing 1-cells, resource-equal monoidal 2-cells, horizontal and vertical composition, interchange, associators, unitors, pentagon, triangle, and a vector-to-scalar model witness | PROVED |
 | 10 (ordinary model localization) | Invertible-2-cell-saturated cost-exact marking, exact homotopy descent, canonical pith pseudofunctor, Mathlib Gabriel--Zisman universal property, and noninvertible marked-arrow/2-cell witnesses | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
@@ -3992,6 +3999,23 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     map_cost_le : ∀ f,
       processCost (R := S) (toLaxBraided.toFunctor.map f) ≤
         φ (processCost (R := R) f)
+
+  structure ResourceModel where
+    Resource : Type w
+    addCommMonoid : AddCommMonoid Resource
+    partialOrder : PartialOrder Resource
+    model : ProcessModel Resource
+
+  structure ResourceModelHom (M N : ResourceModel) where
+    resourceMap : M.Resource →+o N.Resource
+    modelMap : ResourceChangeModelHom resourceMap M.model N.model
+
+  structure ResourceModelTransformation (F G : ResourceModelHom M N) where
+    resource_eq : F.resourceMap = G.resourceMap
+    toNatTrans : F.toFunctor ⟶ G.toFunctor
+    isMonoidal : NatTrans.IsMonoidal toNatTrans
+
+  instance resourceModelBicategory : Bicategory ResourceModel
   ```
 
 - Composition law: if `F` lies over `φ : R →+o S` and `G` lies over
@@ -3999,15 +4023,23 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   composite of `G.map_cost_le`, monotonicity of `ψ`, and `F.map_cost_le`.
 - Higher structure: for fixed `φ`, monoidal natural transformations between
   parallel `ResourceChangeModelHom`s form a category under vertical identity
-  and composition. This is the local 2-cell layer; the total bicategory over
-  all resource algebras, including heterogeneous horizontal coherence, remains
-  `OPEN_RESEARCH`.
+  and composition. `ResourceModel` then bundles the resource type and process
+  model into one 0-cell type. `ResourceModelHom` carries both the ordered
+  additive resource map and its heterogeneous strong braided model morphism.
+  A `ResourceModelTransformation` requires equality of parallel resource maps
+  and carries a monoidal natural transformation; these data form the local
+  categories of a compiled total bicategory. Horizontal composition,
+  interchange, associators, unitors, pentagon, and triangle all compile.
 - Executable witness: `ComputationResource.stepsHom` projects the pointwise
   `Fin 4 → Nat` computation resource to its step coordinate. The
   `ResourceReindexing` example evaluates acceptance at budget `3`, rejection
   at budget `2`, and acceptance of two sequential executions at budget `6`.
+  `TotalResourceModels.projectToSteps` upgrades that projection to a genuine
+  total-bicategory 1-cell from a vector-valued free symmetric monoidal process
+  model to its `Nat`-valued reindexing, and transports an exact checked budget.
 - Status: `PROVED` for the reindexing laws, heterogeneous identity/composition,
-  budget transport, fixed-map local categories, and executable example.
+  budget transport, total local categories, heterogeneous whiskering,
+  bicategory coherence, and executable model-level example.
 - Computability: resource homomorphisms, reindexed cost functions, transported
   budget data, and the finite computation example are executable. Strong
   monoidal coherence is proof-layer structure.
@@ -4018,8 +4050,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   category and monoidal infrastructure.
 - Sources: `Ript/Resource/Reindexing.lean`,
   `Ript/Core/ResourceChange.lean`, `Ript/Resource/Change.lean`,
-  `Ript/Higher/ResourceChange.lean`, and
-  `Ript/Examples/ResourceReindexing.lean`.
+  `Ript/Higher/ResourceChange.lean`,
+  `Ript/Higher/TotalModelBicategory.lean`,
+  `Ript/Higher/TotalModelCoherence.lean`,
+  `Ript/Examples/ResourceReindexing.lean`, and
+  `Ript/Examples/TotalResourceModels.lean`.
 
 ### `modelBicategory`
 

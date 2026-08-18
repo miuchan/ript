@@ -26,23 +26,21 @@ semantic information, and thermodynamics are distinct models, and to prove
 the corresponding representation and completeness theorems.
 
 This is a research program, not a theorem currently asserted by the library.
-The newly compiled change-of-resources layer removes one former obstruction:
-models may now use different ordered additive resource algebras and be related
-by strong braided morphisms over ordered additive translations. The following
-construction and theorem families are still open and therefore are not entered
-as axioms or placeholder Lean declarations:
+The compiled total resource-model bicategory removes one former obstruction:
+models may use different ordered additive resource algebras, heterogeneous
+strong braided morphisms compose over their resource translations, and
+resource-equal monoidal 2-cells satisfy horizontal composition, interchange,
+pentagon, and triangle coherence. The following construction and theorem
+families are still open and therefore are not entered as axioms or placeholder
+Lean declarations:
 
-1. a total bicategory whose objects pair a resource algebra with a
-   `ProcessModel`, whose 1-cells carry both a resource translation and a strong
-   model morphism, and whose 2-cells and coherence retain the heterogeneous
-   resource data;
-2. a common syntax and universal semantics with verified interpretations into
+1. a common syntax and universal semantics with verified interpretations into
    all six named model families;
-3. representation and conservativity theorems identifying the exact image of
+2. representation and conservativity theorems identifying the exact image of
    each interpretation;
-4. relative and, where mathematically justified, absolute completeness
+3. relative and, where mathematically justified, absolute completeness
    theorems for those interpretations;
-5. a univalent or complete-Segal semantics for the total heterogeneous model
+4. a univalent or complete-Segal semantics for the total heterogeneous model
    theory, together with a universal property rather than only a constructed
    presentation.
 

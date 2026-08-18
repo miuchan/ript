@@ -44,7 +44,9 @@ Higher layers organize process models into a bicategory, define cost-exact
 equivalences, study walking-localization constructions, and provide a bounded
 internal identity semantics. Ordered additive resource changes now connect
 models whose costs use different resource algebras, with heterogeneous strong
-model morphisms and local monoidal 2-cell categories. The
+model morphisms. Those fibres are packaged into a total bicategory with
+resource-equal monoidal 2-cells, heterogeneous horizontal composition,
+interchange, and pentagon/triangle coherence. The
 [model capability matrix](../MODEL_MATRIX.md) records only implemented and
 compiled operations.
 
