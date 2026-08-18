@@ -97,8 +97,8 @@ Ript 禁止证明占位符、项目自定义公理、编译器信任逃逸和不
 Mathlib 版本，将警告视为错误，执行代表性模型，并核对公理允许清单。精确依赖记录在
 [AXIOMS.md](../AXIOMS.md)。
 
-当前前沿是任意二维 walking-localization 分解：所有箭头上的自然性和完整右单位律已经编译；
-逆箭头左单位分支、oplax 结合律、pseudofunctor 封装和最终伴随等价仍未完成。权威边界见
+当前前沿是任意二维 walking-localization 分解：所有箭头上的自然性和完整左右单位律已经编译；
+oplax 结合律、pseudofunctor 封装和最终伴随等价仍未完成。权威边界见
 [RESEARCH_STATUS.md](RESEARCH_STATUS.md)。
 
 Lake 包版本为 `0.1.0`，尚无稳定 API 版本或归档 DOI。研究成果应引用仓库及完整提交 SHA。

@@ -102,8 +102,8 @@ Ript は証明プレースホルダー、プロジェクト固有公理、コン
 宣言を禁止します。CI は Lean と Mathlib の版を固定し、警告をエラーとして扱い、代表モデルを
 実行し、公理許可リストを検査します。正確な依存は [AXIOMS.md](../AXIOMS.md) に記録されます。
 
-現在の最前線は任意の二次元 walking-localization 因子分解です。全射の自然性と完全な右単位律は
-コンパイル済みで、逆射の左単位分岐、oplax 結合律、pseudofunctor 化、最終的な随伴同値が未完成です。
+現在の最前線は任意の二次元 walking-localization 因子分解です。全射の自然性と完全な左右単位律は
+コンパイル済みで、oplax 結合律、pseudofunctor 化、最終的な随伴同値が未完成です。
 権威ある境界は [RESEARCH_STATUS.md](RESEARCH_STATUS.md) を参照してください。
 
 Lake パッケージ版は `0.1.0` で、安定 API リリースやアーカイブ DOI はまだありません。研究成果では
