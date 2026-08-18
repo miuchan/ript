@@ -1,9 +1,9 @@
 # Assumption Audit
 
-[English](docs/en/reference/AXIOMS.md) ·
-[简体中文](docs/zh-CN/reference/AXIOMS.md) ·
-[日本語](docs/ja/reference/AXIOMS.md) ·
-[Esperanto](docs/eo/reference/AXIOMS.md)
+[English](AXIOMS.md) · [简体中文](../../zh-CN/reference/AXIOMS.md) ·
+[日本語](../../ja/reference/AXIOMS.md) · [Esperanto](../../eo/reference/AXIOMS.md)
+
+Machine-facing canonical record: [`../../../AXIOMS.md`](../../../AXIOMS.md).
 
 The core declares no project-specific assumptions. The following table records
 the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.

@@ -1,9 +1,9 @@
 # Model Capability Matrix
 
-[English](docs/en/reference/MODEL_MATRIX.md) ·
-[简体中文](docs/zh-CN/reference/MODEL_MATRIX.md) ·
-[日本語](docs/ja/reference/MODEL_MATRIX.md) ·
-[Esperanto](docs/eo/reference/MODEL_MATRIX.md)
+[English](MODEL_MATRIX.md) · [简体中文](../../zh-CN/reference/MODEL_MATRIX.md) ·
+[日本語](../../ja/reference/MODEL_MATRIX.md) · [Esperanto](../../eo/reference/MODEL_MATRIX.md)
+
+Machine-facing canonical record: [`../../../MODEL_MATRIX.md`](../../../MODEL_MATRIX.md).
 
 Only implemented and compiled capabilities are marked as supported.
 

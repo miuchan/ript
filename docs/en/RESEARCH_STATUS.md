@@ -1,8 +1,11 @@
 # Research status
 
+[English](RESEARCH_STATUS.md) · [简体中文](../zh-CN/RESEARCH_STATUS.md) ·
+[日本語](../ja/RESEARCH_STATUS.md) · [Esperanto](../eo/RESEARCH_STATUS.md)
+
 This page is a concise research map, not the theorem ledger. Exact theorem
 types, dependencies, source files, and assumptions live in
-[`BLUEPRINT.md`](../BLUEPRINT.md) and [`AXIOMS.md`](../AXIOMS.md).
+[`BLUEPRINT.md`](reference/BLUEPRINT.md) and [`AXIOMS.md`](reference/AXIOMS.md).
 
 ## Status vocabulary
 
@@ -25,6 +28,20 @@ The sequential and symmetric monoidal cores include executable syntax, syntax
 cost, interpretations, explicit derivations, soundness, term models, relative
 completeness, and monoidal initiality. Cost functions and attained budget
 filtrations have proved round-trip laws under explicit hypotheses.
+The same monoidal language can now be pushed along an ordered additive
+resource map without changing its wires or generators. Expression translation
+is computably invertible, heterogeneous interpretations are represented
+exactly by ordinary interpretations of the pushed signature, evaluation obeys
+the translated budget, and the pushed free model is relatively complete with
+an exact translated cost.
+
+The first concrete cross-model slice now compiles as well. One unit-cost
+Boolean-flip signature is interpreted by exact probability, Pauli-X quantum
+evolution, a finite causal mechanism, multidimensional computation,
+task-relative semantic information, and a Gibbs-preserving thermal process.
+The six observable boundary equations are packaged by one checked theorem.
+Computation retains its native vector resource, while quantum and thermal
+analytic observables remain separate from this slice's zero abstract cost.
 
 ### Exact finite probability and decisions
 
@@ -100,14 +117,21 @@ Its verified components are:
   translation;
 - total resource-model objects, heterogeneous horizontal composition and
   whiskering, interchange, associators, unitors, pentagon, and triangle;
+- a common monoidal syntax whose costs can be translated into each model's
+  native resource algebra, with reversible expression translation, an exact
+  interpretation representation theorem, and translated free-model
+  completeness;
+- one literal Boolean-flip process signature with six model-specific
+  interpretations and a kernel-checked cross-model agreement theorem;
 - an executable projection from `Fin 4 → Nat` computation resources to the
   single `Nat` step coordinate, upgraded to a model-level 1-cell with checked
   budget transport.
 
 The next theorem-bearing layers are:
 
-- give the common resource-process syntax interpretations into all six named
-  model families, with explicit hypotheses at analytic and finite boundaries;
+- extend the first six-model Boolean slice to a common compositional signature
+  rich enough to expose probability, causal, semantic, quantum, and thermal
+  distinctions, with explicit analytic and finite-boundary hypotheses;
 - formulate and prove model-specific representation, conservativity, and
   completeness theorems, followed by genuinely cross-model comparison
   theorems;
@@ -135,15 +159,15 @@ localization is claimed.
 - a full Dwyer–Kan, simplicial, Rezk, or bicategorical localization theorem for
   the resource-process bicategory.
 
-Open statements belong in [`CONJECTURES.md`](../CONJECTURES.md), not in Lean as
+Open statements belong in [`CONJECTURES.md`](reference/CONJECTURES.md), not in Lean as
 axioms or theorem declarations.
 
 ## Where to verify a claim
 
-- Model operation or capability: [`MODEL_MATRIX.md`](../MODEL_MATRIX.md)
-- Theorem type and dependencies: [`BLUEPRINT.md`](../BLUEPRINT.md)
-- Kernel assumptions: [`AXIOMS.md`](../AXIOMS.md)
-- Open research statement: [`CONJECTURES.md`](../CONJECTURES.md)
+- Model operation or capability: [`MODEL_MATRIX.md`](reference/MODEL_MATRIX.md)
+- Theorem type and dependencies: [`BLUEPRINT.md`](reference/BLUEPRINT.md)
+- Kernel assumptions: [`AXIOMS.md`](reference/AXIOMS.md)
+- Open research statement: [`CONJECTURES.md`](reference/CONJECTURES.md)
 - Executable behavior: `Ript/Examples/` and `scripts/check-examples.sh`
 - Merge readiness: `./scripts/quality-gate.sh`
 

@@ -1,9 +1,9 @@
 # Conjectures and Unproved Research Statements
 
-[English](docs/en/reference/CONJECTURES.md) ·
-[简体中文](docs/zh-CN/reference/CONJECTURES.md) ·
-[日本語](docs/ja/reference/CONJECTURES.md) ·
-[Esperanto](docs/eo/reference/CONJECTURES.md)
+[English](CONJECTURES.md) · [简体中文](../../zh-CN/reference/CONJECTURES.md) ·
+[日本語](../../ja/reference/CONJECTURES.md) · [Esperanto](../../eo/reference/CONJECTURES.md)
+
+Machine-facing canonical record: [`../../../CONJECTURES.md`](../../../CONJECTURES.md).
 
 This register contains exact Lean propositions whose statements compile but
 whose proofs are not yet kernel checked. An active entry must carry the marker

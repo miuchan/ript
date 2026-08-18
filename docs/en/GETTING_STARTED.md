@@ -1,5 +1,8 @@
 # Getting started
 
+[English](GETTING_STARTED.md) · [简体中文](../zh-CN/GETTING_STARTED.md) ·
+[日本語](../ja/GETTING_STARTED.md) · [Esperanto](../eo/GETTING_STARTED.md)
+
 This guide takes a fresh checkout from toolchain installation to a verified
 build, then points to representative executable models.
 
@@ -177,4 +180,4 @@ the new output is intentional and proved by the corresponding example module.
 
 - [Architecture](ARCHITECTURE.md) for module and dependency boundaries.
 - [Research status](RESEARCH_STATUS.md) for the current mathematical frontier.
-- [Formal blueprint](../BLUEPRINT.md) for theorem-level status.
+- [Formal blueprint](reference/BLUEPRINT.md) for theorem-level status.

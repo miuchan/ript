@@ -2,8 +2,8 @@
 
 **資源添字付きプロセス理論のための、カーネル検証済み Lean 4 基盤。**
 
-[English](../README.md) · [简体中文](README.zh-CN.md) ·
-[日本語](README.ja.md) · [Esperanto](README.eo.md)
+[English](../en/README.md) · [简体中文](../zh-CN/README.md) ·
+[日本語](README.md) · [Esperanto](../eo/README.md)
 
 [![Quality Gate](https://github.com/miuchan/ript/actions/workflows/ci.yml/badge.svg)](https://github.com/miuchan/ript/actions/workflows/ci.yml)
 ![Lean 4.33.0](https://img.shields.io/badge/Lean-4.33.0-0d6efd)
@@ -12,6 +12,8 @@
 
 Ript は、振る舞いと資源使用を合成できる型付きプロセスを形式化し、実行可能な有限モデルを
 資源上界・健全性・完全性・構造保存意味論のカーネル検証済み結果へ接続します。
+最初の六モデル共通スライスでは、同じ Boolean 過程シグネチャを確率、量子、因果、計算、意味、
+熱モデルで解釈します。
 
 Ript の中心的な研究目標は、計算可能・機械検証可能・ユニヴァレントかつ高次圏論的な
 資源制約付き情報プロセス理論を構築し、古典確率、量子プロセス、因果モデル、計算、
@@ -40,17 +42,16 @@ lake build
 
 ## 目的別ガイド
 
-- **何が実装済みか？** [モデル機能行列](../MODEL_MATRIX.md)
+- **何が実装済みか？** [モデル機能行列](reference/MODEL_MATRIX.md)
 - **何が証明済みで、何が未解決か？** [研究状況](RESEARCH_STATUS.md)
 - **ライブラリはどう構成されているか？** [アーキテクチャ](ARCHITECTURE.md)
 - **信頼境界と成熟度は？** [プロジェクトの範囲と信頼境界](PROJECT_SCOPE.md)
-- **正確な研究記録は？** [形式化ブループリント](../BLUEPRINT.md)、
-  [公理一覧](../AXIOMS.md)、[予想台帳](../CONJECTURES.md)
-- **どこから読めばよいか？** [ドキュメントハブ](README.md)
+- **正確な研究記録は？** [形式化ブループリント](reference/BLUEPRINT.md)、
+  [公理一覧](reference/AXIOMS.md)、[予想台帳](reference/CONJECTURES.md)
 
 ## コントリビューション
 
-[コントリビューションガイド](../CONTRIBUTING.md)を読み、PR の前に
+[コントリビューションガイド](CONTRIBUTING.md)を読み、PR の前に
 `./scripts/quality-gate.sh` を実行してください。
 
 Ript は [Lean 4](https://lean-lang.org/) と

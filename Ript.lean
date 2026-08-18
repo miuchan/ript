@@ -12,6 +12,7 @@ import Ript.Examples.ApproximateErasure
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalCopy
 import Ript.Examples.ClassicalQuantum
+import Ript.Examples.CommonBitRealizations
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
 import Ript.Examples.DeterministicBlackwell
@@ -116,6 +117,7 @@ import Ript.Semantics.MonoidalInitiality
 import Ript.Semantics.MonoidalInterpretation
 import Ript.Semantics.MonoidalSoundness
 import Ript.Semantics.MonoidalTermModel
+import Ript.Semantics.ResourceChangingInterpretation
 import Ript.Semantics.Soundness
 import Ript.Semantics.TermModel
 import Ript.Syntax.Cost

@@ -1,5 +1,8 @@
 # Architecture
 
+[English](ARCHITECTURE.md) · [简体中文](../zh-CN/ARCHITECTURE.md) ·
+[日本語](../ja/ARCHITECTURE.md) · [Esperanto](../eo/ARCHITECTURE.md)
+
 Ript is organized so that executable finite models do not depend on quotient,
 measure-theoretic, higher-categorical, or internally univalent machinery. Each
 layer may use the interfaces below it; reverse imports are intentionally
@@ -57,7 +60,10 @@ derivations. The raw syntax remains executable.
 - evaluation and cost soundness;
 - equational soundness;
 - quotient term models and relative completeness;
-- symmetric monoidal semantics and initiality.
+- symmetric monoidal semantics and initiality;
+- common-syntax interpretations across ordered-additive changes of resource
+  algebra, with reversible expression translation and exact pushed-cost
+  free-model completeness.
 
 Quotients are confined to the proof layer. A consumer that only evaluates
 finite syntax does not need to execute quotient machinery.
@@ -84,7 +90,7 @@ isolated data structures.
 - quantum modules use finite Kraus families, proving positivity and trace
   preservation before packaging channels.
 
-The [model capability matrix](../MODEL_MATRIX.md) is the authoritative record
+The [model capability matrix](reference/MODEL_MATRIX.md) is the authoritative record
 of which optional structures each model exports.
 
 ## Higher organization
@@ -155,7 +161,7 @@ its assumptions determine that classification.
 Ript separates project communication from formal status:
 
 - `README.md` is a concise entry point;
-- `docs/RESEARCH_STATUS.md` gives a human-scale research summary;
+- `docs/en/RESEARCH_STATUS.md` gives a human-scale research summary;
 - `MODEL_MATRIX.md` records compiled model capabilities;
 - `BLUEPRINT.md` records dependencies and theorem-level status;
 - `CONJECTURES.md` contains statements not yet proved;
@@ -180,4 +186,4 @@ enforces:
 - structurally valid public Markdown and bounded overview-page size.
 
 The workflow uses pinned action revisions and read-only repository permissions.
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for the change policy.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the change policy.

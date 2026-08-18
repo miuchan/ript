@@ -1,9 +1,9 @@
 # Ript Formalization Blueprint
 
-[English](docs/en/reference/BLUEPRINT.md) ·
-[简体中文](docs/zh-CN/reference/BLUEPRINT.md) ·
-[日本語](docs/ja/reference/BLUEPRINT.md) ·
-[Esperanto](docs/eo/reference/BLUEPRINT.md)
+[English](BLUEPRINT.md) · [简体中文](../../zh-CN/reference/BLUEPRINT.md) ·
+[日本語](../../ja/reference/BLUEPRINT.md) · [Esperanto](../../eo/reference/BLUEPRINT.md)
+
+Machine-facing canonical record: [`../../../BLUEPRINT.md`](../../../BLUEPRINT.md).
 
 This document records only kernel-checked implementation status. Allowed status
 values are `DEFINED`, `STATEMENT_FORMALIZED`, `PROVED`, `BLOCKED`, and
