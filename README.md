@@ -182,7 +182,9 @@ arrows use a chosen inverse equivalence. Its all-object identity comparison,
 all eight endpoint-normalized composition comparisons, and one comparison for
 every composable target-arrow pair are now compiled. The all-arrow comparison
 reduces definitionally to the endpoint form, whose eight branch equations are
-proved. Four endpoint hom-functor reduction theorems and one uniform endpoint
+proved. The complete forward/forward compositor is also proved natural in
+either retained-coordinate variable, including all equality-transport stages.
+Four endpoint hom-functor reduction theorems and one uniform endpoint
 2-cell constructor now expose the exact forward/reverse action needed by the
 remaining coherence proofs. The remaining work is to prove the pseudofunctor coherence laws and
 then construct the source-factorization
@@ -1489,6 +1491,8 @@ informal summaries; the Lean declarations are authoritative.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | The target-side forward composition comparison preserves every retained-coordinate 2-cell on its left factor. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | The source pseudofunctor compositor satisfies the matching right naturality square. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | The source pseudofunctor compositor satisfies the matching left naturality square. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_right` | The full forward compositor, including every equality transport, is natural in retained-coordinate 2-cells on its right factor. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_left` | The full forward compositor, including every equality transport, is natural in retained-coordinate 2-cells on its left factor. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | A canonical inverse followed by retained data has the required composition comparison. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | Retained data followed by a canonical inverse has the required comparison, using the inverse mate of forward sliding. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | A canonical inverse followed by its matching forward arrow compares through the chosen equivalence counit. |

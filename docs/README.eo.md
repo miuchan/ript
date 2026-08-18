@@ -171,6 +171,8 @@ inversan ekvivalenton. La identeca komparo je ĉiu objekto, ĉiuj ok
 finpunkt-normaligitaj kunmetaj komparoj, kaj unu komparo por ĉiu kunmetebla
 paro de celaj sagoj nun estas kompilitaj. La ĉiusaga komparo difine reduktiĝas
 al la finpunkta formo, kaj la ok branĉaj reduktaj ekvacioj estas pruvitaj.
+La plena antaŭa-antaŭa komponilo estas ankaŭ pruvite natura en ambaŭ
+konservit-koordinataj variabloj, inkluzive de ĉiuj egalec-transportaj stadioj.
 Kvar finpunktaj hom-funktoraj reduktaj teoremoj kaj unu unuforma finpunkta
 2-ĉela konstruilo nun eksplicitas la antaŭan aŭ inversan agon bezonatan por la
 restantaj koherpruvoj.
@@ -1409,6 +1411,8 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | La celflanka antaŭa kunmeta komparo konservas ĉiun konservit-koordinatan 2-ĉelon sur sia maldekstra faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | La fonta pseŭdofunktora komponilo plenumas la respondan dekstran naturecan kvadraton. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | La fonta pseŭdofunktora komponilo plenumas la respondan maldekstran naturecan kvadraton. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_right` | La plena antaŭa komponilo, inkluzive de ĉiu egalec-transporto, estas natura en konservit-koordinataj 2-ĉeloj sur sia dekstra faktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_left` | La plena antaŭa komponilo, inkluzive de ĉiu egalec-transporto, estas natura en konservit-koordinataj 2-ĉeloj sur sia maldekstra faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | Kanona inversa sago sekvata de konservita datumo havas la bezonatan kunmetan komparon. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | Konservita datumo sekvata de kanona inverso estas komparata per la inversa mate de antaŭa glitado. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | Kanona inverso sekvata de sia kongrua antaŭa sago estas komparata per la counit de la elektita ekvivalento. |
