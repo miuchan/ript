@@ -5813,16 +5813,15 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     selected by each endpoint pair, and a canonical endpoint 2-cell constructor
     uniformly represents retained-coordinate morphisms in all four directions.
     Source and target left/right unitors now have explicit canonical
-    factorizations. On the source side the left-unit equation contracts the
-    inverse composition comparison to the retained-coordinate left unitor; on
-    the target side this yields the exact strict oplax left-unit equation for
-    every canonical forward arrow. The right-unit argument now also compiles:
-    its forward branch transports the source right unitor through the two
-    endpoint isomorphisms, while its inverse branch left-whiskers the source
-    unit chain by the chosen inverse and uses bicategorical right-unitor
-    coherence. Endpoint normalization combines these branches into the exact
-    right-unit law for every target arrow. The reverse-arrow branch of the
-    left-unit law, oplax associativity, pseudofunctor packaging, and the
+    factorizations. The forward left-unit branch transports the source law
+    through the endpoint isomorphisms. Its inverse branch proves identity
+    compatibility for forward sliding, transfers it across the chosen
+    adjunction by the mate correspondence, and then reassociates the resulting
+    inverse-sliding chain. The right-unit inverse branch similarly
+    left-whiskers the source unit chain by the chosen inverse and uses
+    bicategorical right-unitor coherence. Endpoint normalization combines the
+    forward and inverse branches into the exact left- and right-unit laws for
+    every target arrow. Oplax associativity, pseudofunctor packaging, and the
     resulting nonseparable biessential factorization remain open, so this is
     not yet an existence proof for the desired resource-process higher
     localization.

@@ -5284,6 +5284,40 @@ noncomputable def canonicalSourceRetainedGeneratorComparison
     change 𝟙 X ≫ f = f
     simp)) (MonoidalCategory.rightUnitor A)
 
+/-- At the retained identity, generator/retained normalization is the
+canonical source compositor followed by the retained right unitor. -/
+theorem canonicalSourceGeneratorRetainedComparison_unit
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    (canonicalSourceGeneratorRetainedComparison f
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom =
+      (canonicalSourceCompositionComparison f (𝟙 Y)
+          (𝟙 (MonoidalSingleObj.star (Type)))
+          (𝟙 (MonoidalSingleObj.star (Type)))).hom ≫
+        canonicalSourceTwoCell f
+          (MonoidalCategory.rightUnitor
+            (𝟙 (MonoidalSingleObj.star (Type)))).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- At the retained identity, retained/generator normalization is the
+canonical source compositor followed by the retained left unitor. -/
+theorem canonicalSourceRetainedGeneratorComparison_unit
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    (canonicalSourceRetainedGeneratorComparison f
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom =
+      (canonicalSourceCompositionComparison (𝟙 X) f
+          (𝟙 (MonoidalSingleObj.star (Type)))
+          (𝟙 (MonoidalSingleObj.star (Type)))).hom ≫
+        canonicalSourceTwoCell f
+          (MonoidalCategory.leftUnitor
+            (𝟙 (MonoidalSingleObj.star (Type)))).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
 /-- The source pseudofunctor's image of retained data slides across the image
 of the marked forward generator. -/
 noncomputable def generalLiftForwardSlidingSource
@@ -7824,6 +7858,21 @@ theorem canonicalForwardLeftUnitorFactorization
   · apply Subsingleton.elim
   · rfl
 
+/-- A retained identity followed by a canonical inverse arrow factors through
+the canonical target identity comparison and left unitor. -/
+theorem canonicalInverseLeftUnitorFactorization
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (canonicalRetainedInverseCompositionComparison f
+        (𝟙 (MonoidalSingleObj.star (Type))) A).hom ≫
+        canonicalInverseTwoCell f (MonoidalCategory.leftUnitor A).hom =
+      ((canonicalForwardIdentityComparison Y).hom ▷
+          canonicalInverseHom f A) ≫
+        (λ_ (canonicalInverseHom f A)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
 /-- Canonical source composition with the retained right unitor factors
 through the canonical source identity comparison. -/
 theorem canonicalSourceRightUnitorFactorization
@@ -8021,6 +8070,251 @@ private theorem transportLeftUnitorThroughIsos
   rw [whisker_exchange_assoc α ef.inv]
   rw [leftUnitor_naturality_assoc]
   simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Forward sliding at the retained identity intertwines the source identity
+tails at the two endpoints. -/
+theorem generalLiftForwardSlidingSource_unit
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    (generalLiftForwardSlidingSource F hF f
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom ≫
+        ((F.map₂ (canonicalSourceIdentityComparison X).hom ≫
+          (F.mapId (canonicalSourceObject X)).hom) ▷
+            (generalLiftSourceEquivalence F hF f).hom) ≫
+        (λ_ (generalLiftSourceEquivalence F hF f).hom).hom =
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+          (F.map₂ (canonicalSourceIdentityComparison Y).hom ≫
+            (F.mapId (canonicalSourceObject Y)).hom)) ≫
+        (ρ_ (generalLiftSourceEquivalence F hF f).hom).hom := by
+  change
+    ((generalLiftForwardFactorizationSource F hF f
+          (𝟙 (MonoidalSingleObj.star (Type)))).inv ≫
+        (generalLiftRetainedForwardFactorizationSource F hF f
+          (𝟙 (MonoidalSingleObj.star (Type)))).hom) ≫
+      ((F.map₂ (canonicalSourceIdentityComparison X).hom ≫
+        (F.mapId (canonicalSourceObject X)).hom) ▷
+          F.map (canonicalSourceHom f
+            (𝟙 (MonoidalSingleObj.star (Type))))) ≫
+      (λ_ (F.map (canonicalSourceHom f
+        (𝟙 (MonoidalSingleObj.star (Type)))))).hom =
+    (F.map (canonicalSourceHom f
+        (𝟙 (MonoidalSingleObj.star (Type)))) ◁
+      (F.map₂ (canonicalSourceIdentityComparison Y).hom ≫
+        (F.mapId (canonicalSourceObject Y)).hom)) ≫
+      (ρ_ (F.map (canonicalSourceHom f
+        (𝟙 (MonoidalSingleObj.star (Type)))))).hom
+  simp only [generalLiftForwardFactorizationSource,
+    generalLiftRetainedForwardFactorizationSource,
+    Iso.trans_hom, Iso.trans_inv, Iso.symm_hom, Iso.symm_inv,
+    PrelaxFunctor.map₂Iso_hom, PrelaxFunctor.map₂Iso_inv]
+  simp only [Category.assoc]
+  rw [← generalLiftSourceLeftUnitor
+    (F := F) (f := f)
+    (A := 𝟙 (MonoidalSingleObj.star (Type)))]
+  rw [← canonicalSourceRetainedGeneratorComparison_unit f]
+  slice_lhs 3 4 =>
+    rw [← F.map₂_comp]
+    simp
+  rw [canonicalSourceGeneratorRetainedComparison_unit f]
+  rw [generalLiftSourceRightUnitor
+    (F := F) (f := f)
+    (A := 𝟙 (MonoidalSingleObj.star (Type)))]
+  rw [F.map₂_id]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The mate-derived inverse sliding constraint satisfies the corresponding
+identity-tail law. -/
+theorem generalLiftInverseSlidingSource_unit
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) :
+    (generalLiftInverseSlidingSource F hF f
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom ≫
+        ((F.map₂ (canonicalSourceIdentityComparison Y).hom ≫
+          (F.mapId (canonicalSourceObject Y)).hom) ▷
+            (generalLiftSourceEquivalence F hF f).inv) ≫
+        (λ_ (generalLiftSourceEquivalence F hF f).inv).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          (F.map₂ (canonicalSourceIdentityComparison X).hom ≫
+            (F.mapId (canonicalSourceObject X)).hom)) ≫
+        (ρ_ (generalLiftSourceEquivalence F hF f).inv).hom := by
+  let l := (generalLiftSourceEquivalence F hF f).hom
+  let r := (generalLiftSourceEquivalence F hF f).inv
+  let p := F.map₂ (canonicalSourceIdentityComparison X).hom ≫
+    (F.mapId (canonicalSourceObject X)).hom
+  let q := F.map₂ (canonicalSourceIdentityComparison Y).hom ≫
+    (F.mapId (canonicalSourceObject Y)).hom
+  let s := generalLiftForwardSlidingSource F hF f
+    (𝟙 (MonoidalSingleObj.star (Type)))
+  let adj := ((Pseudofunctor.id E).mapAdjunction
+    (generalLiftSourceEquivalence F hF f).toAdjunction)
+  have hforward :
+      s.hom ≫ (p ▷ l) ≫ (λ_ l).hom =
+        (l ◁ q) ≫ (ρ_ l).hom := by
+    exact generalLiftForwardSlidingSource_unit F hF f
+  have hsquare :
+      (p ▷ l) ≫ ((λ_ l).hom ≫ (ρ_ l).inv) =
+        s.inv ≫ (l ◁ q) := by
+    rw [← cancel_epi s.hom]
+    slice_lhs 1 3 => rw [hforward]
+    simp
+  have hmate := Bicategory.mateEquiv_sliding adj adj
+    p ((λ_ l).hom ≫ (ρ_ l).inv) s.inv q hsquare
+  have hmate' :
+      (r ◁ p) ≫ mateEquiv adj adj
+          ((λ_ l).hom ≫ (ρ_ l).inv) =
+        mateEquiv adj adj s.inv ≫ (q ▷ r) := by
+    exact hmate
+  have hunit :
+      mateEquiv adj adj ((λ_ l).hom ≫ (ρ_ l).inv) =
+        (ρ_ r).hom ≫ (λ_ r).inv := by
+    exact Bicategory.mateEquiv_leftUnitor_hom_rightUnitor_inv adj
+  rw [generalLiftInverseSlidingSource_hom F hF f]
+  change mateEquiv adj adj s.inv ≫ (q ▷ r) ≫ (λ_ r).hom =
+    (r ◁ p) ≫ (ρ_ r).hom
+  slice_lhs 1 2 => rw [← hmate']
+  rw [hunit]
+  simp
+
+/-- Whiskering an inverse-sliding left-unit chain on the right and
+reassociating gives the left-unit chain for the composite. -/
+private theorem inverseSliding_leftUnitChain
+    {a b : E} {i : a ⟶ a} {j : b ⟶ b}
+    (r : b ⟶ a) (s : r ≫ i ⟶ j ≫ r)
+    (p : i ⟶ 𝟙 a) (q : j ⟶ 𝟙 b)
+    (h : s ≫ (q ▷ r) ≫ (λ_ r).hom =
+      (r ◁ p) ≫ (ρ_ r).hom)
+    (t : a ⟶ a) :
+    (α_ r i t).inv ≫ (s ▷ t) ≫
+        (α_ j r t).hom ≫ (q ▷ (r ≫ t)) ≫
+        (λ_ (r ≫ t)).hom =
+      (r ◁ (p ▷ t)) ≫ (r ◁ (λ_ t).hom) := by
+  have h' := congrArg (fun η => η ▷ t) h
+  simp only [comp_whiskerRight] at h'
+  calc
+    _ = (α_ r i t).inv ≫
+        ((s ▷ t) ≫ ((q ▷ r) ▷ t) ≫
+          ((λ_ r).hom ▷ t)) := by bicategory
+    _ = (α_ r i t).inv ≫
+        (((r ◁ p) ▷ t) ≫ ((ρ_ r).hom ▷ t)) := by
+      rw [h']
+    _ = _ := by bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The retained/inverse compositor and canonical unit tail satisfy the
+left-unit law before the target identity is normalized to a strict one. -/
+theorem generalLiftMapCompRetainedInverse_leftUnitor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+        ((canonicalRetainedInverseCompositionComparison f
+            (𝟙 (MonoidalSingleObj.star (Type))) A).hom ≫
+          canonicalInverseTwoCell f
+            (MonoidalCategory.leftUnitor A).hom) =
+      (generalLiftMapCompRetainedInverse F hF f hf
+          (𝟙 (MonoidalSingleObj.star (Type))) A).hom ≫
+        (generalLiftForwardMapIdTail F hF Y).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ≫
+        (λ_ ((generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f A))).hom := by
+  rw [generalLiftMapCompRetainedInverse_hom F hF f hf]
+  rw [(generalLiftPrelaxFunctor F hF).map₂_comp]
+  rw [Category.assoc]
+  rw [cancel_epi ((generalLiftPrelaxFunctor F hF).map₂
+    (canonicalRetainedInverseCompositionComparison f
+      (𝟙 (MonoidalSingleObj.star (Type))) A).hom)]
+  rw [generalLiftRetainedInverseMapCompTransport_hom F hF f hf,
+    generalLiftInverseRetainedMapCompCore_hom F hF f hf,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompFactors_hom F hF f hf]
+  simp only [generalLiftForwardMapCompSource,
+    generalLiftForwardMapIdTail, Iso.trans_hom,
+    PrelaxFunctor.map₂Iso_hom]
+  let e := eqToIso
+    (generalLiftPrelaxFunctor_map_inverse F hF f hf A)
+  have : IsIso e.hom := e.isIso_hom
+  have : Mono e.hom := IsIso.mono_of_iso e.hom
+  rw [← cancel_mono e.hom]
+  change
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.leftUnitor A).hom) ≫
+        eqToHom (generalLiftPrelaxFunctor_map_inverse F hF f hf A) = _
+  rw [generalLiftMap₂InverseTransport F hF f hf]
+  simp only [Category.assoc, comp_whiskerRight]
+  let ei := eqToIso
+    (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+      (𝟙 (MonoidalSingleObj.star (Type))))
+  let ec := eqToIso
+    (generalLiftPrelaxFunctor_map_inverse F hF f hf
+      ((𝟙 (MonoidalSingleObj.star (Type))) × A))
+  have : IsIso ec.hom := ec.isIso_hom
+  have : Epi ec.hom := IsIso.epi_of_iso ec.hom
+  change ec.hom ≫ _ = ec.hom ≫ _
+  rw [cancel_epi ec.hom]
+  change
+    (generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X)
+          (MonoidalCategory.leftUnitor A).hom) =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          (F.map₂ (canonicalSourceCompositionComparison
+              (𝟙 X) (𝟙 X)
+              (𝟙 (MonoidalSingleObj.star (Type))) A).symm.hom ≫
+            (F.mapComp
+              (canonicalSourceHom (𝟙 X)
+                (𝟙 (MonoidalSingleObj.star (Type))))
+              (canonicalSourceHom (𝟙 X) A)).hom)) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X)
+            (𝟙 (MonoidalSingleObj.star (Type)))))
+          (F.map (canonicalSourceHom (𝟙 X) A))).inv ≫
+        ((generalLiftInverseSlidingSource F hF f
+            (𝟙 (MonoidalSingleObj.star (Type)))).hom ▷
+          F.map (canonicalSourceHom (𝟙 X) A)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y)
+            (𝟙 (MonoidalSingleObj.star (Type)))))
+          (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))).hom ≫
+        (ei.inv ▷ ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A))) ≫
+        ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y)
+              (𝟙 (MonoidalSingleObj.star (Type)))) ◁ e.inv) ≫
+        (ei.hom ▷ (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f A)) ≫
+        (F.map₂ (canonicalSourceIdentityComparison Y).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A)) ≫
+        ((F.mapId (canonicalSourceObject Y)).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A)) ≫
+        (λ_ ((generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f A))).hom ≫ e.hom
+  rw [← comp_whiskerRight_assoc, ← comp_whiskerRight_assoc]
+  rw [Category.assoc]
+  rw [transportLeftUnitorThroughIsos
+    ei e
+    (F.map₂ (canonicalSourceIdentityComparison Y).hom ≫
+      (F.mapId (canonicalSourceObject Y)).hom)]
+  rw [inverseSliding_leftUnitChain
+    (generalLiftSourceEquivalence F hF f).inv
+    (generalLiftInverseSlidingSource F hF f
+      (𝟙 (MonoidalSingleObj.star (Type)))).hom
+    (F.map₂ (canonicalSourceIdentityComparison X).hom ≫
+      (F.mapId (canonicalSourceObject X)).hom)
+    (F.map₂ (canonicalSourceIdentityComparison Y).hom ≫
+      (F.mapId (canonicalSourceObject Y)).hom)
+    (generalLiftInverseSlidingSource_unit F hF f)
+    (F.map (canonicalSourceHom (𝟙 X) A))]
+  rw [← whiskerLeft_comp, ← whiskerLeft_comp]
+  simp only [Category.assoc]
+  rw [generalLiftSourceLeftUnitor_afterCompositionComparison
+    (F := F) (f := 𝟙 X) (A := A)]
 
 set_option backward.isDefEq.respectTransparency false in
 /-- The explicit forward compositor and the canonical unit tail satisfy the
@@ -8252,6 +8546,37 @@ theorem generalLiftMapComp_forwardIdentity
     exact he.trans
       (generalLiftEndpointMapComp_one_one_one F hF _ _)
 
+/-- On a canonical forward identity followed by a genuine canonical inverse,
+the all-arrow compositor selects the retained/inverse branch. -/
+theorem generalLiftMapComp_inverseLeftIdentity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type) :
+    generalLiftMapComp F hF
+        (canonicalForwardHom (𝟙 Y)
+          (𝟙 (MonoidalSingleObj.star (Type))))
+        (canonicalInverseHom f A) =
+      generalLiftMapCompRetainedInverse F hF f hf
+        (𝟙 (MonoidalSingleObj.star (Type))) A := by
+  have hX : X = 0 ∨ X = 1 := by fin_cases X <;> simp
+  have hY : Y = 0 ∨ Y = 1 := by fin_cases Y <;> simp
+  rcases hX with rfl | rfl <;> rcases hY with rfl | rfl
+  · exact False.elim (hf le_rfl)
+  · have hf' : f = Ript.Examples.WalkingLocalization.arrow :=
+      Subsingleton.elim _ _
+    subst f
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow))
+      (𝟙 (MonoidalSingleObj.star (Type)))
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    have he := generalLiftMapComp_endpoint F hF 1 1 0
+      (𝟙 (MonoidalSingleObj.star (Type))) A
+    exact he.trans
+      (generalLiftEndpointMapComp_one_one_zero F hF _ _)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
+  · exact False.elim (hf le_rfl)
+
 /-- On a canonical forward arrow followed by its canonical forward identity,
 the all-arrow compositor selects the explicit forward/forward branch. -/
 theorem generalLiftMapComp_rightIdentity
@@ -8358,9 +8683,7 @@ private theorem generalLiftLeftUnitor_forward_of_mapCompForward
   rw [hcomp]
 
 /-- The arbitrary lift satisfies oplax left-unit coherence on every
-canonical forward target arrow.  This covers all target arrows inherited
-from the walking source; the freely adjoined inverse remains the separate
-reverse-arrow unit branch. -/
+canonical forward target arrow. -/
 theorem generalLiftLeftUnitor_forward
     (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
     {X Y : Ript.Examples.WalkingLocalization.Arrow}
@@ -8376,6 +8699,138 @@ theorem generalLiftLeftUnitor_forward
           (canonicalForwardHom f A))).hom :=
   generalLiftLeftUnitor_forward_of_mapCompForward F hF f A
     (generalLiftMapComp_forwardIdentity F hF f A)
+
+set_option backward.isDefEq.respectTransparency false in
+private theorem generalLiftLeftUnitor_inverse_of_mapCompRetainedInverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    (hcomp :
+      generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y)
+            (𝟙 (MonoidalSingleObj.star (Type))))
+          (canonicalInverseHom f A) =
+        generalLiftMapCompRetainedInverse F hF f hf
+          (𝟙 (MonoidalSingleObj.star (Type))) A) :
+    (generalLiftPrelaxFunctor F hF).map₂
+        (λ_ (canonicalInverseHom f A)).hom =
+      (generalLiftMapComp F hF (𝟙 (canonicalTargetObject Y))
+          (canonicalInverseHom f A)).hom ≫
+        (generalLiftMapId F hF (canonicalTargetObject Y)).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ≫
+        (λ_ ((generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f A))).hom := by
+  let e := (generalLiftPrelaxFunctor F hF).map₂Iso
+    (whiskerRightIso (canonicalForwardIdentityComparison Y)
+      (canonicalInverseHom f A))
+  have : IsIso e.hom := e.isIso_hom
+  have : Epi e.hom := IsIso.epi_of_iso e.hom
+  rw [← cancel_epi e.hom]
+  change
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardIdentityComparison Y).hom ▷
+            canonicalInverseHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (λ_ (canonicalInverseHom f A)).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardIdentityComparison Y).hom ▷
+            canonicalInverseHom f A) ≫ _
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp]
+  rw [← canonicalInverseLeftUnitorFactorization]
+  rw [generalLiftMapCompRetainedInverse_leftUnitor F hF f hf A]
+  slice_rhs 1 2 =>
+    rw [generalLiftMapComp_naturality_left F hF
+      (canonicalForwardIdentityComparison Y).hom
+      (canonicalInverseHom f A)]
+  rw [generalLiftMapId_canonical]
+  simp only [generalLiftCanonicalMapId, Iso.trans_hom,
+    PrelaxFunctor.map₂Iso_hom, comp_whiskerRight]
+  slice_rhs 2 3 =>
+    rw [← comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp]
+    simp only [Iso.symm_hom, Iso.hom_inv_id]
+    rw [(generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_rhs 2 4 =>
+    rw [← comp_whiskerRight, ← comp_whiskerRight]
+  change _ =
+    (generalLiftMapComp F hF
+        (canonicalForwardHom (𝟙 Y)
+          (𝟙 (MonoidalSingleObj.star (Type))))
+        (canonicalInverseHom f A)).hom ≫
+      (generalLiftForwardMapIdTail F hF Y).hom ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f A) ≫
+      (λ_ ((generalLiftPrelaxFunctor F hF).map
+        (canonicalInverseHom f A))).hom
+  rw [hcomp]
+
+/-- The arbitrary lift satisfies oplax left-unit coherence on every genuine
+canonical inverse target arrow. -/
+theorem generalLiftLeftUnitor_inverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+        (λ_ (canonicalInverseHom f A)).hom =
+      (generalLiftMapComp F hF (𝟙 (canonicalTargetObject Y))
+          (canonicalInverseHom f A)).hom ≫
+        (generalLiftMapId F hF (canonicalTargetObject Y)).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ≫
+        (λ_ ((generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f A))).hom :=
+  generalLiftLeftUnitor_inverse_of_mapCompRetainedInverse
+    F hF f hf A
+      (generalLiftMapComp_inverseLeftIdentity F hF f hf A)
+
+private theorem generalLiftLeftUnitor_canonicalObjects
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : canonicalTargetObject X ⟶ canonicalTargetObject Y) :
+    (generalLiftPrelaxFunctor F hF).map₂ (λ_ f).hom =
+      (generalLiftMapComp F hF (𝟙 (canonicalTargetObject X)) f).hom ≫
+        (generalLiftMapId F hF (canonicalTargetObject X)).hom ▷
+          (generalLiftPrelaxFunctor F hF).map f ≫
+        (λ_ ((generalLiftPrelaxFunctor F hF).map f)).hom := by
+  rcases f with ⟨⟨f⟩, A⟩
+  have hf : f = canonicalCompletionHom X Y :=
+    completion_hom_eq_canonical f
+  cases hf
+  rcases (by fin_cases X <;> simp : X = 0 ∨ X = 1) with rfl | rfl <;>
+    rcases (by fin_cases Y <;> simp : Y = 0 ∨ Y = 1) with rfl | rfl
+  · cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    exact generalLiftLeftUnitor_forward F hF (𝟙 0) A
+  · cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    exact generalLiftLeftUnitor_forward F hF
+      Ript.Examples.WalkingLocalization.arrow A
+  · cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    exact generalLiftLeftUnitor_inverse F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A
+  · cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    exact generalLiftLeftUnitor_forward F hF (𝟙 1) A
+
+/-- The arbitrary lift satisfies the oplax left-unit law for every target
+1-morphism. -/
+theorem generalLiftLeftUnitor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Target} (f : X ⟶ Y) :
+    (generalLiftPrelaxFunctor F hF).map₂ (λ_ f).hom =
+      (generalLiftMapComp F hF (𝟙 X) f).hom ≫
+        (generalLiftMapId F hF X).hom ▷
+          (generalLiftPrelaxFunctor F hF).map f ≫
+        (λ_ ((generalLiftPrelaxFunctor F hF).map f)).hom := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  exact generalLiftLeftUnitor_canonicalObjects F hF f
 
 set_option backward.isDefEq.respectTransparency false in
 private theorem generalLiftRightUnitor_forward_of_mapCompForward
