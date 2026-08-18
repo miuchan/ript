@@ -96,7 +96,7 @@ walking 补全的 thin 性把其余所有目标复合归约到这些已证明情
 源伪函子的标记反转与分解都在伴随等价下保持，因此结论覆盖可分离族的整个 replete 闭包，包括
 定义上不是逐分量积的实现。在该闭包之外，每个任意的反转标记源伪函子现在都确定一个已编译的
 目标 `PrelaxFunctor` 作用，覆盖全部对象、1-态射和 2-胞；规范正向箭头复用源作用，真正逆向的箭头使用所选逆等价。
-现已编译所有对象的恒等比较、八种端点规范形复合比较，以及覆盖每对可复合目标箭头的统一比较。该全箭头比较定义性约化到端点形式，并已证明八条分支约化等式。另有四条端点 hom-functor 约化定理和一个统一的端点 2-胞构造器，显式给出后续 coherence 证明所需的正向或逆向作用。剩余工作是证明伪函子 coherence，再构造源分解的伴随等价。正是这个尚缺的全局双本质分解字段，使现有桥接仍不是完整的双范畴、
+现已编译所有对象的恒等比较、八种端点规范形复合比较，以及覆盖每对可复合目标箭头的统一比较。该全箭头比较定义性约化到端点形式，并已证明八条分支约化等式。完整的正向—正向复合器现在还已证明对任一保留坐标变量自然，包括所有等式运输阶段。另有四条端点 hom-functor 约化定理和一个统一的端点 2-胞构造器，显式给出后续 coherence 证明所需的正向或逆向作用。剩余工作是证明伪函子 coherence，再构造源分解的伴随等价。正是这个尚缺的全局双本质分解字段，使现有桥接仍不是完整的双范畴、
 Dwyer--Kan、simplicial 或 Rezk localization。Stage 11 现已加入一个刻意保持小型、无公理
 的内部单值过程 universe：empty、unit、sum、tensor 与原子接口的深嵌入 code 分别携带结构
 等价语法和内部恒等语法；语义商构成真正的 Mathlib 群胚；内部恒等与内部结构等价互相等价；
@@ -1073,6 +1073,8 @@ complete-Segal 接口，而不是对缺失上游定理的别名。固定版本 M
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTarget_naturality_left` | 目标侧正向复合比较保持左因子上的每个保留坐标 2-胞。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | 源伪函子的复合器满足对应的右自然性方块。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | 源伪函子的复合器满足对应的左自然性方块。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_right` | 完整正向复合器（包括每一层等式运输）对右因子上的保留坐标 2-胞自然。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_left` | 完整正向复合器（包括每一层等式运输）对左因子上的保留坐标 2-胞自然。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | 规范逆箭头后接保留数据具有所需复合比较。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | 保留数据后接规范逆箭头的比较由正向滑动的逆 mate 构造。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | 规范逆箭头后接匹配正向箭头的比较通过所选等价的余单位消去。 |
