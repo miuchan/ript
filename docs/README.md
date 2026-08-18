@@ -1,37 +1,40 @@
-# Ript documentation
+# Ript documentation · Ript 文档 · Ript ドキュメント · Dokumentaro de Ript
 
-Choose the question closest to your task. Lean declarations and the formal
-status registers remain the authoritative record.
+Every maintained document is available through the same mirrored path in four
+languages. Choose a language to enter the documentation set.
 
-## Build, run, or reuse Ript
+所有维护中的文档都按相同路径提供四种语言版本，请选择语言进入文档集。
 
-- [Getting started](GETTING_STARTED.md) covers prerequisites, builds,
-  executable examples, dependency use, reproducibility, and troubleshooting.
-- [Contributing](../CONTRIBUTING.md) defines the mandatory proof and CI policy.
+保守対象の全ドキュメントは、同じパス構成で四言語版を提供します。言語を選択してください。
 
-## Understand the project
+Ĉiu prizorgata dokumento disponeblas laŭ la sama spegulita vojo en kvar lingvoj.
+Elektu lingvon por eniri la dokumentaron.
 
-- [Architecture](ARCHITECTURE.md) explains layers, dependencies, and the
-  executable-versus-semantic boundary.
-- [Project scope and trust](PROJECT_SCOPE.md) explains design principles, proof
-  policy, maturity, citation guidance, and licensing.
+## Languages · 语言 · 言語 · Lingvoj
 
-## Verify a claim
+- [English](en/README.md)
+- [简体中文](zh-CN/README.md)
+- [日本語](ja/README.md)
+- [Esperanto](eo/README.md)
 
-- [Research status](RESEARCH_STATUS.md) summarizes implemented, active, and
-  explicitly open work.
-- [Model capability matrix](../MODEL_MATRIX.md) lists only implemented and
-  compiled capabilities.
-- [Formal blueprint](../BLUEPRINT.md) records theorem dependencies and exact
-  completion status.
-- [Axiom inventory](../AXIOMS.md) records checked `#print axioms` results.
-- [Conjecture register](../CONJECTURES.md) separates open statements from
-  proved declarations.
+## Mirrored structure · 镜像结构 · ミラー構成 · Spegulita strukturo
 
-## Project overviews
+Each locale contains `README.md`, `GETTING_STARTED.md`, `ARCHITECTURE.md`,
+`PROJECT_SCOPE.md`, `RESEARCH_STATUS.md`, `CONTRIBUTING.md`, and a `reference/`
+directory containing `MODEL_MATRIX.md`, `BLUEPRINT.md`, `AXIOMS.md`, and
+`CONJECTURES.md`.
 
-[English](../README.md) · [简体中文](README.zh-CN.md) ·
-[日本語](README.ja.md) · [Esperanto](README.eo.md)
+每个语言目录都包含上述六篇入口与指南，并在 `reference/` 中包含模型矩阵、形式化蓝图、公理清单和
+猜想登记册。各语言路径一一对应，页面顶部可以直接切换语言。
 
-Translated pages are concise entry points. Detailed technical documentation is
-maintained in English to avoid divergent claims.
+各言語ディレクトリには六つの入口・ガイドと、モデル行列、形式化ブループリント、公理一覧、
+予想台帳を収めた `reference/` があります。各ページ上部から同じ文書の言語を切り替えられます。
+
+Ĉiu lingva dosierujo enhavas la ses enirejajn kaj gvidajn paĝojn, plus
+`reference/` kun la modelmatrico, formala plano, aksioma inventaro kaj registro
+de konjektoj. La lingvoŝaltilo ĉe la supro konservas la saman dokumenton.
+
+The root `AXIOMS.md`, `BLUEPRINT.md`, `CONJECTURES.md`, and `MODEL_MATRIX.md`
+remain machine-facing canonical records used by validation scripts. Their
+English mirrors preserve the full canonical content; localized reference pages
+preserve the same status boundaries and formal identifiers.

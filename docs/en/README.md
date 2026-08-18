@@ -2,8 +2,8 @@
 
 **A kernel-checked Lean 4 foundation for resource-indexed process theories.**
 
-[English](docs/en/README.md) · [简体中文](docs/zh-CN/README.md) ·
-[日本語](docs/ja/README.md) · [Esperanto](docs/eo/README.md)
+[English](README.md) · [简体中文](../zh-CN/README.md) ·
+[日本語](../ja/README.md) · [Esperanto](../eo/README.md)
 
 [![Quality Gate](https://github.com/miuchan/ript/actions/workflows/ci.yml/badge.svg)](https://github.com/miuchan/ript/actions/workflows/ci.yml)
 ![Lean 4.33.0](https://img.shields.io/badge/Lean-4.33.0-0d6efd)
@@ -42,27 +42,26 @@ lake build
 ```
 
 For prerequisites, executable examples, dependency setup, reproducibility, and
-troubleshooting, follow [Getting started](docs/en/GETTING_STARTED.md).
+troubleshooting, follow [Getting started](GETTING_STARTED.md).
 
 ## Find what you need
 
 - **What is implemented?** See the
-  [model capability matrix](docs/en/reference/MODEL_MATRIX.md).
+  [model capability matrix](reference/MODEL_MATRIX.md).
 - **What is proved or still open?** See the
-  [research status](docs/en/RESEARCH_STATUS.md).
+  [research status](RESEARCH_STATUS.md).
 - **How is the library organized?** Read the
-  [architecture guide](docs/en/ARCHITECTURE.md).
+  [architecture guide](ARCHITECTURE.md).
 - **What are the trust and maturity boundaries?** Read
-  [project scope and trust](docs/en/PROJECT_SCOPE.md).
+  [project scope and trust](PROJECT_SCOPE.md).
 - **Where are the exact research records?** Use the
-  [formal blueprint](docs/en/reference/BLUEPRINT.md),
-  [axiom inventory](docs/en/reference/AXIOMS.md), and
-  [conjecture register](docs/en/reference/CONJECTURES.md).
-- **Not sure where to begin?** Open the [documentation hub](docs/README.md).
+  [formal blueprint](reference/BLUEPRINT.md),
+  [axiom inventory](reference/AXIOMS.md), and
+  [conjecture register](reference/CONJECTURES.md).
 
 ## Contributing
 
-Read the [contributing guide](docs/en/CONTRIBUTING.md), then run
+Read [CONTRIBUTING.md](CONTRIBUTING.md), then run
 `./scripts/quality-gate.sh` before opening a pull request.
 
 Ript is built with [Lean 4](https://lean-lang.org/) and

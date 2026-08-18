@@ -1,5 +1,8 @@
 # Project scope and trust
 
+[English](PROJECT_SCOPE.md) · [简体中文](../zh-CN/PROJECT_SCOPE.md) ·
+[日本語](../ja/PROJECT_SCOPE.md) · [Esperanto](../eo/PROJECT_SCOPE.md)
+
 This page holds the context intentionally kept out of the repository homepage:
 what Ript is designed to formalize, how its claims are checked, and which
 project-level limitations apply.
@@ -47,7 +50,7 @@ models whose costs use different resource algebras, with heterogeneous strong
 model morphisms. Those fibres are packaged into a total bicategory with
 resource-equal monoidal 2-cells, heterogeneous horizontal composition,
 interchange, and pentagon/triangle coherence. The
-[model capability matrix](../MODEL_MATRIX.md) records only implemented and
+[model capability matrix](reference/MODEL_MATRIX.md) records only implemented and
 compiled operations.
 
 ## Trust model
@@ -62,8 +65,8 @@ Ript forbids:
 The quality gate pins Lean and Mathlib revisions, treats warnings as errors,
 executes representative models, checks source policy, audits documented
 assumptions, and performs a full build. The exact assumptions of selected
-theorems are recorded in [AXIOMS.md](../AXIOMS.md); open statements belong in
-[CONJECTURES.md](../CONJECTURES.md).
+theorems are recorded in [AXIOMS.md](reference/AXIOMS.md); open statements belong in
+[CONJECTURES.md](reference/CONJECTURES.md).
 
 Kernel checking establishes that a declaration follows from its listed
 assumptions. It does not by itself validate whether a formal model is the right
@@ -90,7 +93,7 @@ will be replaced by the chosen license if the project adopts one.
 ## Authoritative records
 
 - [Research status](RESEARCH_STATUS.md): concise proved/open boundary.
-- [Formal blueprint](../BLUEPRINT.md): theorem types and dependency ledger.
-- [Axiom inventory](../AXIOMS.md): audited kernel assumptions.
-- [Conjecture register](../CONJECTURES.md): open research statements.
-- [Contributing guide](../CONTRIBUTING.md): proof and merge policy.
+- [Formal blueprint](reference/BLUEPRINT.md): theorem types and dependency ledger.
+- [Axiom inventory](reference/AXIOMS.md): audited kernel assumptions.
+- [Conjecture register](reference/CONJECTURES.md): open research statements.
+- [Contributing guide](CONTRIBUTING.md): proof and merge policy.

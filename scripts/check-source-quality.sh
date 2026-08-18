@@ -54,6 +54,8 @@ reject_matches \
   '\\operatorname' \
   '*.md'
 
+./scripts/check-doc-locales.sh
+
 # Repository landing pages are navigation surfaces, not theorem ledgers. Keep
 # the four maintained language overviews concise and move durable detail into
 # task-focused documents or the formal status registers.
@@ -66,9 +68,11 @@ while IFS=: read -r overview_file maximum_lines; do
   fi
 done <<'OVERVIEW_LIMITS'
 README.md:80
-docs/README.zh-CN.md:80
-docs/README.ja.md:80
-docs/README.eo.md:80
+docs/README.md:80
+docs/en/README.md:80
+docs/zh-CN/README.md:80
+docs/ja/README.md:80
+docs/eo/README.md:80
 OVERVIEW_LIMITS
 
 # Broken relative links make a split documentation set worse than one long
@@ -76,6 +80,7 @@ OVERVIEW_LIMITS
 # same-page anchors to their respective renderers.
 markdown_link_errors=0
 while IFS= read -r markdown_file; do
+  [[ -f "$markdown_file" ]] || continue
   while IFS= read -r link_target; do
     case "$link_target" in
       ''|'#'*|http://*|https://*|mailto:*|data:*) continue ;;
@@ -102,6 +107,7 @@ fi
 # pipe-delimited prose, which is easy to miss in source review.
 markdown_table_errors=0
 while IFS= read -r markdown_file; do
+  [[ -f "$markdown_file" ]] || continue
   if ! awk '
     function pipe_count(line, i, character, in_code, count) {
       for (i = 1; i <= length(line); i += 1) {

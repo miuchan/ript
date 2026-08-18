@@ -1,9 +1,7 @@
 # Contributing to Ript
 
-[English](docs/en/CONTRIBUTING.md) ·
-[简体中文](docs/zh-CN/CONTRIBUTING.md) ·
-[日本語](docs/ja/CONTRIBUTING.md) ·
-[Esperanto](docs/eo/CONTRIBUTING.md)
+[English](CONTRIBUTING.md) · [简体中文](../zh-CN/CONTRIBUTING.md) ·
+[日本語](../ja/CONTRIBUTING.md) · [Esperanto](../eo/CONTRIBUTING.md)
 
 Ript treats proof trust, explicit dependencies, and reproducible computation as
 merge requirements rather than review conventions.

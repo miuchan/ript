@@ -1,0 +1,341 @@
+# Model Capability Matrix
+
+[English](MODEL_MATRIX.md) · [简体中文](../../zh-CN/reference/MODEL_MATRIX.md) ·
+[日本語](../../ja/reference/MODEL_MATRIX.md) · [Esperanto](../../eo/reference/MODEL_MATRIX.md)
+
+Machine-facing canonical record: [`../../../MODEL_MATRIX.md`](../../../MODEL_MATRIX.md).
+
+Only implemented and compiled capabilities are marked as supported.
+
+The matrix is split into three keyed native HTML tables so it remains readable
+on narrow screens and renders in CommonMark clients that do not enable the GFM
+table extension. Rows have the same order in every table.
+
+## Process structure
+
+<table data-ript-matrix="process-structure">
+  <thead>
+    <tr><th scope="col">Model</th><th scope="col">Sequential</th><th scope="col">Tensor</th><th scope="col">Discard</th><th scope="col">Copy</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">FiniteFunction (zero cost)</th><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><th scope="row">FiniteFunction.Metered</th><td>Yes</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Sequential term model</th><td>Yes</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Symmetric monoidal term model</th><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">FiniteStochastic (exact <code>ℚ≥0</code>)</th><td>Yes</td><td>Yes</td><td>Yes</td><td>Yes</td></tr>
+    <tr><th scope="row">Finite-distribution Kleisli</th><td>Yes</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Mathlib <code>Stoch</code> bridge (finite discrete image)</th><td>Yes</td><td>Yes</td><td>Via <code>Stoch</code></td><td>Via <code>Stoch</code></td></tr>
+    <tr><th scope="row">Exact finite decision layer</th><td>Via <code>FinStoch</code></td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Total computation (<code>Fin 4 → Nat</code> resources)</th><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Partial computation (<code>Option</code> Kleisli)</th><td>Yes</td><td>Bifunctor</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Finite causal DAG (exact <code>ℚ≥0</code>)</th><td>Topological generation</td><td>Via <code>FinStoch</code> states</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Finite thermal systems (specified and realized Gibbs equilibrium)</th><td>Gibbs-preserving category; finite closed and bath-assisted protocols</td><td>Bifunctor; realized Gibbs tensor at common temperature</td><td>No exported thermal discard</td><td>No</td></tr>
+    <tr><th scope="row">Finite quantum Kraus channels (<code>ℂ</code>)</th><td>Kraus category</td><td>Yes</td><td>Yes</td><td>No</td></tr>
+    <tr><th scope="row">Classical quantum dephasing subcategory</th><td>Yes; identity is basis dephasing</td><td>Bifunctor</td><td>Via ambient trace discard, not separately packaged</td><td>No exported copy</td></tr>
+  </tbody>
+</table>
+
+## Semantic capabilities
+
+<table data-ript-matrix="semantic-capabilities">
+  <thead>
+    <tr><th scope="col">Model</th><th scope="col">Convex</th><th scope="col">Causal</th><th scope="col">Decision</th><th scope="col">Thermal</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">FiniteFunction (zero cost)</th><td>No</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">FiniteFunction.Metered</th><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Sequential term model</th><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Symmetric monoidal term model</th><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">FiniteStochastic (exact <code>ℚ≥0</code>)</th><td>Yes</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Finite-distribution Kleisli</th><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Mathlib <code>Stoch</code> bridge (finite discrete image)</th><td>No</td><td>Via <code>Stoch</code></td><td>Via Mathlib Bayes risk</td><td>No</td></tr>
+    <tr><th scope="row">Exact finite decision layer</th><td>No</td><td>Via <code>FinStoch</code></td><td>Yes: forward data processing, deterministic and full finite stochastic Blackwell--Sherman--Stein converses, exact rational garbling-simplex representation, and rational-separator/decision-certificate equivalence</td><td>No</td></tr>
+    <tr><th scope="row">Total computation (<code>Fin 4 → Nat</code> resources)</th><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Partial computation (<code>Option</code> Kleisli)</th><td>No</td><td>No</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Finite causal DAG (exact <code>ℚ≥0</code>)</th><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Finite thermal systems (specified and realized Gibbs equilibrium)</th><td>No generic interface</td><td>Via <code>FinStoch</code></td><td>No</td><td>Yes: exact rationality classification, irrational counterexample, closed-protocol no-go, KL/free-energy, correlation, bath-resolved and Landauer bounds</td></tr>
+    <tr><th scope="row">Finite quantum Kraus channels (<code>ℂ</code>)</th><td>No</td><td>Yes</td><td>No</td><td>No</td></tr>
+    <tr><th scope="row">Classical quantum dephasing subcategory</th><td>No generic interface</td><td>Yes</td><td>No</td><td>No</td></tr>
+  </tbody>
+</table>
+
+## Computability
+
+<table data-ript-matrix="computability">
+  <thead>
+    <tr><th scope="col">Model</th><th scope="col">Status</th></tr>
+  </thead>
+  <tbody>
+    <tr><th scope="row">FiniteFunction (zero cost)</th><td>Yes</td></tr>
+    <tr><th scope="row">FiniteFunction.Metered</th><td>Yes</td></tr>
+    <tr><th scope="row">Sequential term model</th><td>Proof layer</td></tr>
+    <tr><th scope="row">Symmetric monoidal term model</th><td>Proof layer</td></tr>
+    <tr><th scope="row">FiniteStochastic (exact <code>ℚ≥0</code>)</th><td>Yes</td></tr>
+    <tr><th scope="row">Finite-distribution Kleisli</th><td>Yes</td></tr>
+    <tr><th scope="row">Mathlib <code>Stoch</code> bridge (finite discrete image)</th><td>Semantic layer</td></tr>
+    <tr><th scope="row">Exact finite decision layer</th><td>Exact finite minima, deterministic mixtures, rational convex-hull reflection, rational strict separation, fiber witnesses, the necessary empty-parameter boundary, and a genuinely stochastic <code>1/4 &lt; 1/2</code> certificate are compiled</td></tr>
+    <tr><th scope="row">Total computation (<code>Fin 4 → Nat</code> resources)</th><td>Yes</td></tr>
+    <tr><th scope="row">Partial computation (<code>Option</code> Kleisli)</th><td>Yes</td></tr>
+    <tr><th scope="row">Finite causal DAG (exact <code>ℚ≥0</code>)</th><td>Yes</td></tr>
+    <tr><th scope="row">Finite thermal systems (specified and realized Gibbs equilibrium)</th><td>Exact states/channels/protocol traces/marginals, positive-rational weight normalization, information-battery, entropy-neutral work-battery, and closed erasure–recharge witnesses executable; arbitrary real exponential equality and Gibbs/KL/free-energy/work accounting remain analytic</td></tr>
+    <tr><th scope="row">Finite quantum Kraus channels (<code>ℂ</code>)</th><td>Matrix proof layer; basis labels executable</td></tr>
+    <tr><th scope="row">Classical quantum dephasing subcategory</th><td>Exact <code>FinStoch</code> source; noncomputable complex matrix semantics</td></tr>
+  </tbody>
+</table>
+
+For the quantum row, “Discard” is the proved trace channel and “Causal” means
+the compiled uniqueness/compatibility laws `eq_discard` and `comp_discard`.
+Every channel's canonical complex-linear action is also proved completely
+positive under identity amplification by every finite auxiliary system. This
+is the ordinary finite-matrix formulation native to the current model, not an
+unproved bridge to Mathlib's analytic C\*-algebra API. “Copy” remains
+deliberately unsupported: no classical copying structure is inferred from the
+chosen quantum basis.
+
+The zero-cost finite-function row uses an explicit cartesian monoidal structure:
+ordinary product types are tensor, `PUnit` is the unit, diagonal functions copy,
+and the unique map to `PUnit` discards. Mathlib's `CopyDiscardCategory` supplies
+the coherent commutative-comonoid laws, and every function is proved
+deterministic and causal. The separate `Metered` row remains only sequential:
+proof-relevant costs make morphisms with the same function but different units
+distinct, so its category is not cartesian and no copy capability is inferred.
+
+The finite-stochastic convex capability uses an explicit pair of nonnegative
+`ℚ≥0` coefficients with a proof that their sum is exactly one. Pointwise
+mixtures are normalized and satisfy endpoint, idempotence, branch-symmetry,
+precomposition, postcomposition, and left/right tensor distribution laws. No
+convex structure is inferred for another model unless that model exports its
+own compiled instance.
+
+The exact finite decision layer proves both the forward Blackwell risk order
+for arbitrary exact finite stochastic experiments and the full finite
+Blackwell--Sherman--Stein converse on nonempty hidden-state carriers. It also
+provides a direct deterministic proof: with any full-support exact prior, a deterministic
+source dominates a deterministic target exactly when its optimal zero-one
+target-reconstruction risk is no larger than direct target observation;
+equivalently, the target is constant on every source fiber. The executable
+four-state example has risk `0` for an aligned partition and exactly `1/2` for
+a crossing partition, ruling out every post-processing in the latter case.
+The stochastic theorem quantifies over every **nonempty** finite hidden
+carrier, finite action carrier, and decision problem. The nonempty hypothesis
+is forced by a compiled counterexample: for an empty hidden carrier the risk
+order is vacuous, but no channel can garble a unit observation into an empty
+one. Every stochastic garbling is represented exactly as a rational
+simplex mixture of deterministic post-processings. A signed rational strict
+separator exists exactly when a concrete decision-separation certificate
+exists; row shifts and the uniform prior make the separator losses
+nonnegative without changing comparisons. The geometric bridge is also proved:
+a rational point in a finite real convex hull reflects to the rational convex
+hull, real strict separation follows from Hahn--Banach, and density of rational
+coefficient vectors preserves the finitely many strict inequalities. This gives
+an exact rational separator, certificate completeness, and the full converse.
+
+The thermal row separates executable operational data from analytic
+thermodynamics. `ThermalObject` stores an exact rational equilibrium and
+`GibbsPreserving` stores exact stochastic channels. `FiniteGibbsData` constructs
+real Boltzmann weights from energy and positive inverse temperature;
+`GibbsThermalObject` explicitly certifies when those real probabilities agree
+with the rational equilibrium. Every full-support exact equilibrium also has a
+canonical realization at any positive inverse temperature. On this certified
+intersection, Ript proves the finite KL/free-energy identity,
+common-temperature monotonicity of excess Helmholtz free energy, and tensor
+laws: weights/probabilities factor, partition functions multiply, and energy,
+entropy, free energy, and free-energy gaps add on product states. It neither
+assumes arbitrary independently specified exponential weights are rational nor
+equates arbitrary battery free-energy loss with mechanical work. Instead, it
+classifies the rationality boundary exactly: for any reference microstate, an
+independently specified finite real spectrum has rational normalized Gibbs
+probabilities iff every relative Boltzmann factor is a positive rational
+number. Explicit positive rational weights construct executable exact
+equilibria, including `(2, 1) -> (2/3, 1/3)` and
+`(1, 2, 3) -> (1/6, 1/3, 1/2)`; a relative factor `sqrt 2` gives a proved
+strict counterexample. Equality of arbitrary real exponential expressions is
+not claimed decidable. The
+work-assisted layer proves that a Gibbs-preserving product-endpoint transition
+must pay every system free-energy increase from battery free-energy decrease.
+Only under an explicit entropy-neutral battery hypothesis does this become a
+mean-energy work bound; the degenerate Boolean erasure instance costs at least
+`log 2 / β`. For arbitrary correlated endpoints, exact marginals are
+executable; mutual information is proved equal to finite KL from the joint to
+the product of its marginals and is nonnegative; joint free energy decomposes
+into marginal gaps plus `I / β`; and the Landauer bound includes the exact
+correlation free-energy change. For every exact rational error
+`0 ≤ ε ≤ 1/2`, the executable approximate-erasure target has binary entropy,
+cost `(log 2 - binEntropy ε) / β`, an antitone cost law, and product-endpoint
+and correlation-corrected work bounds. `BathAssistedTransition` separately
+accounts for system, bath, and battery free energy; exact bath return removes
+the bath term, while an entropy-neutrality premise is required for the
+mechanical-work form. The executable three-bit permutation witness exactly
+erases a fair bit, returns a fair bath, consumes an erased information battery,
+and saturates the free-energy balance at `log 2 / β`. Its proved battery
+entropy change prevents it from being mislabeled as an entropy-neutral
+work-bearing protocol. A second executable witness uses no bath: a genuinely
+nondegenerate two-level battery with Gibbs weights `2/3` and `1/3` discharges
+from its pure high state to its pure low state, keeps battery entropy exactly
+zero, erases the fair memory exactly, and supplies precisely `log 2 / β` of
+mean energy. Its certified Gibbs-preserving channel therefore attains the
+mechanical Landauer work bound with equality. A matched
+recharge channel is now executable as well: it randomizes the erased memory
+back to equilibrium and uses the released `log 2 / β` of free energy to raise
+the pure battery from low to high. Erasure followed by recharge has exact trace
+`fair/high → erased/low → fair/high`; signed system and battery changes both
+sum to zero, so the closed cycle is not a net-work source. The
+row also includes executable finite closed same-system protocols, their
+composite channel semantics, a nonconstant two-flip Boolean cycle, and the
+theorem that no such closed protocol can erase the uniform equilibrium exactly.
+
+The classical quantum row is the proved faithful measurement--preparation
+image of `FiniteStochastic`. Its Kraus operators are
+`sqrt(P(y | x)) |y><x|`, and its morphisms are invariant under source and
+target dephasing. The target categorical identity is therefore dephasing,
+which is why this row is listed separately from the full Kraus category.
+
+## Common six-model syntax slice
+
+The unit-cost sequential signature in
+`Ript.Examples.CommonBitRealizations` is one literal syntax interpreted in
+all six model families. It preserves the native computation resource and makes
+the other current abstract-cost contracts and model-specific proof obligations
+explicit.
+
+| Model family | Concrete realization | Native resource interpretation | Checked observable |
+| --- | --- | --- | --- |
+| Classical probability | Exact deterministic `FinStoch` negation | Scalar `Nat`, zero channel cost bounded by one | Negated output has probability one |
+| Quantum process | Pauli-X Kraus channel | Scalar `Nat`, zero abstract channel cost bounded by one | Basis density `|b><b|` maps to `|¬b><¬b|` |
+| Causal model | Negating child mechanism in the finite two-node DAG | Scalar `Nat`, zero stochastic cost bounded by one | Child is the negation of its parent with probability one |
+| Computation | Total Boolean gate | `ComputationResource`; one scalar unit maps to one step and one gate | Executed result is Boolean negation and translated cost is exact |
+| Semantic information | Reversibly relabeled Boolean experiment | Scalar `Nat`, zero channel cost bounded by one | Blackwell-equivalent to perfect observation; guessing value is exactly `1/2` |
+| Thermodynamics | Gibbs-preserving flip of the degenerate thermal bit | Scalar `Nat`, zero abstract process cost bounded by one | Exact channel flips the bit and preserves equilibrium |
+
+`sixModelFlipAgreement` packages these six facts into one kernel-checked
+proposition. It is a nontrivial shared slice, not yet a representation or
+completeness theorem for the full six model families.
+
+## Resource-representation capabilities
+
+These are generic representations over every implemented costed process model,
+not extra semantic models, so they are recorded separately from the matrix.
+
+| Representation | Serial law | Tensor law | Round trip | Choice | Computability |
+| --- | --- | --- | --- | --- | --- |
+| Cost-induced budget filtration | Identity at zero; layers compose at summed budgets | Available with `HasParallelProcessCost` | Least-budget reconstruction returns the original cost exactly | None introduced | Same as the source cost |
+| Attained budget filtration | Reconstructed cost is subadditive | Available from explicit `TensorCompatible` evidence | Cost inequality is equivalent to original layer membership | None; least budget is explicit data | Same as the supplied `minimum` operation |
+
+`AttainedHomFiltration` expresses exactly the hypothesis needed for the reverse
+representation: every process has a least admissible budget and that budget is
+itself admissible. Ript does not silently strengthen ordinary resource orders
+to complete lattices. The executable `Metered`/`Nat` example reconstructs the
+stored unit count and accepts double Boolean negation at budget `2` while
+rejecting budget `1`.
+
+## Higher categorical organization
+
+The following table records structure relating complete process models. It is
+kept separate from the per-model capability matrix because these are cells in
+a bicategory, not additional operations inside any one semantic model.
+
+| Dimension | Implemented carrier | Resource contract | Proved structure |
+| --- | --- | --- | --- |
+| 0-cells in one fibre | Symmetric monoidal categories with serial, parallel, and free structural cost laws over one resource type `R` | Every process cost in that fibre is valued in the same ordered additive commutative monoid | `ProcessModel R` packages all required instances with uniform universes |
+| 0-cells across fibres | `ResourceModel` bundles a resource type, its ordered additive structure, and one `ProcessModel` | Each object retains its own resource algebra | All bundles share uniform universes and form the objects of one total bicategory |
+| Resource base change | Ordered additive homomorphisms `φ : R →+o S` | Serial, parallel, structural, and checked budget laws are transported by applying `φ` | Cost reindexing, model reindexing, identities, composition, and executable `Fin 4 → Nat` step projection |
+| Common syntax base change | One monoidal signature with costs in `R`, pushed to `S` along `φ : R →+o S` | Wires and generators are unchanged; every expression budget becomes exactly `φ` of its original computed budget | Computably invertible expression translation, exact equivalence with ordinary pushed-cost interpretations, translated evaluation soundness, and free-model relative completeness |
+| Heterogeneous 1-cells | `ResourceModelHom` pairs `φ : R →+o S` with a strong braided monoidal functor from an `R`-model to an `S`-model | Target cost is at most `φ` of source cost | Identity, composition over `ψ.comp φ`, canonical reindexing maps, transported budget certificates, and an executable vector-to-step model map |
+| Heterogeneous 2-cells | Monoidal natural transformations between 1-cells with propositionally equal resource maps | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, left/right whiskering, interchange, and total local categories |
+| 1-cells in one fibre | Strong braided monoidal functors, represented as lax braided functors with invertible unit and tensor comparison maps | Mapping a process cannot increase its cost | Identities and composition; associator and left/right unitor isomorphisms |
+| 2-cells in one fibre | Monoidal natural transformations | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, whiskering, and interchange |
+| Coherence | Mathlib bicategory coherence specialized both to fixed-resource and total resource-model functors | Structural 2-cells do not silently alter the model-cost contract | Associators, unitors, pentagon, and triangle laws in both bicategories |
+| Equivalence | Bicategorical equivalence plus explicit cost reflection in both directions | Forward and inverse functors preserve every process cost exactly | Budget preservation/reflection and transport of serial and parallel core bounds |
+| Homotopy 1-category | Model morphisms modulo invertible monoidal 2-cells | Raw cost reflection is multiplicative; its invertible-2-cell saturation is explicit | Bicategorical unitors/associator descend to strict ordinary category laws; saturated marking descends exactly to marked quotient classes |
+| Cost-exact localization | Mathlib Gabriel--Zisman localization of the model homotopy category | Formally inverts every saturated cost-exact class | Genuine `Functor.IsLocalization`; canonical pseudofunctor from `Pith`; marked arrows map to isomorphisms; a noninvertible marked arrow and a noninvertible 2-cell expose nontriviality and truncation |
+| Parameterized walking localization | Product of the locally discrete walking arrow with the one-object bicategory of types and functions | All first-coordinate arrows are marked when the retained coordinate is already an adjoint equivalence | Free-groupoid inversion in the first coordinate; endpoint-normal-form theorem, thinness, and an explicit equivalence with the codiscrete groupoid on `Fin 2`; faithful action on 2-cells; retained-, localized-, and separable mixed-coordinate lift families together with their full adjoint-equivalence closure; every source strong transformation and modification lifts, and precomposition is an equivalence on every local category; every arbitrary marking-inverting source pseudofunctor now has a compiled `PrelaxFunctor` action on all target objects, 1-morphisms, and 2-morphisms, an all-object identity comparison, and one all-arrow composition comparison reducing to all eight endpoint-normalized pairs; pseudofunctor coherence and the resulting arbitrary nonseparable factorization remain open |
+
+Each fixed-resource fibre is a bicategory of models with uniform universes.
+The heterogeneous layer now packages those fibres into a total bicategory,
+including horizontal 2-cell composition and coherence across resource
+changes. This layer is not an `(∞,1)`-category, does not provide univalence, and does
+not turn a Lean equivalence `Equiv α β` into an equality `α = β`. Ordinary
+bicategorical equivalence alone also does not imply numerical cost equality:
+`CostExactModelEquivalence` requires cost reflection explicitly. The
+localization is ordinary and noncomputable: the canonical higher bridge starts
+from `Pith`, which retains only invertible 2-cells. A concrete finite
+deterministic discard 2-cell has endpoints that remain distinct in the
+homotopy category, proving why the bridge cannot extend to the full
+bicategory with this locally discrete target. It is therefore not a
+bicategorical, Dwyer--Kan, simplicial, or Rezk localization. The independent
+parameterized walking construction is a non-locally-discrete test case: its
+walking coordinate has no hidden path ambiguity, and its separable mixed
+family is a genuine two-coordinate factorization result. Its local
+precomposition functors are equivalences, and the arbitrary source action is
+already functorial on every hom-category, but the identity/composition
+comparison and coherence needed for the universal nonseparable lift are not
+yet established.
+
+## Internally univalent deep layer
+
+This layer is downstream of the ordinary semantic models. It adds an
+axiom-free internal identity interpretation without changing Lean's equality
+or the executable cores.
+
+| Component | Implemented representation | Proved contract | Computability |
+| --- | --- | --- | --- |
+| Interface universe | Deep codes generated by atoms, empty/unit, sum, and tensor | Codes have a small set-level interpretation | Raw syntax and interpretation are executable |
+| Internal equivalence | Indexed structural-equivalence expressions, quotiented by interpreted equality | Reflexivity, inverse, composition, sum/tensor congruence | Raw expressions compute; quotient laws are proof layer |
+| Internal identity | Separate path expressions with an internal `ua` constructor, quotiented by interpreted equality | Internal identity is equivalent to internal structural equivalence | Raw paths compute; quotient equality is proof layer |
+| Groupoid model | Codes wrapped as objects; identities as morphisms | Category laws, inverses, and groupoid equations | Proof layer over computable interpretation |
+| Deep processes | Typed generators, identity, serial composition, tensor, endpoint reindexing | Explicit derivations are sound in every generator interpretation | Evaluation is executable |
+| Structure identity | Conjugation of deterministic function spaces along endpoint identities | Internally identical endpoints have equivalent process spaces | Executable on interpreted values |
+| Indiscernibility | Predicates carrying explicit equivalence invariance | Internally identical/equivalent codes satisfy the same internal proposition | Proposition layer |
+| Object completion | Codes quotiented by mere internal identity | Equality is equivalent to inhabited internal identity/equivalence; sum/tensor coherence becomes literal equality | Quotient proof layer; executable maps descend from explicit invariants |
+| Skeletal completion | Mathlib skeleton of the internal groupoid | Skeletal groupoid equivalent to the original; all automorphisms are retained; the completion functor is a Mathlib localization at every internal identity | Noncomputable semantic layer using chosen representatives |
+| Presheaf universe | Type-valued presheaves on the internal groupoid | Yoneda is fully faithful; representable transformations/isomorphisms correspond to internal identity/equivalence | Semantic proof layer; Mathlib Yoneda audits with classical choice |
+| Yoneda envelope | Essential image of representables in the presheaf universe | Groupoid equivalent to the internal groupoid; inclusion factors Yoneda; the restricted Yoneda functor is a Mathlib localization at all internal identities | Noncomputable essential-image witnesses; exact ordinary localization of an already-groupoidal source, not a Rezk completion |
+| Simplicial interface nerve | Ordinary categorical nerve of the internal groupoid | Complete Kan horn filling, strict Segal, quasicategory, 2-coskeletal; vertices/edges/2-simplices encode interfaces, identities, and composition; homotopy category recovers the groupoid | Semantic proof layer; chosen fillers audit with classical choice; no complete-Segal or Rezk claim |
+| Rezk classifying diagram | Outer simplicial category of composable interface strings, followed levelwise by the ordinary nerve | Every vertical level and horizontal row is a groupoid nerve and Kan; every horizontal row is strict Segal; the whole outer diagram is naturally `n ↦ Map(Δ[n], N(M.Object))`; `Map(∂Δ[n], N(M.Object))` is the genuine matching limit; every matching map is a fibration; the actual completeness map is presented as the nerve of a category equivalence | Semantic proof layer; exact project-local `GroupoidalCompleteSegal` witness proved; actual outer spine maps are equivalences in every bidegree; Mathlib-native weak-equivalence/standard complete-Segal packaging and localization of the full resource-process bicategory remain open |
+
+The concrete Boolean model proves that `bit tensor unit` and `unit tensor bit`
+are unequal syntax trees in Lean while tensor symmetry makes them internally
+identical. Boolean negation transports across that identity and evaluates
+exactly. The original internal-univalence layer and the object-completion
+universal properties use no project axiom and no `Classical.choice`. The
+separate skeletal categorical layer inherits `Classical.choice` from
+Mathlib's chosen skeleton representatives and is marked noncomputable; it does
+not feed data back into any executable model. Mathlib's nerve, strict Segal,
+quasicategory, coskeletal, and homotopy-category infrastructure carries the
+same classical audit footprint in the simplicial layer. Ript's ForMathlib
+extension proves that every groupoid nerve is Kan and the chosen filler
+interface has that same audited footprint.
+The classifying-diagram layer preserves a second simplicial direction rather
+than collapsing back to the strict nerve. Its outer `n`-object is the category
+of `n`-strings and natural transformations; pointwise groupoid inversion makes
+every vertical level Kan. The vertical-vertex row is naturally isomorphic to
+the ordinary interface nerve, and vertical edges have explicit inverse and
+cancellation laws. Flipping the two finite indexing categories naturally
+identifies every horizontal row with an ordinary categorical nerve. The
+resulting strict-Segal equivalence has the actual outer spine map as its
+forward direction. Since every horizontal arrow is invertible, outer degree
+one is the equivalence space; the actual outer zero-degeneracy is proved to be
+the nerve of an explicit category equivalence. Independently, a strict
+finite-ordinal universe bridge and Mathlib's closed-nerve comparison identify
+the whole outer diagram naturally with `n ↦ Map(Δ[n], N(M.Object))`.
+Presheaf density and closed internal Hom prove that
+`Map(∂Δ[n], N(M.Object))` is the genuine categorical matching limit and that
+boundary restriction is its universal lift. The pushout-product theorem then
+proves that every matching map is a fibration.
+
+Together these are a 0-truncated object completion and a 1-truncated skeletal
+groupoid model, an ordinary representable-presheaf envelope, the strict
+categorical nerve of that groupoid, and a levelwise controlled Rezk
+classifying diagram with its categorical Rezk completeness comparison.
+The natural matching presentation, matching-limit universal property, and
+matching fibrations form a compiled project-local Reedy-fibrancy witness.
+The identity, skeletal-completion, and restricted-Yoneda functors satisfy the
+ordinary Mathlib localization universal property at all morphisms of the
+already-groupoidal interface category. An exact project-local groupoidal
+complete-Segal witness is also proved. A
+Mathlib-native standard complete-Segal instance remains unavailable because
+the pinned library has no simplicial weak-equivalence API; higher localization
+that retains the full resource-process bicategory's 2-cell data also remains
+open. Its ordinary homotopy 1-category localization is compiled separately.
+These layers do not add `Equiv α β → α = β` and are not a complete presheaf
+model or a proved higher localization of the full resource-process bicategory.
