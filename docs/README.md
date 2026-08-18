@@ -8,6 +8,8 @@ the formal status registers because they are updated alongside theorem changes.
 - **I want to build or try Ript.** Read [Getting started](GETTING_STARTED.md).
 - **I want to understand the module boundaries.** Read
   [Architecture](ARCHITECTURE.md).
+- **I want to understand the project's claims and trust model.** Read
+  [Project scope and trust](PROJECT_SCOPE.md).
 - **I want to know what is proved today.** Read
   [Research status](RESEARCH_STATUS.md), then the
   [model capability matrix](../MODEL_MATRIX.md).
@@ -24,6 +26,8 @@ the formal status registers because they are updated alongside theorem changes.
   executable examples, dependency use, reproducibility, and troubleshooting.
 - [Architecture](ARCHITECTURE.md) explains the dependency graph, the executable
   versus semantic boundary, and the higher/univalent layers.
+- [Project scope and trust](PROJECT_SCOPE.md) explains the design principles,
+  proof policy, maturity, citation guidance, and licensing boundary.
 - [Research status](RESEARCH_STATUS.md) summarizes the implemented pillars,
   current frontier, and results that are deliberately not claimed.
 - [Model capability matrix](../MODEL_MATRIX.md) records only implemented and

@@ -5824,10 +5824,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     every target arrow. The canonical source and target comparisons now have
     compiled three-fold associativity squares. The normalized source forward
     compositor, the mapped target comparison square, and the seven-endpoint
-    transport stage satisfy their corresponding associativity laws.
-    Composing target normalization with endpoint transport into the full
-    forward branch and proving the remaining endpoint-normalized oplax
-    associativity cases, pseudofunctor packaging, and the
+    transport stage satisfy their corresponding associativity laws. Two
+    isomorphism-normalization lemmas move either compositor input across a
+    canonical arrow isomorphism, and the public comparison reduces to its
+    forward implementation for every pair of canonical forward arrows. These
+    results compose the normalization and transport stages into the exact
+    oplax associativity equation for every triple of canonical forward arrows.
+    Proving the remaining endpoint-normalized oplax associativity cases that
+    involve the freely adjoined inverse, pseudofunctor packaging, and the
     resulting nonseparable biessential factorization remain open, so this is
     not yet an existence proof for the desired resource-process higher
     localization.
