@@ -102,7 +102,7 @@ codiscrete groupoid と明示的に圏同値です。
 始域 pseudofunctor の標識反転と因子化は随伴同値のもとで不変であることも証明されました。したがって
 結果は可分離族の replete 閉包全体、すなわち定義上は成分ごとの積でない実装まで含みます。その閉包外でも、
 任意の標識反転始域 pseudofunctor は、全標的対象・1-射・2-射上のコンパイル済み `PrelaxFunctor` 作用を定めます。
-標準前向き射は始域作用を再利用し、真に逆向きの射は選択した逆同値を用います。全対象の恒等比較、8 種の端点標準形合成比較、および全ての合成可能な標的射対を覆う一つの比較はコンパイル済みです。全射比較は定義的に端点形へ帰着し、8 本の分岐帰着等式も証明済みです。完全な前向き—前向き compositor は、すべての等式 transport 段階を含め、どちらの保持座標変数についても自然であることが証明済みです。さらに、4 本の端点 hom-functor 帰着定理と一様な端点 2-射コンストラクタが、残る coherence 証明に必要な前向き／逆向き作用を明示します。残る作業は pseudofunctor coherence を証明し、
+標準前向き射は始域作用を再利用し、真に逆向きの射は選択した逆同値を用います。全対象の恒等比較、8 種の端点標準形合成比較、および全ての合成可能な標的射対を覆う一つの比較はコンパイル済みです。全射比較は定義的に端点形へ帰着し、8 本の分岐帰着等式も証明済みです。完全な前向き—前向き compositor と 2 つの混合 compositor（逆射後保持、保持後逆射）は、どちらの保持座標変数についても自然であることが証明済みです。これにはすべての等式 transport、associator、始域 compositor、mate から導かれる逆向き sliding が含まれます。残る 5 分岐の自然性は後続の coherence 作業です。さらに、4 本の端点 hom-functor 帰着定理と一様な端点 2-射コンストラクタが、残る coherence 証明に必要な前向き／逆向き作用を明示します。残る作業は pseudofunctor coherence を証明し、
 始域因子化の随伴同値を構成することです。この未解決の大域的な双本質因子化フィールドのため、現行の橋も完全な双圏的、
 Dwyer--Kan、simplicial、Rezk localization ではありません。
 Stage 11 では、意図的に小さく保った公理不要の内部ユニバレントなプロセス universe を追加しました。
@@ -1134,7 +1134,11 @@ simplicial set の弱同値 class がないため、Mathlib ネイティブな�
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_right` | すべての等式 transport を含む完全な前向き compositor は、右因子の保持座標 2-射について自然です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_left` | すべての等式 transport を含む完全な前向き compositor は、左因子の保持座標 2-射について自然です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained` | 標準逆射に保持データを続ける合成比較が構成済みです。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained_naturality_right` | 完全な逆射後保持 compositor は、右の保持因子上の保持座標 2-射について自然です。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained_naturality_left` | 完全な逆射後保持 compositor は、左の逆因子が運ぶ保持座標 2-射について自然です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | 保持データに標準逆射を続ける比較は、前向きスライドの逆 mate から構成されます。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse_naturality_right` | 完全な保持後逆射 compositor は、右の逆因子が運ぶ保持座標 2-射について自然です。 |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse_naturality_left` | 完全な保持後逆射 compositor は、左の保持因子上の保持座標 2-射について自然です。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | 標準逆射と対応する前向き射の合成は、選択同値の counit で比較されます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse` | 標準前向き射と対応する逆射の合成は、選択同値の unit で比較されます。 |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp` | 端点標準化は、全ての合成可能な標的射対に合成比較を与えます。 |

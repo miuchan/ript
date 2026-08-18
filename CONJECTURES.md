@@ -115,8 +115,12 @@ squares, and those squares remain valid after applying the arbitrary target
 action and the original source pseudofunctor. Those squares are now joined
 across every equality-transport stage, so the full forward/forward comparison
 satisfies compiled left and right naturality in its retained coordinates.
+Both mixed branches now satisfy the same complete statement: inverse followed
+by retained data and retained data followed by inverse data have compiled left
+and right naturality through target normalization, source compositors,
+equality transports, associators, and the mate-derived inverse sliding square.
 What remains open is to extend the corresponding naturality proof through the
-other seven endpoint-normalized branches, prove the pseudofunctor unit,
+other five endpoint-normalized branches, prove the pseudofunctor unit,
 associativity, and whiskering laws, and then build the source-factorization
 adjoint equivalence. This is the missing global `lift`
 field, and the corresponding construction for the full resource-process
