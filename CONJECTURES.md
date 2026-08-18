@@ -131,11 +131,12 @@ and right-unit laws are now compiled for arbitrary target arrows, including
 the freely adjoined inverse. The canonical source and target three-fold
 composition comparisons, the resulting source-normalized forward compositor,
 the mapped target comparison square, and the endpoint-transport stage now
-satisfy compiled associativity. Composing target normalization with endpoint
-transport into the full forward branch and proving the remaining
-endpoint-normalized triples are still open; after full oplax associativity,
-the invertible comparisons must be packaged as a pseudofunctor and the
-source-factorization adjoint equivalence built.
+satisfy compiled associativity. Isomorphism normalization now composes those
+layers into the exact oplax associativity equation for every triple of
+canonical forward arrows. The endpoint-normalized triples involving the freely
+adjoined inverse are still open; after full oplax associativity, the invertible
+comparisons must be packaged as a pseudofunctor and the source-factorization
+adjoint equivalence built.
 This is the missing global `lift` field, and the corresponding construction
 for the full resource-process bicategory remains downstream.
 

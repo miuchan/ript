@@ -64,10 +64,12 @@ branches into one comparison for every composable target-arrow pair, with
 compiled reduction equations exposing all eight branches.  The
 source-normalized forward-forward three-fold associativity core, the canonical
 target comparison square, its image under the arbitrary target action, and
-the seven-endpoint transport law now compile.  Composing target normalization
-with that transport, discharging the remaining endpoint triples, packaging
-the pseudofunctor coherence laws, and constructing the resulting arbitrary
-nonseparable biessential factorization still remain open;
+the seven-endpoint transport law now compile.  Target normalization is now
+composed with that transport into the exact oplax associativity equation for
+every triple of canonical forward arrows.  Discharging the endpoint triples
+that involve the freely adjoined inverse, packaging the pseudofunctor coherence
+laws, and constructing the resulting arbitrary nonseparable biessential
+factorization still remain open;
 consequently the global `lift` field of the bicategorical-localization
 predicate is not yet claimed.
 -/
@@ -8170,6 +8172,185 @@ theorem generalLiftMapComp_naturality_left
   cases hY
   cases hZ
   exact generalLiftMapComp_naturality_left_canonicalObjects F hF η g
+
+/-- The all-arrow compositor can be recovered from its value after replacing
+the right factor by an isomorphic arrow.  The final inverse image cancels the
+change in the compositor's right output factor. -/
+theorem generalLiftMapComp_iso_right_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Target} (f : X ⟶ Y) {g g' : Y ⟶ Z}
+    (e : g ≅ g') :
+    (generalLiftMapComp F hF f g).hom =
+      (generalLiftPrelaxFunctor F hF).map₂ (f ◁ e.hom) ≫
+        (generalLiftMapComp F hF f g').hom ≫
+        ((generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftPrelaxFunctor F hF).map₂ e.inv) := by
+  rw [← cancel_mono
+    ((generalLiftPrelaxFunctor F hF).map f ◁
+      (generalLiftPrelaxFunctor F hF).map₂ e.hom)]
+  simp only [Category.assoc]
+  slice_rhs 3 4 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp]
+    simp
+  rw [(generalLiftPrelaxFunctor F hF).map₂_id]
+  simp
+  exact (generalLiftMapComp_naturality_right F hF f e.hom).symm
+
+/-- The corresponding reconstruction when the left factor is replaced by an
+isomorphic arrow.  Its final inverse image cancels the change in the left
+output factor. -/
+theorem generalLiftMapComp_iso_left_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Target} {f f' : X ⟶ Y} (e : f ≅ f')
+    (g : Y ⟶ Z) :
+    (generalLiftMapComp F hF f g).hom =
+      (generalLiftPrelaxFunctor F hF).map₂ (e.hom ▷ g) ≫
+        (generalLiftMapComp F hF f' g).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map₂ e.inv ▷
+          (generalLiftPrelaxFunctor F hF).map g) := by
+  rw [← cancel_mono
+    ((generalLiftPrelaxFunctor F hF).map₂ e.hom ▷
+      (generalLiftPrelaxFunctor F hF).map g)]
+  simp only [Category.assoc]
+  slice_rhs 3 4 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp]
+    simp
+  rw [(generalLiftPrelaxFunctor F hF).map₂_id]
+  simp
+  exact (generalLiftMapComp_naturality_left F hF e.hom g).symm
+
+/-- On any two canonical forward arrows, the all-arrow compositor selects
+the explicit forward/forward comparison. -/
+theorem generalLiftMapComp_forward
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (A B : Type) :
+    generalLiftMapComp F hF
+        (canonicalForwardHom f A) (canonicalForwardHom g B) =
+      generalLiftMapCompForward F hF f g A B := by
+  rcases (by fin_cases X <;> simp : X = 0 ∨ X = 1) with rfl | rfl <;>
+    rcases (by fin_cases Y <;> simp : Y = 0 ∨ Y = 1) with rfl | rfl <;>
+      rcases (by fin_cases Z <;> simp : Z = 0 ∨ Z = 1) with rfl | rfl
+  · have hf : f = 𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow) :=
+      Subsingleton.elim _ _
+    have hg : g = 𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow) :=
+      Subsingleton.elim _ _
+    subst f
+    subst g
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact (generalLiftMapComp_endpoint F hF 0 0 0 A B).trans
+      (generalLiftEndpointMapComp_zero_zero_zero F hF A B)
+  · have hf : f = 𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow) :=
+      Subsingleton.elim _ _
+    have hg : g = Ript.Examples.WalkingLocalization.arrow :=
+      Subsingleton.elim _ _
+    subst f
+    subst g
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    exact (generalLiftMapComp_endpoint F hF 0 0 1 A B).trans
+      (generalLiftEndpointMapComp_zero_zero_one F hF A B)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) g.le)
+  · have hf : f = Ript.Examples.WalkingLocalization.arrow :=
+      Subsingleton.elim _ _
+    have hg : g = 𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow) :=
+      Subsingleton.elim _ _
+    subst f
+    subst g
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact (generalLiftMapComp_endpoint F hF 0 1 1 A B).trans
+      (generalLiftEndpointMapComp_zero_one_one F hF A B)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) g.le)
+  · have hf : f = 𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow) :=
+      Subsingleton.elim _ _
+    have hg : g = 𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow) :=
+      Subsingleton.elim _ _
+    subst f
+    subst g
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) B
+    exact (generalLiftMapComp_endpoint F hF 1 1 1 A B).trans
+      (generalLiftEndpointMapComp_one_one_one F hF A B)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law on
+three canonical forward arrows.  Naturality first replaces each raw binary
+composite by its canonical target normal form; the target comparison square
+and the seven-endpoint transport law then identify the two routes. -/
+theorem generalLiftMapComp_forward_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A) (canonicalForwardHom g B)
+            (canonicalForwardHom h C)).hom ≫
+        (generalLiftMapComp F hF (canonicalForwardHom f A)
+          (canonicalForwardHom g B ≫ canonicalForwardHom h C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ◁
+          (generalLiftMapComp F hF (canonicalForwardHom g B)
+            (canonicalForwardHom h C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom f A ≫ canonicalForwardHom g B)
+          (canonicalForwardHom h C)).hom ≫
+        (generalLiftMapComp F hF (canonicalForwardHom f A)
+          (canonicalForwardHom g B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom h C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom g B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom h C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF (canonicalForwardHom f A)
+    (canonicalForwardCompositionComparison g h B C)]
+  rw [generalLiftMapComp_forward F hF f (g ≫ h) A (B × C)]
+  rw [generalLiftMapComp_forward F hF g h B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalForwardCompositionComparison f g A B)
+    (canonicalForwardHom h C)]
+  rw [generalLiftMapComp_forward F hF (f ≫ g) h (A × B) C]
+  rw [generalLiftMapComp_forward F hF f g A B]
+  simp only [generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 4 =>
+    rw [← generalLiftForwardMapCompTarget_associativity F hF f g h A B C]
+  have hwalking : (f ≫ g) ≫ h = f ≫ (g ≫ h) :=
+    Category.assoc f g h
+  have htransport :=
+    generalLiftForwardMapCompTransport_associativity F hF f g h A B C
+  rw [hwalking] at htransport
+  slice_lhs 3 6 =>
+    rw [htransport]
 
 /-! ## The forward left-unit coherence frontier -/
 

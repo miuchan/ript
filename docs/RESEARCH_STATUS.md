@@ -84,13 +84,14 @@ Already compiled:
 - the canonical source and target three-fold forward-composition squares;
 - the normalized source forward-compositor associativity law;
 - the image of target associativity under the arbitrary target action and the
-  forward endpoint-transport associativity law.
+  forward endpoint-transport associativity law;
+- isomorphism normalization of either compositor input and the exact oplax
+  associativity equation for every triple of canonical forward arrows.
 
 Still required:
 
-- composition of target normalization with endpoint transport into the full
-  forward oplax associativity branch, and the remaining endpoint-normalized
-  associativity cases;
+- the endpoint-normalized associativity cases involving the freely adjoined
+  inverse;
 - packaging as an oplax functor and then a pseudofunctor;
 - an adjoint equivalence identifying source restriction with the original
   marking-inverting pseudofunctor;
