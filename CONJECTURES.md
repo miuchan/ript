@@ -122,11 +122,14 @@ equality transports, associators, and the mate-derived inverse sliding square.
 Both cancellation branches now do as well: inverse followed by its matching
 forward arrow uses the chosen counit, while forward followed by inverse uses
 the chosen unit; both are natural in either retained coordinate through their
-source factorizations and endpoint transports. What remains open is to extend
-the corresponding naturality proof through the other three endpoint-normalized
-branches, prove the pseudofunctor unit,
-associativity, and whiskering laws, and then build the source-factorization
-adjoint equivalence. This is the missing global `lift`
+source factorizations and endpoint transports. These five compositor families
+now assemble into left and right naturality for the unified endpoint
+comparison across all eight walking-endpoint triples. Free-groupoid thinness
+and local discreteness then lift those equations to the all-arrow comparison
+for arbitrary target objects, 1-morphisms, and 2-morphisms. What remains open
+is to prove oplax associativity and the left and right unit laws, package the
+invertible comparisons as a pseudofunctor, and then build the
+source-factorization adjoint equivalence. This is the missing global `lift`
 field, and the corresponding construction for the full resource-process
 bicategory remains downstream.
 
