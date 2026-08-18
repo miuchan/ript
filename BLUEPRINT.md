@@ -5812,7 +5812,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     Four additional compiled equalities expose the forward/reverse hom-functor
     selected by each endpoint pair, and a canonical endpoint 2-cell constructor
     uniformly represents retained-coordinate morphisms in all four directions.
-    Proving oplax associativity and both unit laws, packaging the invertible
-    comparisons as a pseudofunctor, and constructing the resulting
-    nonseparable biessential factorization remain open, so this is not yet an
-    existence proof for the desired resource-process higher localization.
+    Source and target left/right unitors now have explicit canonical
+    factorizations. On the source side the left-unit equation contracts the
+    inverse composition comparison to the retained-coordinate left unitor; on
+    the target side this yields the exact strict oplax left-unit equation for
+    every canonical forward arrow. The reverse-arrow branch of that equation,
+    the full right-unit law, oplax associativity, packaging the invertible
+    comparisons as a pseudofunctor, and the resulting nonseparable
+    biessential factorization remain open, so this is not yet an existence
+    proof for the desired resource-process higher localization.

@@ -197,8 +197,10 @@ constructive merely because its statement concerns finite data.
 The active higher-categorical frontier is the arbitrary, nonseparable
 two-dimensional walking-localization factorization. Its object, morphism,
 2-morphism, identity-comparison, composition-comparison, and all-arrow
-naturality data compile. Oplax unit and associativity coherence, pseudofunctor
-packaging, and the resulting adjoint-equivalence factorization remain open.
+naturality data compile. The left-unit equation also compiles on every
+canonical forward target arrow. Its reverse-arrow branch, the full right-unit
+law, oplax associativity coherence, pseudofunctor packaging, and the resulting
+adjoint-equivalence factorization remain open.
 
 Other intentionally open directions include general measurable causal models,
 a Mathlib-native complete-Segal-space interface with weak equivalences, and a
