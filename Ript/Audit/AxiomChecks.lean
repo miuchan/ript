@@ -2,6 +2,7 @@ import Ript.Examples.ApproximateErasure
 import Ript.Examples.BitProcesses
 import Ript.Examples.ClassicalQuantum
 import Ript.Examples.ClassicalCopy
+import Ript.Examples.CommonBitRealizations
 import Ript.Examples.ConvexChannels
 import Ript.Examples.CostFiltration
 import Ript.Examples.DeterministicBlackwell
@@ -39,6 +40,7 @@ import Ript.Resource.Change
 import Ript.Semantics.Completeness
 import Ript.Semantics.MonoidalCompleteness
 import Ript.Semantics.MonoidalInitiality
+import Ript.Semantics.ResourceChangingInterpretation
 
 /-!
 # Kernel assumption checks
@@ -86,6 +88,28 @@ set_option autoImplicit false
 #print axioms Ript.Semantics.Free.lift_on_generator
 #print axioms Ript.Semantics.Free.lift_preserves_cost
 #print axioms Ript.Semantics.Free.lift_unique
+#print axioms Ript.Syntax.Signature.mapCost_comp
+#print axioms Ript.Syntax.Expr.unmapCost_mapCost
+#print axioms Ript.Syntax.Expr.mapCost_unmapCost
+#print axioms Ript.Syntax.Expr.mapCostEquiv
+#print axioms Ript.Syntax.Expr.syntaxCost_mapCost
+#print axioms Ript.Semantics.ResourceChangingInterpretation.equivMappedCostInterpretation
+#print axioms Ript.Semantics.ResourceChangingInterpretation.eval_cost_le
+#print axioms Ript.Semantics.ResourceChangingInterpretation.mapped_soundness_iff_term_model
+#print axioms Ript.Semantics.ResourceChangingInterpretation.mapped_budget_complete_in_free_model
+#print axioms Ript.Syntax.MonoidalSignature.mapCost_comp
+#print axioms Ript.Syntax.MonoidalExpr.unmapCost_mapCost
+#print axioms Ript.Syntax.MonoidalExpr.mapCost_unmapCost
+#print axioms Ript.Syntax.MonoidalExpr.mapCostEquiv
+#print axioms Ript.Syntax.MonoidalExpr.syntaxCost_mapCost
+#print axioms Ript.Semantics.ResourceChangingMonoidalInterpretation.equivMappedCostInterpretation
+#print axioms Ript.Semantics.ResourceChangingMonoidalInterpretation.eval_cost_le
+#print axioms Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_soundness_iff_term_model
+#print axioms Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_budget_complete_in_free_model
+#print axioms Ript.Examples.CommonBitRealizations.semanticFlip_blackwellEquivalent_perfect
+#print axioms Ript.Examples.CommonBitRealizations.semanticFlip_guessing_value
+#print axioms Ript.Examples.CommonBitRealizations.computation_flip_cost
+#print axioms Ript.Examples.CommonBitRealizations.sixModelFlipAgreement
 #print axioms Ript.Models.FiniteStochastic.FinStoch.id_apply
 #print axioms Ript.Models.FiniteStochastic.FinStoch.comp_apply
 #print axioms Ript.Models.FiniteStochastic.FinStoch.tensor_apply

@@ -20,10 +20,12 @@ open Ript.Syntax
 
 universe u v w x
 
-/-- Interpret a free monoidal object tree in a target monoidal category. -/
-def monoidalObjEval {R : Type w} {signature : MonoidalSignature.{u, w} R}
-    {C : Type x} [Category.{v} C] [MonoidalCategory C]
-    (wire : signature.Wire → C) : signature.Obj → C
+/-- Interpret a free monoidal object tree in a target monoidal category.
+Object evaluation depends only on the primitive wire type, not on the
+signature's resource algebra. -/
+def monoidalObjEval {Wire : Type u} {C : Type x}
+    [Category.{v} C] [MonoidalCategory C]
+    (wire : Wire → C) : FreeMonoidalCategory Wire → C
   | .of X => wire X
   | .unit => 𝟙_ C
   | .tensor X Y => monoidalObjEval wire X ⊗ monoidalObjEval wire Y

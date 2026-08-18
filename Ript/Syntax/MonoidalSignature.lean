@@ -1,3 +1,4 @@
+import Mathlib.Algebra.Order.Hom.Monoid
 import Mathlib.CategoryTheory.Monoidal.Free.Basic
 
 /-!
@@ -56,6 +57,35 @@ theorem normalForm_unit {R : Type w} {signature : MonoidalSignature.{u, w} R} :
 theorem normalForm_tensor {R : Type w} {signature : MonoidalSignature.{u, w} R}
     (X Y : signature.Obj) :
     normalForm (X ⊗ Y) = normalForm X ++ normalForm Y :=
+  rfl
+
+/-- Push the declared generator costs of a signature along an ordered
+additive resource translation.  Wires and process generators are unchanged,
+so this operation changes resource accounting without changing the executable
+process language. -/
+def mapCost {R S : Type w} [AddCommMonoid R] [Preorder R]
+    [AddCommMonoid S] [Preorder S] (signature : MonoidalSignature.{u, w} R)
+    (φ : R →+o S) : MonoidalSignature.{u, w} S where
+  Wire := signature.Wire
+  Gen := signature.Gen
+  cost g := φ (signature.cost g)
+
+/-- Cost translation acts pointwise on primitive generators. -/
+@[simp]
+theorem mapCost_cost {R S : Type w} [AddCommMonoid R] [Preorder R]
+    [AddCommMonoid S] [Preorder S] (signature : MonoidalSignature.{u, w} R)
+    (φ : R →+o S) {X Y : (signature.mapCost φ).Obj}
+    (g : (signature.mapCost φ).Gen X Y) :
+    (signature.mapCost φ).cost g = φ (signature.cost g) :=
+  rfl
+
+/-- Successive resource translations compose definitionally on signatures. -/
+@[simp]
+theorem mapCost_comp {R S T : Type w}
+    [AddCommMonoid R] [Preorder R] [AddCommMonoid S] [Preorder S]
+    [AddCommMonoid T] [Preorder T] (signature : MonoidalSignature.{u, w} R)
+    (φ : R →+o S) (ψ : S →+o T) :
+    (signature.mapCost φ).mapCost ψ = signature.mapCost (ψ.comp φ) :=
   rfl
 
 end MonoidalSignature

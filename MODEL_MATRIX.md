@@ -1,5 +1,10 @@
 # Model Capability Matrix
 
+[English](docs/en/reference/MODEL_MATRIX.md) ·
+[简体中文](docs/zh-CN/reference/MODEL_MATRIX.md) ·
+[日本語](docs/ja/reference/MODEL_MATRIX.md) ·
+[Esperanto](docs/eo/reference/MODEL_MATRIX.md)
+
 Only implemented and compiled capabilities are marked as supported.
 
 The matrix is split into three keyed native HTML tables so it remains readable
@@ -185,6 +190,27 @@ image of `FiniteStochastic`. Its Kraus operators are
 target dephasing. The target categorical identity is therefore dephasing,
 which is why this row is listed separately from the full Kraus category.
 
+## Common six-model syntax slice
+
+The unit-cost sequential signature in
+`Ript.Examples.CommonBitRealizations` is one literal syntax interpreted in
+all six model families. It preserves the native computation resource and makes
+the other current abstract-cost contracts and model-specific proof obligations
+explicit.
+
+| Model family | Concrete realization | Native resource interpretation | Checked observable |
+| --- | --- | --- | --- |
+| Classical probability | Exact deterministic `FinStoch` negation | Scalar `Nat`, zero channel cost bounded by one | Negated output has probability one |
+| Quantum process | Pauli-X Kraus channel | Scalar `Nat`, zero abstract channel cost bounded by one | Basis density `|b><b|` maps to `|¬b><¬b|` |
+| Causal model | Negating child mechanism in the finite two-node DAG | Scalar `Nat`, zero stochastic cost bounded by one | Child is the negation of its parent with probability one |
+| Computation | Total Boolean gate | `ComputationResource`; one scalar unit maps to one step and one gate | Executed result is Boolean negation and translated cost is exact |
+| Semantic information | Reversibly relabeled Boolean experiment | Scalar `Nat`, zero channel cost bounded by one | Blackwell-equivalent to perfect observation; guessing value is exactly `1/2` |
+| Thermodynamics | Gibbs-preserving flip of the degenerate thermal bit | Scalar `Nat`, zero abstract process cost bounded by one | Exact channel flips the bit and preserves equilibrium |
+
+`sixModelFlipAgreement` packages these six facts into one kernel-checked
+proposition. It is a nontrivial shared slice, not yet a representation or
+completeness theorem for the full six model families.
+
 ## Resource-representation capabilities
 
 These are generic representations over every implemented costed process model,
@@ -213,6 +239,7 @@ a bicategory, not additional operations inside any one semantic model.
 | 0-cells in one fibre | Symmetric monoidal categories with serial, parallel, and free structural cost laws over one resource type `R` | Every process cost in that fibre is valued in the same ordered additive commutative monoid | `ProcessModel R` packages all required instances with uniform universes |
 | 0-cells across fibres | `ResourceModel` bundles a resource type, its ordered additive structure, and one `ProcessModel` | Each object retains its own resource algebra | All bundles share uniform universes and form the objects of one total bicategory |
 | Resource base change | Ordered additive homomorphisms `φ : R →+o S` | Serial, parallel, structural, and checked budget laws are transported by applying `φ` | Cost reindexing, model reindexing, identities, composition, and executable `Fin 4 → Nat` step projection |
+| Common syntax base change | One monoidal signature with costs in `R`, pushed to `S` along `φ : R →+o S` | Wires and generators are unchanged; every expression budget becomes exactly `φ` of its original computed budget | Computably invertible expression translation, exact equivalence with ordinary pushed-cost interpretations, translated evaluation soundness, and free-model relative completeness |
 | Heterogeneous 1-cells | `ResourceModelHom` pairs `φ : R →+o S` with a strong braided monoidal functor from an `R`-model to an `S`-model | Target cost is at most `φ` of source cost | Identity, composition over `ψ.comp φ`, canonical reindexing maps, transported budget certificates, and an executable vector-to-step model map |
 | Heterogeneous 2-cells | Monoidal natural transformations between 1-cells with propositionally equal resource maps | No hidden numerical condition is inferred from naturality | Vertical and horizontal composition, identities, left/right whiskering, interchange, and total local categories |
 | 1-cells in one fibre | Strong braided monoidal functors, represented as lax braided functors with invertible unit and tensor comparison maps | Mapping a process cannot increase its cost | Identities and composition; associator and left/right unitor isomorphisms |

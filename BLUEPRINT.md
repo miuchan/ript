@@ -1,5 +1,10 @@
 # Ript Formalization Blueprint
 
+[English](docs/en/reference/BLUEPRINT.md) ·
+[简体中文](docs/zh-CN/reference/BLUEPRINT.md) ·
+[日本語](docs/ja/reference/BLUEPRINT.md) ·
+[Esperanto](docs/eo/reference/BLUEPRINT.md)
+
 This document records only kernel-checked implementation status. Allowed status
 values are `DEFINED`, `STATEMENT_FORMALIZED`, `PROVED`, `BLOCKED`, and
 `OPEN_RESEARCH`.
@@ -65,6 +70,19 @@ flowchart LR
   ResourceMonotone --> MonoidalInitiality
   MonoidalCompleteness --> Audit
   MonoidalInitiality --> Audit
+  MonoidalSignature --> ResourceChangingInterpretation["Semantics.ResourceChangingInterpretation"]
+  MonoidalCompleteness --> ResourceChangingInterpretation
+  ResourceChangingInterpretation --> Audit
+  Signature --> ResourceChangingInterpretation
+  Completeness --> ResourceChangingInterpretation
+  ResourceChangingInterpretation --> CommonBitRealizations["Examples.CommonBitRealizations"]
+  StochasticBits --> CommonBitRealizations
+  SimpleComputation --> CommonBitRealizations
+  SimpleCausal --> CommonBitRealizations
+  SimpleDecision --> CommonBitRealizations
+  SimpleThermal --> CommonBitRealizations
+  QubitChannel --> CommonBitRealizations
+  CommonBitRealizations --> Audit
   Costed --> FiniteStochastic["Models.FiniteStochastic"]
   FiniteStochastic --> StochasticBits["Examples.StochasticBits"]
   Eval --> StochasticBits
@@ -239,6 +257,8 @@ Every node in this graph is an existing compiled module.
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
 | 10 (heterogeneous resources) | Ordered-additive cost reindexing, resource-changing functors, reindexed process models, heterogeneous strong braided model morphisms, and executable multidimensional-to-scalar budget transport | PROVED |
+| 10 (heterogeneous syntax semantics) | Cost-pushed common monoidal signatures, computably equivalent expression languages, heterogeneous interpretations, translated evaluation bounds, and free-model relative completeness with exact translated budgets | PROVED |
+| 10 (six-model common syntax slice) | One unit-cost Boolean-flip signature realized by exact probability, Pauli-X quantum evolution, a finite causal mechanism, multidimensional computation, task-relative semantic information, and a Gibbs-preserving thermal process, with one checked cross-model agreement theorem | PROVED |
 | 10 (total resource-model bicategory) | Bundled resource algebras and models, resource-changing 1-cells, resource-equal monoidal 2-cells, horizontal and vertical composition, interchange, associators, unitors, pentagon, triangle, and a vector-to-scalar model witness | PROVED |
 | 10 (ordinary model localization) | Invertible-2-cell-saturated cost-exact marking, exact homotopy descent, canonical pith pseudofunctor, Mathlib Gabriel--Zisman universal property, and noninvertible marked-arrow/2-cell witnesses | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
@@ -655,6 +675,105 @@ does not force every resource order to be a complete lattice.
 - Computable: no; literal uniqueness is stated at the quotient proof layer.
 - Kernel assumptions: `[propext, Quot.sound]`.
 - Source: `Ript/Semantics/MonoidalInitiality.lean`.
+
+### `Ript.Semantics.ResourceChangingInterpretation.equivMappedCostInterpretation`
+
+- Natural-language statement: interpreting one common sequential `R`-costed
+  syntax in an `S`-costed category along `φ : R →+o S` is exactly an
+  ordinary interpretation after pushing declared generator costs through
+  `φ`.
+- Prerequisites: ordered additive resource translation and the sequential
+  interpretation interface.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; objects and generators are preserved definitionally.
+- Kernel assumptions: none.
+- Source: `Ript/Semantics/ResourceChangingInterpretation.lean`.
+
+### `Ript.Semantics.ResourceChangingInterpretation.mapped_budget_complete_in_free_model`
+
+- Natural-language statement: the translated sequential free model realizes
+  exactly `φ` of the original syntax budget.
+- Prerequisites: sequential term-model budget completeness and exact
+  commutation of syntax cost with resource translation.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: no; exact equality is a quotient proof-layer theorem over a
+  computable expression translation.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/ResourceChangingInterpretation.lean`.
+
+### `Ript.Semantics.ResourceChangingMonoidalInterpretation.equivMappedCostInterpretation`
+
+- Natural-language statement: interpreting one common `R`-costed monoidal
+  syntax in an `S`-costed model along `φ : R →+o S` is equivalent to an
+  ordinary interpretation after pushing all declared generator costs through
+  `φ`.
+- Prerequisites: ordered additive resource translation and the ordinary
+  monoidal interpretation interface.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; both directions preserve wires and generators exactly.
+- Kernel assumptions: none.
+- Source: `Ript/Semantics/ResourceChangingInterpretation.lean`.
+
+### `Ript.Syntax.MonoidalExpr.mapCostEquiv`
+
+- Natural-language statement: changing the resource algebra changes only
+  cost annotations; the original and pushed typed expression languages are
+  computably equivalent by structural recursion.
+- Prerequisites: `MonoidalSignature.mapCost`.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: yes; forward and inverse maps recurse over the syntax tree.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/ResourceChangingInterpretation.lean`.
+
+### `Ript.Semantics.ResourceChangingMonoidalInterpretation.eval_cost_le`
+
+- Natural-language statement: evaluating a common-syntax expression in a
+  model with a different resource algebra costs at most the translated
+  computable syntax cost.
+- Prerequisites: symmetric monoidal evaluation, parallel subadditivity, free
+  structural rewiring, and an ordered additive resource map.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: evaluation and cost translation are executable; the inequality
+  is proof data.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/ResourceChangingInterpretation.lean`.
+
+### `Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_budget_complete_in_free_model`
+
+- Natural-language statement: the free model of a cost-pushed common syntax
+  realizes exactly `φ` of the original computed budget.
+- Prerequisites: monoidal free-model budget completeness and exact commutation
+  of syntax cost with resource translation.
+- Status: `PROVED`.
+- Classical choice: no.
+- Computable: no; exactness is a quotient proof-layer result over an otherwise
+  computable syntax translation.
+- Kernel assumptions: `[propext, Quot.sound]`.
+- Source: `Ript/Semantics/ResourceChangingInterpretation.lean`.
+
+### `Ript.Examples.CommonBitRealizations.sixModelFlipAgreement`
+
+- Natural-language statement: one common unit-cost Boolean-flip expression has
+  six checked realizations: deterministic exact stochastic negation, Pauli-X
+  on basis density matrices, a negating finite-DAG mechanism, a total gate
+  with translated step/gate resources, a Blackwell-equivalent experiment with
+  exact guessing value `1/2`, and a Gibbs-preserving thermal flip.
+- Prerequisites: the sequential heterogeneous interpretation bridge and the
+  six existing finite model families.
+- Status: `PROVED`.
+- Classical choice: yes in proof dependencies inherited from finite category,
+  matrix, and decision infrastructure; the common syntax and computation
+  resource translation are executable.
+- Computable: all classical, causal, computational, and thermal boundary
+  checks reduce on finite data; the quantum equality is a matrix proof-layer
+  result.
+- Kernel assumptions: `[propext, Classical.choice, Quot.sound]`.
+- Source: `Ript/Examples/CommonBitRealizations.lean`.
 
 ## Stage-3 flagship theorem records
 

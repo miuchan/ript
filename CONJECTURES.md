@@ -1,5 +1,10 @@
 # Conjectures and Unproved Research Statements
 
+[English](docs/en/reference/CONJECTURES.md) ·
+[简体中文](docs/zh-CN/reference/CONJECTURES.md) ·
+[日本語](docs/ja/reference/CONJECTURES.md) ·
+[Esperanto](docs/eo/reference/CONJECTURES.md)
+
 This register contains exact Lean propositions whose statements compile but
 whose proofs are not yet kernel checked. An active entry must carry the marker
 `FORMALIZED_BUT_UNPROVED` and identify the declaration that states it.
@@ -30,12 +35,21 @@ The compiled total resource-model bicategory removes one former obstruction:
 models may use different ordered additive resource algebras, heterogeneous
 strong braided morphisms compose over their resource translations, and
 resource-equal monoidal 2-cells satisfy horizontal composition, interchange,
-pentagon, and triangle coherence. The following construction and theorem
-families are still open and therefore are not entered as axioms or placeholder
-Lean declarations:
+pentagon, and triangle coherence. A common monoidal syntax can now also push
+its costs into any same-universe resource algebra without changing wires or
+generators; the expression translation is computably invertible, its
+heterogeneous interpretations have an exact representation by ordinary
+interpretations, and the translated free model has relative completeness and
+exact translated budgets. A first literal common-syntax slice is now compiled:
+one Boolean-flip generator is realized by the exact probabilistic, Pauli-X
+quantum, finite causal, multidimensional computational, task-semantic, and
+Gibbs-preserving thermal models, with their six observable equations packaged
+by `sixModelFlipAgreement`. The following construction and theorem families
+are still open and therefore are not entered as axioms or placeholder Lean
+declarations:
 
-1. a common syntax and universal semantics with verified interpretations into
-   all six named model families;
+1. extension of the Boolean slice to a common compositional syntax that
+   exposes the characteristic structures of all six model families;
 2. representation and conservativity theorems identifying the exact image of
    each interpretation;
 3. relative and, where mathematically justified, absolute completeness

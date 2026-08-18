@@ -1,5 +1,10 @@
 # Assumption Audit
 
+[English](docs/en/reference/AXIOMS.md) ·
+[简体中文](docs/zh-CN/reference/AXIOMS.md) ·
+[日本語](docs/ja/reference/AXIOMS.md) ·
+[Esperanto](docs/eo/reference/AXIOMS.md)
+
 The core declares no project-specific assumptions. The following table records
 the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 
@@ -42,6 +47,28 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Semantics.Free.lift_on_generator` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
 | `Ript.Semantics.Free.lift_preserves_cost` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
 | `Ript.Semantics.Free.lift_unique` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
+| `Ript.Syntax.Signature.mapCost_comp` | `[propext, Quot.sound]` | `Ript/Syntax/Signature.lean` |
+| `Ript.Syntax.Expr.unmapCost_mapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.Expr.mapCost_unmapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.Expr.mapCostEquiv` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.Expr.syntaxCost_mapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingInterpretation.equivMappedCostInterpretation` | `none` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingInterpretation.eval_cost_le` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingInterpretation.mapped_soundness_iff_term_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingInterpretation.mapped_budget_complete_in_free_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Examples.CommonBitRealizations.semanticFlip_blackwellEquivalent_perfect` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
+| `Ript.Examples.CommonBitRealizations.semanticFlip_guessing_value` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
+| `Ript.Examples.CommonBitRealizations.computation_flip_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
+| `Ript.Examples.CommonBitRealizations.sixModelFlipAgreement` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
+| `Ript.Syntax.MonoidalSignature.mapCost_comp` | `[propext, Quot.sound]` | `Ript/Syntax/MonoidalSignature.lean` |
+| `Ript.Syntax.MonoidalExpr.unmapCost_mapCost` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.MonoidalExpr.mapCost_unmapCost` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.MonoidalExpr.mapCostEquiv` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.MonoidalExpr.syntaxCost_mapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalInterpretation.equivMappedCostInterpretation` | `none` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalInterpretation.eval_cost_le` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_soundness_iff_term_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_budget_complete_in_free_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.id_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.tensor_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
