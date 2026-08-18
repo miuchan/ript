@@ -12,85 +12,45 @@
 
 Ript formalizes **Resource-Indexed Information Process Theory**: typed
 processes whose behavior and resource use compose. It connects executable
-models with kernel-checked proofs of cost bounds, soundness, relative
-completeness, and structure-preserving semantics.
+finite models with kernel-checked proofs of cost bounds, soundness,
+completeness results, and structure-preserving semantics.
 
 > [!IMPORTANT]
 > Ript is early-stage research software. Its compiled results are checked by
 > Lean's kernel, but the public API is not stable and the project does not claim
-> to be a complete theory of physical information.
+> a complete theory of physical information.
 
-## Why Ript?
+## Why Ript
 
-Ordinary process theories describe which processes compose. Resource-sensitive
-theories must also explain how composition costs, which rewrites preserve that
-cost, and when a syntactic estimate is semantically valid.
+Ordinary process theories say which processes compose. Resource-sensitive
+theories must also say how costs compose, which rewrites preserve them, and
+when syntactic estimates are semantically valid. Ript makes those obligations
+explicit and machine-checkable.
 
-Ript makes those obligations explicit:
+- Ordered additive resources track serial and parallel budgets.
+- Executable syntax stays separate from quotient-based proof models.
+- Interpretations prove typing, equations, and resource-bound preservation.
+- Optional capabilities such as tensor, copy, discard, convexity, causality,
+  and thermodynamics are never inferred from one another.
+- Flagship results carry an audited record of their kernel assumptions.
 
-- resources form an ordered additive algebra;
-- serial and parallel composition carry proved upper bounds;
-- executable syntax is separate from quotient-based proof models;
-- interpretations preserve typing, equations, and declared resource bounds;
-- concrete deterministic, stochastic, computational, causal, thermal, and
-  quantum models instantiate the generic interfaces;
-- every flagship theorem has a recorded kernel-assumption audit.
+## Highlights
 
-The name **Ript** abbreviates **Resource-Indexed Information Process Theory**.
+- **Formal core:** costed categories, executable sequential and monoidal
+  syntax, soundness, relative completeness, and monoidal initiality.
+- **Exact finite models:** deterministic, stochastic, decision,
+  computational, causal, thermal, and quantum instances.
+- **Higher organization:** a bicategory of process models, cost-exact
+  equivalences, and checked walking-localization constructions.
+- **Internal identity semantics:** axiom-free deep syntax with groupoid,
+  quotient, presheaf, simplicial, and classifying-diagram interpretations.
 
-## What is implemented
-
-The current library includes four connected layers.
-
-### Formal core
-
-- ordered additive resources, budgets, monotonicity, and cost filtrations;
-- costed categories with serial and parallel composition;
-- executable sequential and symmetric monoidal syntax;
-- explicit equational derivations, soundness, term models, relative
-  completeness, and monoidal initiality.
-
-### Exact finite models
-
-- finite functions and metered total/partial computation;
-- exact finite stochastic channels over nonnegative rationals;
-- a finite-distribution Kleisli representation and faithful `Stoch` bridge;
-- Blackwell comparison, exact finite Bayes risk, and task-relative semantic
-  value;
-- finite DAG causal models with normalized hard interventions;
-- finite Gibbs-preserving systems, KL/free-energy results, and executable
-  Landauer witnesses;
-- finite-dimensional Kraus channels and a faithful classical dephasing
-  embedding.
-
-### Higher organization
-
-- a bicategory of resource-indexed symmetric monoidal process models;
-- cost-exact model equivalences and an ordinary homotopy localization;
-- nontrivial walking-localization test cases, including a two-dimensional
-  parameterized construction.
-
-### Internal univalent boundary
-
-- an axiom-free deep syntax for internal identity and structural equivalence;
-- groupoid, quotient, presheaf, simplicial nerve, and classifying-diagram
-  semantics;
-- explicitly bounded 0/1-truncated results, without assuming external
-  univalence or equating arbitrary Lean equivalences with Lean equality.
-
-For exact capability claims, limitations, and theorem status, use the
-[model matrix](MODEL_MATRIX.md), [research status](docs/RESEARCH_STATUS.md), and
-[formal blueprint](BLUEPRINT.md). Those documents are authoritative; this page
-is intentionally an overview.
+See the [model capability matrix](MODEL_MATRIX.md) for implemented features and
+the [research status](docs/RESEARCH_STATUS.md) for exact limitations.
 
 ## Quick start
 
-### Requirements
-
-- Git
-- a POSIX shell
-- [elan](https://github.com/leanprover/elan), which installs the pinned Lean
-  toolchain automatically
+Install [elan](https://github.com/leanprover/elan), then run:
 
 ```bash
 git clone https://github.com/miuchan/ript.git
@@ -99,30 +59,22 @@ lake exe cache get
 lake build
 ```
 
-Run every repository gate before submitting a change:
+Run the complete local CI contract before submitting changes:
 
 ```bash
 ./scripts/quality-gate.sh
 ```
 
-The gate checks source policy, root-module coverage, a warning-free kernel
-build, declaration lint, executable examples, and the axiom allowlist.
-
-## Try an executable model
-
-The examples are ordinary Lean modules. For example:
+To check an executable model directly:
 
 ```bash
 lake env lean Ript/Examples/StochasticBits.lean
-lake env lean Ript/Examples/SimpleDecision.lean
-lake env lean Ript/Examples/SimpleCausalModel.lean
 ```
 
-Each command both checks its proofs and evaluates its finite examples. See the
-[getting-started guide](docs/GETTING_STARTED.md) for the full example map,
-individual validation commands, and troubleshooting.
+The [getting-started guide](docs/GETTING_STARTED.md) covers prerequisites,
+examples, dependency setup, reproducibility, and troubleshooting.
 
-## Use Ript from Lean
+## Use from Lean
 
 Until tagged releases exist, pin a full commit SHA:
 
@@ -131,104 +83,49 @@ require ript from git
   "https://github.com/miuchan/ript.git" @ "<commit-sha>"
 ```
 
-Then import the smallest module that provides the API you need, for example:
+Prefer the smallest import that provides the required API:
 
 ```lean
 import Ript.Resource.Budget
 import Ript.Models.FiniteStochastic
 ```
 
-`import Ript` is available for exploration, but narrow imports make dependency
-boundaries clearer and builds more predictable.
-
 ## Documentation
 
-- [Documentation hub](docs/README.md) — choose the shortest path for your task.
-- [Getting started](docs/GETTING_STARTED.md) — setup, examples, dependency use,
-  and troubleshooting.
-- [Architecture](docs/ARCHITECTURE.md) — layers, dependency direction, and
-  executable/proof boundaries.
-- [Research status](docs/RESEARCH_STATUS.md) — implemented pillars, active
-  frontier, and deliberately unclaimed results.
-- [Model capability matrix](MODEL_MATRIX.md) — implemented capabilities only.
-- [Formal blueprint](BLUEPRINT.md) — theorem dependency graph and exact status.
+- [Documentation hub](docs/README.md) — task-based routes through the project.
+- [Getting started](docs/GETTING_STARTED.md) — build, run, and consume Ript.
+- [Architecture](docs/ARCHITECTURE.md) — layers and dependency boundaries.
+- [Research status](docs/RESEARCH_STATUS.md) — proved, active, and unclaimed.
+- [Model capability matrix](MODEL_MATRIX.md) — compiled model capabilities.
+- [Formal blueprint](BLUEPRINT.md) — theorem dependencies and exact status.
 - [Axiom inventory](AXIOMS.md) — audited `#print axioms` output.
-- [Conjecture register](CONJECTURES.md) — open and recently discharged research
-  statements.
-- [Contributing guide](CONTRIBUTING.md) — mandatory proof and quality policy.
+- [Conjecture register](CONJECTURES.md) — open research statements.
+- [Contributing guide](CONTRIBUTING.md) — proof and quality policy.
 
-## Repository map
-
-```text
-Ript/Resource/    resource algebras, budgets, and filtrations
-Ript/Core/        costed process interfaces and capabilities
-Ript/Syntax/      executable sequential and monoidal syntax
-Ript/Semantics/   interpretation, soundness, completeness, initiality
-Ript/Models/      deterministic, stochastic, decision, causal, thermal, quantum
-Ript/Higher/      model morphisms, bicategory, coherence, localization
-Ript/Univalent/   downstream deep syntax and 0/1-truncated semantics
-Ript/Examples/    checked, often executable end-to-end examples
-Ript/Audit/       linter and kernel-assumption audit entry points
-```
-
-The dependency direction is deliberate:
-
-```text
-Executable core  →  Semantic models  →  Higher organization
-                                  ↘  Internal univalent interpretation
-```
-
-The downstream layers never add axioms to the executable core.
-
-## Trust and reproducibility
+## Trust, status, and governance
 
 Ript forbids proof placeholders, project-specific axioms, compiler-trust
-escapes, unsafe declarations, and broad umbrella imports in library modules.
-CI rebuilds the project with the pinned Lean and Mathlib revisions and treats
-warnings as errors.
+escapes, and unsafe library declarations. CI uses pinned Lean and Mathlib
+revisions, treats warnings as errors, executes representative models, and
+checks the documented axiom allowlist. Exact assumptions are recorded in
+[AXIOMS.md](AXIOMS.md).
 
-Some audited theorems use standard Mathlib foundations such as quotient
-soundness, propositional extensionality, or classical choice. Their exact
-dependencies are recorded in [AXIOMS.md](AXIOMS.md); no theorem is described as
-constructive merely because its statement concerns finite data.
+The active frontier is the arbitrary two-dimensional walking-localization
+factorization. All-arrow naturality and the complete right-unit law compile;
+the inverse left-unit branch, oplax associativity, pseudofunctor packaging,
+and the final adjoint equivalence remain open. See
+[RESEARCH_STATUS.md](docs/RESEARCH_STATUS.md) for the authoritative boundary.
 
-## Current frontier
-
-The active higher-categorical frontier is the arbitrary, nonseparable
-two-dimensional walking-localization factorization. Its object, morphism,
-2-morphism, identity-comparison, composition-comparison, and all-arrow
-naturality data compile. The left-unit equation also compiles on every
-canonical forward target arrow, and the right-unit law compiles for every
-target arrow, including the freely adjoined inverse. The reverse-arrow branch
-of the left-unit law, oplax associativity coherence, pseudofunctor packaging,
-and the resulting adjoint-equivalence factorization remain open.
-
-Other intentionally open directions include general measurable causal models,
-a Mathlib-native complete-Segal-space interface with weak equivalences, and a
-full bicategorical or Dwyer–Kan localization theorem. See
-[RESEARCH_STATUS.md](docs/RESEARCH_STATUS.md) for precise boundaries.
+The Lake package version is `0.1.0`, with no stable API release or archival DOI
+yet. Research artifacts should cite the repository and exact commit SHA. No
+open-source license has been selected; public source availability alone does
+not grant reuse rights.
 
 ## Contributing
 
-Contributions are welcome when they preserve the project's proof boundary and
-state claims at exactly the strength proved. Start with
-[CONTRIBUTING.md](CONTRIBUTING.md), run `./scripts/quality-gate.sh`, and update
-the blueprint and axiom inventory when a flagship theorem changes.
-
-## Versioning, citation, and license
-
-The Lake package version is `0.1.0`. There is no stable API release yet, so
-research artifacts should record the exact commit SHA they use.
-
-Ript has no archival paper or DOI yet. Cite the repository URL and pinned commit
-for reproducibility.
-
-No open-source license has been selected yet. Public source availability does
-not grant permission to copy, redistribute, or create derivative works until a
-license file is added.
-
-## Acknowledgements
+Contributions are welcome when claims match the compiled theorem strength and
+the proof boundary is preserved. Read [CONTRIBUTING.md](CONTRIBUTING.md) and
+run `./scripts/quality-gate.sh` before opening a pull request.
 
 Ript is built with [Lean 4](https://lean-lang.org/) and
-[Mathlib](https://github.com/leanprover-community/mathlib4). Their proof,
-algebra, category-theory, and tooling ecosystems make this work possible.
+[Mathlib](https://github.com/leanprover-community/mathlib4).
