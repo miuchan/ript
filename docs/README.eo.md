@@ -171,11 +171,13 @@ inversan ekvivalenton. La identeca komparo je ĉiu objekto, ĉiuj ok
 finpunkt-normaligitaj kunmetaj komparoj, kaj unu komparo por ĉiu kunmetebla
 paro de celaj sagoj nun estas kompilitaj. La ĉiusaga komparo difine reduktiĝas
 al la finpunkta formo, kaj la ok branĉaj reduktaj ekvacioj estas pruvitaj.
-La plena antaŭa-antaŭa komponilo kaj ambaŭ miksitaj komponiloj (inversa
-poste konservita, kaj konservita poste inversa) estas pruvite naturaj en ambaŭ
-konservit-koordinataj variabloj. Tio inkluzivas ĉiujn egalec-transportojn,
-asociilojn, fontajn komponilojn kaj la mate-derivitan inversan glitadon.
-Natureco por la aliaj kvin finpunktaj branĉoj restas parto de la kohera laboro.
+La plena antaŭa-antaŭa komponilo, ambaŭ miksitaj komponiloj (inversa poste
+konservita, kaj konservita poste inversa), kaj ambaŭ nuligaj komponiloj
+(inversa poste antaŭa, kaj antaŭa poste inversa) estas pruvite naturaj en
+ambaŭ konservit-koordinataj variabloj. La pruvoj inkluzivas ĉiujn
+egalec-transportojn, asociilojn, fontajn komponilojn, la mate-derivitan
+inversan glitadon, kaj la elektitan unit aŭ counit de la ekvivalento. Natureco
+por la aliaj tri finpunktaj branĉoj restas parto de la kohera laboro.
 Kvar finpunktaj hom-funktoraj reduktaj teoremoj kaj unu unuforma finpunkta
 2-ĉela konstruilo nun eksplicitas la antaŭan aŭ inversan agon bezonatan por la
 restantaj koherpruvoj.
@@ -1423,7 +1425,11 @@ neformalaj resumoj; la Lean-deklaroj estas aŭtoritataj.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse_naturality_right` | La plena konservita-poste-inversa komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn portatajn de sia dekstra inversa faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse_naturality_left` | La plena konservita-poste-inversa komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia maldekstra konservita faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | Kanona inverso sekvata de sia kongrua antaŭa sago estas komparata per la counit de la elektita ekvivalento. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward_naturality_right` | La plena inversa-poste-antaŭa nuliga komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia dekstra antaŭa faktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward_naturality_left` | La plena inversa-poste-antaŭa nuliga komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia maldekstra inversa faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse` | Kanona antaŭa sago sekvata de sia kongrua inverso estas komparata per la unit de la elektita ekvivalento. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse_naturality_right` | La plena antaŭa-poste-inversa nuliga komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia dekstra inversa faktoro. |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForwardInverse_naturality_left` | La plena antaŭa-poste-inversa nuliga komponilo estas natura rilate konservit-koordinatajn 2-ĉelojn sur sia maldekstra antaŭa faktoro. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp` | Finpunkta normaligo liveras kunmetan komparon por ĉiu kunmetebla paro de celaj sagoj. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_endpoint` | La ĉiusaga komparo difine reduktiĝas al la eksplicita okbranĉa finpunkta komparo. |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_localPrecomposition_faithful` | Antaŭkunmeto estas fidela en ĉiuj lokaj kategorioj de fortaj transformoj kaj modifoj. |

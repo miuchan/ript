@@ -119,8 +119,12 @@ Both mixed branches now satisfy the same complete statement: inverse followed
 by retained data and retained data followed by inverse data have compiled left
 and right naturality through target normalization, source compositors,
 equality transports, associators, and the mate-derived inverse sliding square.
-What remains open is to extend the corresponding naturality proof through the
-other five endpoint-normalized branches, prove the pseudofunctor unit,
+Both cancellation branches now do as well: inverse followed by its matching
+forward arrow uses the chosen counit, while forward followed by inverse uses
+the chosen unit; both are natural in either retained coordinate through their
+source factorizations and endpoint transports. What remains open is to extend
+the corresponding naturality proof through the other three endpoint-normalized
+branches, prove the pseudofunctor unit,
 associativity, and whiskering laws, and then build the source-factorization
 adjoint equivalence. This is the missing global `lift`
 field, and the corresponding construction for the full resource-process
