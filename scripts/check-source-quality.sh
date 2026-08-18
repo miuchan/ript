@@ -65,10 +65,10 @@ while IFS=: read -r overview_file maximum_lines; do
     exit 1
   fi
 done <<'OVERVIEW_LIMITS'
-README.md:160
-docs/README.zh-CN.md:150
-docs/README.ja.md:150
-docs/README.eo.md:150
+README.md:80
+docs/README.zh-CN.md:80
+docs/README.ja.md:80
+docs/README.eo.md:80
 OVERVIEW_LIMITS
 
 # Broken relative links make a split documentation set worse than one long
