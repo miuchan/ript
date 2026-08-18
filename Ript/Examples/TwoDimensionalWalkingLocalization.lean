@@ -4351,6 +4351,66 @@ private theorem iso_inv_naturality_of_square
     _ = (p ≫ e₁.hom) ≫ e₁.inv := by rw [h]
     _ = p := by simp
 
+private noncomputable def equivalenceCounitInsertion
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) (T : b ⟶ b) :
+    T ≅ e.inv ≫ (e.hom ≫ T) :=
+  (leftUnitor T).symm ≪≫
+    whiskerRightIso e.counit.symm T ≪≫
+    α_ e.inv e.hom T
+
+private theorem equivalenceCounitInsertion_hom
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) (T : b ⟶ b) :
+    (equivalenceCounitInsertion e T).hom =
+      (leftUnitor T).inv ≫ (e.counit.inv ▷ T) ≫
+        (associator e.inv e.hom T).hom := by
+  rfl
+
+private theorem equivalenceCounitInsertion_naturality
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) {T S : b ⟶ b} (η : T ⟶ S) :
+    η ≫ (equivalenceCounitInsertion e S).hom =
+      (equivalenceCounitInsertion e T).hom ≫
+        (e.inv ◁ (e.hom ◁ η)) := by
+  rw [equivalenceCounitInsertion_hom,
+    equivalenceCounitInsertion_hom]
+  exact comp_naturality_of_squares
+    (leftUnitor_inv_naturality η)
+    (comp_naturality_of_squares
+      (whisker_exchange e.counit.inv η)
+      (associator_naturality_right e.inv e.hom η))
+
+private noncomputable def equivalenceUnitInsertion
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) (T : a ⟶ a) :
+    T ≅ e.hom ≫ (e.inv ≫ T) :=
+  (leftUnitor T).symm ≪≫
+    whiskerRightIso e.unit T ≪≫
+    α_ e.hom e.inv T
+
+private theorem equivalenceUnitInsertion_hom
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) (T : a ⟶ a) :
+    (equivalenceUnitInsertion e T).hom =
+      (leftUnitor T).inv ≫ (e.unit.hom ▷ T) ≫
+        (associator e.hom e.inv T).hom := by
+  rfl
+
+private theorem equivalenceUnitInsertion_naturality
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) {T S : a ⟶ a} (η : T ⟶ S) :
+    η ≫ (equivalenceUnitInsertion e S).hom =
+      (equivalenceUnitInsertion e T).hom ≫
+        (e.hom ◁ (e.inv ◁ η)) := by
+  rw [equivalenceUnitInsertion_hom,
+    equivalenceUnitInsertion_hom]
+  exact comp_naturality_of_squares
+    (leftUnitor_inv_naturality η)
+    (comp_naturality_of_squares
+      (whisker_exchange e.unit.hom η)
+      (associator_naturality_right e.hom e.inv η))
+
 private theorem mate_precomp
     {C : Type u₂} [Bicategory.{w₂, v₂} C]
     {a b : C} {l : a ⟶ b} {r : b ⟶ a} (adj : l ⊣ r)
@@ -5966,6 +6026,588 @@ noncomputable def canonicalForwardInverseCompositionComparison
       CategoryTheory.FreeGroupoid.homMk (𝟙 X)
     simp)) (Iso.refl _)
 
+/-- Inverse/forward cancellation is natural in the forward factor's retained
+coordinate. -/
+theorem canonicalInverseForwardCompositionComparison_naturality_right
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (canonicalInverseHom f A ◁ canonicalForwardTwoCell f η) ≫
+        (canonicalInverseForwardCompositionComparison f A C).hom =
+      (canonicalInverseForwardCompositionComparison f A B).hom ≫
+        canonicalForwardTwoCell (𝟙 Y)
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Inverse/forward cancellation is natural in the inverse factor's retained
+coordinate. -/
+theorem canonicalInverseForwardCompositionComparison_naturality_left
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (canonicalInverseTwoCell f η ▷ canonicalForwardHom f B) ≫
+        (canonicalInverseForwardCompositionComparison f C B).hom =
+      (canonicalInverseForwardCompositionComparison f A B).hom ≫
+        canonicalForwardTwoCell (𝟙 Y)
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B)) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Mapping right naturality of inverse/forward cancellation through the lift
+preserves the vertical composite. -/
+theorem generalLiftInverseForwardMapCompTarget_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseHom f A ◁ canonicalForwardTwoCell f η) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison f A C).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison f A B).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) := by
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp,
+    canonicalInverseForwardCompositionComparison_naturality_right,
+    (generalLiftPrelaxFunctor F hF).map₂_comp]
+
+/-- Mapping left naturality of inverse/forward cancellation through the lift
+preserves the vertical composite. -/
+theorem generalLiftInverseForwardMapCompTarget_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η ▷ canonicalForwardHom f B) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison f C B).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison f A B).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) := by
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp,
+    canonicalInverseForwardCompositionComparison_naturality_left,
+    (generalLiftPrelaxFunctor F hF).map₂_comp]
+
+/-- The inner sliding stage moves the chosen forward equivalence past the
+left retained coordinate. -/
+noncomputable def generalLiftInverseForwardMapCompSlidingInner
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftSourceEquivalence F hF f).hom ≫
+        (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+          F.map (canonicalSourceHom (𝟙 Y) B)) ≅
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B)) :=
+  (α_ (generalLiftSourceEquivalence F hF f).hom
+      (F.map (canonicalSourceHom (𝟙 Y) A))
+      (F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
+    whiskerRightIso (generalLiftForwardSlidingSource F hF f A)
+      (F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+    α_ (F.map (canonicalSourceHom (𝟙 X) A))
+      (generalLiftSourceEquivalence F hF f).hom
+      (F.map (canonicalSourceHom (𝟙 Y) B))
+
+/-- The hom of the inverse/forward inner sliding stage is its three explicit
+coherence factors. -/
+theorem generalLiftInverseForwardMapCompSlidingInner_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseForwardMapCompSlidingInner F hF f A B).hom =
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))).inv ≫
+      ((generalLiftForwardSlidingSource F hF f A).hom ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))).hom := by
+  rfl
+
+/-- Inner sliding is natural in the forward factor's retained coordinate. -/
+theorem generalLiftInverseForwardMapCompSlidingInner_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    ((generalLiftSourceEquivalence F hF f).hom ◁
+        (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))) ≫
+      (generalLiftInverseForwardMapCompSlidingInner F hF f A C).hom =
+    (generalLiftInverseForwardMapCompSlidingInner F hF f A B).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))) := by
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom,
+    generalLiftInverseForwardMapCompSlidingInner_hom]
+  exact comp_naturality_of_squares
+    (associator_inv_naturality_right
+      (generalLiftSourceEquivalence F hF f).hom
+      (F.map (canonicalSourceHom (𝟙 Y) A))
+      (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η)))
+    (comp_naturality_of_squares
+      (whisker_exchange
+        (generalLiftForwardSlidingSource F hF f A).hom
+        (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η)))
+      (associator_naturality_right
+        (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))))
+
+/-- Inner sliding is natural in the inverse factor's retained coordinate. -/
+theorem generalLiftInverseForwardMapCompSlidingInner_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    ((generalLiftSourceEquivalence F hF f).hom ◁
+        (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η) ▷
+          F.map (canonicalSourceHom (𝟙 Y) B))) ≫
+      (generalLiftInverseForwardMapCompSlidingInner F hF f C B).hom =
+    (generalLiftInverseForwardMapCompSlidingInner F hF f A B).hom ≫
+      (F.map₂ (canonicalSourceTwoCell (𝟙 X) η) ▷
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B))) := by
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom,
+    generalLiftInverseForwardMapCompSlidingInner_hom]
+  exact comp_naturality_of_squares
+    (associator_inv_naturality_middle
+      (generalLiftSourceEquivalence F hF f).hom
+      (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))
+      (F.map (canonicalSourceHom (𝟙 Y) B)))
+    (comp_naturality_of_squares
+      (whiskerRight_naturality_of_square
+        (F.map (canonicalSourceHom (𝟙 Y) B))
+        (generalLiftForwardSlidingSource_naturality F hF f η))
+      (associator_naturality_left
+        (F.map₂ (canonicalSourceTwoCell (𝟙 X) η))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))))
+
+/-- The outer sliding stage whisks the inner move by the chosen inverse and
+restores the cancellation-factor association. -/
+noncomputable def generalLiftInverseForwardMapCompSliding
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftSourceEquivalence F hF f).inv ≫
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+            F.map (canonicalSourceHom (𝟙 Y) B))) ≅
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B)) :=
+  whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftInverseForwardMapCompSlidingInner F hF f A B) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      ((generalLiftSourceEquivalence F hF f).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) B))).symm
+
+/-- The hom of the outer sliding stage is the whiskered inner move followed by
+inverse associator transport. -/
+theorem generalLiftInverseForwardMapCompSliding_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseForwardMapCompSliding F hF f A B).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (generalLiftInverseForwardMapCompSlidingInner F hF f A B).hom) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) A))
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B))).inv := by
+  rfl
+
+/-- Outer sliding is natural in the forward factor's retained coordinate. -/
+theorem generalLiftInverseForwardMapCompSliding_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 Y) η)))) ≫
+      (generalLiftInverseForwardMapCompSliding F hF f A C).hom =
+    (generalLiftInverseForwardMapCompSliding F hF f A B).hom ≫
+      (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ◁
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))) := by
+  rw [generalLiftInverseForwardMapCompSliding_hom,
+    generalLiftInverseForwardMapCompSliding_hom]
+  exact comp_naturality_of_squares
+    (whiskerLeft_naturality_of_square
+      (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftInverseForwardMapCompSlidingInner_naturality_right
+        F hF f A η))
+    (associator_inv_naturality_right
+      (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 Y) η)))
+
+/-- Outer sliding is natural in the inverse factor's retained coordinate. -/
+theorem generalLiftInverseForwardMapCompSliding_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η) ▷
+          F.map (canonicalSourceHom (𝟙 Y) B)))) ≫
+      (generalLiftInverseForwardMapCompSliding F hF f C B).hom =
+    (generalLiftInverseForwardMapCompSliding F hF f A B).hom ≫
+      (((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) ▷
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B))) := by
+  rw [generalLiftInverseForwardMapCompSliding_hom,
+    generalLiftInverseForwardMapCompSliding_hom]
+  exact comp_naturality_of_squares
+    (whiskerLeft_naturality_of_square
+      (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftInverseForwardMapCompSlidingInner_naturality_left
+        F hF f η B))
+    (associator_inv_naturality_middle
+      (generalLiftSourceEquivalence F hF f).inv
+      (F.map₂ (canonicalSourceTwoCell (𝟙 X) η))
+      ((generalLiftSourceEquivalence F hF f).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) B)))
+
+/-- The factorization stage replaces the remaining forward equivalence/source
+pair by the source image of the forward factor. -/
+noncomputable def generalLiftInverseForwardMapCompFactorization
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B)) ≅
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ≫
+        F.map (canonicalSourceHom f B) :=
+  whiskerLeftIso
+    ((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) A))
+    (generalLiftForwardFactorizationSource F hF f B).symm
+
+/-- The factorization hom is the inverse forward factorization whiskered by
+the fixed inverse factor. -/
+theorem generalLiftInverseForwardMapCompFactorization_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseForwardMapCompFactorization F hF f A B).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) A)) ◁
+      (generalLiftForwardFactorizationSource F hF f B).inv := by
+  rfl
+
+/-- Factorization is natural in the forward factor's retained coordinate. -/
+theorem generalLiftInverseForwardMapCompFactorization_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ◁
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))) ≫
+      (generalLiftInverseForwardMapCompFactorization F hF f A C).hom =
+    (generalLiftInverseForwardMapCompFactorization F hF f A B).hom ≫
+      (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ◁
+        F.map₂ (canonicalSourceTwoCell f η)) := by
+  rw [generalLiftInverseForwardMapCompFactorization_hom,
+    generalLiftInverseForwardMapCompFactorization_hom]
+  exact whiskerLeft_naturality_of_square
+    ((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) A))
+    (iso_inv_naturality_of_square
+      (generalLiftForwardFactorizationSource F hF f B)
+      (generalLiftForwardFactorizationSource F hF f C)
+      (generalLiftForwardFactorizationSource_naturality F hF f η))
+
+/-- Factorization is natural in the inverse factor's retained coordinate. -/
+theorem generalLiftInverseForwardMapCompFactorization_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) ▷
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) B))) ≫
+      (generalLiftInverseForwardMapCompFactorization F hF f C B).hom =
+    (generalLiftInverseForwardMapCompFactorization F hF f A B).hom ≫
+      (((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) ▷
+        F.map (canonicalSourceHom f B)) := by
+  rw [generalLiftInverseForwardMapCompFactorization_hom,
+    generalLiftInverseForwardMapCompFactorization_hom]
+  exact (whisker_exchange
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      F.map₂ (canonicalSourceTwoCell (𝟙 X) η))
+    (generalLiftForwardFactorizationSource F hF f B).inv).symm
+
+/-- The endpoint-factor stage transports the chosen inverse and source
+forward factor back to the arbitrary lift's mapped factors. -/
+noncomputable def generalLiftInverseForwardMapCompFactors
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) A)) ≫
+          F.map (canonicalSourceHom f B) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom f B) :=
+  whiskerRightIso
+      (eqToIso
+        (generalLiftPrelaxFunctor_map_inverse F hF f hf A)).symm
+      (F.map (canonicalSourceHom f B)) ≪≫
+    whiskerLeftIso
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A))
+      (eqToIso
+        (generalLiftPrelaxFunctor_map_forward F hF f B)).symm
+
+/-- The hom of inverse/forward endpoint-factor transport is its pair of
+endpoint equality transports. -/
+theorem generalLiftInverseForwardMapCompFactors_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftInverseForwardMapCompFactors F hF f hf A B).hom =
+      (eqToHom
+          (generalLiftPrelaxFunctor_map_inverse F hF f hf A).symm ▷
+        F.map (canonicalSourceHom f B)) ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ◁
+        eqToHom
+          (generalLiftPrelaxFunctor_map_forward F hF f B).symm) := by
+  rfl
+
+/-- Endpoint-factor transport is natural in the forward factor's retained
+coordinate. -/
+theorem generalLiftInverseForwardMapCompFactors_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ◁
+        F.map₂ (canonicalSourceTwoCell f η)) ≫
+      (generalLiftInverseForwardMapCompFactors F hF f hf A C).hom =
+    (generalLiftInverseForwardMapCompFactors F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ◁
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η)) := by
+  rw [generalLiftInverseForwardMapCompFactors_hom,
+    generalLiftInverseForwardMapCompFactors_hom]
+  exact comp_naturality_of_squares
+    (whisker_exchange
+      (eqToHom
+        (generalLiftPrelaxFunctor_map_inverse F hF f hf A).symm)
+      (F.map₂ (canonicalSourceTwoCell f η)))
+    (whiskerLeft_naturality_of_square
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A))
+      (generalLiftMap₂ForwardTransportSymm F hF f η))
+
+/-- Endpoint-factor transport is natural in the inverse factor's retained
+coordinate. -/
+theorem generalLiftInverseForwardMapCompFactors_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) ▷
+        F.map (canonicalSourceHom f B)) ≫
+      (generalLiftInverseForwardMapCompFactors F hF f hf C B).hom =
+    (generalLiftInverseForwardMapCompFactors F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η) ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom f B)) := by
+  rw [generalLiftInverseForwardMapCompFactors_hom,
+    generalLiftInverseForwardMapCompFactors_hom]
+  exact comp_naturality_of_squares
+    (whiskerRight_naturality_of_square
+      (F.map (canonicalSourceHom f B))
+      (generalLiftMap₂InverseTransportSymm F hF f hf η))
+    (whisker_exchange
+      ((generalLiftPrelaxFunctor F hF).map₂
+        (canonicalInverseTwoCell f η))
+      (eqToHom
+        (generalLiftPrelaxFunctor_map_forward F hF f B).symm)).symm
+
+/-- Cancellation, sliding, and factorization transport the two codomain
+source factors to the inverse/forward source normal form. -/
+noncomputable def generalLiftInverseForwardMapCompSourceTransport
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B) ≅
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ≫
+        F.map (canonicalSourceHom f B) :=
+  equivalenceCounitInsertion (generalLiftSourceEquivalence F hF f)
+      (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+    generalLiftInverseForwardMapCompSliding F hF f A B ≪≫
+    generalLiftInverseForwardMapCompFactorization F hF f A B
+
+/-- The source transport hom is the counit insertion, sliding, and
+factorization composite. -/
+theorem generalLiftInverseForwardMapCompSourceTransport_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseForwardMapCompSourceTransport F hF f A B).hom =
+      (equivalenceCounitInsertion (generalLiftSourceEquivalence F hF f)
+        (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+          F.map (canonicalSourceHom (𝟙 Y) B))).hom ≫
+      (generalLiftInverseForwardMapCompSliding F hF f A B).hom ≫
+      (generalLiftInverseForwardMapCompFactorization F hF f A B).hom := by
+  rfl
+
+/-- Source transport is natural in the forward factor's retained
+coordinate. -/
+theorem generalLiftInverseForwardMapCompSourceTransport_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 Y) η)) ≫
+      (generalLiftInverseForwardMapCompSourceTransport F hF f A C).hom =
+    (generalLiftInverseForwardMapCompSourceTransport F hF f A B).hom ≫
+      (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ◁
+        F.map₂ (canonicalSourceTwoCell f η)) := by
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom]
+  exact comp_naturality_of_squares
+    (equivalenceCounitInsertion_naturality
+      (generalLiftSourceEquivalence F hF f)
+      (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 Y) η)))
+    (comp_naturality_of_squares
+      (generalLiftInverseForwardMapCompSliding_naturality_right
+        F hF f A η)
+      (generalLiftInverseForwardMapCompFactorization_naturality_right
+        F hF f A η))
+
+/-- Source transport is natural in the inverse factor's retained
+coordinate. -/
+theorem generalLiftInverseForwardMapCompSourceTransport_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η) ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+      (generalLiftInverseForwardMapCompSourceTransport F hF f C B).hom =
+    (generalLiftInverseForwardMapCompSourceTransport F hF f A B).hom ≫
+      (((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) ▷
+        F.map (canonicalSourceHom f B)) := by
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom]
+  exact comp_naturality_of_squares
+    (equivalenceCounitInsertion_naturality
+      (generalLiftSourceEquivalence F hF f)
+      (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η) ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)))
+    (comp_naturality_of_squares
+      (generalLiftInverseForwardMapCompSliding_naturality_left
+        F hF f η B)
+      (generalLiftInverseForwardMapCompFactorization_naturality_left
+        F hF f η B))
+
+/-- The complete post-comparison transport for inverse/forward cancellation,
+from the retained codomain composite to the arbitrary lift's two factors. -/
+noncomputable def generalLiftInverseForwardMapCompTransport
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom (𝟙 Y) (A × B)) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom f B) :=
+  generalLiftForwardMapCompCore F hF (𝟙 Y) (𝟙 Y) A B ≪≫
+    generalLiftInverseForwardMapCompSourceTransport F hF f A B ≪≫
+    generalLiftInverseForwardMapCompFactors F hF f hf A B
+
+/-- The post-comparison transport hom is its forward core, cancellation source
+transport, and endpoint-factor transport. -/
+theorem generalLiftInverseForwardMapCompTransport_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftInverseForwardMapCompTransport F hF f hf A B).hom =
+      (generalLiftForwardMapCompCore F hF (𝟙 Y) (𝟙 Y) A B).hom ≫
+      (generalLiftInverseForwardMapCompSourceTransport F hF f A B).hom ≫
+      (generalLiftInverseForwardMapCompFactors F hF f hf A B).hom := by
+  rfl
+
+/-- The complete inverse/forward transport is natural in the forward factor's
+retained coordinate. -/
+theorem generalLiftInverseForwardMapCompTransport_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) ≫
+      (generalLiftInverseForwardMapCompTransport F hF f hf A C).hom =
+    (generalLiftInverseForwardMapCompTransport F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ◁
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η)) := by
+  rw [generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompTransport_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardMapCompCore_naturality_right
+      F hF (𝟙 Y) (𝟙 Y) A η)
+    (comp_naturality_of_squares
+      (generalLiftInverseForwardMapCompSourceTransport_naturality_right
+        F hF f A η)
+      (generalLiftInverseForwardMapCompFactors_naturality_right
+        F hF f hf A η))
+
+/-- The complete inverse/forward transport is natural in the inverse factor's
+retained coordinate. -/
+theorem generalLiftInverseForwardMapCompTransport_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) ≫
+      (generalLiftInverseForwardMapCompTransport F hF f hf C B).hom =
+    (generalLiftInverseForwardMapCompTransport F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η) ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom f B)) := by
+  rw [generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompTransport_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardMapCompCore_naturality_left
+      F hF (𝟙 Y) (𝟙 Y) η B)
+    (comp_naturality_of_squares
+      (generalLiftInverseForwardMapCompSourceTransport_naturality_left
+        F hF f η B)
+      (generalLiftInverseForwardMapCompFactors_naturality_left
+        F hF f hf η B))
+
 /-- Composition comparison for a canonical inverse followed by the matching
 forward arrow. -/
 noncomputable def generalLiftMapCompInverseForward
@@ -5978,42 +6620,534 @@ noncomputable def generalLiftMapCompInverseForward
         (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f B) :=
   (generalLiftPrelaxFunctor F hF).map₂Iso
       (canonicalInverseForwardCompositionComparison f A B) ≪≫
-    eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (A × B)) ≪≫
-    generalLiftForwardMapCompSource F (𝟙 Y) (𝟙 Y) A B ≪≫
-    (λ_ (F.map (canonicalSourceHom (𝟙 Y) A) ≫
-      F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
-    whiskerRightIso (generalLiftSourceEquivalence F hF f).counit.symm
-      (F.map (canonicalSourceHom (𝟙 Y) A) ≫
-        F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
-    α_ (generalLiftSourceEquivalence F hF f).inv
+    generalLiftInverseForwardMapCompTransport F hF f hf A B
+
+/-- The hom of the complete inverse/forward compositor is its mapped target
+comparison followed by the named transport. -/
+theorem generalLiftMapCompInverseForward_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftMapCompInverseForward F hF f hf A B).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison f A B).hom ≫
+        (generalLiftInverseForwardMapCompTransport F hF f hf A B).hom := by
+  rfl
+
+/-- The complete inverse/forward cancellation compositor is natural in the
+forward factor's retained coordinate. -/
+theorem generalLiftMapCompInverseForward_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseHom f A ◁ canonicalForwardTwoCell f η) ≫
+      (generalLiftMapCompInverseForward F hF f hf A C).hom =
+    (generalLiftMapCompInverseForward F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A) ◁
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η)) := by
+  rw [generalLiftMapCompInverseForward_hom,
+    generalLiftMapCompInverseForward_hom]
+  exact comp_naturality_of_squares
+    (generalLiftInverseForwardMapCompTarget_naturality_right F hF f A η)
+    (generalLiftInverseForwardMapCompTransport_naturality_right
+      F hF f hf A η)
+
+/-- The complete inverse/forward cancellation compositor is natural in the
+inverse factor's retained coordinate. -/
+theorem generalLiftMapCompInverseForward_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η ▷ canonicalForwardHom f B) ≫
+      (generalLiftMapCompInverseForward F hF f hf C B).hom =
+    (generalLiftMapCompInverseForward F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η) ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalForwardHom f B)) := by
+  rw [generalLiftMapCompInverseForward_hom,
+    generalLiftMapCompInverseForward_hom]
+  exact comp_naturality_of_squares
+    (generalLiftInverseForwardMapCompTarget_naturality_left F hF f η B)
+    (generalLiftInverseForwardMapCompTransport_naturality_left
+      F hF f hf η B)
+
+/-- Forward/inverse cancellation is natural in the inverse factor's retained
+coordinate. -/
+theorem canonicalForwardInverseCompositionComparison_naturality_right
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (canonicalForwardHom f A ◁ canonicalInverseTwoCell f η) ≫
+        (canonicalForwardInverseCompositionComparison f A C).hom =
+      (canonicalForwardInverseCompositionComparison f A B).hom ≫
+        canonicalForwardTwoCell (𝟙 X)
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Forward/inverse cancellation is natural in the forward factor's retained
+coordinate. -/
+theorem canonicalForwardInverseCompositionComparison_naturality_left
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (canonicalForwardTwoCell f η ▷ canonicalInverseHom f B) ≫
+        (canonicalForwardInverseCompositionComparison f C B).hom =
+      (canonicalForwardInverseCompositionComparison f A B).hom ≫
+        canonicalForwardTwoCell (𝟙 X)
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B)) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Mapping right naturality of forward/inverse cancellation through the lift
+preserves the vertical composite. -/
+theorem generalLiftForwardInverseMapCompTarget_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁ canonicalInverseTwoCell f η) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison f A C).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison f A B).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) := by
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp,
+    canonicalForwardInverseCompositionComparison_naturality_right,
+    (generalLiftPrelaxFunctor F hF).map₂_comp]
+
+/-- Mapping left naturality of forward/inverse cancellation through the lift
+preserves the vertical composite. -/
+theorem generalLiftForwardInverseMapCompTarget_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η ▷ canonicalInverseHom f B) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison f C B).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison f A B).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) := by
+  rw [← (generalLiftPrelaxFunctor F hF).map₂_comp,
+    canonicalForwardInverseCompositionComparison_naturality_left,
+    (generalLiftPrelaxFunctor F hF).map₂_comp]
+
+/-- The forward/inverse unit stage inserts the chosen equivalence and inverse
+inside the right factor. -/
+noncomputable def generalLiftForwardInverseMapCompUnit
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom (𝟙 X) A) ≫
+        F.map (canonicalSourceHom (𝟙 X) B) ≅
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) :=
+  whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+    (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+      (F.map (canonicalSourceHom (𝟙 X) B)))
+
+/-- The unit-stage hom is the equivalence unit insertion whiskered by the
+fixed left source factor. -/
+theorem generalLiftForwardInverseMapCompUnit_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardInverseMapCompUnit F hF f A B).hom =
+      F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+          (F.map (canonicalSourceHom (𝟙 X) B))).hom := by
+  rfl
+
+/-- The unit stage is natural in the inverse factor's retained coordinate. -/
+theorem generalLiftForwardInverseMapCompUnit_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) η)) ≫
+      (generalLiftForwardInverseMapCompUnit F hF f A C).hom =
+    (generalLiftForwardInverseMapCompUnit F hF f A B).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          ((generalLiftSourceEquivalence F hF f).inv ◁
+            F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))) := by
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompUnit_hom]
+  exact whiskerLeft_naturality_of_square
+    (F.map (canonicalSourceHom (𝟙 X) A))
+    (equivalenceUnitInsertion_naturality
+      (generalLiftSourceEquivalence F hF f)
+      (F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))
+
+/-- The unit stage is natural in the forward factor's retained coordinate. -/
+theorem generalLiftForwardInverseMapCompUnit_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (F.map₂ (canonicalSourceTwoCell (𝟙 X) η) ▷
+        F.map (canonicalSourceHom (𝟙 X) B)) ≫
+      (generalLiftForwardInverseMapCompUnit F hF f C B).hom =
+    (generalLiftForwardInverseMapCompUnit F hF f A B).hom ≫
+      (F.map₂ (canonicalSourceTwoCell (𝟙 X) η) ▷
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B)))) := by
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompUnit_hom]
+  exact (whisker_exchange
+    (F.map₂ (canonicalSourceTwoCell (𝟙 X) η))
+    (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+      (F.map (canonicalSourceHom (𝟙 X) B))).hom).symm
+
+/-- The forward/inverse factorization stage reassociates and collapses the
+retained-factor/forward-equivalence pair to the source forward arrow. -/
+noncomputable def generalLiftForwardInverseMapCompFactorization
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom (𝟙 X) A) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) ≅
+      F.map (canonicalSourceHom f A) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B)) :=
+  (α_ (F.map (canonicalSourceHom (𝟙 X) A))
       (generalLiftSourceEquivalence F hF f).hom
-      (F.map (canonicalSourceHom (𝟙 Y) A) ≫
-        F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
-    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
-      (α_ (generalLiftSourceEquivalence F hF f).hom
-        (F.map (canonicalSourceHom (𝟙 Y) A))
-        (F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
-    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
-      (whiskerRightIso (generalLiftForwardSlidingSource F hF f A)
-        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
-    whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    whiskerRightIso
+      (generalLiftRetainedForwardFactorizationSource F hF f A).symm
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))
+
+/-- The factorization hom is inverse association followed by the inverse
+retained-forward factorization. -/
+theorem generalLiftForwardInverseMapCompFactorization_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardInverseMapCompFactorization F hF f A B).hom =
       (α_ (F.map (canonicalSourceHom (𝟙 X) A))
         (generalLiftSourceEquivalence F hF f).hom
-        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
-    (α_ (generalLiftSourceEquivalence F hF f).inv
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+      ((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))) := by
+  rfl
+
+/-- Factorization is natural in the inverse factor's retained coordinate. -/
+theorem generalLiftForwardInverseMapCompFactorization_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          ((generalLiftSourceEquivalence F hF f).inv ◁
+            F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))) ≫
+      (generalLiftForwardInverseMapCompFactorization F hF f A C).hom =
+    (generalLiftForwardInverseMapCompFactorization F hF f A B).hom ≫
+      (F.map (canonicalSourceHom f A) ◁
+        ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η))) := by
+  rw [generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  exact comp_naturality_of_squares
+    (associator_inv_naturality_right
       (F.map (canonicalSourceHom (𝟙 X) A))
-      ((generalLiftSourceEquivalence F hF f).hom ≫
-        F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
-    whiskerLeftIso
+      (generalLiftSourceEquivalence F hF f).hom
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))
+    (whisker_exchange
+      (generalLiftRetainedForwardFactorizationSource F hF f A).inv
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))
+
+/-- Factorization is natural in the forward factor's retained coordinate. -/
+theorem generalLiftForwardInverseMapCompFactorization_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (F.map₂ (canonicalSourceTwoCell (𝟙 X) η) ▷
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B)))) ≫
+      (generalLiftForwardInverseMapCompFactorization F hF f C B).hom =
+    (generalLiftForwardInverseMapCompFactorization F hF f A B).hom ≫
+      (F.map₂ (canonicalSourceTwoCell f η) ▷
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))) := by
+  rw [generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  exact comp_naturality_of_squares
+    (associator_inv_naturality_left
+      (F.map₂ (canonicalSourceTwoCell (𝟙 X) η))
+      (generalLiftSourceEquivalence F hF f).hom
       ((generalLiftSourceEquivalence F hF f).inv ≫
-        F.map (canonicalSourceHom (𝟙 X) A))
-      (generalLiftForwardFactorizationSource F hF f B).symm ≪≫
-    whiskerRightIso
-      (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf A)).symm
-      (F.map (canonicalSourceHom f B)) ≪≫
+        F.map (canonicalSourceHom (𝟙 X) B)))
+    (whiskerRight_naturality_of_square
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))
+      (iso_inv_naturality_of_square
+        (generalLiftRetainedForwardFactorizationSource F hF f A)
+        (generalLiftRetainedForwardFactorizationSource F hF f C)
+        (generalLiftRetainedForwardFactorizationSource_naturality
+          F hF f η)))
+
+/-- The forward/inverse endpoint-factor stage transports the source forward
+factor and chosen inverse back to the arbitrary lift's mapped factors. -/
+noncomputable def generalLiftForwardInverseMapCompFactors
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    F.map (canonicalSourceHom f A) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B)) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f B) :=
+  whiskerRightIso
+      (eqToIso
+        (generalLiftPrelaxFunctor_map_forward F hF f A)).symm
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
     whiskerLeftIso
-      ((generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f A))
-      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF f B)).symm
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A))
+      (eqToIso
+        (generalLiftPrelaxFunctor_map_inverse F hF f hf B)).symm
+
+/-- The hom of forward/inverse endpoint-factor transport is its pair of
+endpoint equality transports. -/
+theorem generalLiftForwardInverseMapCompFactors_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftForwardInverseMapCompFactors F hF f hf A B).hom =
+      (eqToHom
+          (generalLiftPrelaxFunctor_map_forward F hF f A).symm ▷
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))) ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ◁
+        eqToHom
+          (generalLiftPrelaxFunctor_map_inverse F hF f hf B).symm) := by
+  rfl
+
+/-- Endpoint-factor transport is natural in the inverse factor's retained
+coordinate. -/
+theorem generalLiftForwardInverseMapCompFactors_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (F.map (canonicalSourceHom f A) ◁
+        ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η))) ≫
+      (generalLiftForwardInverseMapCompFactors F hF f hf A C).hom =
+    (generalLiftForwardInverseMapCompFactors F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ◁
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η)) := by
+  rw [generalLiftForwardInverseMapCompFactors_hom,
+    generalLiftForwardInverseMapCompFactors_hom]
+  exact comp_naturality_of_squares
+    (whisker_exchange
+      (eqToHom
+        (generalLiftPrelaxFunctor_map_forward F hF f A).symm)
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))
+    (whiskerLeft_naturality_of_square
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A))
+      (generalLiftMap₂InverseTransportSymm F hF f hf η))
+
+/-- Endpoint-factor transport is natural in the forward factor's retained
+coordinate. -/
+theorem generalLiftForwardInverseMapCompFactors_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (F.map₂ (canonicalSourceTwoCell f η) ▷
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))) ≫
+      (generalLiftForwardInverseMapCompFactors F hF f hf C B).hom =
+    (generalLiftForwardInverseMapCompFactors F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η) ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f B)) := by
+  rw [generalLiftForwardInverseMapCompFactors_hom,
+    generalLiftForwardInverseMapCompFactors_hom]
+  exact comp_naturality_of_squares
+    (whiskerRight_naturality_of_square
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))
+      (generalLiftMap₂ForwardTransportSymm F hF f η))
+    (whisker_exchange
+      ((generalLiftPrelaxFunctor F hF).map₂
+        (canonicalForwardTwoCell f η))
+      (eqToHom
+        (generalLiftPrelaxFunctor_map_inverse F hF f hf B).symm)).symm
+
+/-- The forward core, unit insertion, and retained-forward factorization form
+the source-level transport for forward/inverse cancellation. -/
+noncomputable def generalLiftForwardInverseMapCompSourceTransport
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom (𝟙 X) (A × B)) ≅
+      F.map (canonicalSourceHom f A) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B)) :=
+  generalLiftForwardMapCompCore F hF (𝟙 X) (𝟙 X) A B ≪≫
+    generalLiftForwardInverseMapCompUnit F hF f A B ≪≫
+    generalLiftForwardInverseMapCompFactorization F hF f A B
+
+/-- The source transport hom is the forward core, unit insertion, and
+factorization composite. -/
+theorem generalLiftForwardInverseMapCompSourceTransport_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardInverseMapCompSourceTransport F hF f A B).hom =
+      (generalLiftForwardMapCompCore F hF (𝟙 X) (𝟙 X) A B).hom ≫
+      (generalLiftForwardInverseMapCompUnit F hF f A B).hom ≫
+      (generalLiftForwardInverseMapCompFactorization F hF f A B).hom := by
+  rfl
+
+/-- Source transport is natural in the inverse factor's retained
+coordinate. -/
+theorem generalLiftForwardInverseMapCompSourceTransport_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) ≫
+      (generalLiftForwardInverseMapCompSourceTransport F hF f A C).hom =
+    (generalLiftForwardInverseMapCompSourceTransport F hF f A B).hom ≫
+      (F.map (canonicalSourceHom f A) ◁
+        ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X) η))) := by
+  rw [generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardMapCompCore_naturality_right
+      F hF (𝟙 X) (𝟙 X) A η)
+    (comp_naturality_of_squares
+      (generalLiftForwardInverseMapCompUnit_naturality_right F hF f A η)
+      (generalLiftForwardInverseMapCompFactorization_naturality_right
+        F hF f A η))
+
+/-- Source transport is natural in the forward factor's retained
+coordinate. -/
+theorem generalLiftForwardInverseMapCompSourceTransport_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) ≫
+      (generalLiftForwardInverseMapCompSourceTransport F hF f C B).hom =
+    (generalLiftForwardInverseMapCompSourceTransport F hF f A B).hom ≫
+      (F.map₂ (canonicalSourceTwoCell f η) ▷
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))) := by
+  rw [generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardMapCompCore_naturality_left
+      F hF (𝟙 X) (𝟙 X) η B)
+    (comp_naturality_of_squares
+      (generalLiftForwardInverseMapCompUnit_naturality_left F hF f η B)
+      (generalLiftForwardInverseMapCompFactorization_naturality_left
+        F hF f η B))
+
+/-- The complete post-comparison transport for forward/inverse cancellation,
+including source normalization and endpoint equality transport. -/
+noncomputable def generalLiftForwardInverseMapCompTransport
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftPrelaxFunctor F hF).map
+        (canonicalForwardHom (𝟙 X) (A × B)) ≅
+      (generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ≫
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f B) :=
+  generalLiftForwardInverseMapCompSourceTransport F hF f A B ≪≫
+    generalLiftForwardInverseMapCompFactors F hF f hf A B
+
+/-- The post-comparison transport hom is its source-normalization and
+endpoint-factor composite. -/
+theorem generalLiftForwardInverseMapCompTransport_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftForwardInverseMapCompTransport F hF f hf A B).hom =
+      (generalLiftForwardInverseMapCompSourceTransport F hF f A B).hom ≫
+      (generalLiftForwardInverseMapCompFactors F hF f hf A B).hom := by
+  rfl
+
+/-- The complete forward/inverse transport is natural in the inverse factor's
+retained coordinate. -/
+theorem generalLiftForwardInverseMapCompTransport_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) ≫
+      (generalLiftForwardInverseMapCompTransport F hF f hf A C).hom =
+    (generalLiftForwardInverseMapCompTransport F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ◁
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η)) := by
+  rw [generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompTransport_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardInverseMapCompSourceTransport_naturality_right
+      F hF f A η)
+    (generalLiftForwardInverseMapCompFactors_naturality_right
+      F hF f hf A η)
+
+/-- The complete forward/inverse transport is natural in the forward factor's
+retained coordinate. -/
+theorem generalLiftForwardInverseMapCompTransport_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) ≫
+      (generalLiftForwardInverseMapCompTransport F hF f hf C B).hom =
+    (generalLiftForwardInverseMapCompTransport F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η) ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f B)) := by
+  rw [generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompTransport_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardInverseMapCompSourceTransport_naturality_left
+      F hF f η B)
+    (generalLiftForwardInverseMapCompFactors_naturality_left
+      F hF f hf η B)
 
 /-- Composition comparison for a canonical forward arrow followed by the
 matching inverse. -/
@@ -6027,32 +7161,62 @@ noncomputable def generalLiftMapCompForwardInverse
         (generalLiftPrelaxFunctor F hF).map (canonicalInverseHom f B) :=
   (generalLiftPrelaxFunctor F hF).map₂Iso
       (canonicalForwardInverseCompositionComparison f A B) ≪≫
-    eqToIso (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) (A × B)) ≪≫
-    generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B ≪≫
-    whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
-      (λ_ (F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
-    whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
-      (whiskerRightIso (generalLiftSourceEquivalence F hF f).unit
-        (F.map (canonicalSourceHom (𝟙 X) B))) ≪≫
-    whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
-      (α_ (generalLiftSourceEquivalence F hF f).hom
-        (generalLiftSourceEquivalence F hF f).inv
-        (F.map (canonicalSourceHom (𝟙 X) B))) ≪≫
-    (α_ (F.map (canonicalSourceHom (𝟙 X) A))
-      (generalLiftSourceEquivalence F hF f).hom
-      ((generalLiftSourceEquivalence F hF f).inv ≫
-        F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
-    whiskerRightIso
-      (generalLiftRetainedForwardFactorizationSource F hF f A).symm
-      ((generalLiftSourceEquivalence F hF f).inv ≫
-        F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
-    whiskerRightIso
-      (eqToIso (generalLiftPrelaxFunctor_map_forward F hF f A)).symm
-      ((generalLiftSourceEquivalence F hF f).inv ≫
-        F.map (canonicalSourceHom (𝟙 X) B)) ≪≫
-    whiskerLeftIso
-      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A))
-      (eqToIso (generalLiftPrelaxFunctor_map_inverse F hF f hf B)).symm
+    generalLiftForwardInverseMapCompTransport F hF f hf A B
+
+/-- The hom of the complete forward/inverse compositor is its mapped target
+comparison followed by the named transport. -/
+theorem generalLiftMapCompForwardInverse_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    (generalLiftMapCompForwardInverse F hF f hf A B).hom =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison f A B).hom ≫
+        (generalLiftForwardInverseMapCompTransport F hF f hf A B).hom := by
+  rfl
+
+/-- The complete forward/inverse cancellation compositor is natural in the
+inverse factor's retained coordinate. -/
+theorem generalLiftMapCompForwardInverse_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A : Type)
+    {B C : Type} (η : B ⟶ C) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁ canonicalInverseTwoCell f η) ≫
+      (generalLiftMapCompForwardInverse F hF f hf A C).hom =
+    (generalLiftMapCompForwardInverse F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map (canonicalForwardHom f A) ◁
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f η)) := by
+  rw [generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompForwardInverse_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardInverseMapCompTarget_naturality_right F hF f A η)
+    (generalLiftForwardInverseMapCompTransport_naturality_right
+      F hF f hf A η)
+
+/-- The complete forward/inverse cancellation compositor is natural in the
+forward factor's retained coordinate. -/
+theorem generalLiftMapCompForwardInverse_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) {A C : Type}
+    (η : A ⟶ C) (B : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η ▷ canonicalInverseHom f B) ≫
+      (generalLiftMapCompForwardInverse F hF f hf C B).hom =
+    (generalLiftMapCompForwardInverse F hF f hf A B).hom ≫
+      ((generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f η) ▷
+        (generalLiftPrelaxFunctor F hF).map
+          (canonicalInverseHom f B)) := by
+  rw [generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompForwardInverse_hom]
+  exact comp_naturality_of_squares
+    (generalLiftForwardInverseMapCompTarget_naturality_left F hF f η B)
+    (generalLiftForwardInverseMapCompTransport_naturality_left
+      F hF f hf η B)
 
 /-- A target arrow in the unique normal form determined by its two walking
 endpoints and its retained-coordinate type. -/

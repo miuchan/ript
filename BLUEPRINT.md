@@ -5798,6 +5798,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     retained/inverse orders, and both inverse/forward cancellations. Endpoint
     normalization now packages these branches as one comparison for every
     composable target-arrow pair, with reduction theorems for all eight cases.
+    The complete forward/forward branch, both mixed retained/inverse orders,
+    and both inverse/forward cancellation orders now satisfy compiled left and
+    right naturality in their retained coordinates; the two cancellation
+    proofs expose the chosen equivalence unit/counit, source factorizations,
+    associators, and endpoint transports as named stages.
     Four additional compiled equalities expose the forward/reverse hom-functor
     selected by each endpoint pair, and a canonical endpoint 2-cell constructor
     uniformly represents retained-coordinate morphisms in all four directions.
