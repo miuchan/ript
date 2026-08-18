@@ -10,33 +10,18 @@
 ![mathlib 4.33.0](https://img.shields.io/badge/mathlib-4.33.0-a42e2b)
 ![Esplora stato](https://img.shields.io/badge/status-early--stage%20research-orange)
 
-Ript formaligas **Resource-Indexed Information Process Theory
-(Rimed-Indicitajn Inform-Procezteoriojn)**: tipizitajn procezojn, kies konduto
-kaj rimeduzo kunmetiĝas. Ĝi ligas plenumeblajn finiajn modelojn al kern-kontrolitaj
-pruvoj pri rimedlimoj, solideco, kompletorezultoj kaj struktur-konserva semantiko.
+Ript formaligas tipizitajn procezojn, kies konduto kaj rimeduzo kunmetiĝas. Ĝi
+ligas plenumeblajn finiajn modelojn al kern-kontrolitaj rezultoj pri rimedlimoj,
+solideco, kompleteco kaj struktur-konserva semantiko.
 
 > [!IMPORTANT]
 > Ript estas frustadia esplora programaro. La kompilitaj rezultoj estas
 > kern-kontrolitaj; la publika API kaj la esplora fronto ankoraŭ evoluas.
 
-## Kio estas inkluzivita
-
-- **Formalaj fundamentoj:** kosthavaj kategorioj, plenumebla sintakso,
-  interpretoj, solideco, relativa kompleteco kaj monoida komenceco.
-- **Ekzaktaj finiaj modeloj:** determinismaj, stokastaj, decidaj, komputaj,
-  kaŭzaj, termikaj kaj kvantumaj ekzemploj.
-- **Pli altaj strukturoj:** dukategorio de procezmodeloj, kost-ekzaktaj
-  ekvivalentoj kaj walking-localization-konstruoj.
-- **Kontroleblaj pruvoj:** CI rifuzas anstataŭilojn kaj nedokumentitajn
-  supozojn; ĉefaj teoremoj havas eksplicitan aksiomliston.
-
-La [matrico de modelkapabloj](../MODEL_MATRIX.md) listigas realigitajn ecojn.
-La [esplora stato](RESEARCH_STATUS.md) apartigas pruvitajn, malfermajn kaj ne
-pretendatajn rezultojn.
-
 ## Rapida komenco
 
-Instalu [elan](https://github.com/leanprover/elan), poste rulu:
+Instalu [elan](https://github.com/leanprover/elan), poste konstruu la projekton
+kun ĝiaj fiksitaj versioj de Lean kaj Mathlib:
 
 ```bash
 git clone https://github.com/miuchan/ript.git
@@ -45,24 +30,23 @@ lake exe cache get
 lake build
 ```
 
-Antaŭ proponi ŝanĝon, rulu la plenan lokan kvalitan kontrolon:
+Por postuloj, plenumeblaj ekzemploj, dependaĵa uzo, reproduktebleco kaj
+problemo-solvado, sekvu la [komencan gvidilon](GETTING_STARTED.md).
 
-```bash
-./scripts/quality-gate.sh
-```
+## Trovu tion, kion vi bezonas
 
-Vidu la [komencan gvidilon](GETTING_STARTED.md) por postuloj, ekzemploj,
-dependaĵa uzo kaj problemo-solvado.
-
-## Dokumentaro
-
-- [Dokumentara centro](README.md) — la plej mallonga vojo por ĉiu tasko.
-- [Projekta amplekso kaj fidlimo](PROJECT_SCOPE.md) — dezajno, pretendoj,
-  pruvpolitiko, matureco kaj permesilo.
-- [Arkitekturo](ARCHITECTURE.md) — tavoloj kaj dependecaj limoj.
-- [Esplora stato](RESEARCH_STATUS.md) — realigita, aktiva kaj malferma.
-- [Formala plano](../BLUEPRINT.md) · [Aksioma inventaro](../AXIOMS.md) ·
-  [Registro de konjektoj](../CONJECTURES.md) — aŭtoritataj esplorregistroj.
+- **Kio estas realigita?** Vidu la [matricon de modelkapabloj](../MODEL_MATRIX.md).
+- **Kio estas pruvita aŭ ankoraŭ malferma?** Vidu la
+  [esploran staton](RESEARCH_STATUS.md).
+- **Kiel la biblioteko estas organizita?** Legu la
+  [arkitekturan gvidilon](ARCHITECTURE.md).
+- **Kiuj estas la fidaj kaj maturecaj limoj?** Legu
+  [projektan amplekson kaj fidon](PROJECT_SCOPE.md).
+- **Kie estas la precizaj esplorregistroj?** Uzu la
+  [formalan planon](../BLUEPRINT.md), [aksioman inventaron](../AXIOMS.md) kaj
+  [registron de konjektoj](../CONJECTURES.md).
+- **Ĉu vi ne certas, kie komenci?** Malfermu la
+  [dokumentaran centron](README.md).
 
 ## Kontribuado
 
