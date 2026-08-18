@@ -62,7 +62,10 @@ retained/inverse orders, and both inverse/forward cancellation orders with
 arbitrary retained coordinates.  Endpoint normalization now packages those
 branches into one comparison for every composable target-arrow pair, with
 compiled reduction equations exposing all eight branches.  Proving the
-pseudofunctor coherence laws and constructing the resulting arbitrary
+source-normalized forward-forward three-fold associativity core now compiles;
+transporting associativity through the target action and discharging the
+remaining endpoint triples, packaging the pseudofunctor coherence laws, and
+constructing the resulting arbitrary
 nonseparable biessential factorization still remain open;
 consequently the global `lift` field of the bicategorical-localization
 predicate is not yet claimed.
@@ -4094,6 +4097,48 @@ noncomputable def canonicalSourceCompositionComparison
       canonicalSourceHom (f ≫ g) (A × B) :=
   eqToIso (by rfl)
 
+/-- The canonical source composition comparisons satisfy the three-fold
+associativity square, with the cartesian-product associator recording the
+change of retained-coordinate bracketing.  This is the source-level core of
+the lift compositor associativity proof. -/
+theorem canonicalSourceCompositionComparison_associativity
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    ((canonicalSourceCompositionComparison f g A B).hom ▷
+          canonicalSourceHom h C) ≫
+        (canonicalSourceCompositionComparison (f ≫ g) h (A × B) C).hom ≫
+        canonicalSourceTwoCell ((f ≫ g) ≫ h)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalSourceHom f A) (canonicalSourceHom g B)
+          (canonicalSourceHom h C)).hom ≫
+        (canonicalSourceHom f A ◁
+          (canonicalSourceCompositionComparison g h B C).hom) ≫
+          (canonicalSourceCompositionComparison f (g ≫ h) A (B × C)).hom := by
+  rfl
+
+/-- Inverse-oriented form of the canonical source associativity square.  Its
+orientation is the one needed to move from a normalized three-fold composite
+to the raw parenthesized composite before applying pseudofunctor
+associativity. -/
+theorem canonicalSourceCompositionComparison_associativity_inv
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    canonicalSourceTwoCell ((f ≫ g) ≫ h)
+          (MonoidalCategory.associator A B C).hom ≫
+        (canonicalSourceCompositionComparison f (g ≫ h)
+          A (B × C)).symm.hom ≫
+        (canonicalSourceHom f A ◁
+          (canonicalSourceCompositionComparison g h B C).symm.hom) =
+      (canonicalSourceCompositionComparison (f ≫ g) h
+          (A × B) C).symm.hom ≫
+        ((canonicalSourceCompositionComparison f g A B).symm.hom ▷
+          canonicalSourceHom h C) ≫
+        (α_ (canonicalSourceHom f A) (canonicalSourceHom g B)
+          (canonicalSourceHom h C)).hom := by
+  rfl
+
 /-- The analogous composition comparison after free-groupoid completion. -/
 noncomputable def canonicalForwardCompositionComparison
     {X Y Z : Ript.Examples.WalkingLocalization.Arrow}
@@ -4296,6 +4341,120 @@ theorem generalLiftForwardMapCompSource_naturality_left
   rw [← Category.assoc, ← F.map₂_comp,
     canonicalSourceCompositionComparison_naturality_left_inv,
     F.map₂_comp, Category.assoc, hmapComp, ← Category.assoc]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The source pseudofunctor's normalized forward composition comparisons
+satisfy the three-fold associativity law.  The retained-coordinate associator
+first changes `(A × B) × C` to `A × (B × C)`; both normalized factorization
+routes then agree with the target bicategory associator. -/
+theorem generalLiftForwardMapCompSource_associativity
+    (F : Source ⥤ᵖ E)
+    {X Y Z W : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (h : Z ⟶ W)
+    (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell ((f ≫ g) ≫ h)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSource F f (g ≫ h) A (B × C)).hom ≫
+        F.map (canonicalSourceHom f A) ◁
+          (generalLiftForwardMapCompSource F g h B C).hom =
+      (generalLiftForwardMapCompSource F (f ≫ g) h (A × B) C).hom ≫
+        (generalLiftForwardMapCompSource F f g A B).hom ▷
+          F.map (canonicalSourceHom h C) ≫
+        (α_ (F.map (canonicalSourceHom f A))
+          (F.map (canonicalSourceHom g B))
+          (F.map (canonicalSourceHom h C))).hom := by
+  simp only [generalLiftForwardMapCompSource, Iso.trans_hom,
+    PrelaxFunctor.map₂Iso_hom, Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight]
+  have hright :
+      F.map₂ (canonicalSourceHom f A ◁
+            (canonicalSourceCompositionComparison g h B C).symm.hom) ≫
+          (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B ≫ canonicalSourceHom h C)).hom =
+        (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom (g ≫ h) (B × C))).hom ≫
+          F.map (canonicalSourceHom f A) ◁
+            F.map₂ (canonicalSourceCompositionComparison g h B C).symm.hom :=
+    F.toOplax.mapComp_naturality_right
+      (canonicalSourceHom f A)
+      (canonicalSourceCompositionComparison g h B C).symm.hom
+  have hleft :
+      F.map₂ ((canonicalSourceCompositionComparison f g A B).symm.hom ▷
+            canonicalSourceHom h C) ≫
+          (F.mapComp
+            (canonicalSourceHom f A ≫ canonicalSourceHom g B)
+            (canonicalSourceHom h C)).hom =
+        (F.mapComp (canonicalSourceHom (f ≫ g) (A × B))
+            (canonicalSourceHom h C)).hom ≫
+          F.map₂ (canonicalSourceCompositionComparison f g A B).symm.hom ▷
+            F.map (canonicalSourceHom h C) :=
+    F.toOplax.mapComp_naturality_left
+      (canonicalSourceCompositionComparison f g A B).symm.hom
+      (canonicalSourceHom h C)
+  have hassoc :
+      F.map₂ (α_ (canonicalSourceHom f A) (canonicalSourceHom g B)
+            (canonicalSourceHom h C)).hom ≫
+          (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B ≫ canonicalSourceHom h C)).hom ≫
+          F.map (canonicalSourceHom f A) ◁
+            (F.mapComp (canonicalSourceHom g B)
+              (canonicalSourceHom h C)).hom =
+        (F.mapComp
+            (canonicalSourceHom f A ≫ canonicalSourceHom g B)
+            (canonicalSourceHom h C)).hom ≫
+          (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B)).hom ▷
+              F.map (canonicalSourceHom h C) ≫
+          (α_ (F.map (canonicalSourceHom f A))
+            (F.map (canonicalSourceHom g B))
+            (F.map (canonicalSourceHom h C))).hom :=
+    F.toOplax.map₂_associator
+      (canonicalSourceHom f A) (canonicalSourceHom g B)
+      (canonicalSourceHom h C)
+  have hsourceMap :
+      F.map₂ (canonicalSourceTwoCell ((f ≫ g) ≫ h)
+            (MonoidalCategory.associator A B C).hom) ≫
+          F.map₂ (canonicalSourceCompositionComparison f (g ≫ h)
+            A (B × C)).symm.hom ≫
+          F.map₂ (canonicalSourceHom f A ◁
+            (canonicalSourceCompositionComparison g h B C).symm.hom) =
+        F.map₂ (canonicalSourceCompositionComparison (f ≫ g) h
+            (A × B) C).symm.hom ≫
+          F.map₂ ((canonicalSourceCompositionComparison f g A B).symm.hom ▷
+            canonicalSourceHom h C) ≫
+          F.map₂ (α_ (canonicalSourceHom f A)
+            (canonicalSourceHom g B) (canonicalSourceHom h C)).hom := by
+    simpa only [F.map₂_comp] using congrArg (fun η => F.map₂ η)
+      (canonicalSourceCompositionComparison_associativity_inv f g h A B C)
+  have hwalking : (f ≫ g) ≫ h = f ≫ (g ≫ h) :=
+    Category.assoc f g h
+  rw [hwalking] at hsourceMap ⊢
+  simp only [Category.assoc]
+  slice_lhs 3 4 => rw [← hright]
+  calc
+    _ =
+        F.map₂ (canonicalSourceCompositionComparison (f ≫ g) h
+            (A × B) C).symm.hom ≫
+          F.map₂ ((canonicalSourceCompositionComparison f g A B).symm.hom ▷
+            canonicalSourceHom h C) ≫
+          F.map₂ (α_ (canonicalSourceHom f A)
+            (canonicalSourceHom g B) (canonicalSourceHom h C)).hom ≫
+          (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B ≫ canonicalSourceHom h C)).hom ≫
+          F.map (canonicalSourceHom f A) ◁
+            (F.mapComp (canonicalSourceHom g B)
+              (canonicalSourceHom h C)).hom := by
+      simpa only [Category.assoc] using congrArg
+        (fun k => k ≫
+          (F.mapComp (canonicalSourceHom f A)
+            (canonicalSourceHom g B ≫ canonicalSourceHom h C)).hom ≫
+          F.map (canonicalSourceHom f A) ◁
+            (F.mapComp (canonicalSourceHom g B)
+              (canonicalSourceHom h C)).hom) hsourceMap
+    _ = _ := by
+      slice_lhs 3 6 => rw [hassoc]
+      slice_lhs 2 3 => rw [hleft]
+      simp only [Category.assoc]
 
 private theorem comp_naturality_of_squares
     {C : Type u₂} [Category.{v₂} C]

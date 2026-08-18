@@ -81,10 +81,13 @@ Already compiled:
 - source and target unit factorizations;
 - complete oplax left- and right-unit coherence for every target arrow,
   including the freely adjoined inverse.
+- the canonical source three-fold composition square and the normalized
+  source forward-compositor associativity law.
 
 Still required:
 
-- oplax associativity coherence;
+- transport of forward associativity through the target action and the
+  remaining endpoint-normalized oplax associativity cases;
 - packaging as an oplax functor and then a pseudofunctor;
 - an adjoint equivalence identifying source restriction with the original
   marking-inverting pseudofunctor;

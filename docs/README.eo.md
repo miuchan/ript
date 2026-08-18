@@ -112,9 +112,10 @@ modelojn kaj kontrolas la dokumentitan aksiomliston. Precizaj dependecoj estas
 registritaj en [AXIOMS.md](../AXIOMS.md).
 
 La aktiva fronto estas la arbitra dudimensia walking-localization-faktorigo.
-Natureco por ĉiuj sagoj kaj ambaŭ plenaj unuleĝoj jam kompiliĝas; oplaksa
-asocieco, pseŭdofunktora pakado kaj la fina adjunkta ekvivalento restas
-malfermaj. Vidu la aŭtoritatan limon en
+Natureco por ĉiuj sagoj, ambaŭ plenaj unuleĝoj kaj la font-normaligita kerno
+de antaŭena asocieco jam kompiliĝas. Transporto al la celo kaj la ceteraj
+oplaksa-asociecaj kazoj, pseŭdofunktora pakado kaj la fina adjunkta ekvivalento
+restas malfermaj. Vidu la aŭtoritatan limon en
 [RESEARCH_STATUS.md](RESEARCH_STATUS.md).
 
 La Lake-pakaĵversio estas `0.1.0`; ankoraŭ ne ekzistas stabila API-eldono aŭ
