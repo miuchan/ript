@@ -14,6 +14,15 @@ Ript formalizes typed processes whose behavior and resource use compose. It
 connects executable finite models with kernel-checked results about resource
 bounds, soundness, completeness, and structure-preserving semantics.
 
+Its governing research objective is to construct a computable,
+machine-verifiable, univalent, higher-categorical theory of
+resource-constrained information processes in which classical probability,
+quantum processes, causal models, computation, semantic information, and
+thermodynamics arise as distinct models, together with representation and
+completeness theorems relating those models. The repository contains the
+compiled layers toward that objective; the objective as a whole is not yet a
+proved theorem.
+
 > [!IMPORTANT]
 > Ript is early-stage research software. Compiled results are kernel checked;
 > the public API and research frontier are still evolving.

@@ -4,12 +4,21 @@ This document records only kernel-checked implementation status. Allowed status
 values are `DEFINED`, `STATEMENT_FORMALIZED`, `PROVED`, `BLOCKED`, and
 `OPEN_RESEARCH`.
 
+The governing research objective is a computable, machine-verifiable,
+univalent, higher-categorical theory of resource-constrained information
+processes whose classical probabilistic, quantum, causal, computational,
+semantic, and thermodynamic realizations are related by representation and
+completeness theorems. This blueprint distinguishes compiled components of
+that objective from the still-open global construction; no stage status is a
+substitute for the missing cross-model theorems.
+
 ## Dependency graph
 
 ```mermaid
 flowchart LR
   Resource["Resource.Basic"] --> Costed["Core.CostedProcess"]
   Costed --> Budget["Resource.Budget"]
+  Costed --> ResourceReindexing["Resource.Reindexing"]
   Costed --> Filtration["Resource.Filtration"]
   ParallelBudget --> Filtration
   Filtration --> CostFiltrationExample["Examples.CostFiltration"]
@@ -36,7 +45,10 @@ flowchart LR
   Completeness --> Audit["Audit.AxiomChecks"]
   Costed --> ParallelCost["Core.ParallelCost"]
   Costed --> Monotone["Core.Monotone"]
+  Monotone --> ResourceChange["Core.ResourceChange"]
   Budget --> ResourceMonotone["Resource.Monotone"]
+  Budget --> ResourceChangeBudget["Resource.Change"]
+  ResourceChange --> ResourceChangeBudget
   Monotone --> ResourceMonotone
   ParallelCost --> ParallelBudget["Resource.ParallelBudget"]
   MonoidalSignature["Syntax.MonoidalSignature"] --> MonoidalExpr["Syntax.Monoidal"]
@@ -93,6 +105,8 @@ flowchart LR
   SemanticValue --> Audit
   Resource --> ComputationResource["Models.Computation.Resource"]
   ComputationResource --> TotalComputation["Models.Computation.Total"]
+  ComputationResource --> ResourceReindexingExample["Examples.ResourceReindexing"]
+  ResourceReindexing --> ResourceReindexingExample
   TotalComputation --> PartialComputation["Models.Computation.Partial"]
   Eval --> SimpleComputation["Examples.SimpleComputation"]
   TotalComputation --> SimpleComputation
@@ -149,6 +163,10 @@ flowchart LR
   ClassicalEmbedding --> ClassicalQuantumExample["Examples.ClassicalQuantum"]
   ClassicalQuantumExample --> Audit
   StructuralCost["Core.StructuralCost"] --> ModelHom["Higher.ModelHom"]
+  StructuralCost --> HigherResourceChange["Higher.ResourceChange"]
+  ResourceReindexing --> HigherResourceChange
+  ModelHom --> HigherResourceChange
+  HigherResourceChange --> ResourceReindexingExample
   ModelHom --> ModelBicategory["Higher.ModelBicategory"]
   ModelBicategory --> ModelCoherence["Higher.Coherence"]
   ModelCoherence --> ModelEquivalence["Higher.Equivalence"]
@@ -214,6 +232,7 @@ Every node in this graph is an existing compiled module.
 | 9 (finite quantum channels) | Complex density matrices, trace-preserving finite Kraus channels, canonical tensor/interchange, trace discard, causal uniqueness, and finite identity-amplification complete positivity | PROVED |
 | 9 (extension) | Faithful classical finite-stochastic measurement-preparation embedding into the dephasing-idempotent Kraus subcategory, preserving composition and tensor | PROVED |
 | 10 | Resource-indexed model bicategory, monoidal 2-cells, coherence, and cost-exact equivalence transport | PROVED |
+| 10 (heterogeneous resources) | Ordered-additive cost reindexing, resource-changing functors, reindexed process models, heterogeneous strong braided model morphisms, fixed-map monoidal 2-cell categories, and executable multidimensional-to-scalar budget transport | PROVED |
 | 10 (ordinary model localization) | Invertible-2-cell-saturated cost-exact marking, exact homotopy descent, canonical pith pseudofunctor, Mathlib Gabriel--Zisman universal property, and noninvertible marked-arrow/2-cell witnesses | PROVED |
 | 11 | Axiom-free deep process syntax, quotient groupoid semantics, internal univalence, and interpretation soundness | PROVED |
 | 12 (truncated foundation) | Choice-free object completion, skeletal groupoid completion, descent universal properties, and executable invariants | PROVED |
@@ -3937,6 +3956,71 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   not change the computability of morphisms inside a particular model.
 - Source: `Ript/Higher/ModelHom.lean`.
 
+### Resource reindexing and heterogeneous model morphisms
+
+- Natural-language statement: an ordered additive homomorphism `φ : R →+o S`
+  transports an `R`-valued process cost to an `S`-valued process cost while
+  preserving identity, sequential subadditivity, parallel subadditivity,
+  zero-cost structural rewiring, and checked budgets. A strong braided model
+  morphism may therefore relate an `R`-model directly to an `S`-model; such
+  morphisms compose over composition of their resource homomorphisms.
+- Lean interfaces:
+
+  ```lean
+  def reindexProcessCost (φ : R →+o S) [HasProcessCost C R] :
+      HasProcessCost C S
+
+  theorem withinBudget_reindex (φ : R →+o S)
+      (hf : WithinBudget (R := R) r f) :
+      WithinBudget (R := S) (φ r) f
+
+  structure ResourceChangeFunctor (C D R S) (φ : R →+o S) where
+    toFunctor : C ⥤ D
+    map_cost_le : ∀ f,
+      processCost (R := S) (toFunctor.map f) ≤
+        φ (processCost (R := R) f)
+
+  def ProcessModel.reindex (φ : R →+o S) (M : ProcessModel R) :
+      ProcessModel S
+
+  structure ResourceChangeModelHom (φ : R →+o S)
+      (M : ProcessModel R) (N : ProcessModel S) where
+    toLaxBraided : LaxBraidedFunctor M N
+    unit_isIso : IsIso (Functor.LaxMonoidal.ε toLaxBraided.toFunctor)
+    tensor_isIso : ∀ X Y, IsIso
+      (Functor.LaxMonoidal.μ toLaxBraided.toFunctor X Y)
+    map_cost_le : ∀ f,
+      processCost (R := S) (toLaxBraided.toFunctor.map f) ≤
+        φ (processCost (R := R) f)
+  ```
+
+- Composition law: if `F` lies over `φ : R →+o S` and `G` lies over
+  `ψ : S →+o T`, then `F.comp G` lies over `ψ.comp φ`. Its cost proof is the
+  composite of `G.map_cost_le`, monotonicity of `ψ`, and `F.map_cost_le`.
+- Higher structure: for fixed `φ`, monoidal natural transformations between
+  parallel `ResourceChangeModelHom`s form a category under vertical identity
+  and composition. This is the local 2-cell layer; the total bicategory over
+  all resource algebras, including heterogeneous horizontal coherence, remains
+  `OPEN_RESEARCH`.
+- Executable witness: `ComputationResource.stepsHom` projects the pointwise
+  `Fin 4 → Nat` computation resource to its step coordinate. The
+  `ResourceReindexing` example evaluates acceptance at budget `3`, rejection
+  at budget `2`, and acceptance of two sequential executions at budget `6`.
+- Status: `PROVED` for the reindexing laws, heterogeneous identity/composition,
+  budget transport, fixed-map local categories, and executable example.
+- Computability: resource homomorphisms, reindexed cost functions, transported
+  budget data, and the finite computation example are executable. Strong
+  monoidal coherence is proof-layer structure.
+- Audited assumptions: budget transport and higher-model budget transport use
+  no project axiom; the former reports `[propext]` only through generic
+  categorical equality. Strong model composition and monoidal 2-cell
+  composition inherit `[propext, Classical.choice, Quot.sound]` from Mathlib's
+  category and monoidal infrastructure.
+- Sources: `Ript/Resource/Reindexing.lean`,
+  `Ript/Core/ResourceChange.lean`, `Ript/Resource/Change.lean`,
+  `Ript/Higher/ResourceChange.lean`, and
+  `Ript/Examples/ResourceReindexing.lean`.
+
 ### `modelBicategory`
 
 - Natural-language statement: resource-indexed process models are 0-cells,
@@ -5641,9 +5725,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     isomorphism relates functorial structure but does not determine arbitrary
     numerical annotations, so `CostExactModelEquivalence` records cost
     reflection explicitly in both directions.
-33. Stage 10 deliberately stops at a bicategory with fixed resources and
-    uniform universes. Any internally interpreted univalent layer must remain
-    separate and may not be presented as Lean type equality or external
+33. The Stage-10 bicategory with fixed resources and uniform universes remains
+    a well-defined fibre. A compiled heterogeneous layer now reindexes models
+    and composes strong model morphisms over ordered additive resource maps,
+    with local monoidal 2-cell categories for each fixed map. Packaging all
+    fibres and resource maps into one total bicategory, and connecting that
+    total object to the internal univalent semantics, remains open. Internal
+    univalence may not be presented as Lean type equality or external
     univalence without a new, explicit trust-boundary review.
 34. Stage 11 uses a project-owned deep embedding because no compatible HoTT or
     cubical dependency is present in the pinned build. Internal identity and

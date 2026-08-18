@@ -17,6 +17,40 @@ causal systems, generic capability interfaces, richer cost models, and higher
 localization. They are design and formalization work, not silently assumed
 mathematical propositions.
 
+## Governing research objective
+
+Ript's objective is to construct a computable, machine-verifiable, univalent,
+higher-categorical theory of resource-constrained information processes in
+which classical probability, quantum processes, causal models, computation,
+semantic information, and thermodynamics are distinct models, and to prove
+the corresponding representation and completeness theorems.
+
+This is a research program, not a theorem currently asserted by the library.
+The newly compiled change-of-resources layer removes one former obstruction:
+models may now use different ordered additive resource algebras and be related
+by strong braided morphisms over ordered additive translations. The following
+construction and theorem families are still open and therefore are not entered
+as axioms or placeholder Lean declarations:
+
+1. a total bicategory whose objects pair a resource algebra with a
+   `ProcessModel`, whose 1-cells carry both a resource translation and a strong
+   model morphism, and whose 2-cells and coherence retain the heterogeneous
+   resource data;
+2. a common syntax and universal semantics with verified interpretations into
+   all six named model families;
+3. representation and conservativity theorems identifying the exact image of
+   each interpretation;
+4. relative and, where mathematically justified, absolute completeness
+   theorems for those interpretations;
+5. a univalent or complete-Segal semantics for the total heterogeneous model
+   theory, together with a universal property rather than only a constructed
+   presentation.
+
+Each item must be refined into exact Lean statements before it can acquire the
+`FORMALIZED_BUT_UNPROVED` marker. Until then, the existing finite and higher
+results are verified components of the objective, not evidence that the whole
+unified theory has already been established.
+
 The classifying-diagram track has discharged its former explicit matching
 obligations. Ript proves a natural isomorphism of the whole outer diagram with
 `n ↦ Map(Δ[n], N(M.Object))`, proves by presheaf density that

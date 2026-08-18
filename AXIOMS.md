@@ -121,6 +121,15 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Models.Computation.Partial.ofTotal_resource` | `[propext, Quot.sound]` | `Ript/Models/Computation/Partial.lean` |
 | `Ript.Examples.SimpleComputation.total_interpreter_cost_sound` | `[propext, Quot.sound]` | `Ript/Examples/SimpleComputation.lean` |
 | `Ript.Examples.SimpleComputation.partial_budget_checker_sound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleComputation.lean` |
+| `Ript.Resource.withinBudget_reindex` | `[propext]` | `Ript/Resource/Reindexing.lean` |
+| `Ript.Core.ResourceChangeFunctor.comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Core/ResourceChange.lean` |
+| `Ript.Core.ResourceChangeFunctor.map_withinBudget` | `none` | `Ript/Resource/Change.lean` |
+| `Ript.Higher.ProcessModel.reindex_cost` | `[propext]` | `Ript/Higher/ResourceChange.lean` |
+| `Ript.Higher.ResourceChangeModelHom.comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/ResourceChange.lean` |
+| `Ript.Higher.ResourceChangeModelHom.map_withinBudget` | `none` | `Ript/Higher/ResourceChange.lean` |
+| `Ript.Higher.ResourceChangeModelTransformation.comp_toNatTrans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/ResourceChange.lean` |
+| `Ript.Models.Computation.ComputationResource.stepsHom_of` | `[propext, Quot.sound]` | `Ript/Models/Computation/Resource.lean` |
+| `Ript.Examples.ResourceReindexing.countedNot_twice_step_cost` | `[propext, Quot.sound]` | `Ript/Examples/ResourceReindexing.lean` |
 | `Ript.Models.Causal.FiniteDAG.acyclic` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/DAG.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.prefixFactorMass_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Model.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.observational_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Model.lean` |
@@ -680,6 +689,12 @@ The specialized partial budget theorem reports `Classical.choice` through the
 proof that a Boolean comparison over the finite coordinate type is true; the
 checker itself evaluates directly, and `ComputationResource.within_sound`
 does not use classical choice.
+The change-of-resources layer applies ordered additive homomorphisms directly
+to executable cost values. Its generic budget transport is proof-only and
+introduces no choice; the `Fin 4 → Nat` step projection and its three Boolean
+budget evaluations are executable. Ordinary functor composition inherits the
+standard category-theory footprint `[propext, Classical.choice, Quot.sound]`,
+while `ResourceChangeFunctor.map_withinBudget` itself audits with no axioms.
 The finite causal slice is executable over a supplied finite value carrier and
 uses a topological numbering certificate rather than a chosen topological
 sort. Its definitions of parent-local mechanisms, factor products, hard
@@ -810,6 +825,13 @@ infrastructure. These coherence theorems report the standard
 infrastructure. The cost-exact preservation lemmas themselves use no axioms:
 cost reflection is an explicit hypothesis, never inferred merely from a
 bicategorical equivalence.
+The heterogeneous higher layer additionally reindexes a `ProcessModel` along
+`R →+o S` and composes strong braided model morphisms across different
+resource algebras. Its model-level budget theorem audits with no axioms;
+strong functor composition and vertical monoidal 2-cell composition inherit
+the same `[propext, Classical.choice, Quot.sound]` Mathlib footprint as the
+fixed-resource fibre. No resource comparison or cross-model representation
+theorem is postulated.
 The first ordinary localization of that higher layer is now compiled as a
 separate, explicitly truncated semantic construction. Its homotopy category
 quotients 1-morphisms only by invertible 2-cells. The raw cost-reflecting mark

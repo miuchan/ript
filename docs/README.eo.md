@@ -14,6 +14,13 @@ Ript formaligas tipizitajn procezojn, kies konduto kaj rimeduzo kunmetiĝas. Ĝi
 ligas plenumeblajn finiajn modelojn al kern-kontrolitaj rezultoj pri rimedlimoj,
 solideco, kompleteco kaj struktur-konserva semantiko.
 
+La centra esplorcelo de Ript estas konstrui komputeblan, maŝine kontroleblan,
+univalentan kaj altkategoriecan teorion de rimed-limigitaj informprocezoj, en
+kiu klasika probablo, kvantumaj procezoj, kaŭzaj modeloj, komputado, semantika
+informo kaj termodinamiko aperas kiel malsamaj modeloj, kun reprezentaj kaj
+kompletecaj teoremoj kiuj ilin rilatigas. La deponejo enhavas la kompilitajn
+tavolojn direkte al tiu celo; la tuta celo ankoraŭ ne estas pruvita teoremo.
+
 > [!IMPORTANT]
 > Ript estas frustadia esplora programaro. La kompilitaj rezultoj estas
 > kern-kontrolitaj; la publika API kaj la esplora fronto ankoraŭ evoluas.
