@@ -63,7 +63,13 @@ and budget laws. Strong braided model morphisms across different resource
 algebras compose together with those homomorphisms, and monoidal natural
 transformations form the local categories over each fixed resource map. A
 four-dimensional computation cost now has an executable, theorem-backed
-projection to its `Nat` step count.
+projection to its `Nat` step count. These fibres are now assembled into a
+single total bicategory: objects bundle their resource algebra and process
+model, 1-cells carry the resource translation and strong model morphism, and
+2-cells retain equality of the resource translation together with a monoidal
+natural transformation. Horizontal composition, interchange, associators,
+unitors, pentagon, and triangle compile. A vector-valued free process model
+and its step-count reindexing provide an executable heterogeneous 1-cell.
 
 ### A bounded internal univalent layer
 
@@ -81,8 +87,8 @@ classical probabilistic, quantum, causal, computational, semantic, and
 thermodynamic realizations are connected by proved representation and
 completeness theorems.
 
-The current integration frontier is the total higher category over varying
-resource algebras. The following parts now compile:
+The first total higher category over varying resource algebras now compiles.
+Its verified components are:
 
 - ordered-additive resource reindexing for process, parallel, structural, and
   proof-carrying budget laws;
@@ -92,13 +98,14 @@ resource algebras. The following parts now compile:
   morphisms whose resource translations compose;
 - monoidal 2-cells and vertical local categories over each fixed resource
   translation;
+- total resource-model objects, heterogeneous horizontal composition and
+  whiskering, interchange, associators, unitors, pentagon, and triangle;
 - an executable projection from `Fin 4 → Nat` computation resources to the
-  single `Nat` step coordinate.
+  single `Nat` step coordinate, upgraded to a model-level 1-cell with checked
+  budget transport.
 
 The next theorem-bearing layers are:
 
-- package resource algebras and their models into one total bicategorical
-  object, with horizontal composition and coherence for heterogeneous 2-cells;
 - give the common resource-process syntax interpretations into all six named
   model families, with explicit hypotheses at analytic and finite boundaries;
 - formulate and prove model-specific representation, conservativity, and

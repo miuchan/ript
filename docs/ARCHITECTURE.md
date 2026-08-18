@@ -99,8 +99,13 @@ That fixed-resource bicategory is one fibre of a broader compiled layer.
 `ResourceChangeModelHom` connects an `R`-model to an `S`-model over an ordered
 additive map `R →+o S`; these heterogeneous 1-cells compose with their resource
 maps, transport checked budgets, and have local categories of monoidal 2-cells
-over each fixed resource map. Packaging all fibres into one total bicategory is
-the next architectural step.
+over each fixed resource map. `ResourceModel` packages each resource algebra
+with its model, and `ResourceModelHom` packages the resource map with its
+heterogeneous strong model morphism. `ResourceModelTransformation` retains
+equality of parallel resource maps and a monoidal natural transformation.
+Together they form a total bicategory with heterogeneous whiskering,
+horizontal and vertical composition, interchange, associators, unitors,
+pentagon, and triangle coherence.
 
 The layer proves identities, composition, associators, unitors, interchange,
 and coherence using Mathlib's bicategory infrastructure. Numerical cost

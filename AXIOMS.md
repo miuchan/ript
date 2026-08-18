@@ -126,8 +126,14 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Core.ResourceChangeFunctor.map_withinBudget` | `none` | `Ript/Resource/Change.lean` |
 | `Ript.Higher.ProcessModel.reindex_cost` | `[propext]` | `Ript/Higher/ResourceChange.lean` |
 | `Ript.Higher.ResourceChangeModelHom.comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/ResourceChange.lean` |
+| `Ript.Higher.ResourceChangeModelHom.toReindex_map_cost_eq` | `[propext]` | `Ript/Higher/ResourceChange.lean` |
 | `Ript.Higher.ResourceChangeModelHom.map_withinBudget` | `none` | `Ript/Higher/ResourceChange.lean` |
 | `Ript.Higher.ResourceChangeModelTransformation.comp_toNatTrans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/ResourceChange.lean` |
+| `Ript.Higher.ResourceModelTransformation.horizontalComp_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCoherence.lean` |
+| `Ript.Higher.totalModel_pentagon` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCoherence.lean` |
+| `Ript.Higher.totalModel_triangle` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCoherence.lean` |
+| `Ript.Examples.TotalResourceModels.projectToSteps_cost_exact` | `[propext, Quot.sound]` | `Ript/Examples/TotalResourceModels.lean` |
+| `Ript.Examples.TotalResourceModels.stepBudgetedNot_cost` | `[propext, Quot.sound]` | `Ript/Examples/TotalResourceModels.lean` |
 | `Ript.Models.Computation.ComputationResource.stepsHom_of` | `[propext, Quot.sound]` | `Ript/Models/Computation/Resource.lean` |
 | `Ript.Examples.ResourceReindexing.countedNot_twice_step_cost` | `[propext, Quot.sound]` | `Ript/Examples/ResourceReindexing.lean` |
 | `Ript.Models.Causal.FiniteDAG.acyclic` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/DAG.lean` |
@@ -692,7 +698,9 @@ does not use classical choice.
 The change-of-resources layer applies ordered additive homomorphisms directly
 to executable cost values. Its generic budget transport is proof-only and
 introduces no choice; the `Fin 4 → Nat` step projection and its three Boolean
-budget evaluations are executable. Ordinary functor composition inherits the
+budget evaluations are executable. The canonical model morphism to a
+reindexed resource algebra is identity-on-processes and its translated-cost
+equality reports only `[propext]`. Ordinary functor composition inherits the
 standard category-theory footprint `[propext, Classical.choice, Quot.sound]`,
 while `ResourceChangeFunctor.map_withinBudget` itself audits with no axioms.
 The finite causal slice is executable over a supplied finite value carrier and
@@ -830,8 +838,13 @@ The heterogeneous higher layer additionally reindexes a `ProcessModel` along
 resource algebras. Its model-level budget theorem audits with no axioms;
 strong functor composition and vertical monoidal 2-cell composition inherit
 the same `[propext, Classical.choice, Quot.sound]` Mathlib footprint as the
-fixed-resource fibre. No resource comparison or cross-model representation
-theorem is postulated.
+fixed-resource fibre. The compiled total bicategory bundles each resource
+algebra with its model, requires equality of parallel resource maps in its
+2-cells, and verifies heterogeneous horizontal composition, interchange,
+pentagon, and triangle with that same standard footprint. The vector-to-step
+model witness and transported exact budget report `[propext, Quot.sound]`.
+No representation or completeness theorem connecting the six semantic model
+families is postulated.
 The first ordinary localization of that higher layer is now compiled as a
 separate, explicitly truncated semantic construction. Its homotopy category
 quotients 1-morphisms only by invertible 2-cells. The raw cost-reflecting mark

@@ -18,6 +18,7 @@ import Ript.Examples.ResourceReindexing
 import Ript.Examples.SimpleCausalModel
 import Ript.Examples.SimpleComputation
 import Ript.Examples.StochasticSeparation
+import Ript.Examples.TotalResourceModels
 import Ript.Examples.SimpleThermalModel
 import Ript.Examples.StochasticBits
 import Ript.Examples.TwoDimensionalWalkingLocalization
@@ -169,8 +170,14 @@ set_option autoImplicit false
 #print axioms Ript.Core.ResourceChangeFunctor.map_withinBudget
 #print axioms Ript.Higher.ProcessModel.reindex_cost
 #print axioms Ript.Higher.ResourceChangeModelHom.comp
+#print axioms Ript.Higher.ResourceChangeModelHom.toReindex_map_cost_eq
 #print axioms Ript.Higher.ResourceChangeModelHom.map_withinBudget
 #print axioms Ript.Higher.ResourceChangeModelTransformation.comp_toNatTrans
+#print axioms Ript.Higher.ResourceModelTransformation.horizontalComp_interchange
+#print axioms Ript.Higher.totalModel_pentagon
+#print axioms Ript.Higher.totalModel_triangle
+#print axioms Ript.Examples.TotalResourceModels.projectToSteps_cost_exact
+#print axioms Ript.Examples.TotalResourceModels.stepBudgetedNot_cost
 #print axioms Ript.Models.Computation.ComputationResource.stepsHom_of
 #print axioms Ript.Examples.ResourceReindexing.countedNot_twice_step_cost
 #print axioms Ript.Models.Causal.FiniteDAG.acyclic
