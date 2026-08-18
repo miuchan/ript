@@ -5821,7 +5821,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     left-whiskers the source unit chain by the chosen inverse and uses
     bicategorical right-unitor coherence. Endpoint normalization combines the
     forward and inverse branches into the exact left- and right-unit laws for
-    every target arrow. Oplax associativity, pseudofunctor packaging, and the
+    every target arrow. The canonical source comparison now has a compiled
+    three-fold associativity square, and the normalized source forward
+    compositor satisfies the corresponding pseudofunctor associativity law.
+    Target transport and the remaining endpoint-normalized oplax
+    associativity cases, pseudofunctor packaging, and the
     resulting nonseparable biessential factorization remain open, so this is
     not yet an existence proof for the desired resource-process higher
     localization.

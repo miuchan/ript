@@ -128,8 +128,11 @@ comparison across all eight walking-endpoint triples. Free-groupoid thinness
 and local discreteness then lift those equations to the all-arrow comparison
 for arbitrary target objects, 1-morphisms, and 2-morphisms. The complete left-
 and right-unit laws are now compiled for arbitrary target arrows, including
-the freely adjoined inverse. What remains open is oplax associativity; after
-that, the invertible comparisons must be packaged as a pseudofunctor and the
+the freely adjoined inverse. The canonical source three-fold composition
+comparison and the resulting source-normalized forward compositor now satisfy
+compiled associativity. Transporting that equation through the target action
+and proving the remaining endpoint-normalized triples are still open; after
+full oplax associativity, the invertible comparisons must be packaged as a pseudofunctor and the
 source-factorization adjoint equivalence built.
 This is the missing global `lift` field, and the corresponding construction
 for the full resource-process bicategory remains downstream.
