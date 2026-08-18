@@ -126,12 +126,14 @@ source factorizations and endpoint transports. These five compositor families
 now assemble into left and right naturality for the unified endpoint
 comparison across all eight walking-endpoint triples. Free-groupoid thinness
 and local discreteness then lift those equations to the all-arrow comparison
-for arbitrary target objects, 1-morphisms, and 2-morphisms. What remains open
-is to prove oplax associativity and the left and right unit laws, package the
-invertible comparisons as a pseudofunctor, and then build the
-source-factorization adjoint equivalence. This is the missing global `lift`
-field, and the corresponding construction for the full resource-process
-bicategory remains downstream.
+for arbitrary target objects, 1-morphisms, and 2-morphisms. The complete
+right-unit law is now compiled for arbitrary target arrows, including the
+freely adjoined inverse, while the left-unit law is compiled on every
+canonical forward arrow. What remains open is its inverse-arrow branch and
+oplax associativity; after those, the invertible comparisons must be packaged
+as a pseudofunctor and the source-factorization adjoint equivalence built.
+This is the missing global `lift` field, and the corresponding construction
+for the full resource-process bicategory remains downstream.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

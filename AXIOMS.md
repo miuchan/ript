@@ -475,6 +475,16 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_leftUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_forwardIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftLeftUnitor_forward` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalInverseRightUnitorFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRightUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRightUnitor_afterCompositionComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_rightUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_rightIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRightUnitor_forward` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseRetained_rightUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseRightIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRightUnitor_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRightUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |

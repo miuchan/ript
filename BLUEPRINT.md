@@ -5816,8 +5816,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     factorizations. On the source side the left-unit equation contracts the
     inverse composition comparison to the retained-coordinate left unitor; on
     the target side this yields the exact strict oplax left-unit equation for
-    every canonical forward arrow. The reverse-arrow branch of that equation,
-    the full right-unit law, oplax associativity, packaging the invertible
-    comparisons as a pseudofunctor, and the resulting nonseparable
-    biessential factorization remain open, so this is not yet an existence
-    proof for the desired resource-process higher localization.
+    every canonical forward arrow. The right-unit argument now also compiles:
+    its forward branch transports the source right unitor through the two
+    endpoint isomorphisms, while its inverse branch left-whiskers the source
+    unit chain by the chosen inverse and uses bicategorical right-unitor
+    coherence. Endpoint normalization combines these branches into the exact
+    right-unit law for every target arrow. The reverse-arrow branch of the
+    left-unit law, oplax associativity, pseudofunctor packaging, and the
+    resulting nonseparable biessential factorization remain open, so this is
+    not yet an existence proof for the desired resource-process higher
+    localization.

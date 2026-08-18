@@ -77,13 +77,15 @@ Already compiled:
 - composition comparisons for all composable arrows;
 - endpoint-normalized formulas for all eight endpoint triples;
 - forward, mixed, and cancellation compositor naturality;
-- all-arrow left and right naturality after thinness normalization.
+- all-arrow left and right naturality after thinness normalization;
 - source and target unit factorizations, plus strict left-unit coherence on
-  every canonical forward target arrow.
+  every canonical forward target arrow;
+- complete oplax right-unit coherence for every target arrow, including the
+  freely adjoined inverse.
 
 Still required:
 
-- the reverse-arrow branch of the left-unit law and the full right-unit law;
+- the reverse-arrow branch of the left-unit law;
 - oplax associativity coherence;
 - packaging as an oplax functor and then a pseudofunctor;
 - an adjoint equivalence identifying source restriction with the original

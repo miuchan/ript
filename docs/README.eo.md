@@ -158,9 +158,10 @@ La aktiva pli-kategoria fronto estas la arbitra, nedisigebla dudimensia
 walking-localization-faktorigo. Objektoj, 1-morfismoj, 2-morfismoj,
 identec-komparo, kunmet-komparo kaj naturaj datumoj por ĉiuj sagoj jam
 kompiliĝas. La maldekstra unuleĝo ankaŭ kompiliĝas por ĉiu kanona antaŭenira
-celsago. Ĝia invers-saga branĉo, la plena dekstra unuleĝo, oplaksa asocieco,
-pseŭdofunktora pakado kaj la rezulta adjunkta-ekvivalenta faktorigo restas
-malfermaj.
+celsago, kaj la dekstra unuleĝo kompiliĝas por ĉiu celsago, inkluzive de la
+libere aldonita inverso. La invers-saga branĉo de la maldekstra unuleĝo,
+oplaksa asocieco, pseŭdofunktora pakado kaj la rezulta adjunkta-ekvivalenta
+faktorigo restas malfermaj.
 
 Ĝeneralaj mezureblaj kaŭzaj modeloj, Mathlib-denaska complete-Segal-space
 interfaco kun malfortaj ekvivalentoj kaj plena dukategoria aŭ Dwyer–Kan lokigo
