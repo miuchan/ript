@@ -155,6 +155,87 @@ def sourceArrow {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
   (AsSmall.up : SourceHomotopy.{u, v, w} (R := R) ⥤
     SmallSource.{u, v, w} (R := R)).map (HomotopyCategory.homMk f)
 
+/-- A source 1-cell as the actual degree-zero simplex of its common-universe
+full local mapping nerve. -/
+def sourceLocalVertex {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
+    (UniverseLiftedNerve.CommonLocalMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj
+        (Opposite.op (SimplexCategory.mk 0)) :=
+  ComposableArrows.mk₀ ((AsSmall.up :
+    (M ⟶ N) ⥤ UniverseLiftedNerve.CommonSourceHom
+      (CostExactZigzag.inclusion (R := R)) M N).obj f)
+
+/-- The actual local-nerve image of a source 1-cell vertex. -/
+noncomputable def mappedLocalVertex
+    {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
+    (UniverseLiftedNerve.CommonTargetMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj
+        (Opposite.op (SimplexCategory.mk 0)) :=
+  ((CostExactZigzagNerveComparison.core
+    (R := R)).toPseudofunctorNerveCore.localMap M N).app
+      (Opposite.op (SimplexCategory.mk 0))
+      (sourceLocalVertex f)
+
+/-- Decode the actual mapped local zero-simplex back to its target local
+1-cell. -/
+noncomputable def mappedLocalVertexObject
+    {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
+    UniverseLiftedNerve.CommonTargetHom
+      (CostExactZigzag.inclusion (R := R)) M N :=
+  CategoryTheory.nerveEquiv (mappedLocalVertex f)
+
+/-- Mapping and then decoding a source local vertex recovers exactly the
+common-universe lift of the pseudofunctor image. -/
+theorem mappedLocalVertexObject_eq
+    {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
+    mappedLocalVertexObject f =
+      (AsSmall.up :
+        (CostExactZigzag.inclusion.obj M ⟶
+          CostExactZigzag.inclusion.obj N) ⥤
+            UniverseLiftedNerve.CommonTargetHom
+              (CostExactZigzag.inclusion (R := R)) M N).obj
+        (CostExactZigzag.inclusion.map f) := by
+  unfold mappedLocalVertexObject mappedLocalVertex sourceLocalVertex
+  rw [(CostExactZigzagNerveComparison.core
+    (R := R)).toPseudofunctorNerveCore.mapsVertex f]
+  rfl
+
+/-- A source 2-cell as the actual degree-one simplex of its common-universe
+full local mapping nerve. -/
+def sourceLocalEdge {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (α : f ⟶ g) :
+    (UniverseLiftedNerve.CommonLocalMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj
+        (Opposite.op (SimplexCategory.mk 1)) :=
+  ComposableArrows.mk₁ ((AsSmall.up :
+    (M ⟶ N) ⥤ UniverseLiftedNerve.CommonSourceHom
+      (CostExactZigzag.inclusion (R := R)) M N).map α)
+
+/-- The actual local-nerve image of a source 2-cell edge. -/
+noncomputable def mappedLocalEdge
+    {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (α : f ⟶ g) :
+    (UniverseLiftedNerve.CommonTargetMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj
+        (Opposite.op (SimplexCategory.mk 1)) :=
+  ((CostExactZigzagNerveComparison.core
+    (R := R)).toPseudofunctorNerveCore.localMap M N).app
+      (Opposite.op (SimplexCategory.mk 1)) (sourceLocalEdge α)
+
+/-- The actual mapped local edge is exactly the common-universe lift of the
+pseudofunctor image of the source 2-cell. -/
+theorem mappedLocalEdge_eq
+    {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (α : f ⟶ g) :
+    mappedLocalEdge α =
+      ComposableArrows.mk₁ ((AsSmall.up :
+        (CostExactZigzag.inclusion.obj M ⟶
+          CostExactZigzag.inclusion.obj N) ⥤
+            UniverseLiftedNerve.CommonTargetHom
+              (CostExactZigzag.inclusion (R := R)) M N).map
+        (CostExactZigzag.inclusion.map₂ α)) :=
+  CostExactZigzagNerveComparison.twoCell_edge_mapsExactly α
+
 /-- The relative outer comparison acts exactly on every represented source
 arrow vertex. -/
 theorem relativeOuterComparison_sourceArrow
@@ -213,6 +294,59 @@ theorem localVertex_outerArrow (M N : ProcessModel.{u, v, w} R)
     sourceArrow, UniverseLiftedNerve.commonAsSmallFunctor,
     Pseudofunctor.homotopyFunctor]
   rfl
+
+/-- **Relative-outer/local vertex gluing.** The relative Rezk image of a
+source arrow vertex is exactly the target Rezk arrow obtained by mapping the
+actual local-nerve vertex and decoding it to the target homotopy category. -/
+theorem relativeOuter_mappedLocalVertex
+    {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
+    ((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.arrowVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f)) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject f)) := by
+  rw [relativeOuterComparison_sourceArrow, mappedLocalVertexObject_eq,
+    localVertex_outerArrow]
+  rfl
+
+/-- One-skeleton gluing proposition for an arbitrary, possibly
+noninvertible, source 2-cell. It records both relative-outer/local endpoints
+and the exact mapped local edge. -/
+def RelativeLocalTwoCellOneSkeleton
+    {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (α : f ⟶ g) : Prop :=
+  (((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.arrowVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f)) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject f))) ∧
+  (((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.arrowVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow g)) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject g))) ∧
+  mappedLocalEdge α =
+    ComposableArrows.mk₁ ((AsSmall.up :
+      (CostExactZigzag.inclusion.obj M ⟶
+        CostExactZigzag.inclusion.obj N) ⥤
+          UniverseLiftedNerve.CommonTargetHom
+            (CostExactZigzag.inclusion (R := R)) M N).map
+      (CostExactZigzag.inclusion.map₂ α))
+
+/-- Every source 2-cell satisfies the full relative/local one-skeleton glue,
+without an invertibility hypothesis. -/
+theorem relativeLocal_twoCellOneSkeleton
+    {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (α : f ⟶ g) :
+    RelativeLocalTwoCellOneSkeleton α :=
+  ⟨relativeOuter_mappedLocalVertex f,
+    relativeOuter_mappedLocalVertex g, mappedLocalEdge_eq α⟩
 
 /-- **Horizontal outer/local gluing.** Decoding the local composite of two
 mapped 1-cells agrees exactly with composition of their outer homotopy-category
@@ -509,6 +643,32 @@ structure GlobalComparisonCore where
       RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
         ((smallHomotopyLocalizationFunctor (R := R)).map
           (sourceArrow f))
+  /-- Exact decoding of the actual mapped local zero-simplex. -/
+  mappedLocalVertexExact : ∀ {M N : ProcessModel.{u, v, w} R}
+    (f : M ⟶ N),
+    mappedLocalVertexObject f =
+      (AsSmall.up :
+        (CostExactZigzag.inclusion.obj M ⟶
+          CostExactZigzag.inclusion.obj N) ⥤
+            UniverseLiftedNerve.CommonTargetHom
+              (CostExactZigzag.inclusion (R := R)) M N).obj
+        (CostExactZigzag.inclusion.map f)
+  /-- Exact gluing of the relative outer arrow vertex to the arrow decoded
+  from the actual mapped local zero-simplex. -/
+  relativeLocalVertexGlue : ∀ {M N : ProcessModel.{u, v, w} R}
+    (f : M ⟶ N),
+    ((relativeOuter.app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.arrowVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f))) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject f))
+  /-- Relative/local one-skeleton gluing for every source 2-cell, including
+  noninvertible ones. -/
+  relativeLocalTwoCellGlue : ∀ {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (α : f ⟶ g),
+    RelativeLocalTwoCellOneSkeleton α
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -628,6 +788,9 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   relativeArrowGlue := relativeOuterComparison_sourceArrow
+  mappedLocalVertexExact := mappedLocalVertexObject_eq
+  relativeLocalVertexGlue := relativeOuter_mappedLocalVertex
+  relativeLocalTwoCellGlue := relativeLocal_twoCellOneSkeleton
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

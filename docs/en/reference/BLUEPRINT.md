@@ -367,8 +367,9 @@ Every node in this graph is an existing compiled module.
 | 12 (higher-localization local universal property) | The presented cost-exact zigzag inclusion satisfies all three fields of `IsCostExactBicategoricalLocalization`: marked inversion, biessential factorization, and local equivalence on strong transformations/modifications | PROVED |
 | 12 (cost-exact higher-nerve comparison) | Common-universe `AsSmall` replacement of the source and larger word-presentation local hom-categories; exact lifted action on arbitrary 1-/2-cells; marked vertices landing at adjoint equivalences; unit and compositor natural isomorphisms with genuine simplicial homotopies; exact lifted associator and left/right-unitor edge equations; complete cost-exact instantiation | PROVED |
 | 12 (relative Rezk outer comparison) | Relative outer degree `n` consists of all source strings and pointwise cost-exact vertical transformations; functors inverting the marking induce an all-dimensional bisimplicial map into the target Rezk core; the actual marked-zigzag localization instantiates it with exact action on represented arrow vertices | PROVED |
+| 12 (relative/local one-skeleton gluing) | Actual source local zero-simplices and arbitrary 2-cell edges are mapped by the common-universe local nerve map and decoded without replacement data; relative outer arrow vertices agree strictly with the decoded mapped local vertices; both endpoints and the exact local edge are packaged for every possibly noninvertible 2-cell | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Glue the all-dimensional relative outer map to the compiled non-groupoidal local 2-cell/coherence data and prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled relative/local one-skeleton glue through two and higher simplicial coherence, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6089,9 +6090,12 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   identity, horizontal composition, associators, and both unitors agree across
   both layers. The two decoded associator pastings satisfy the bicategorical
   pentagon, while the decoded associator/unitor pastings satisfy the triangle.
-  The remaining boundary is gluing the relative outer map to the complete
-  non-groupoidal local layer and proving the Dwyer--Kan/Rezk
-  weak-equivalence statement.
+  The actual source local zero-simplex and arbitrary local 2-cell edge now map
+  and decode exactly. For every possibly noninvertible 2-cell, both relative
+  outer endpoints and its exact mapped local edge are packaged as one
+  one-skeleton gluing witness. The remaining boundary is extending this glue
+  through two and higher simplicial coherence and proving the
+  Dwyer--Kan/Rezk weak-equivalence statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`
