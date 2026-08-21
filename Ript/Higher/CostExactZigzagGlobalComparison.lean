@@ -884,6 +884,26 @@ def sourceHorizontalPairAt
       (_Q := CostExactZigzag.inclusion (R := R)) M N P ⥤
         ((M ⟶ N) × (N ⟶ P))).obj (x.obj j)
 
+/-- Decoding a source pair after any local-nerve restriction is strictly the
+same as decoding the corresponding original vertex. This single formula
+covers every face and degeneracy projection. -/
+theorem sourceHorizontalPairAt_restriction
+    {M N P : ProcessModel.{u, v, w} R} {m n : ℕ}
+    (φ : SimplexCategory.mk m ⟶ SimplexCategory.mk n)
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (j : Fin (m + 1)) :
+    sourceHorizontalPairAt
+        (((CategoryTheory.nerve
+          (CommonHorizontalSource
+            (_Q := CostExactZigzag.inclusion (R := R)) M N P)).map
+              φ.op).hom' x) j =
+      sourceHorizontalPairAt x
+        ((SimplexCategory.toCat.map φ).toFunctor.obj j) := by
+  rfl
+
 /-- All-degree relative-outer/local prism vertex package. It combines the
 all-degree local prism core with exact two-arrow outer/local gluing for every
 vertex of every horizontal-product source simplex. -/
@@ -909,6 +929,59 @@ theorem relativeOuterLocal_allPrismVerticesGlue
   intro n x j
   exact relativeOuterLocal_twoArrowGlue
     (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2
+
+/-- All-degree relative-outer/local restriction-vertex package. It retains
+the complete all-prism vertex glue, proves strict vertex decoding under every
+simplex restriction, and attaches complete relative two-arrow glue to every
+restricted vertex. -/
+def RelativeOuterLocalAllPrismRestrictionVerticesGlue
+    (M N P : ProcessModel.{u, v, w} R) : Prop :=
+  RelativeOuterLocalAllPrismVerticesGlue M N P ∧
+  ∀ (m n : ℕ) (φ : SimplexCategory.mk m ⟶ SimplexCategory.mk n)
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (j : Fin (m + 1)),
+    sourceHorizontalPairAt
+        (((CategoryTheory.nerve
+          (CommonHorizontalSource
+            (_Q := CostExactZigzag.inclusion (R := R)) M N P)).map
+              φ.op).hom' x) j =
+      sourceHorizontalPairAt x
+        ((SimplexCategory.toCat.map φ).toFunctor.obj j) ∧
+    RelativeOuterLocalTwoArrowGlue
+      (sourceHorizontalPairAt
+        (((CategoryTheory.nerve
+          (CommonHorizontalSource
+            (_Q := CostExactZigzag.inclusion (R := R)) M N P)).map
+              φ.op).hom' x) j).1
+      (sourceHorizontalPairAt
+        (((CategoryTheory.nerve
+          (CommonHorizontalSource
+            (_Q := CostExactZigzag.inclusion (R := R)) M N P)).map
+              φ.op).hom' x) j).2
+
+/-- Every face, degeneracy, and arbitrary simplex restriction of every
+cost-exact compositor-prism source simplex has strictly compatible decoded
+vertices and complete relative two-arrow gluing. -/
+theorem relativeOuterLocal_allPrismRestrictionVerticesGlue
+    (M N P : ProcessModel.{u, v, w} R) :
+    RelativeOuterLocalAllPrismRestrictionVerticesGlue M N P := by
+  refine ⟨relativeOuterLocal_allPrismVerticesGlue M N P, ?_⟩
+  intro m n φ x j
+  exact ⟨sourceHorizontalPairAt_restriction φ x j,
+    relativeOuterLocal_twoArrowGlue
+      (sourceHorizontalPairAt
+        (((CategoryTheory.nerve
+          (CommonHorizontalSource
+            (_Q := CostExactZigzag.inclusion (R := R)) M N P)).map
+              φ.op).hom' x) j).1
+      (sourceHorizontalPairAt
+        (((CategoryTheory.nerve
+          (CommonHorizontalSource
+            (_Q := CostExactZigzag.inclusion (R := R)) M N P)).map
+              φ.op).hom' x) j).2⟩
 
 /-- An arbitrary-degree target-local simplex in the global cost-exact
 compositor prism. -/
@@ -1263,6 +1336,11 @@ structure GlobalComparisonCore where
   relativeOuterLocalAllPrismVerticesGlue : ∀
     (M N P : ProcessModel.{u, v, w} R),
     RelativeOuterLocalAllPrismVerticesGlue M N P
+  /-- Strict restriction naturality and relative two-arrow gluing for every
+  face/degeneracy vertex of every all-degree compositor prism. -/
+  relativeOuterLocalAllPrismRestrictionVerticesGlue : ∀
+    (M N P : ProcessModel.{u, v, w} R),
+    RelativeOuterLocalAllPrismRestrictionVerticesGlue M N P
   /-- Complete all-degree compositor-prism face and degeneracy coherence for
   every triple of source models. -/
   relativeLocalAllDegreePrismCore : ∀
@@ -1400,6 +1478,8 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
     relativeOuterLocal_prismVerticesGlue
   relativeOuterLocalAllPrismVerticesGlue :=
     relativeOuterLocal_allPrismVerticesGlue
+  relativeOuterLocalAllPrismRestrictionVerticesGlue :=
+    relativeOuterLocal_allPrismRestrictionVerticesGlue
   relativeLocalAllDegreePrismCore := relativeLocal_allDegreePrismCore
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
