@@ -135,6 +135,8 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 
 完全局所層の高次比較は異なる universe にも拡張されました。擬関手の単位制約と compositor 制約は、すべての単体次数で実際の nerve homotopy に持ち上げられ、それらを支える結合子および左右単位子方程も common-universe 局所 nerve の厳密な 1-単体等式になりました。`CostExactZigzagGlobalComparison.core` は外側 Rezk 写像と完全局所層を包装し、局所頂点、恒等、水平合成、結合子、左右単位子の厳密な外側/局所接着律を持ち、任意の可逆局所 2-セルを対応する外側等式へ復号します。復号された結合子貼り合わせは五角形律を、結合子/単位子貼り合わせは三角形律を明示的に満たします。残るのはこれらの証明の全次元単体的組立てと Complete-Segal/Rezk 弱同値定理です。
 
+始域と実際の終域の外側 completeness 写像は、どちらも明示的な単体ホモトピー逆と両方向の逆律ホモトピーを持ちます。
+
 その実構成には可計算な表示構文があります。`MarkedZigzag.Word` は二分弱合成を使い、関係商は五角形・双圏三角形と marked unit/counit の両随伴三角式を含む `Presented.localizationBicategory` を形成します。`InversionData.lift` と `InversionData.factorization` は任意の marking 反転擬関手の持ち上げと随伴同値因子分解を与えます。`LocalExtension.extension` は形式逆射上で mate を用いて strong transformation を再帰的に延長し、modification も恒等・逆射・合成に沿って延長します。したがって前合成は忠実、充満、本質的全射であり、`CostExactZigzag.inclusion_isBicategoricalLocalization` が完全な高次局所化普遍性を証明します。
 
 異なる資源代数のモデルは順序付き加法準同型で比較できます。直列、並列、構造、予算則が再添字
@@ -148,6 +150,8 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 縮退層も native に実装済みです。`n`-単体は局所離散有限順序 `[n]` から全資源モデル双圏への strictly unitary lax functor です。全単調順序写像が前合成で面/縮退を一様に与え、恒等/合成則は厳密です。最初の縮退は恒等辺を作り、lax 結合則は四面体方程を与え、自然変換が完全 nerve を座標半単体 nerve へ復号します。
 逆方向には `Fin (n + 1)` と明示的に圏同値な構成子正規有限順序があり、`fromFin` と finite-to-normal lax core は擬逆を選択しません。恒等/厳密辺、比較セル、全 8 構成子パターンの異質四面体整合性、始域の単位子・恒等輸送・結合子がすべてコンパイル済みです。座標単体と native normal-lax 単体の完全構造上の両往復が証明され、次元ごとの同値を形成します。この同値で native 作用を輸送した座標 simplicial nerve は全ての面と縮退を持ち、native Duskin nerve と自然同型です。残るのは complete-Segal 2-space の組立てと高次局所化比較です。
 complete-Segal 組立ての第一層もコンパイル済みです。総モデルのホモトピー圏の Rezk core 図は各外次数で有限列圏の maximal core を用いるため全垂直レベルが Kan で、外側対象空間は既存の対象 core と圏同値です。選択された Kan 同値矢印空間には `NerveEquivalenceWitness` があります。completeness 同値は定義的に透明な恒等矢印函子へ正規化され、旧前向函子との自然同型と selected core の実際の外側 1 次空間への inclusion もコンパイル済みです。その合成は実際の零縮退と明示的に自然同型で、同値・inclusion・縮退・比較は再利用可能な圏論的因子化として一括されています。新しい一般的 cylinder 構成は任意の自然変換を nerve 写像間の `SSet.Homotopy` へ持ち上げ、ここでも中介 completeness 写像と実際の零縮退の単体ホモトピーを証明します。さらに各水平行は垂直同値列の圏の通常 nerve と自然同型で、実際の外側 spine は全双次数で同値です。`SegalCompletenessCore` がこれらを垂直 Kan・completeness データと一括します。選択同値圏は実際の外側可逆矢印の充満部分圏とも明示的に圏同値で、直接 completeness 写像も圏同値の nerve であり、その inclusion は実際の零縮退と単体ホモトピックです。残るのは高次 Reedy matching fibration、非可逆局所 mapping nerve の接続、高次局所化比較です。
+
+これらの圏同値で表示される completeness 写像はすべて `HomotopyEquivalenceWitness` を自動的に得ます。
 Reedy 基盤には厳密な `Functor.IsIsofibration` lift、恒等/core inclusion インスタンス、順逆同型 lift 方程式が加わりました。全次元 horn 定理も完成し、二次元は群胚消去、高次元は圏 nerve horn 一意性で処理され、`Functor.nerveMap_fibration` が Kan fibration を与えます。
 degree 1 matching は文字通りの outer-zero 座標でコンパイル済みです。`degreeOneMatchingFunctor` は `Core(ComposableArrows C 1)` から二つの `Core(ComposableArrows C 0)` への実際の `d₁,d₀` 面写像対です。端点共役により厳密な isofibration となり、その nerve map は Kan fibration で、二つの投影は実際の外側面に等しいことも証明済みです。明示的な圏積極限同型と nerve の積保存同型により Mathlib が選択する単体集合の二項積へ輸送され、標準 matching map は厳密に `⟨d₁,d₀⟩` で Kan fibration です。`DegreeOneReedyCore` がこれを `SegalCompletenessCore` に組み込みます。degree 2 には三辺を独立に記録する明示的な `TriangleBoundary C` 圏があります。境界が `ComposableArrows C 2` へ拡張できるのは長辺が二短辺の合成に等しい場合に限る、という厳密像表現定理を証明しました。maximal core 上の制限は厳密な isofibration、その nerve は Kan fibration で、`DegreeTwoMatchingCore` に一括されています。この境界 nerve と抽象 degree-2 Reedy matching 極限との同一視、および 3 次元以上が残ります。
 

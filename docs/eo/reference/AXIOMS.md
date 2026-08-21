@@ -541,6 +541,7 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.RezkCore.selectedToActualEquivalenceWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.selectedToActualEquivalenceMap_comp_inclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.actualCompletenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.actualCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.constantToDegeneracyIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.selectedCompletenessFunctorIsoDegeneracy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.completenessFunctorIsoDegeneracy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
@@ -556,6 +557,7 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.TotalModelCompleteSegal.equivalenceSpaceInclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.TotalModelCompleteSegal.selectedToActualEquivalenceWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.TotalModelCompleteSegal.actualCompletenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.actualCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.TotalModelCompleteSegal.completenessFunctorIsoDegeneracy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.TotalModelCompleteSegal.completenessFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.TotalModelCompleteSegal.completenessNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
@@ -871,6 +873,8 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.outerComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.localVertex_outerArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.localComposite_outerComposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.localIdentity_outerIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
@@ -1375,6 +1379,9 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessFunctorIsEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `SSet.NerveEquivalenceWitness.ofEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
+| `SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/SSetHomotopyEquivalence.lean` |
+| `SSet.HomotopyEquivalenceWitness.transportIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/SSetHomotopyEquivalence.lean` |
+| `SSet.NerveEquivalenceWitness.homotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
 | `CategoryTheory.NerveHomotopy.nerveCylinder` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `CategoryTheory.NerveHomotopy.ofNatTrans` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `CategoryTheory.Functor.isIsofibrationId` | `[propext]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
@@ -1440,6 +1447,7 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramBoundaryMatchingMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `SSet.GroupoidalCompleteSegal.matchingConeIsLimit` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
 | `SSet.GroupoidalCompleteSegal.matchingMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
+| `SSet.GroupoidalCompleteSegal.completenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramHorizontalRowKan` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramGroupoidalCompleteSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramVerticalVerticesIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |

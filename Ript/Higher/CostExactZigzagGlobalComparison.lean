@@ -58,6 +58,24 @@ noncomputable def outerComparison :
   RezkCore.diagramMap (SmallSource.{u, v, w} (R := R))
     (smallHomotopyLocalizationFunctor (R := R))
 
+/-- The source outer Rezk diagram's actual completeness map has an explicit
+simplicial homotopy inverse. -/
+noncomputable def sourceCompletenessHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness
+      (RezkCore.actualCompletenessMap
+        (SmallSource.{u, v, w} (R := R))) :=
+  RezkCore.actualCompletenessHomotopyEquivalence
+    (SmallSource.{u, v, w} (R := R))
+
+/-- The actual marked-zigzag target outer Rezk diagram's completeness map has
+an explicit simplicial homotopy inverse. -/
+noncomputable def targetCompletenessHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness
+      (RezkCore.actualCompletenessMap
+        (SmallTarget.{u, v, w} (R := R))) :=
+  RezkCore.actualCompletenessHomotopyEquivalence
+    (SmallTarget.{u, v, w} (R := R))
+
 /-- A process model as an object of the common-universe source homotopy
 category. -/
 def sourceObject (M : ProcessModel.{u, v, w} R) :
@@ -388,6 +406,16 @@ structure GlobalComparisonCore where
   /-- Full non-groupoidal local comparison, with exact 2-cell action and
   compositor simplicial homotopy. -/
   localNerve : LocalNerveCore.{w, v, u} (R := R)
+  /-- Explicit simplicial homotopy-equivalence witness for source outer
+  completeness. -/
+  sourceCompleteness : SSet.HomotopyEquivalenceWitness
+    (RezkCore.actualCompletenessMap
+      (SmallSource.{u, v, w} (R := R)))
+  /-- Explicit simplicial homotopy-equivalence witness for target outer
+  completeness. -/
+  targetCompleteness : SSet.HomotopyEquivalenceWitness
+    (RezkCore.actualCompletenessMap
+      (SmallTarget.{u, v, w} (R := R)))
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -502,6 +530,8 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   outer := outerComparison (R := R)
   outer_eq := rfl
   localNerve := CostExactZigzagNerveComparison.core (R := R)
+  sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
+  targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

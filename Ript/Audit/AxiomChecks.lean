@@ -628,6 +628,7 @@ set_option autoImplicit false
 #print axioms Ript.Higher.RezkCore.selectedToActualEquivalenceWitness
 #print axioms Ript.Higher.RezkCore.selectedToActualEquivalenceMap_comp_inclusion
 #print axioms Ript.Higher.RezkCore.actualCompletenessWitness
+#print axioms Ript.Higher.RezkCore.actualCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.RezkCore.constantToDegeneracyIso
 #print axioms Ript.Higher.RezkCore.selectedCompletenessFunctorIsoDegeneracy
 #print axioms Ript.Higher.RezkCore.completenessFunctorIsoDegeneracy
@@ -643,6 +644,7 @@ set_option autoImplicit false
 #print axioms Ript.Higher.TotalModelCompleteSegal.equivalenceSpaceInclusion
 #print axioms Ript.Higher.TotalModelCompleteSegal.selectedToActualEquivalenceWitness
 #print axioms Ript.Higher.TotalModelCompleteSegal.actualCompletenessWitness
+#print axioms Ript.Higher.TotalModelCompleteSegal.actualCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.TotalModelCompleteSegal.completenessFunctorIsoDegeneracy
 #print axioms Ript.Higher.TotalModelCompleteSegal.completenessFactorization
 #print axioms Ript.Higher.TotalModelCompleteSegal.completenessNerveHomotopy
@@ -950,6 +952,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.outerComparison
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.localVertex_outerArrow
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.localComposite_outerComposition
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.localIdentity_outerIdentity
@@ -1475,6 +1479,9 @@ set_option autoImplicit false
 #print axioms SSet.BoundaryReedyFibrant.matchingMap_eq_limitLift
 #print axioms SSet.BoundaryReedyFibrant.matchingMap_fibration
 #print axioms SSet.NerveEquivalenceWitness.ofEquivalence
+#print axioms SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+#print axioms SSet.HomotopyEquivalenceWitness.transportIso
+#print axioms SSet.NerveEquivalenceWitness.homotopyEquivalence
 #print axioms CategoryTheory.NerveHomotopy.nerveCylinder
 #print axioms CategoryTheory.NerveHomotopy.ofNatTrans
 #print axioms CategoryTheory.Functor.isIsofibrationId
@@ -1511,6 +1518,7 @@ set_option autoImplicit false
 #print axioms SSet.KanComplex.ofIso
 #print axioms SSet.GroupoidalCompleteSegal.matchingConeIsLimit
 #print axioms SSet.GroupoidalCompleteSegal.matchingMap_fibration
+#print axioms SSet.GroupoidalCompleteSegal.completenessHomotopyEquivalence
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceNaturalIso
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso
 #print axioms Ript.Univalent.UniverseModel.interfaceClassifyingDiagramMappingSpaceIso_naturality

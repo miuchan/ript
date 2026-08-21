@@ -2009,6 +2009,12 @@ noncomputable def selectedCompletenessWitness :
     NerveEquivalenceWitness (selectedCompletenessMap C) :=
   NerveEquivalenceWitness.ofEquivalence (selectedCompletenessEquivalence C)
 
+/-- The selected completeness map has a displayed simplicial homotopy
+inverse. -/
+noncomputable def selectedCompletenessHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness (selectedCompletenessMap C) :=
+  (selectedCompletenessWitness C).homotopyEquivalence
+
 /-- Inclusion of the selected equivalence-arrow core into actual outer degree
 one. The remaining factorization theorem compares its composite with the
 actual outer degeneracy. -/
@@ -2120,6 +2126,12 @@ noncomputable def selectedToActualEquivalenceWitness :
     NerveEquivalenceWitness (selectedToActualEquivalenceMap C) :=
   NerveEquivalenceWitness.ofEquivalence (selectedActualEquivalence C)
 
+/-- The selected-to-actual equivalence-space comparison has a displayed
+simplicial homotopy inverse. -/
+noncomputable def selectedToActualHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness (selectedToActualEquivalenceMap C) :=
+  (selectedToActualEquivalenceWitness C).homotopyEquivalence
+
 /-- Selected-to-actual comparison followed by actual inclusion recovers the
 selected inclusion as a simplicial map. -/
 theorem selectedToActualEquivalenceMap_comp_inclusion :
@@ -2149,6 +2161,12 @@ equivalence. -/
 noncomputable def actualCompletenessWitness :
     NerveEquivalenceWitness (actualCompletenessMap C) :=
   NerveEquivalenceWitness.ofEquivalence (actualCompletenessEquivalence C)
+
+/-- The actual completeness map carries an explicit simplicial homotopy
+inverse, independently of a model-category weak-equivalence API. -/
+noncomputable def actualCompletenessHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness (actualCompletenessMap C) :=
+  (actualCompletenessWitness C).homotopyEquivalence
 
 /-- The actual completeness map factors through the selected completeness map. -/
 theorem actualCompletenessMap_eq_selected :
@@ -2525,6 +2543,14 @@ noncomputable def completenessWitness :
     NerveEquivalenceWitness (completenessMap.{uR, vR, wR}) :=
   RezkCore.selectedCompletenessWitness SmallHomotopyCategory.{uR, vR, wR}
 
+/-- The total-model selected completeness map has an explicit simplicial
+homotopy inverse. -/
+noncomputable def completenessHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness
+      (completenessMap.{uR, vR, wR}) :=
+  RezkCore.selectedCompletenessHomotopyEquivalence
+    SmallHomotopyCategory.{uR, vR, wR}
+
 /-- Inclusion of the selected equivalence-arrow space into actual outer
 degree one. -/
 def equivalenceSpaceInclusion :
@@ -2556,6 +2582,14 @@ noncomputable def selectedToActualEquivalenceWitness :
   RezkCore.selectedToActualEquivalenceWitness
     SmallHomotopyCategory.{uR, vR, wR}
 
+/-- The total-model selected-to-actual equivalence-space comparison has an
+explicit simplicial homotopy inverse. -/
+noncomputable def selectedToActualHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness
+      (selectedToActualEquivalenceMap.{uR, vR, wR}) :=
+  RezkCore.selectedToActualHomotopyEquivalence
+    SmallHomotopyCategory.{uR, vR, wR}
+
 /-- Inclusion of actual total-model equivalence arrows into outer degree one. -/
 def actualEquivalenceSpaceInclusion :
     ActualEquivalenceSpace.{uR, vR, wR} ⟶
@@ -2575,6 +2609,14 @@ equivalence. -/
 noncomputable def actualCompletenessWitness :
     NerveEquivalenceWitness (actualCompletenessMap.{uR, vR, wR}) :=
   RezkCore.actualCompletenessWitness
+    SmallHomotopyCategory.{uR, vR, wR}
+
+/-- The total-model actual-subspace completeness map has an explicit
+simplicial homotopy inverse. -/
+noncomputable def actualCompletenessHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness
+      (actualCompletenessMap.{uR, vR, wR}) :=
+  RezkCore.actualCompletenessHomotopyEquivalence
     SmallHomotopyCategory.{uR, vR, wR}
 
 /-- The selected completeness equivalence followed by inclusion is naturally

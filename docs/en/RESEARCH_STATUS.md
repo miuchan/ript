@@ -279,7 +279,9 @@ pseudofunctor now also descends to a
 functor on homotopy categories. `CostExactZigzagGlobalComparison.core` uses
 that functor to construct the outer Rezk map into the actual presented target,
 proves marked outer arrows factor through its actual-equivalence space, and
-packages the outer and full-local directions. Local vertices decode exactly
+packages the outer and full-local directions. The source and actual target
+outer completeness maps both have explicit simplicial homotopy inverses.
+Local vertices decode exactly
 to outer arrows, every invertible local 2-cell decodes to its outer equality,
 and identity, horizontal composition, associators, and both unitors satisfy
 strict gluing laws. The decoded associator pastings satisfy the pentagon and
@@ -379,6 +381,8 @@ homotopy category: every vertical level is the nerve of a maximal subgroupoid
 and is Kan; the outer object space is categorically equivalent to the compiled
 object core; and a selected Kan equivalence-arrow space carries a
 `NerveEquivalenceWitness` for the object-to-identity-arrow comparison. The
+new `HomotopyEquivalenceWitness` construction upgrades this to a displayed
+simplicial inverse with genuine homotopies for both inverse laws. The
 completeness equivalence now uses a definitionally transparent identity-arrow
 functor, obtained from the original composite equivalence by an explicit
 natural isomorphism, and the selected equivalence space has a compiled nerve

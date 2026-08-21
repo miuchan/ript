@@ -252,6 +252,9 @@ eksplicite plenumas la kvinangulon, kaj la asociila/unuigila kunmetaĵoj la
 triangulon. Restas kunmeti tiujn atestojn en tutdimensian simplician koherecon
 kaj pruvi la Complete-Segal/Rezk malfort-ekvivalentan teoremon.
 
+La eksteraj komplet-mapoj de la fonto kaj fakta celo ambaŭ havas eksplicitajn
+simpliciajn homotopiajn inversojn kaj faktajn homotopiojn por ambaŭ inversaj leĝoj.
+
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
 1-ĉelon antaŭen kaj nur markitan sagon malantaŭen. Kunmeto, longo, unuaj kaj
@@ -328,6 +331,8 @@ total-modela homotopia kategorio uzas la maksimuman kernon de ĉiu finia
 ĉenkategorio, do ĉiuj vertikalaj niveloj estas Kan-aj. La ekstera objektspaco
 estas kategorie ekvivalenta al la ekzistanta objektkerno, kaj elektita Kan-a
 ekvivalent-saga spaco havas `NerveEquivalenceWitness` por la identecsaga mapo.
+La nova `HomotopyEquivalenceWitness` fortigas tion al eksplicita simplicia
+inverso kun faktaj homotopioj por ambaŭ inversaj leĝoj.
 La komplet-ekvivalento nun uzas difine travideblan identecsagan funktoron; ĝia
 natura izomorfio kun la malnova antaŭa funktoro kaj la selected-core enigo en
 la veran eksteran unuagradan spacon ankaŭ kompiliĝas. Tiu kunmetaĵo estas
