@@ -336,9 +336,14 @@ target-independent algebraic universal property: every assignment of target
 objects to words and target morphisms to raw cells that respects all
 relations, identities, and vertical composition descends to a functor,
 computes exactly on raw representatives, and is the unique compatible lift.
-The generic descent depends only on `Quot.sound`. A homotopical derived or
-hammock mapping-space characterization, accepted weak-equivalence packaging,
-and the global Dwyer--Kan/Rezk theorem remain.
+The generic descent depends only on `Quot.sound`. This result now lifts to
+common-universe categorical nerves in every degree: every compatible lift
+induces the canonical nerve map; word vertices, raw-cell edges, and arbitrary
+simplices compute exactly; and natural transformations or natural
+isomorphisms between descended interpretations produce genuine one-way or
+two-way `SSet.Homotopy` witnesses. An independent derived/hammock mapping-
+space characterization, accepted weak-equivalence packaging, and the global
+Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

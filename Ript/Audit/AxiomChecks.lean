@@ -916,6 +916,11 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.descend_map_mk
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.toFunctor_unique
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.liftNerveMap_unique
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveMap_simplex
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveMap_rawCellEdge
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveHomotopy
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveIsoHomotopies
 #print axioms Ript.Higher.CostExactZigzag.backwardCostReflecting
 #print axioms Ript.Higher.CostExactZigzag.unitCellCostReflecting
 #print axioms Ript.Higher.CostExactZigzag.counitCellCostReflecting

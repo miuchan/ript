@@ -66,6 +66,7 @@ import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
 import Ript.ForMathlib.CategoryTheory.Bicategory.Localization
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzag
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagLocalization
+import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingNervePresentation
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingPresentation
 import Ript.ForMathlib.CategoryTheory.Bicategory.MorphismProperty
 import Ript.ForMathlib.CategoryTheory.Bicategory.PithToHomotopy
