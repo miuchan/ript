@@ -288,9 +288,14 @@ tutgrada loka prismo malkodiĝas al fonta 1-ĉela paro kun plena du-saga gluado.
 La malkodo de fontaj paroj estas nun strikte natura sub ĉiu simplicia-
 kategoria restrikto de ĉiu horizontal-produkta simplaĵo, kaj ĉiu restriktita
 vertico denove portas la plenan gluadon; tiel unu teoremo unuforme kovras ĉiujn
-edrojn kaj degenerigojn en ĉiu grado. Restas gluado de la faktaj celaj prismaj
-edroprojekcioj, la relativa-zigzaga komparo de map-spacoj, kaj la
-Dwyer–Kan/Rezk malforta ekvivalento.
+edrojn kaj degenerigojn en ĉiu grado. Ĉiu vertico de ĉiu fakta cela prisma
+edro nun estas laŭvorta edroprojekcio de la kategoria nervo kaj estas ekzakte
+klasifikita antaŭ aŭ post la komponila ŝalto kiel `map(composite)` aŭ
+`map(f) ≫ map(g)`. Ambaŭ lokaj prezentoj malkodiĝas al la sama ekstera
+kunmetaĵo kaj portas la plenan du-sagan gluadon. La kompleta loka kerno de
+edroj kaj degenerigoj restas alkroĉita, do neinversigeblaj lokaj ĉeloj ne estas
+enmetitaj en la relativan eksteran maksimuman kernon. Restas la relativa-
+zigzaga komparo de map-spacoj kaj la Dwyer–Kan/Rezk malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

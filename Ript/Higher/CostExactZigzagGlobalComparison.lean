@@ -994,6 +994,233 @@ noncomputable def mappedCompositionPrismSimplexAt
     (i : Fin (n + 1)) :=
   CostExactZigzagNerveComparison.compositionPrismSimplexAt M N P x i
 
+/-- One actual vertex of one face of an arbitrary-degree target-local
+compositor-prism simplex. -/
+noncomputable def mappedCompositionPrismFaceVertexAt
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (face : Fin (n + 2)) (j : Fin (n + 1)) :
+    UniverseLiftedNerve.CommonTargetHom
+      (CostExactZigzag.inclusion (R := R)) M P :=
+  (((CategoryTheory.nerve
+    (UniverseLiftedNerve.CommonTargetHom
+      (CostExactZigzag.inclusion (R := R)) M P)).δ face).hom'
+        (mappedCompositionPrismSimplexAt M N P x i)).obj j
+
+/-- A target-prism face vertex is literally the corresponding vertex of the
+unrestricted target prism simplex. -/
+@[simp]
+theorem mappedCompositionPrismFaceVertexAt_eq
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (face : Fin (n + 2)) (j : Fin (n + 1)) :
+    mappedCompositionPrismFaceVertexAt M N P x i face j =
+      (mappedCompositionPrismSimplexAt M N P x i).obj
+        (face.succAbove j) := by
+  rfl
+
+/-- Before the switch, each target-prism vertex is exactly the local lift of
+the pseudofunctor image of the corresponding source composite. -/
+theorem mappedCompositionPrismVertex_castSucc
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i j : Fin (n + 1)) (hji : j ≤ i) :
+    (mappedCompositionPrismSimplexAt M N P x i).obj j.castSucc =
+      targetLocalVertex (CostExactZigzag.inclusion.map
+        ((sourceHorizontalPairAt x j).1 ≫
+          (sourceHorizontalPairAt x j).2)) := by
+  unfold mappedCompositionPrismSimplexAt
+  rw [CostExactZigzagNerveComparison.compositionPrismSimplexAt_obj_castSucc_of_le
+    M N P x i j hji]
+  rfl
+
+/-- After the switch, each target-prism vertex is exactly the local composite
+of the two mapped factors of the corresponding source pair. -/
+theorem mappedCompositionPrismVertex_succ
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i j : Fin (n + 1)) (hij : i ≤ j) :
+    (mappedCompositionPrismSimplexAt M N P x i).obj j.succ =
+      targetLocalVertex
+        (CostExactZigzag.inclusion.map (sourceHorizontalPairAt x j).1 ≫
+          CostExactZigzag.inclusion.map (sourceHorizontalPairAt x j).2) := by
+  unfold mappedCompositionPrismSimplexAt
+  rw [CostExactZigzagNerveComparison.compositionPrismSimplexAt_obj_succ_of_le
+    M N P x i j hij]
+  rfl
+
+/-- Before the switch, decoding the actual target-prism vertex gives the
+outer composite represented by the corresponding source pair. -/
+theorem mappedCompositionPrismVertex_castSucc_outer
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i j : Fin (n + 1)) (hji : j ≤ i) :
+    localVertexToOuterArrow
+        ((mappedCompositionPrismSimplexAt M N P x i).obj j.castSucc) =
+      (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).1) ≫
+        (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).2) := by
+  rw [mappedCompositionPrismVertex_castSucc M N P x i j hji]
+  calc
+    _ = (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow ((sourceHorizontalPairAt x j).1 ≫
+            (sourceHorizontalPairAt x j).2)) :=
+      localVertex_outerArrow M P
+        ((sourceHorizontalPairAt x j).1 ≫
+          (sourceHorizontalPairAt x j).2)
+    _ = _ := (outerComposition_sourceComposite
+      (sourceHorizontalPairAt x j).1
+      (sourceHorizontalPairAt x j).2).symm
+
+/-- After the switch, decoding the actual target-prism vertex gives the same
+outer composite represented by the corresponding source pair. -/
+theorem mappedCompositionPrismVertex_succ_outer
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i j : Fin (n + 1)) (hij : i ≤ j) :
+    localVertexToOuterArrow
+        ((mappedCompositionPrismSimplexAt M N P x i).obj j.succ) =
+      (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).1) ≫
+        (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).2) := by
+  rw [mappedCompositionPrismVertex_succ M N P x i j hij]
+  exact localComposite_outerComposition
+    (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2
+
+/-- Complete outer/local glue for one actual target-prism vertex. It records
+which side of the compositor switch presents the vertex, its exact local
+1-cell, its decoded outer composite, and the full relative two-arrow glue of
+the source pair. -/
+def RelativeOuterLocalPrismTargetVertexGlue
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (k : Fin (n + 2)) : Prop :=
+  (∃ j : Fin (n + 1), j ≤ i ∧ k = j.castSucc ∧
+    (mappedCompositionPrismSimplexAt M N P x i).obj k =
+      targetLocalVertex (CostExactZigzag.inclusion.map
+        ((sourceHorizontalPairAt x j).1 ≫
+          (sourceHorizontalPairAt x j).2)) ∧
+    localVertexToOuterArrow
+        ((mappedCompositionPrismSimplexAt M N P x i).obj k) =
+      (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).1) ≫
+        (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).2) ∧
+    RelativeOuterLocalTwoArrowGlue
+      (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2) ∨
+  (∃ j : Fin (n + 1), i ≤ j ∧ k = j.succ ∧
+    (mappedCompositionPrismSimplexAt M N P x i).obj k =
+      targetLocalVertex
+        (CostExactZigzag.inclusion.map (sourceHorizontalPairAt x j).1 ≫
+          CostExactZigzag.inclusion.map (sourceHorizontalPairAt x j).2) ∧
+    localVertexToOuterArrow
+        ((mappedCompositionPrismSimplexAt M N P x i).obj k) =
+      (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).1) ≫
+        (smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow (sourceHorizontalPairAt x j).2) ∧
+    RelativeOuterLocalTwoArrowGlue
+      (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2)
+
+/-- Every vertex of every actual target-local compositor-prism simplex has
+the complete side-sensitive outer/local glue. -/
+theorem relativeOuterLocal_prismTargetVertexGlue
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (k : Fin (n + 2)) :
+    RelativeOuterLocalPrismTargetVertexGlue M N P x i k := by
+  rcases SSet.Homotopy.prismVertex_castSucc_or_succ i k with
+    ⟨j, hji, rfl⟩ | ⟨j, hij, rfl⟩
+  · left
+    exact ⟨j, hji, rfl,
+      mappedCompositionPrismVertex_castSucc M N P x i j hji,
+      mappedCompositionPrismVertex_castSucc_outer M N P x i j hji,
+      relativeOuterLocal_twoArrowGlue
+        (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2⟩
+  · right
+    exact ⟨j, hij, rfl,
+      mappedCompositionPrismVertex_succ M N P x i j hij,
+      mappedCompositionPrismVertex_succ_outer M N P x i j hij,
+      relativeOuterLocal_twoArrowGlue
+        (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2⟩
+
+/-- Complete glue for one actual target-prism face vertex: the categorical
+nerve face projection is retained literally and the projected vertex has the
+side-sensitive target/local/outer certificate. -/
+def RelativeOuterLocalPrismTargetFaceVertexGlue
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (face : Fin (n + 2)) (j : Fin (n + 1)) : Prop :=
+  mappedCompositionPrismFaceVertexAt M N P x i face j =
+      (mappedCompositionPrismSimplexAt M N P x i).obj
+        (face.succAbove j) ∧
+    RelativeOuterLocalPrismTargetVertexGlue M N P x i (face.succAbove j)
+
+/-- Every vertex of every face of every actual target-local prism simplex
+has complete projection and outer/local gluing. -/
+theorem relativeOuterLocal_prismTargetFaceVertexGlue
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (face : Fin (n + 2)) (j : Fin (n + 1)) :
+    RelativeOuterLocalPrismTargetFaceVertexGlue M N P x i face j :=
+  ⟨mappedCompositionPrismFaceVertexAt_eq M N P x i face j,
+    relativeOuterLocal_prismTargetVertexGlue M N P x i (face.succAbove j)⟩
+
+/-- All-degree target-face projection package. It combines the complete
+source restriction and local prism coherence with exact outer/local gluing
+for every actual target face vertex. -/
+def RelativeOuterLocalAllPrismTargetFacesGlue
+    (M N P : ProcessModel.{u, v, w} R) : Prop :=
+  RelativeOuterLocalAllPrismRestrictionVerticesGlue M N P ∧
+  ∀ (n : ℕ)
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) (face : Fin (n + 2)) (j : Fin (n + 1)),
+    RelativeOuterLocalPrismTargetFaceVertexGlue M N P x i face j
+
+/-- Every actual target-prism face projection in every simplicial degree is
+retained by the local prism core and has complete outer/local vertex glue. -/
+theorem relativeOuterLocal_allPrismTargetFacesGlue
+    (M N P : ProcessModel.{u, v, w} R) :
+    RelativeOuterLocalAllPrismTargetFacesGlue M N P := by
+  refine ⟨relativeOuterLocal_allPrismRestrictionVerticesGlue M N P, ?_⟩
+  intro n x i face j
+  exact relativeOuterLocal_prismTargetFaceVertexGlue M N P x i face j
+
 /-- All-degree relative/local compositor-prism core for one triple of source
 models. -/
 def RelativeLocalAllDegreePrismCore
@@ -1341,6 +1568,11 @@ structure GlobalComparisonCore where
   relativeOuterLocalAllPrismRestrictionVerticesGlue : ∀
     (M N P : ProcessModel.{u, v, w} R),
     RelativeOuterLocalAllPrismRestrictionVerticesGlue M N P
+  /-- Complete local face coherence and side-sensitive outer/local glue for
+  every actual target face vertex of every all-degree compositor prism. -/
+  relativeOuterLocalAllPrismTargetFacesGlue : ∀
+    (M N P : ProcessModel.{u, v, w} R),
+    RelativeOuterLocalAllPrismTargetFacesGlue M N P
   /-- Complete all-degree compositor-prism face and degeneracy coherence for
   every triple of source models. -/
   relativeLocalAllDegreePrismCore : ∀
@@ -1480,6 +1712,8 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
     relativeOuterLocal_allPrismVerticesGlue
   relativeOuterLocalAllPrismRestrictionVerticesGlue :=
     relativeOuterLocal_allPrismRestrictionVerticesGlue
+  relativeOuterLocalAllPrismTargetFacesGlue :=
+    relativeOuterLocal_allPrismTargetFacesGlue
   relativeLocalAllDegreePrismCore := relativeLocal_allDegreePrismCore
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition

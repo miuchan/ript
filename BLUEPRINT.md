@@ -376,8 +376,9 @@ Every node in this graph is an existing compiled module.
 | 12 (relative-outer/local degree-two string gluing) | Rezk and relative Rezk outer degree two have canonical two-arrow vertices with exact three-face and two-degeneracy formulas; the relative comparison maps represented pairs exactly; all three horizontal pair vertices of every local compositor prism are glued to relative outer degree two, while their target middle faces decode from the actual mapped local composite vertices | PROVED |
 | 12 (relative-outer arbitrary-string vertex gluing) | Every outer `n`-string has a canonical vertical vertex whose restriction along any simplex-category map is exact; ordinary and relative Rezk comparisons preserve all such vertices componentwise; every source vertex of every all-degree cost-exact local compositor prism decodes to a source 1-cell pair and carries the complete relative two-arrow outer/local glue | PROVED |
 | 12 (relative-outer all-prism restriction-vertex gluing) | For every local horizontal-product simplex, every simplex-category restriction, and every restricted vertex, source-pair decoding is strictly natural and the restricted pair carries the complete relative two-arrow outer/local glue; one theorem covers all faces and degeneracies in every degree | PROVED |
+| 12 (relative-outer all-prism target-face gluing) | Every vertex of every actual target-local prism face in every degree is projected literally from the target prism, classified on the two sides of the compositor switch as `map(composite)` or `map(f) ≫ map(g)`, decoded to the same outer composite, and equipped with the complete relative two-arrow glue; the full local face/degeneracy core remains attached without collapsing noninvertible local cells | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled all-restriction source-vertex glue to the actual target prism face projections, formulate the correct relative-zigzag mapping-space comparison, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Formulate and prove the relative-zigzag mapping-space comparison using the compiled all-degree source restrictions and target-face projection glue, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6126,10 +6127,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   complete two-arrow glue. Source-pair decoding is now strictly natural under
   every restriction of every local horizontal-product simplex, and each
   restricted vertex again carries the complete two-arrow glue, uniformly
-  covering all faces and degeneracies. The remaining boundary is extending
-  this bridge to the actual target prism face projections, formulating the
-  correct relative-zigzag mapping-space comparison, and proving the
-  Dwyer--Kan/Rezk weak-equivalence statement.
+  covering all faces and degeneracies. Every actual target-prism face vertex
+  is now also projected literally, classified as either the mapped source
+  composite or the composite of mapped factors across the compositor switch,
+  and decoded to the same outer composite with complete two-arrow glue. The
+  full local face core is retained, so noninvertible local cells are not
+  inserted into the relative outer maximal core. The remaining boundary is
+  the relative-zigzag mapping-space comparison and the Dwyer--Kan/Rezk weak-
+  equivalence statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`

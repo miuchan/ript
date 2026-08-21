@@ -319,9 +319,14 @@ of every all-degree local prism decodes to a source pair with complete two-
 arrow glue. Source-pair decoding is now strictly natural under every simplex-
 category restriction of every horizontal-product simplex, and complete glue
 is recovered at each restricted vertex; this uniformly covers all faces and
-degeneracies in every degree. Actual target prism-face projection gluing, the
-relative-zigzag mapping-space comparison, and the global Dwyer--Kan/Rezk weak-
-equivalence theorem remain.
+degeneracies in every degree. Every actual target-prism face vertex is now a
+literal categorical-nerve face projection, classified on the two sides of the
+compositor switch as `map(composite)` or `map(f) ≫ map(g)`, identified with
+that exact local presentation, and decoded to the same outer composite with
+complete two-arrow glue. The complete local face/degeneracy core remains
+attached, so noninvertible local cells are not inserted into the relative
+outer maximal core. The relative-zigzag mapping-space comparison and the
+global Dwyer--Kan/Rezk weak-equivalence theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,
