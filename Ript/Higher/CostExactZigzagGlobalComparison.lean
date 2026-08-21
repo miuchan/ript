@@ -155,6 +155,26 @@ def sourceArrow {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
   (AsSmall.up : SourceHomotopy.{u, v, w} (R := R) ⥤
     SmallSource.{u, v, w} (R := R)).map (HomotopyCategory.homMk f)
 
+/-- Two composable model morphisms as a relative outer degree-two vertex. -/
+def sourceTwoArrow
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RelativeOuterSource.{u, v, w} (R := R)).obj
+      (Opposite.op (SimplexCategory.mk 2))).obj
+        (Opposite.op (SimplexCategory.mk 0)) :=
+  RelativeRezk.twoArrowVertex
+    (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f) (sourceArrow g)
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- Composition of represented source arrows is the represented composite in
+the source homotopy category. -/
+theorem sourceArrow_comp
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    sourceArrow f ≫ sourceArrow g = sourceArrow (f ≫ g) := by
+  unfold sourceArrow
+  rw [← Functor.map_comp]
+  rw [← HomotopyCategory.homMk_comp]
+
 /-- A source 1-cell as the actual degree-zero simplex of its common-universe
 full local mapping nerve. -/
 def sourceLocalVertex {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
@@ -328,6 +348,55 @@ theorem relativeOuterComparison_sourceArrow
     (smallHomotopyLocalizationFunctor (R := R))
     (smallHomotopyLocalization_invertsRelativeMarking (R := R))
     (sourceArrow f)
+
+/-- The relative outer comparison acts exactly on every represented
+two-arrow source vertex. -/
+theorem relativeOuterComparison_sourceTwoArrow
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk 2))).app
+        (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+      RezkCore.twoArrowVertex (SmallTarget.{u, v, w} (R := R))
+        ((smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow f))
+        ((smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow g)) :=
+  RelativeRezk.comparison_twoArrowVertex
+    (relativeSmallMarking.{u, v, w} (R := R))
+    (smallHomotopyLocalizationFunctor (R := R))
+    (smallHomotopyLocalization_invertsRelativeMarking (R := R))
+    (sourceArrow f) (sourceArrow g)
+
+/-- The zero-th relative outer face of a represented source pair is the
+second represented arrow. -/
+theorem sourceTwoArrow_face_zero
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RelativeOuterSource.{u, v, w} (R := R)).δ (0 : Fin 3)).app
+        (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+      RelativeRezk.arrowVertex
+        (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow g) := by
+  unfold sourceTwoArrow
+  apply RelativeRezk.twoArrowVertex_face_zero
+
+/-- The middle relative outer face is the represented source composite. -/
+theorem sourceTwoArrow_face_one
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RelativeOuterSource.{u, v, w} (R := R)).δ (1 : Fin 3)).app
+        (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+      RelativeRezk.arrowVertex
+        (relativeSmallMarking.{u, v, w} (R := R))
+        (sourceArrow (f ≫ g)) := by
+  unfold sourceTwoArrow
+  rw [RelativeRezk.twoArrowVertex_face_one, sourceArrow_comp]
+
+/-- The last relative outer face of a represented source pair is the first
+represented arrow. -/
+theorem sourceTwoArrow_face_two
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RelativeOuterSource.{u, v, w} (R := R)).δ (2 : Fin 3)).app
+        (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+      RelativeRezk.arrowVertex
+        (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f) := by
+  unfold sourceTwoArrow
+  apply RelativeRezk.twoArrowVertex_face_two
 
 /-- Decode a lifted local target 1-cell vertex as an arrow of the lifted
 target homotopy category used by the outer Rezk direction. -/
@@ -530,6 +599,56 @@ theorem mappedCompositeVertex_outerComposition
   rw [mappedLocalVertexObject_eq, localVertex_outerArrow]
   exact (outerComposition_sourceComposite f g).symm
 
+/-- The target outer degree-two vertex represented by the mapped factors of
+two composable source morphisms. -/
+noncomputable def targetTwoArrow
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :=
+  RezkCore.twoArrowVertex (SmallTarget.{u, v, w} (R := R))
+    ((smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow f))
+    ((smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow g))
+
+/-- The zero-th target outer face is the arrow decoded from the exact mapped
+local vertex of the second factor. -/
+theorem targetTwoArrow_face_zero_mappedLocalVertex
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RezkCore.diagram (SmallTarget.{u, v, w} (R := R))).δ
+      (0 : Fin 3)).app (Opposite.op (SimplexCategory.mk 0))
+        (targetTwoArrow f g) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject g)) := by
+  unfold targetTwoArrow
+  rw [RezkCore.twoArrowVertex_face_zero]
+  rw [mappedLocalVertexObject_eq, localVertex_outerArrow]
+  rfl
+
+/-- The middle target outer face is the arrow decoded from the exact mapped
+local vertex of the source composite. -/
+theorem targetTwoArrow_face_one_mappedComposite
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RezkCore.diagram (SmallTarget.{u, v, w} (R := R))).δ
+      (1 : Fin 3)).app (Opposite.op (SimplexCategory.mk 0))
+        (targetTwoArrow f g) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject (f ≫ g))) := by
+  unfold targetTwoArrow
+  rw [RezkCore.twoArrowVertex_face_one]
+  rw [mappedCompositeVertex_outerComposition]
+  rfl
+
+/-- The last target outer face is the arrow decoded from the exact mapped
+local vertex of the first factor. -/
+theorem targetTwoArrow_face_two_mappedLocalVertex
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    ((RezkCore.diagram (SmallTarget.{u, v, w} (R := R))).δ
+      (2 : Fin 3)).app (Opposite.op (SimplexCategory.mk 0))
+        (targetTwoArrow f g) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        (localVertexToOuterArrow (mappedLocalVertexObject f)) := by
+  unfold targetTwoArrow
+  rw [RezkCore.twoArrowVertex_face_two]
+  rw [mappedLocalVertexObject_eq, localVertex_outerArrow]
+  rfl
+
 /-- Mixed horizontal relative/local gluing proposition for two arbitrary,
 possibly noninvertible, 2-cells. It packages the two factor one-skeletons,
 their horizontally composed one-skeleton, both outer composite endpoints,
@@ -654,6 +773,84 @@ theorem relativeLocal_horizontalPrismGlue
   ⟨relativeLocal_horizontalPastingGlue α₀ α₁ β₀ β₁,
     CostExactZigzagNerveComparison.horizontalTwoCell_compositionPrismGlue
       α₀ α₁ β₀ β₁⟩
+
+/-- Full relative-outer/local gluing for one represented two-arrow vertex.
+It contains the exact relative comparison plus all three source and target
+outer face identifications, with target faces decoded from actual mapped local
+vertices. -/
+def RelativeOuterLocalTwoArrowGlue
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) : Prop :=
+  ((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk 2))).app
+        (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+      targetTwoArrow f g ∧
+  ((RelativeOuterSource.{u, v, w} (R := R)).δ (0 : Fin 3)).app
+      (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+    RelativeRezk.arrowVertex
+      (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow g) ∧
+  ((RelativeOuterSource.{u, v, w} (R := R)).δ (1 : Fin 3)).app
+      (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+    RelativeRezk.arrowVertex
+      (relativeSmallMarking.{u, v, w} (R := R))
+      (sourceArrow (f ≫ g)) ∧
+  ((RelativeOuterSource.{u, v, w} (R := R)).δ (2 : Fin 3)).app
+      (Opposite.op (SimplexCategory.mk 0)) (sourceTwoArrow f g) =
+    RelativeRezk.arrowVertex
+      (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f) ∧
+  ((RezkCore.diagram (SmallTarget.{u, v, w} (R := R))).δ
+      (0 : Fin 3)).app (Opposite.op (SimplexCategory.mk 0))
+        (targetTwoArrow f g) =
+    RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+      (localVertexToOuterArrow (mappedLocalVertexObject g)) ∧
+  ((RezkCore.diagram (SmallTarget.{u, v, w} (R := R))).δ
+      (1 : Fin 3)).app (Opposite.op (SimplexCategory.mk 0))
+        (targetTwoArrow f g) =
+    RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+      (localVertexToOuterArrow (mappedLocalVertexObject (f ≫ g))) ∧
+  ((RezkCore.diagram (SmallTarget.{u, v, w} (R := R))).δ
+      (2 : Fin 3)).app (Opposite.op (SimplexCategory.mk 0))
+        (targetTwoArrow f g) =
+    RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+      (localVertexToOuterArrow (mappedLocalVertexObject f))
+
+/-- Every represented source pair satisfies the complete relative-outer/local
+two-arrow face gluing interface. -/
+theorem relativeOuterLocal_twoArrowGlue
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P) :
+    RelativeOuterLocalTwoArrowGlue f g :=
+  ⟨relativeOuterComparison_sourceTwoArrow f g,
+    sourceTwoArrow_face_zero f g,
+    sourceTwoArrow_face_one f g,
+    sourceTwoArrow_face_two f g,
+    targetTwoArrow_face_zero_mappedLocalVertex f g,
+    targetTwoArrow_face_one_mappedComposite f g,
+    targetTwoArrow_face_two_mappedLocalVertex f g⟩
+
+/-- Relative-outer/local vertex boundary for the entire degree-two compositor
+prism: all three horizontal pair vertices carry exact two-arrow face gluing,
+and the actual local three-tetrahedron prism is retained. -/
+def RelativeOuterLocalPrismVerticesGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  RelativeOuterLocalTwoArrowGlue f₀ g₀ ∧
+  RelativeOuterLocalTwoArrowGlue f₁ g₁ ∧
+  RelativeOuterLocalTwoArrowGlue f₂ g₂ ∧
+  RelativeLocalHorizontalPrismGlue α₀ α₁ β₀ β₁
+
+/-- Every degree-two compositor prism has all three horizontal pair vertices
+glued to relative outer degree two and its three outer faces. -/
+theorem relativeOuterLocal_prismVerticesGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    RelativeOuterLocalPrismVerticesGlue α₀ α₁ β₀ β₁ :=
+  ⟨relativeOuterLocal_twoArrowGlue f₀ g₀,
+    relativeOuterLocal_twoArrowGlue f₁ g₁,
+    relativeOuterLocal_twoArrowGlue f₂ g₂,
+    relativeLocal_horizontalPrismGlue α₀ α₁ β₀ β₁⟩
 
 /-- An arbitrary-degree target-local simplex in the global cost-exact
 compositor prism. -/
@@ -978,6 +1175,19 @@ structure GlobalComparisonCore where
     (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
     (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
     RelativeLocalHorizontalPrismGlue α₀ α₁ β₀ β₁
+  /-- Relative comparison and all three source/target faces for every
+  represented two-arrow vertex. -/
+  relativeOuterLocalTwoArrowGlue : ∀
+    {M N P : ProcessModel.{u, v, w} R} (f : M ⟶ N) (g : N ⟶ P),
+    RelativeOuterLocalTwoArrowGlue f g
+  /-- Relative-outer/local gluing of all three horizontal pair vertices in
+  every degree-two compositor prism. -/
+  relativeOuterLocalPrismVerticesGlue : ∀
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
+    RelativeOuterLocalPrismVerticesGlue α₀ α₁ β₀ β₁
   /-- Complete all-degree compositor-prism face and degeneracy coherence for
   every triple of source models. -/
   relativeLocalAllDegreePrismCore : ∀
@@ -1109,6 +1319,9 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeLocalHorizontalTwoCellGlue := relativeLocal_horizontalTwoCellGlue
   relativeLocalHorizontalPastingGlue := relativeLocal_horizontalPastingGlue
   relativeLocalHorizontalPrismGlue := relativeLocal_horizontalPrismGlue
+  relativeOuterLocalTwoArrowGlue := relativeOuterLocal_twoArrowGlue
+  relativeOuterLocalPrismVerticesGlue :=
+    relativeOuterLocal_prismVerticesGlue
   relativeLocalAllDegreePrismCore := relativeLocal_allDegreePrismCore
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition

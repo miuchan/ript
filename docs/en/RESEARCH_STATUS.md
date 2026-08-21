@@ -308,8 +308,12 @@ prism; all twelve faces are identified and both outer faces normalize to the
 exact pair 2-simplices. The construction is now packaged in every degree:
 each horizontal-product simplex has indexed target prism simplices, and one
 global cost-exact core records all seven endpoint/side/shared/degeneracy law
-families for every model triple. Remaining work is gluing this core to the
-relative outer Rezk face/degeneracy maps and proving the global Dwyer--Kan/Rezk
+families for every model triple. The first relative-outer bridge is now exact:
+generic and relative two-arrow vertices have all three faces and both identity
+degeneracies, relative comparison preserves them, and all three horizontal
+pair vertices of each degree-two local prism glue to those outer vertices;
+target middle faces decode from actual mapped local composites. Remaining work
+is arbitrary outer-string/all-prism-face gluing and the global Dwyer--Kan/Rezk
 weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.

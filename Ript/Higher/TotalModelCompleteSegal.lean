@@ -155,6 +155,14 @@ def arrowVertex {X Y : C} (f : X ⟶ Y) :
   ComposableArrows.mk₀
     (⟨ComposableArrows.mk₁ f⟩ : Core (ComposableArrows C 1))
 
+/-- The vertical zero-simplex in outer degree two represented by two
+composable arrows. -/
+def twoArrowVertex {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram C).obj (op (SimplexCategory.mk 2))).obj
+      (op (SimplexCategory.mk 0)) :=
+  ComposableArrows.mk₀
+    (⟨ComposableArrows.mk₂ f g⟩ : Core (ComposableArrows C 2))
+
 /-- Functorial Rezk comparison sends an arrow vertex to the vertex represented
 by the mapped arrow. -/
 theorem diagramMap_arrowVertex {D : Type u} [Category.{u} D]
@@ -172,6 +180,177 @@ theorem diagramMap_arrowVertex {D : Type u} [Category.{u} D]
   apply ComposableArrows.ext₀
   apply coreObj_ext
   exact CategoryTheory.nerveMap_app_mk₁ F f
+
+/-- Functorial Rezk comparison sends a two-arrow vertex to the vertex of the
+two mapped arrows. -/
+theorem diagramMap_twoArrowVertex {D : Type u} [Category.{u} D]
+    (F : C ⥤ D) {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagramMap C F).app (op (SimplexCategory.mk 2))).app
+        (op (SimplexCategory.mk 0)) (twoArrowVertex C f g) =
+      twoArrowVertex D (F.map f) (F.map g) := by
+  change (CategoryTheory.nerveMap ((F.mapComposableArrows 2).core)).app
+      (op (SimplexCategory.mk 0))
+        (ComposableArrows.mk₀
+          (⟨ComposableArrows.mk₂ f g⟩ : Core (ComposableArrows C 2))) = _
+  rw [CategoryTheory.nerveMap_app_mk₀]
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  exact CategoryTheory.nerveMap_app_mk₂ F f g
+
+/-- The zero-th outer face of a two-arrow vertex is its second arrow. -/
+theorem twoArrowVertex_face_zero {X Y Z : C}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram C).δ (0 : Fin 3)).app (op (SimplexCategory.mk 0))
+        (twoArrowVertex C f g) = arrowVertex C g := by
+  rfl
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The middle outer face of a two-arrow vertex is the composite arrow. -/
+theorem twoArrowVertex_face_one {X Y Z : C}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram C).δ (1 : Fin 3)).app (op (SimplexCategory.mk 0))
+        (twoArrowVertex C f g) = arrowVertex C (f ≫ g) := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      (((diagramCat C).δ (1 : Fin 3)).toFunctor.obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  change (CategoryTheory.nerve C).δ 1 (ComposableArrows.mk₂ f g) =
+    ComposableArrows.mk₁ (f ≫ g)
+  exact CategoryTheory.nerve.δ₁_mk₂_eq f g
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The last outer face of a two-arrow vertex is its first arrow. -/
+theorem twoArrowVertex_face_two {X Y Z : C}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram C).δ (2 : Fin 3)).app (op (SimplexCategory.mk 0))
+        (twoArrowVertex C f g) = arrowVertex C f := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      (((diagramCat C).δ (2 : Fin 3)).toFunctor.obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  change (CategoryTheory.nerve C).δ 2 (ComposableArrows.mk₂ f g) =
+    ComposableArrows.mk₁ f
+  exact CategoryTheory.nerve.δ₂_mk₂_eq f g
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+theorem nerve_sigma_zero_mk_one {X Y : C} (f : X ⟶ Y) :
+    (CategoryTheory.nerve C).σ (0 : Fin 2) (ComposableArrows.mk₁ f) =
+      ComposableArrows.mk₂ (𝟙 X) f := by
+  apply CategoryTheory.Nerve.simplex_eq_of_all_faces
+  intro j
+  fin_cases j
+  · change (CategoryTheory.nerve C).δ (0 : Fin 3)
+      ((CategoryTheory.nerve C).σ (0 : Fin 2) (ComposableArrows.mk₁ f)) =
+        (CategoryTheory.nerve C).δ (0 : Fin 3)
+          (ComposableArrows.mk₂ (𝟙 X) f)
+    rw [CategoryTheory.nerve.δ₀_mk₂_eq]
+    exact ConcreteCategory.congr_hom
+      ((CategoryTheory.nerve C).δ_comp_σ_self (i := (0 : Fin 2)))
+      (ComposableArrows.mk₁ f)
+  · change (CategoryTheory.nerve C).δ (1 : Fin 3)
+      ((CategoryTheory.nerve C).σ (0 : Fin 2) (ComposableArrows.mk₁ f)) =
+        (CategoryTheory.nerve C).δ (1 : Fin 3)
+          (ComposableArrows.mk₂ (𝟙 X) f)
+    rw [CategoryTheory.nerve.δ₁_mk₂_eq, Category.id_comp]
+    exact ConcreteCategory.congr_hom
+      ((CategoryTheory.nerve C).δ_comp_σ_succ (i := (0 : Fin 2)))
+      (ComposableArrows.mk₁ f)
+  · change (CategoryTheory.nerve C).δ (2 : Fin 3)
+      ((CategoryTheory.nerve C).σ (0 : Fin 2) (ComposableArrows.mk₁ f)) =
+        (CategoryTheory.nerve C).δ (2 : Fin 3)
+          (ComposableArrows.mk₂ (𝟙 X) f)
+    rw [CategoryTheory.nerve.δ₂_mk₂_eq]
+    have h := ConcreteCategory.congr_hom
+      ((CategoryTheory.nerve C).δ_comp_σ_of_gt
+        (i := (1 : Fin 2)) (j := (0 : Fin 1)) (by simp))
+      (ComposableArrows.mk₁ f)
+    have hx : (CategoryTheory.nerve C).δ (1 : Fin 2)
+        (ComposableArrows.mk₁ f) = ComposableArrows.mk₀ X := by
+      apply ComposableArrows.ext₀
+      rfl
+    simp only [types_comp_apply] at h
+    rw [hx, CategoryTheory.nerve.σ₀_mk₀_eq] at h
+    exact h
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+theorem nerve_sigma_one_mk_one {X Y : C} (f : X ⟶ Y) :
+    (CategoryTheory.nerve C).σ (1 : Fin 2) (ComposableArrows.mk₁ f) =
+      ComposableArrows.mk₂ f (𝟙 Y) := by
+  apply CategoryTheory.Nerve.simplex_eq_of_all_faces
+  intro j
+  fin_cases j
+  · change (CategoryTheory.nerve C).δ (0 : Fin 3)
+      ((CategoryTheory.nerve C).σ (1 : Fin 2) (ComposableArrows.mk₁ f)) =
+        (CategoryTheory.nerve C).δ (0 : Fin 3)
+          (ComposableArrows.mk₂ f (𝟙 Y))
+    rw [CategoryTheory.nerve.δ₀_mk₂_eq]
+    have h := ConcreteCategory.congr_hom
+      ((CategoryTheory.nerve C).δ_comp_σ_of_le
+        (i := (0 : Fin 2)) (j := (0 : Fin 1)) (by simp))
+      (ComposableArrows.mk₁ f)
+    have hy : (CategoryTheory.nerve C).δ (0 : Fin 2)
+        (ComposableArrows.mk₁ f) = ComposableArrows.mk₀ Y := by
+      apply ComposableArrows.ext₀
+      rfl
+    simp only [types_comp_apply] at h
+    rw [hy, CategoryTheory.nerve.σ₀_mk₀_eq] at h
+    exact h
+  · change (CategoryTheory.nerve C).δ (1 : Fin 3)
+      ((CategoryTheory.nerve C).σ (1 : Fin 2) (ComposableArrows.mk₁ f)) =
+        (CategoryTheory.nerve C).δ (1 : Fin 3)
+          (ComposableArrows.mk₂ f (𝟙 Y))
+    rw [CategoryTheory.nerve.δ₁_mk₂_eq, Category.comp_id]
+    exact ConcreteCategory.congr_hom
+      ((CategoryTheory.nerve C).δ_comp_σ_self (i := (1 : Fin 2)))
+      (ComposableArrows.mk₁ f)
+  · change (CategoryTheory.nerve C).δ (2 : Fin 3)
+      ((CategoryTheory.nerve C).σ (1 : Fin 2) (ComposableArrows.mk₁ f)) =
+        (CategoryTheory.nerve C).δ (2 : Fin 3)
+          (ComposableArrows.mk₂ f (𝟙 Y))
+    rw [CategoryTheory.nerve.δ₂_mk₂_eq]
+    exact ConcreteCategory.congr_hom
+      ((CategoryTheory.nerve C).δ_comp_σ_succ (i := (1 : Fin 2)))
+      (ComposableArrows.mk₁ f)
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The first outer degeneracy inserts an identity before an arrow. -/
+theorem arrowVertex_degeneracy_zero {X Y : C} (f : X ⟶ Y) :
+    ((diagram C).σ (0 : Fin 2)).app (op (SimplexCategory.mk 0))
+        (arrowVertex C f) = twoArrowVertex C (𝟙 X) f := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      (((diagramCat C).σ (0 : Fin 2)).toFunctor.obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  change (CategoryTheory.nerve C).σ 0 (ComposableArrows.mk₁ f) =
+    ComposableArrows.mk₂ (𝟙 X) f
+  exact nerve_sigma_zero_mk_one C f
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The second outer degeneracy inserts an identity after an arrow. -/
+theorem arrowVertex_degeneracy_one {X Y : C} (f : X ⟶ Y) :
+    ((diagram C).σ (1 : Fin 2)).app (op (SimplexCategory.mk 0))
+        (arrowVertex C f) = twoArrowVertex C f (𝟙 Y) := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      (((diagramCat C).σ (1 : Fin 2)).toFunctor.obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  change (CategoryTheory.nerve C).σ 1 (ComposableArrows.mk₁ f) =
+    ComposableArrows.mk₂ f (𝟙 Y)
+  exact nerve_sigma_one_mk_one C f
 
 private lemma eqToHom_prod_core_fst_app
     {A B : Core (ComposableArrows C 0) × Core (ComposableArrows C 0)}

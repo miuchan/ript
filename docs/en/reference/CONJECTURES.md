@@ -392,8 +392,14 @@ construction is now packaged in every simplicial degree: every horizontal-
 product simplex has its indexed target prism simplices, and one core records
 both endpoint families, both side-face families, shared switching faces, and
 both degeneracy families. The remaining problem is gluing this local all-
-degree core to the localization-aware relative outer Rezk face/degeneracy
-maps and proving the resulting Dwyer--Kan/Rezk weak-equivalence theorem.
+degree core to the localization-aware relative outer Rezk structure. The
+first correct bridge is now compiled: generic and relative Rezk two-arrow
+vertices have exact three-face/two-degeneracy laws, relative comparison maps
+them exactly, and all three horizontal pair vertices of the degree-two local
+prism glue to those outer vertices; their target middle faces decode from
+actual mapped local composites. What remains is arbitrary outer-string and
+all-prism-face gluing and the resulting Dwyer--Kan/Rezk weak-equivalence
+theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -461,7 +467,10 @@ now maps vertically composable pair 2-simplices exactly and proves the pasted
 rectangle. Its three actual compositor-prism 3-simplices and all twelve faces
 are now exposed as well. The generic formulas are now packaged at all degrees
 and instantiated globally for every cost-exact model triple. Their remaining
-outer-relative gluing and the complete-Segal/Rezk weak equivalence remain open.
+outer-relative gluing is no longer empty: degree-two represented strings,
+their faces/degeneracies, and all three prism pair vertices are compiled. The
+arbitrary-string extension and complete-Segal/Rezk weak equivalence remain
+open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an
