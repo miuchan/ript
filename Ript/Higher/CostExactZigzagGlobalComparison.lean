@@ -565,6 +565,61 @@ theorem relativeLocal_horizontalTwoCellGlue
     mappedCompositeVertex_outerComposition f₁ g₁,
     CostExactZigzagNerveComparison.horizontalTwoCell_compositionGlue α β⟩
 
+/-- Source-level interchange for two vertically composable horizontal
+2-cell pairs. -/
+theorem sourceHorizontalTwoCell_comp
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    sourceHorizontalTwoCell (α₀ ≫ α₁) (β₀ ≫ β₁) =
+      sourceHorizontalTwoCell α₀ β₀ ≫
+        sourceHorizontalTwoCell α₁ β₁ :=
+  UniverseLiftedNerve.horizontalTwoCell_comp α₀ α₁ β₀ β₁
+
+/-- Mixed degree-two relative/local pasting proposition. It packages both
+factor triangles, the triangle of horizontally composed 2-cells, each
+degree-one horizontal square, source interchange, and the exact
+common-universe compositor rectangle. -/
+def RelativeLocalHorizontalPastingGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  RelativeLocalTwoSimplexGlue α₀ α₁ ∧
+  RelativeLocalTwoSimplexGlue β₀ β₁ ∧
+  RelativeLocalTwoSimplexGlue
+    (sourceHorizontalTwoCell α₀ β₀)
+    (sourceHorizontalTwoCell α₁ β₁) ∧
+  RelativeLocalHorizontalTwoCellGlue α₀ β₀ ∧
+  RelativeLocalHorizontalTwoCellGlue α₁ β₁ ∧
+  RelativeLocalHorizontalTwoCellGlue (α₀ ≫ α₁) (β₀ ≫ β₁) ∧
+  sourceHorizontalTwoCell (α₀ ≫ α₁) (β₀ ≫ β₁) =
+    sourceHorizontalTwoCell α₀ β₀ ≫
+      sourceHorizontalTwoCell α₁ β₁ ∧
+  CommonHorizontalCompositionPastingGlue
+    (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁
+
+/-- Every vertically composable pair of horizontal source 2-cell pairs
+satisfies the complete mixed degree-two relative/local pasting interface. -/
+theorem relativeLocal_horizontalPastingGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    RelativeLocalHorizontalPastingGlue α₀ α₁ β₀ β₁ :=
+  ⟨relativeLocal_twoSimplexGlue α₀ α₁,
+    relativeLocal_twoSimplexGlue β₀ β₁,
+    relativeLocal_twoSimplexGlue
+      (sourceHorizontalTwoCell α₀ β₀)
+      (sourceHorizontalTwoCell α₁ β₁),
+    relativeLocal_horizontalTwoCellGlue α₀ β₀,
+    relativeLocal_horizontalTwoCellGlue α₁ β₁,
+    relativeLocal_horizontalTwoCellGlue (α₀ ≫ α₁) (β₀ ≫ β₁),
+    sourceHorizontalTwoCell_comp α₀ α₁ β₀ β₁,
+    CostExactZigzagNerveComparison.horizontalTwoCell_pastingGlue
+      α₀ α₁ β₀ β₁⟩
+
 /-- The target bicategorical associator becomes strict equality after local
 vertices are decoded into the outer homotopy category. -/
 theorem localAssociator_outerArrow
@@ -847,6 +902,14 @@ structure GlobalComparisonCore where
     {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
     (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁),
     RelativeLocalHorizontalTwoCellGlue α β
+  /-- Mixed degree-two horizontal/vertical pasting glue for every vertically
+  composable pair of horizontal 2-cell pairs. -/
+  relativeLocalHorizontalPastingGlue : ∀
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
+    RelativeLocalHorizontalPastingGlue α₀ α₁ β₀ β₁
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -971,6 +1034,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeLocalTwoCellGlue := relativeLocal_twoCellOneSkeleton
   relativeLocalTwoSimplexGlue := relativeLocal_twoSimplexGlue
   relativeLocalHorizontalTwoCellGlue := relativeLocal_horizontalTwoCellGlue
+  relativeLocalHorizontalPastingGlue := relativeLocal_horizontalPastingGlue
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity
