@@ -77,10 +77,16 @@ ne devas plenumi kvocientan maŝinaron.
 - `FiniteDistribution`: finia distribua monado kaj Kleisli-reprezento;
 - probablaj moduloj: ponto al Mathlib `Stoch`;
 - decidaj moduloj: Blackwell-komparo, ekzakta risko, rimedlimoj kaj atestiloj;
-- komputaj moduloj: formalaj paŝoj/demandoj/memoro/pordoj, ne murhora tempo;
+- komputaj moduloj: formalaj paŝoj/demandoj/memoro/pordoj, ne murhora tempo; hazardigita komputado parigas ekzaktajn finiajn kernojn kun la sama kvar-rimeda algebro;
 - kaŭzaj moduloj: finiaj topologie ordigitaj DAG-oj kaj malmolaj intervenoj;
 - termikaj moduloj: disigo de ekzaktaj kanaloj kaj realvalora analizo;
-- kvantumaj moduloj: finiaj Kraus-familioj kun pruvitaj pozitiveco kaj spuro-konservo.
+- kvantumaj moduloj: sur la plena simetria monoida Kraus-kategorio estas instrumentoj, rezult-regata retrokuplo kaj dependa bind; `InstrumentTree` estas la indukta normforma kaj komputebla-buĝeta tavolo.
+- `NoisyBitRealizations` estas la unua ses-modela komuna brua sintakso, inkluzive koher-konservan hazard-unuecan kvantumon kaj hazardigitan komputadon.
+- `Syntax.Branching` komputas fiksprofundajn adaptajn duumajn historiojn, pozitivajn branĉtabelajn normformojn, ekzaktajn vojkostojn, plejmalbon-okazajn buĝetojn, registritan stokastan reprezenton kaj observan kompletecon; `AdaptiveNoiseRealizations` donas ses indiĝenajn modelrealigojn.
+- `Syntax.DependentBranching` ĝeneraligas al vari-profundaj generator-dependaj finiaj rezultoj, eksplicitaj historiaj ekvivalentoj kaj konservema duuma enmeto; `Examples.DependentBranching` estas la rulebla heterogen-rezulta atestanto.
+- `Syntax.DependentBranching.Free` organizas branĉalgebrojn kiel kategorion, pruvas komencan arbalgebron, ekvacian validecon/kompletecon kaj serian greftan monoidon, kaj reprezentas alton/buĝeton per nombraj fold-oj.
+- `Syntax.DependentBranching.Monoidal` donas al la modelalgebra kategorio elektitajn finiajn produktojn, kartezian simetrian monoidan koheron, komponantan produkt-fold-reprezenton kaj komunan modelan kompletecon.
+- `Syntax.DependentBranching.Parallel` pakas eksplicitajn heterogenajn lenojn, ekzaktan sendependan stokastan faktoradon, lenan simetrion, rimedadicion, komun-fazan greftadon kaj striktan tensor–serian interŝanĝon.
 
 La [matrico de modelkapabloj](reference/MODEL_MATRIX.md) estas la aŭtoritata
 registro de laŭvolaj strukturoj.

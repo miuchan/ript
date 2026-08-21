@@ -167,6 +167,30 @@ theorem hornFillerOfFour {X : SSet.{u}} (sx : StrictSegal X)
 
 end SSet.StrictSegal
 
+namespace SSet
+
+universe u
+
+/-- The canonical inclusion of a horn into the full boundary of the same
+standard simplex. -/
+def hornToBoundary (n : ℕ) (i : Fin (n + 1)) :
+    (Λ[n, i] : SSet.{u}) ⟶ (∂Δ[n] : SSet.{u}) :=
+  Subcomplex.homOfLE (by
+    rw [horn_eq_iSup, iSup_le_iff]
+    intro j
+    exact face_singleton_compl_le_boundary j.1)
+
+/-- Every included horn face agrees with the corresponding canonical boundary
+face. -/
+theorem hornFaceToBoundary (n : ℕ) (i j : Fin (n + 2))
+    (hj : j ≠ i) :
+    horn.ι i j hj ≫ hornToBoundary (n + 1) i = boundary.ι j := by
+  rw [← cancel_mono (boundary (n + 1)).ι]
+  change horn.ι i j hj ≫ (horn (n + 1) i).ι = stdSimplex.δ j
+  exact horn.ι_ι i j hj
+
+end SSet
+
 namespace CategoryTheory.Nerve
 
 open SimplexCategory
@@ -456,5 +480,227 @@ theorem kanComplex (C : Type u) [Groupoid.{v} C] : SSet.KanComplex (nerve C) := 
     · exact hornFillerInner (by simp) (by simp) f hf
     · exact hornFillerThreeLast f hf
   exact hornFillerOfFourFamily (CategoryTheory.Nerve.strictSegal C) f hf
+
+private lemma twoFaceArrow {C : Type u} [Groupoid.{v} C]
+    {x y : ComposableArrows C 2} {j : Fin 3}
+    (h : (nerve C).δ j x = (nerve C).δ j y) :
+    Arrow.mk (((nerve C).δ j x).hom) =
+      Arrow.mk (((nerve C).δ j y).hom) :=
+  congrArg (fun q ↦ Arrow.mk q.hom) h
+
+/-- A 2-simplex in the nerve of a groupoid is uniquely determined by any
+two of its faces.  The two outer cases use cancellation by invertible edges;
+the inner case reads off the two spine arrows directly. -/
+theorem two_simplex_eq_of_faces_except
+    {C : Type u} [Groupoid.{v} C] (i : Fin 3)
+    (x y : ComposableArrows C 2)
+    (h : ∀ (j : Fin 3), j ≠ i → (nerve C).δ j x = (nerve C).δ j y) :
+    x = y := by
+  obtain ⟨x₀, x₁, x₂, f, g, rfl⟩ := ComposableArrows.mk₂_surjective x
+  obtain ⟨y₀, y₁, y₂, f', g', rfl⟩ := ComposableArrows.mk₂_surjective y
+  fin_cases i
+  · have hf := twoFaceArrow (h 2 (by simp))
+    have hfg := twoFaceArrow (h 1 (by simp))
+    rw [nerve.δ₂_two, nerve.δ₂_two] at hf
+    rw [nerve.δ₁_mk₂_eq, nerve.δ₁_mk₂_eq] at hfg
+    obtain rfl : x₀ = y₀ := congr_arg Arrow.leftFunc.obj hf
+    obtain rfl : x₁ = y₁ := congr_arg Arrow.rightFunc.obj hf
+    obtain rfl : f = f' := by rwa [← Arrow.mk_inj]
+    obtain rfl : x₂ = y₂ := congr_arg Arrow.rightFunc.obj hfg
+    have : f ≫ g = f ≫ g' := by rwa [← Arrow.mk_inj]
+    obtain rfl : g = g' := (cancel_epi f).1 this
+    rfl
+  · have hf := twoFaceArrow (h 2 (by simp))
+    have hg := twoFaceArrow (h 0 (by simp))
+    rw [nerve.δ₂_two, nerve.δ₂_two] at hf
+    rw [nerve.δ₂_zero, nerve.δ₂_zero] at hg
+    exact ComposableArrows.ext₂_of_arrow hf hg
+  · have hg := twoFaceArrow (h 0 (by simp))
+    have hfg := twoFaceArrow (h 1 (by simp))
+    rw [nerve.δ₂_zero, nerve.δ₂_zero] at hg
+    rw [nerve.δ₁_mk₂_eq, nerve.δ₁_mk₂_eq] at hfg
+    obtain rfl : x₁ = y₁ := congr_arg Arrow.leftFunc.obj hg
+    obtain rfl : x₂ = y₂ := congr_arg Arrow.rightFunc.obj hg
+    obtain rfl : g = g' := by rwa [← Arrow.mk_inj]
+    obtain rfl : x₀ = y₀ := congr_arg Arrow.leftFunc.obj hfg
+    have : f ≫ g = f' ≫ g := by rwa [← Arrow.mk_inj]
+    obtain rfl : f = f' := (cancel_mono g).1 this
+    rfl
+
+/-- A categorical nerve simplex of dimension at least two is determined by
+all of its faces.  The zeroth face supplies the tail string, while the last
+face supplies the initial object and initial arrow. -/
+theorem simplex_eq_of_all_faces
+    {C : Type u} [Category.{v} C] {n : ℕ}
+    (x y : ComposableArrows C (n + 2))
+    (h : ∀ j : Fin (n + 3), (nerve C).δ j x = (nerve C).δ j y) :
+    x = y := by
+  have htail := h 0
+  change x.δ₀ = y.δ₀ at htail
+  have hinit := h (Fin.last (n + 2))
+  apply ComposableArrows.ext_succ (F := x) (G := y)
+    (Functor.congr_obj hinit 0) htail
+  convert Functor.congr_hom hinit
+    (homOfLE (show (0 : Fin (n + 2)) ≤ 1 by simp)) using 1
+  rfl
+
+/-- Restrict one categorical-nerve simplex to the full boundary of its
+standard simplex. -/
+def boundaryRestriction {C : Type u} [Category.{v} C] (n : ℕ) :
+    ComposableArrows C n →
+      ((∂Δ[n] : SSet.{max u v}) ⟶ CategoryTheory.nerve C) :=
+  fun F => (SSet.boundary n).ι ≫ SSet.yonedaEquiv.symm F
+
+/-- In every dimension at least two, restriction of a categorical-nerve
+simplex to its full boundary is injective. -/
+theorem boundaryRestriction_injective
+    {C : Type u} [Category.{v} C] (m : ℕ) :
+    Function.Injective (boundaryRestriction (C := C) (m + 2)) := by
+  intro F G h
+  apply simplex_eq_of_all_faces F G
+  intro i
+  dsimp [boundaryRestriction] at h
+  have hi := congrArg (fun q => SSet.boundary.ι i ≫ q) h
+  erw [← Category.assoc, SSet.boundary.ι_ι] at hi
+  erw [← Category.assoc, SSet.boundary.ι_ι] at hi
+  have hi' := congrArg SSet.yonedaEquiv hi
+  let d := (CategoryTheory.nerve C).δ i
+  let e : ((Δ[m + 2] : SSet.{max u v}) ⟶ CategoryTheory.nerve C) ≃
+      (CategoryTheory.nerve C).obj
+        (Opposite.op (SimplexCategory.mk (m + 2))) :=
+    SSet.yonedaEquiv
+  calc
+    d F = d (e (e.symm F)) :=
+      congrArg d (e.apply_symm_apply F).symm
+    _ = d (e (e.symm G)) := by
+      simpa only [SSet.stdSimplex.yonedaEquiv_δ_comp] using hi'
+    _ = d G := congrArg d (e.apply_symm_apply G)
+
+/-- In every dimension at least three, every full boundary in a categorical
+nerve has a filler.  Restrict to the inner horn at vertex `1`, fill it using
+the strict-Segal quasicategory structure, and recover the omitted face from
+the codimension-two compatibility equations. -/
+theorem boundaryRestriction_surjective
+    {C : Type u} [Category.{v} C] (m : ℕ) :
+    Function.Surjective (boundaryRestriction (C := C) (m + 3)) := by
+  intro φ
+  let i : Fin (m + 4) := 1
+  let g : (Λ[m + 3, i] : SSet.{max u v}) ⟶ nerve C :=
+    SSet.hornToBoundary (m + 3) i ≫ φ
+  let f : ∀ (j : Fin (m + 4)), j ≠ i →
+      ((Δ[m + 2] : SSet.{max u v}) ⟶ nerve C) :=
+    fun j hj => SSet.horn.ι i j hj ≫ g
+  have hf : SSet.horn.IsCompatible f :=
+    SSet.horn.IsCompatible.of_hom g
+  obtain ⟨ψ, hψ⟩ := hornFillerInner (C := C)
+    (n := m + 2) (i := i) (by simp [i])
+      (by change (1 : ℕ) < m + 3; omega) f hf
+  let x : ComposableArrows C (m + 3) := SSet.yonedaEquiv ψ
+  let b : Fin (m + 4) → ComposableArrows C (m + 2) :=
+    fun j => SSet.yonedaEquiv (SSet.boundary.ι j ≫ φ)
+  have hfaces (j : Fin (m + 4)) (hj : j ≠ i) :
+      (nerve C).δ j x = b j := by
+    have hmap := hψ j hj
+    dsimp [f, g] at hmap
+    erw [← Category.assoc,
+      SSet.hornFaceToBoundary (m + 2) i j hj] at hmap
+    have hmap' := congrArg SSet.yonedaEquiv hmap
+    dsimp [x, b]
+    simpa only [SSet.stdSimplex.yonedaEquiv_δ_comp] using hmap'
+  have hboundary (j k : Fin (m + 4)) (hjk : j < k) :
+      (nerve C).δ (k.pred (Fin.ne_zero_of_lt hjk)) (b j) =
+        (nerve C).δ (j.castPred (Fin.ne_last_of_lt hjk)) (b k) := by
+    have hb : SSet.stdSimplex.δ (k.pred (Fin.ne_zero_of_lt hjk)) ≫
+          SSet.boundary.ι j =
+        SSet.stdSimplex.δ (j.castPred (Fin.ne_last_of_lt hjk)) ≫
+          SSet.boundary.ι k := by
+      rw [← cancel_mono (SSet.boundary (m + 3)).ι,
+        Category.assoc, Category.assoc, SSet.boundary.ι_ι,
+        SSet.boundary.ι_ι]
+      obtain ⟨j, rfl⟩ := j.eq_castSucc_of_ne_last
+        (Fin.ne_last_of_lt hjk)
+      obtain ⟨k, rfl⟩ := k.eq_succ_of_ne_zero
+        (Fin.ne_zero_of_lt hjk)
+      rw [Fin.pred_succ, Fin.castPred_castSucc,
+        SSet.stdSimplex.δ_comp_δ (by grind)]
+    have hb' := congrArg (fun q => q ≫ φ) hb
+    simp only [Category.assoc] at hb'
+    have hb'' := congrArg SSet.yonedaEquiv hb'
+    simpa only [SSet.stdSimplex.yonedaEquiv_δ_comp, b] using hb''
+  have hi : (nerve C).δ i x = b i := by
+    apply simplex_eq_of_all_faces
+    intro k
+    by_cases hk : k.castSucc < i
+    · have hx := ConcreteCategory.congr_hom
+        ((nerve C).δ_comp_δ' hk) x
+      exact hx.trans ((congrArg
+        (fun z => ((nerve C).δ (i.pred hk.ne_zero)).hom' z)
+        (hfaces k.castSucc hk.ne)).trans
+          (hboundary k.castSucc i hk))
+    · have hik : i ≤ k.castSucc := by omega
+      have hx := ConcreteCategory.congr_hom
+        ((nerve C).δ_comp_δ'' hik) x
+      have hlt : i < k.succ := lt_of_le_of_lt hik k.castSucc_lt_succ
+      exact hx.symm.trans ((congrArg
+        (fun z => ((nerve C).δ (i.castLT (Nat.lt_of_le_of_lt
+          (Fin.le_iff_val_le_val.mp hik) k.is_lt))).hom' z)
+        (hfaces k.succ hlt.ne')).trans
+          (hboundary i k.succ hlt).symm)
+  refine ⟨x, ?_⟩
+  have hx : SSet.yonedaEquiv.symm x = ψ := by
+    dsimp [x]
+    exact SSet.yonedaEquiv.symm_apply_apply ψ
+  apply SSet.boundary.hom_ext
+  intro j
+  dsimp [boundaryRestriction]
+  erw [← Category.assoc, SSet.boundary.ι_ι]
+  rw [hx]
+  have hj : (nerve C).δ j x = b j := by
+    by_cases hji : j = i
+    · simpa [hji] using hi
+    · exact hfaces j hji
+  apply SSet.yonedaEquiv.injective
+  dsimp [x, b] at hj
+  simpa only [SSet.stdSimplex.yonedaEquiv_δ_comp] using hj
+
+/-- Categorical-nerve boundary restriction is bijective in every dimension at
+least three. -/
+theorem boundaryRestriction_bijective
+    {C : Type u} [Category.{v} C] (m : ℕ) :
+    Function.Bijective (boundaryRestriction (C := C) (m + 3)) :=
+  ⟨boundaryRestriction_injective (C := C) (m + 1),
+    boundaryRestriction_surjective (C := C) m⟩
+
+/-- In dimensions at least three, a categorical nerve simplex is determined
+by any horn.  Simplicial identities recover every face of the omitted face,
+after which `simplex_eq_of_all_faces` reconstructs both the omitted face and
+the original simplex. -/
+theorem simplex_eq_of_faces_except_high
+    {C : Type u} [Category.{v} C] {n : ℕ}
+    (i : Fin (n + 4)) (x y : ComposableArrows C (n + 3))
+    (h : ∀ (j : Fin (n + 4)), j ≠ i →
+      (nerve C).δ j x = (nerve C).δ j y) :
+    x = y := by
+  have hi : (nerve C).δ i x = (nerve C).δ i y := by
+    apply simplex_eq_of_all_faces
+    intro k
+    by_cases hk : k.castSucc < i
+    · have hx := ConcreteCategory.congr_hom ((nerve C).δ_comp_δ' hk) x
+      have hy := ConcreteCategory.congr_hom ((nerve C).δ_comp_δ' hk) y
+      exact hx.trans ((congrArg
+        (fun z ↦ ((nerve C).δ (i.pred hk.ne_zero)).hom' z)
+        (h k.castSucc hk.ne)).trans hy.symm)
+    · have hik : i ≤ k.castSucc := by omega
+      have hx := ConcreteCategory.congr_hom ((nerve C).δ_comp_δ'' hik) x
+      have hy := ConcreteCategory.congr_hom ((nerve C).δ_comp_δ'' hik) y
+      exact hx.symm.trans ((congrArg
+        (fun z ↦ ((nerve C).δ (i.castLT (Nat.lt_of_le_of_lt
+          (Fin.le_iff_val_le_val.mp hik) k.is_lt))).hom' z)
+        (h k.succ (lt_of_le_of_lt hik k.castSucc_lt_succ).ne')).trans hy)
+  apply simplex_eq_of_all_faces
+  intro j
+  by_cases hj : j = i
+  · simpa [hj] using hi
+  · exact h j hj
 
 end CategoryTheory.Nerve

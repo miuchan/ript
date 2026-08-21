@@ -47,6 +47,11 @@
 | `Ript.Semantics.Free.lift_on_generator` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
 | `Ript.Semantics.Free.lift_preserves_cost` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
 | `Ript.Semantics.Free.lift_unique` | `[propext, Quot.sound]` | `Ript/Semantics/MonoidalInitiality.lean` |
+| `Ript.Semantics.SequentialFree.lift_on_generator` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialInitiality.lean` |
+| `Ript.Semantics.SequentialFree.lift_preserves_cost` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialInitiality.lean` |
+| `Ript.Semantics.SequentialFree.lift_unique` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialInitiality.lean` |
+| `Ript.Semantics.SequentialFree.strictExtensionEquivPUnit` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialInitiality.lean` |
+| `Ript.Semantics.SequentialFree.interpretationEquivResourceMonotoneFunctor` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialInitiality.lean` |
 | `Ript.Syntax.Signature.mapCost_comp` | `[propext, Quot.sound]` | `Ript/Syntax/Signature.lean` |
 | `Ript.Syntax.Expr.unmapCost_mapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Syntax.Expr.mapCost_unmapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
@@ -56,19 +61,255 @@
 | `Ript.Semantics.ResourceChangingInterpretation.eval_cost_le` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Semantics.ResourceChangingInterpretation.mapped_soundness_iff_term_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Semantics.ResourceChangingInterpretation.mapped_budget_complete_in_free_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.Derives.mapCost_iff` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingInterpretation.soundness` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingSequentialFree.lift_on_generator` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingSequentialInitiality.lean` |
+| `Ript.Semantics.ResourceChangingSequentialFree.lift_preserves_translated_cost` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingSequentialInitiality.lean` |
+| `Ript.Semantics.ResourceChangingSequentialFree.lift_unique` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingSequentialInitiality.lean` |
+| `Ript.Semantics.ResourceChangingSequentialFree.strictExtensionEquivPUnit` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingSequentialInitiality.lean` |
+| `Ript.Semantics.ResourceChangingSequentialFree.interpretationEquivResourceChangeFunctor` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingSequentialInitiality.lean` |
 | `Ript.Examples.CommonBitRealizations.semanticFlip_blackwellEquivalent_perfect` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
 | `Ript.Examples.CommonBitRealizations.semanticFlip_guessing_value` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
 | `Ript.Examples.CommonBitRealizations.computation_flip_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
 | `Ript.Examples.CommonBitRealizations.sixModelFlipAgreement` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CommonBitRealizations.lean` |
+| `Ript.Examples.CompositionalBitRealizations.causal_mechanisms_doubleFlip` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CompositionalBitRealizations.lean` |
+| `Ript.Examples.CompositionalBitRealizations.computation_doubleFlip_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CompositionalBitRealizations.lean` |
+| `Ript.Examples.CompositionalBitRealizations.semantic_doubleFlip_value` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CompositionalBitRealizations.lean` |
+| `Ript.Examples.CompositionalBitRealizations.thermal_protocol_doubleFlip` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CompositionalBitRealizations.lean` |
+| `Ript.Examples.CompositionalBitRealizations.sixModelCompositionAgreement` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CompositionalBitRealizations.lean` |
+| `Ript.Examples.CompositionalBitCompleteness.normalize_derives` | `none` | `Ript/Examples/CompositionalBitCompleteness.lean` |
+| `Ript.Examples.CompositionalBitCompleteness.derives_unique` | `none` | `Ript/Examples/CompositionalBitCompleteness.lean` |
+| `Ript.Examples.CompositionalBitCompleteness.inImage_iff_eq_canonical` | `[propext]` | `Ript/Examples/CompositionalBitCompleteness.lean` |
+| `Ript.Examples.CompositionalBitCompleteness.sixModelSemanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CompositionalBitCompleteness.lean` |
+| `Ript.Examples.OperationalErasureRealizations.quantum_erases` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.OperationalErasureRealizations.causal_intervention_replaces_mechanism` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.OperationalErasureRealizations.computation_erasure_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.OperationalErasureRealizations.semantic_erasure_value_zero` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.OperationalErasureRealizations.thermal_erases` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.OperationalErasureRealizations.thermal_erasure_landauer_saturation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.OperationalErasureRealizations.sixModelErasureAgreement` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/OperationalErasureRealizations.lean` |
+| `Ript.Examples.DiamondBitTheory.reversiblePath_not_derives_erasurePath` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitTheory.lean` |
+| `Ript.Examples.DiamondBitTheory.normalize_derives` | `[propext]` | `Ript/Examples/DiamondBitTheory.lean` |
+| `Ript.Examples.DiamondBitTheory.derives_iff_normalize_eq` | `[propext, Quot.sound]` | `Ript/Examples/DiamondBitTheory.lean` |
+| `Ript.Examples.DiamondBitTheory.inputOutput_inImage_iff` | `[propext, Quot.sound]` | `Ript/Examples/DiamondBitTheory.lean` |
+| `Ript.Examples.DiamondBitTheory.semanticallyComplete_of_separates` | `[propext, Quot.sound]` | `Ript/Examples/DiamondBitTheory.lean` |
+| `Ript.Examples.DiamondBitRealizations.sixModelPathSeparation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitRealizations.lean` |
+| `Ript.Examples.DiamondBitRealizations.sixModelSemanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitRealizations.lean` |
+| `Ript.Semantics.SequentialNormalForm.ProcessPath.append_assoc` | `[propext]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.normalize_toExpr` | `[propext]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.derives_iff_normalize_eq` | `[propext]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.termHomEquivPath` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.termPathEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.termToPath_cost_eq` | `[propext, Quot.sound]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.inImage_iff_exists_path` | `[propext]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Semantics.SequentialNormalForm.semanticallyComplete_of_pathFaithful` | `[propext]` | `Ript/Semantics/SequentialNormalForm.lean` |
+| `Ript.Examples.DiamondBitRealizations.sixModelGenericPathFaithfulness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitRealizations.lean` |
+| `Ript.Examples.DiamondBitRealizations.sixModelGenericSemanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitRealizations.lean` |
+| `Ript.Examples.DiamondBitRealizations.sixModelFreeLiftOnGenerators` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitRealizations.lean` |
+| `Ript.Examples.DiamondBitRealizations.sixModelFreeLiftCostBounds` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DiamondBitRealizations.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.monoidalCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Monoidal.lean` |
+| `Ript.Models.FiniteStochastic.FinStoch.symmetricCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Monoidal.lean` |
+| `Ript.Models.Computation.Total.monoidalCategory` | `[propext, Quot.sound]` | `Ript/Models/Computation/Total/Monoidal.lean` |
+| `Ript.Models.Computation.Total.symmetricCategory` | `[propext, Quot.sound]` | `Ript/Models/Computation/Total/Monoidal.lean` |
+| `Ript.Models.Quantum.ClassicalMonoidal.quantumEmbedding_faithful` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/ClassicalMonoidal.lean` |
+| `Ript.Models.Quantum.KrausChannel.equivalenceOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Equivalence.lean` |
+| `Ript.Models.Quantum.KrausChannel.ofEquiv_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Equivalence.lean` |
+| `Ript.Models.Quantum.KrausChannel.tensor_ofEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Monoidal.lean` |
+| `Ript.Models.Quantum.KrausChannel.monoidalCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Monoidal.lean` |
+| `Ript.Models.Quantum.KrausChannel.symmetricCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Monoidal.lean` |
+| `Ript.Models.Quantum.KrausOperation.map_posSemidef` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Operation.lean` |
+| `Ript.Models.Quantum.KrausOperation.tensor_map_kronecker` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Operation.lean` |
+| `Ript.Models.Quantum.KrausOperation.map_real_smul` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Operation.lean` |
+| `Ript.Models.Quantum.KrausInstrument.outcomeProbability_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.postcompose_outcomeProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.tensor_outcomeProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.chosenBranchRepresentation_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.recordedChannel_map_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.recordedChannel_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.recordedChannel_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.outcomeOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.extractOperation_map` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.extractOperations_tracePreserving` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.extractInstrument_recordedChannel_map_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.recordedChannel_isClassicallyRecorded` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.recordedChannel_extractInstrument_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.isClassicallyRecorded_iff_existsUnique` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.operationFamily_complete_of_tracePreserving` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.controlledPostcompose_outcomeProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.bind_outcomeProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.relabel_outcomeProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.KrausInstrument.bind_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/Instrument.lean` |
+| `Ript.Models.Quantum.InstrumentTree.historyCost_le_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.eval_branch_map` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.eval_outcomeProbability_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.recordedChannel_history_block` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.observationallyEquivalentAlong_iff_branchMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.observationallyEquivalentAlong_iff_recordedChannel` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.eval_ofInstrument_relabel` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.isClassicallyRecorded_iff_exists_instrumentTree` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Models.Quantum.InstrumentTree.recordedChannel_cost_le_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Quantum/InstrumentTree.lean` |
+| `Ript.Examples.QubitInstrument.outcomeProbability_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.posterior_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.tensor_outcomeProbability_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.corrected_branch_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.corrected_posterior_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.corrected_total_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.twoRoundTree_false_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.twoRoundTree_true_true_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.twoRoundTree_true_false_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.twoRoundTree_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.recursiveTree_history_card` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.recursiveTree_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.recursiveTree_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.QubitInstrument.recursiveTree_history_representation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/QubitInstrument.lean` |
+| `Ript.Examples.InstrumentSyntax.eval_measure_block` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Examples.InstrumentSyntax.measure_cost_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Examples.InstrumentSyntax.freeLift_on_measure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Examples.InstrumentSyntax.measureCorrect_cost_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Examples.InstrumentSyntax.freeLift_on_measureCorrect` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Examples.InstrumentSyntax.measureTree_cost_bound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Examples.InstrumentSyntax.freeLift_on_measureTree` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/InstrumentSyntax.lean` |
+| `Ript.Models.Computation.Randomized.tensor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Computation/Randomized.lean` |
+| `Ript.Models.Computation.Randomized.monoidalCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Computation/Randomized/Monoidal.lean` |
+| `Ript.Models.Computation.Randomized.symmetricCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Computation/Randomized/Monoidal.lean` |
+| `Ript.Models.Computation.Randomized.withinBudget_sound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Computation/Randomized.lean` |
+| `Ript.Examples.NoisyBitRealizations.quantumNoiseOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Examples.NoisyBitRealizations.randomUnitary_ne_measurementPreparation_on_plus` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Examples.NoisyBitRealizations.computation_parallel_noise_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Examples.NoisyBitRealizations.semanticNoise_quarter_risk` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Examples.NoisyBitRealizations.semanticNoise_quarter_value` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Examples.NoisyBitRealizations.sixModelNoiseAgreement` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Examples.NoisyBitRealizations.sixModelNoiseFreeLiftOnGenerator` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/NoisyBitRealizations.lean` |
+| `Ript.Syntax.Branching.Tree.historyCost_le_budget` | `[propext]` | `Ript/Syntax/Branching.lean` |
+| `Ript.Syntax.Branching.Tree.historyProbability_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/Branching.lean` |
+| `Ript.Syntax.Branching.NormalForm.toFinStoch_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/Branching.lean` |
+| `Ript.Syntax.Branching.Tree.run_comp_dirac_of_decode` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/Branching.lean` |
+| `Ript.Syntax.Branching.Tree.observationalCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/Branching.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.probabilityProtocol_representation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.probabilityProtocol_completeness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.randomFlipOperator_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.quantumProtocol_basis_block` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.quantumProtocol_ne_measurementPreparation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.causal_joint_representation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.semanticProtocol_value` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.adaptiveThermalOutput_equilibrium` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.adaptiveProtocol_run_ne_fixedQuarter` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Examples.AdaptiveNoiseRealizations.sixModelAdaptiveRepresentation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/AdaptiveNoiseRealizations.lean` |
+| `Ript.Syntax.DependentBranching.Tree.historyLength_le_height` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.Tree.historyCost_le_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.Tree.historyProbability_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.NormalForm.reindexHistory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.NormalForm.toFinStoch_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.Tree.observationalCompletenessAlong` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.BinaryEmbedding.historyCost_tree` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.BinaryEmbedding.run_tree_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fairTree_representation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fair_normalForm_ne_biased` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fair_run_ne_biased_reindexed` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.Free.fold_treeAlgebra` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.treeAlgebraIsInitial` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.homEquivPUnit` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.Derives.sound` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.Derives.complete_via_treeAlgebra` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.Derives.semanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.graft_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.fold_graft` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.fold_height` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.fold_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.height_graft_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Syntax.DependentBranching.Free.budget_graft_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Free.lean` |
+| `Ript.Examples.DependentBranching.initial_leafCount` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.graft_associativity_derives` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.heterogeneous_semanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fairTree_graft_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.Free.Cartesian.isTerminalUnit` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.Cartesian.binaryProductLimit` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.cartesianMonoidalCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.braidedCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.copyDiscardCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.associator_hom_toFun` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.braiding_hom_toFun` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.fold_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.fold_tensor_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.foldHom_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.tree_tensor_reflects_equality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Syntax.DependentBranching.Free.jointSemanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Monoidal.lean` |
+| `Ript.Examples.DependentBranching.parallel_leafCount_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.parallel_interpretation_braiding` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.heterogeneous_jointSemanticCompleteness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.historyCost_le_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.historyProbability_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.run_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.observationalCompletenessAlong` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.swap_historyCost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.swap_historyProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.graft_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.tensor_graft_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.budget_graft_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Syntax.DependentBranching.ParallelProtocol.height_graft_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Parallel.lean` |
+| `Ript.Examples.DependentBranching.fairBiasedParallel_run_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fairBiasedParallel_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fairBiasedParallel_graft_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fairFair_run_ne_fairBiased` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.historyCost_le_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.historyProbability_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.run_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.observationalCompletenessAlong` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.reindex_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.reindex_historyProbability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.reindex_finalState` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.reindex_normalForm` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Semantics.DependentBranchingRealization.quantum_diagonalDensity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.causal_joint_representation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.historyCost_le_treeResource_steps` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.historyLength_le_treeResource_storage` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.quantum_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.computation_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.semanticRealization_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.thermal_channel_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.isThermalTargetCompatible_iff_target_eq_induced` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.isThermalTargetCompatible_iff_existsUnique` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.thermalInto_eq_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.causallyEqual_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.allModelsAgree_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.sixModelRepresentation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Semantics.DependentBranchingRealization.tree_allModelsAgree_iff_run` | `[propext, Classical.choice, Quot.sound]` | `Ript/Semantics/DependentBranchingRealization.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.graft_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.tensor_graft_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Syntax.DependentBranching.LaneProtocol.budget_graft_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/Syntax/DependentBranching/Nary.lean` |
+| `Ript.Examples.DependentBranching.tripleProtocol_short_probability` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.tripleProtocol_run_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.tripleProtocol_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.tripleProtocol_graft_budget` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.tripleProtocol_swap_normalForm` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fairTree_sixModelRepresentation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.fair_biased_not_allModelsAgree` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Examples.DependentBranching.tripleAllFair_run_ne_triple` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/DependentBranching.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.monoidalCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monoidal.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.symmetricCategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/Monoidal.lean` |
+| `Ript.Examples.ParallelBitRealizations.computation_parallel_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitRealizations.lean` |
+| `Ript.Examples.ParallelBitRealizations.quantum_parallel_product` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitRealizations.lean` |
+| `Ript.Examples.ParallelBitRealizations.quantum_parallel_basis` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitRealizations.lean` |
+| `Ript.Examples.ParallelBitRealizations.sixModelParallelAgreement` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitRealizations.lean` |
+| `Ript.Examples.ParallelBitRealizations.sixModelMonoidalFreeLiftOnGenerator` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitRealizations.lean` |
+| `Ript.Examples.ParallelBitHigherModels.sixModelResourceMaps` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitHigherModels.lean` |
+| `Ript.Examples.ParallelBitHigherModels.sixModelOneCellsOnGenerator` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitHigherModels.lean` |
+| `Ript.Examples.ParallelBitHigherModels.computationOneCell_parallel_cost` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ParallelBitHigherModels.lean` |
 | `Ript.Syntax.MonoidalSignature.mapCost_comp` | `[propext, Quot.sound]` | `Ript/Syntax/MonoidalSignature.lean` |
 | `Ript.Syntax.MonoidalExpr.unmapCost_mapCost` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Syntax.MonoidalExpr.mapCost_unmapCost` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Syntax.MonoidalExpr.mapCostEquiv` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Syntax.MonoidalExpr.syntaxCost_mapCost` | `[propext]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Syntax.MonoidalDerives.mapCost_iff` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Semantics.ResourceChangingMonoidalInterpretation.equivMappedCostInterpretation` | `none` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Semantics.ResourceChangingMonoidalInterpretation.eval_cost_le` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalInterpretation.soundness` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_soundness_iff_term_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
 | `Ript.Semantics.ResourceChangingMonoidalInterpretation.mapped_budget_complete_in_free_model` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingInterpretation.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalFree.lift_on_generator` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingMonoidalInitiality.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalFree.lift_preserves_translated_cost` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingMonoidalInitiality.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalFree.lift_unique` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingMonoidalInitiality.lean` |
+| `Ript.Semantics.ResourceChangingMonoidalFree.strictExtensionEquivPUnit` | `[propext, Quot.sound]` | `Ript/Semantics/ResourceChangingMonoidalInitiality.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.id_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.comp_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
 | `Ript.Models.FiniteStochastic.FinStoch.tensor_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic.lean` |
@@ -81,6 +322,7 @@
 | `Ript.Models.FiniteStochastic.FinStoch.mix_tensor_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Convex.lean` |
 | `Ript.Examples.ConvexChannels.fairIdentityOrNot_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/ConvexChannels.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.pure_bind` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
+| `Ript.Models.FiniteDistribution.FinDist.pure_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.bind_pure` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.bind_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
 | `Ript.Models.FiniteStochastic.kleisliToChannel_channelToKleisli` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteStochastic/Kleisli.lean` |
@@ -141,6 +383,13 @@
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_antitone` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/ResourceBounded.lean` |
 | `Ript.Models.Decision.ResourceBounded.resourceBayesRisk_le_of_reduction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/ResourceBounded.lean` |
 | `Ript.Models.Decision.SemanticValue.semanticValue_mono` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
+| `Ript.Models.Decision.SemanticValue.dominates_noInformation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
+| `Ript.Models.Decision.SemanticValue.universalSemanticOrder_iff_finiteDecisionOrder` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
+| `Ript.Models.Decision.SemanticValue.blackwellDominates_iff_universalSemanticOrder` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
+| `Ript.Models.Decision.SemanticValue.finiteBayesRisk_eq_of_noInformationSemanticValue_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
+| `Ript.Models.Decision.SemanticValue.blackwellEquivalent_iff_universalSemanticValueProfileEqual` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
+| `Ript.Examples.SimpleDecision.perfect_not_blackwellEquivalent_uninformative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleDecision.lean` |
+| `Ript.Examples.SimpleDecision.singleSemanticValue_not_complete` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleDecision.lean` |
 | `Ript.Models.Decision.SemanticValue.resourceSemanticValue_mono_reduction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Decision/SemanticValue.lean` |
 | `Ript.Models.Computation.ComputationResource.within_sound` | `[propext]` | `Ript/Models/Computation/Resource.lean` |
 | `Ript.Models.Computation.Total.tensor_comp` | `[propext, Quot.sound]` | `Ript/Models/Computation/Total.lean` |
@@ -159,6 +408,190 @@
 | `Ript.Higher.ResourceModelTransformation.horizontalComp_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCoherence.lean` |
 | `Ript.Higher.totalModel_pentagon` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCoherence.lean` |
 | `Ript.Higher.totalModel_triangle` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCoherence.lean` |
+| `Ript.Higher.TotalModelSimplicial.objectNerveEdgeEquiv_equivalenceEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.objectNerveEdgeToEquivalence_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.objectNerveEquivalenceEdge_edgeToEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.InternalEquivalence.toEdge_ofEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.InternalEquivalence.ofEdge_toEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.InternalEquivalence.edgeEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.objectNerveStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.mappingNerveEdgeEquiv_transformationEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.mappingNerveVerticalComposition_composite` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.mappingNerveStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.Triangle.composition_cell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.Tetrahedron.existsUnique_over_iff_coherent` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.Tetrahedron.composition_cell023` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.Simplex.pullback_refl` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.Simplex.pullback_trans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.nerve` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.nerve_map_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.Simplex.toTriangle_cell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.Simplex.toTetrahedron_cell023` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelSemiSimplicial.Simplex.extensionality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSemiSimplicial.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.ordinalLaxFunctor_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.ordinalLaxFunctor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.Simplex.pullback_trans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.nerve` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.Simplex.pullback_comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.Simplex.zeroDegeneracy_edge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.Simplex.tetrahedral_coherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.Simplex.toSemiSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.Simplex.toSemiSimplex_pullback` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinNerve.forgetToSemi` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinNerve.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.Ordinal.toFin` | `[propext]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.Ordinal.fromFin` | `[propext]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.Ordinal.equivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.normalToFiniteOrdinal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.finiteToNormalOrdinalCore` | `[propext]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.finiteToNormalOrdinal` | `[propext]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.mapHom_refl` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.mapComp_refl_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.mapComp_strict_refl` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.mapComp_strict_strict` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.strictTetrahedralCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.identityRightUnitEquation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.constructorTetrahedralCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.sourceLeftUnitEquation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.sourceRightUnitEquation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.sourceTetrahedralCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.toCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.toNormalOrdinalSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.fromNormalOrdinalSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.fromNormalOrdinalSimplex_toNormalOrdinalSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.toNativeSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.toNativeSimplex_comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.toNativeSimplex_toSemiSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.toSemiSimplex_toNativeSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.nativeCoordinateEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.coordinateNerve` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.CoordinateSimplex.coordinateNerveIsoNative` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.RezkCore.diagram` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.diagramCatMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.diagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.diagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.actualEquivalenceObjectOfIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.actualEquivalenceSpaceInclusion_vertexOfIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingFunctor_obj_fst_obj` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingFunctor_obj_snd_obj` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingFunctor_map_fst_app` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingFunctor_map_snd_app` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingFunctorIsIsofibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingNerveMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingNerveMap_comp_fst` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingNerveMap_comp_snd` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeZeroTypeProductIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeZeroNerveProductIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeZeroNerveProductIso_hom_fst` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeZeroNerveProductIso_hom_snd` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneMatchingMap_eq_faces` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeOneReedyCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoAbstractMatchingMap_eq_limitLift` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryToAbstractMatching_fac` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoMatchingMap_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryToAbstractMatching_comp_faceProjection` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryToAbstractMatching_comp_vertexProjection` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoAbstractFaceProjection_comp_incidence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoMatchingCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingMap_eq_limitLift` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingMap_fac` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingBoundaryMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingElement_ext` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingBoundaryMap_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingBoundaryMap_matchingMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingMap_app_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingMap_app_surjective_high` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingMap_app_bijective_high` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.abstractMatchingMapHighIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.higherMatchingCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.triangleBoundaryEquivalenceStringEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.equivalenceStringToCoreString_coreStringToEquivalenceString` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.coreStringToEquivalenceString_equivalenceStringToCoreString` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoAbstractMatchingBoundaryMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryComparisonInverseApp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoMatchingElement_ext` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoAbstractMatchingBoundaryMap_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoAbstractMatchingBoundaryMap_comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryComparisonInverseApp_comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryToAbstractMatching_inverseApp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryToAbstractMatching_app_bijective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoBoundaryAbstractMatchingIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.degreeTwoReedyCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.fromEquivalenceStringDiagram_toEquivalenceStringDiagram` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.toEquivalenceStringDiagram_fromEquivalenceStringDiagram` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.horizontalSimplexEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.horizontalRowIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.horizontalStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.outerSegalEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.outerSegalEquiv_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.equivalenceStringCoreEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.objectSpaceWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.completenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedIdentityFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.completenessFunctorIsoSelected` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedCompletenessEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedCompletenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.equivalenceSpaceInclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedActualInclusionFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedToActualEquivalenceWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedToActualEquivalenceMap_comp_inclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.actualCompletenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.constantToDegeneracyIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.selectedCompletenessFunctorIsoDegeneracy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.completenessFunctorIsoDegeneracy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.completenessFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.completenessNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.actualCompletenessNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.nerveCompletenessFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.completenessHomotopyCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.actualCompletenessCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.segalCompletenessCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.objectCoreEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.completenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.equivalenceSpaceInclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.selectedToActualEquivalenceWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.actualCompletenessWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.completenessFunctorIsoDegeneracy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.completenessFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.completenessNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.actualCompletenessNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.nerveCompletenessFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.completenessCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.completenessHomotopyCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.actualCompletenessCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.degreeOneMatchingCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.degreeOneReedyCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.degreeTwoMatchingCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.degreeTwoReedyCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.higherMatchingCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.rezkObjectVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.higherCompleteSegalCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.horizontalRowIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.horizontalStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.outerSegalEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.outerSegalEquiv_apply` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelCompleteSegal.segalCompletenessCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.allIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.leftLeft` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.leftRight` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.leftNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.rightRight` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.middleIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelDuskinRepresentation.DegenerateCoherence.rightNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelDuskinRepresentation.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalCompositionFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalCompositionNerveMap_transformation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalAssociatorNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalAssociatorNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalLeftUnitorNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalLeftUnitorNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalRightUnitorNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Higher.TotalModelSimplicial.horizontalRightUnitorNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelSimplicial.lean` |
+| `Ript.Examples.HigherNoninvertibleTwoCell.totalDiscardMappingEdge_decodes` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
+| `Ript.Examples.HigherNoninvertibleTwoCell.totalDiscardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
+| `Ript.Examples.HigherNoninvertibleTwoCell.totalDiscardMappingEdge_decodes_noninvertible` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.TotalResourceModels.projectToSteps_cost_exact` | `[propext, Quot.sound]` | `Ript/Examples/TotalResourceModels.lean` |
 | `Ript.Examples.TotalResourceModels.stepBudgetedNot_cost` | `[propext, Quot.sound]` | `Ript/Examples/TotalResourceModels.lean` |
 | `Ript.Models.Computation.ComputationResource.stepsHom_of` | `[propext, Quot.sound]` | `Ript/Models/Computation/Resource.lean` |
@@ -168,12 +601,41 @@
 | `Ript.Models.Causal.FiniteCausalModel.observational_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Model.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.intervene_same` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.intervene_idempotent` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
+| `Ript.Models.Causal.Intervention.thenDo_assoc` | `[propext, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.interventionSemantics_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.intervene_thenDo` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
+| `Ript.Models.Causal.InterventionProgram.run_eq_intervene_normalize` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
+| `Ript.Models.Causal.InterventionProgram.semanticallyEquivalent_iff_normalize_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.intervene_comm_of_disjoint` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.intervention_preserves_normalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/Intervention.lean` |
 | `Ript.Models.Causal.FiniteCausalModel.interventional_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/FinStoch.lean` |
+| `Ript.Models.Causal.InterventionProgram.programChannel_eq_interventionalChannel_normalize` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/FinStoch.lean` |
 | `Ript.Examples.SimpleCausalModel.intervention_replaces_child_mechanism` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleCausalModel.lean` |
+| `Ript.Models.Causal.Mechanism.entrywiseEqual_iff_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftIntervention.thenReplace_assoc` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftIntervention.reduceAgainst_reduced` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftIntervention.reduceAgainst_eq_self_iff` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftIntervention.reduceAgainst_idempotent` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.softIntervene_ofHard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.softIntervene_thenReplace` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.softIntervene_reduceAgainst` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.softInterventionSemantics_injective_of_reduced` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftInterventionProgram.run_cons` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftInterventionProgram.run_eq_softIntervene_normalize` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.SoftInterventionProgram.semanticallyEquivalent_iff_normalize_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/SoftIntervention.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.softInterventional_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/FinStoch.lean` |
+| `Ript.Models.Causal.FiniteCausalModel.softInterventionalChannel_ofHard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/FinStoch.lean` |
+| `Ript.Models.Causal.SoftInterventionProgram.programChannel_eq_softInterventionalChannel_normalize` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Causal/FinStoch.lean` |
+| `Ript.Examples.SimpleCausalModel.stochastic_intervention_independent_fair` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleCausalModel.lean` |
+| `Ript.Examples.SimpleCausalModel.randomizeThenRestore_normalize` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleCausalModel.lean` |
+| `Ript.Examples.SimpleCausalModel.randomizeThenRestore_run` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleCausalModel.lean` |
+| `Ript.Examples.SimpleCausalModel.randomizeThenRestore_semantically_empty` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/SimpleCausalModel.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.push_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
 | `Ript.Models.FiniteDistribution.FinDist.push_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/FiniteDistribution.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.channel_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.isEquilibriumCompatible_iff_exists` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.isEquilibriumCompatible_iff_existsUnique` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
+| `Ript.Models.Thermal.GibbsPreserving.not_exists_channel_iff_not_isEquilibriumCompatible` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.GibbsPreserving.tensor_id` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.GibbsPreserving.tensor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
 | `Ript.Models.Thermal.GibbsPreserving.equilibrium_is_free` | `[propext, Classical.choice, Quot.sound]` | `Ript/Models/Thermal/GibbsPreserving.lean` |
@@ -318,6 +780,134 @@
 | `Ript.Higher.costExactLocalizationFunctor_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactPithLocalization_map_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
 | `Ript.Higher.costExactLocalizationFunctorEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/Localization.lean` |
+| `Ript.Higher.CostExactRezkComparison.smallLocalizationFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactRezkComparison.comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactRezkComparison.smallLocalizationInverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactRezkComparison.markedTargetVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactRezkComparison.markedArrowFactorsThroughActualEquivalences` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactRezkComparison.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.wordAssociatorIso` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Word.length_append` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.ofIsInvertedBy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.evalAppendIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.evalForwardBackwardCancellation` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.evalBackwardForwardCancellation` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.evalCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.evalCell_respects` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.evalHomFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.lift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.restrictedLift_map₂` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.restrictedLift_mapId` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.restrictedLift_mapComp` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.factorizationHom` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.factorizationInv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.factorsThrough` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.InversionData.interpretationCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.naturalityCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.naturalityHom` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.extension` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.restrictionExtensionIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.modificationExtension` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.restrictionModificationExtension` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.localPrecomposition_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.inclusion_isBicategoricalLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLocalization.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.forwardHomFunctor` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.sourceIdIso` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.sourceCompIso` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.markedUnitIso` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.markedCounitIso` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.localizationBicategory` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.markedEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.backwardCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.unitCellCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.counitCellCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.forwardHomFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.sourceIdIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.sourceCompIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.markedUnitIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.markedCounitIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.inclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.markedEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.liftOfInverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.factorizationOfInverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.factorsThrough` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.inclusion_isBicategoricalLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.interpretationCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.forwardBackwardCancellation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.backwardForwardCancellation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonAsSmallFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonNerveMap_vertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonNerveMap_edge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonLocalMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.identityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonCompositionComparisonHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonAssociatorCompatibility` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonLeftUnitorCompatibility` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonRightUnitorCompatibility` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.pseudofunctorNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.higherLocalizationNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.markedVertex_mapsToEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.twoCell_edge_mapsExactly` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.associatorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.leftUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.identityHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.compositionHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
+| `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.outerComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localVertex_outerArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localComposite_outerComposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localIdentity_outerIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.outerComposition_sourceComposite` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localAssociator_outerArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localLeftUnitor_outerArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localRightUnitor_outerArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localIsoToOuterEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localIsoToOuterEquality_trans` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localPentagon_outerEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.localTriangle_outerEquality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_map_marked_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.markedArrowFactorsThroughActualEquivalences` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Examples.CostExactFormalInverse.unitToNatFormalReverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Examples.CostExactFormalInverse.unitCancellationWord_length` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Examples.CostExactFormalInverse.rawCancellationGenerators_exist` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Examples.CostExactFormalInverse.presentedCancellationIsos_exist` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Examples.CostExactFormalInverse.unitToNatLocalizedEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Examples.CostExactFormalInverse.inclusion_genuinely_inverts_unitToNat` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Examples.CostExactFormalInverse.formalReverse_exists_beyond_sourceEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.horizontalCompositionFunctor` | `[propext, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.localMap_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.identityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.identityComparisonNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.compositionComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.compositionComparisonNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.associatorCompatibility` | `none` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.leftUnitorCompatibility` | `none` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.rightUnitorCompatibility` | `none` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.markedEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.localMap_markedVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.pseudofunctorNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.higherLocalizationNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Examples.WalkingLocalizationNerveComparison.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalizationNerveComparison.lean` |
+| `Ript.Examples.WalkingLocalizationNerveComparison.markedArrowVertex_mapsToEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalizationNerveComparison.lean` |
+| `Ript.Examples.WalkingLocalizationNerveComparison.discardTwoCell_edge_mapsExactly` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalizationNerveComparison.lean` |
+| `Ript.Examples.WalkingLocalizationNerveComparison.mappedDiscardTwoCell_remainsNoninvertible` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalizationNerveComparison.lean` |
+| `Ript.Examples.WalkingLocalizationNerveComparison.compositionHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/WalkingLocalizationNerveComparison.lean` |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Examples.HigherLocalization.unitToNatModelHom_not_isEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
 | `Ript.Examples.HigherLocalization.costExactIdentity_not_isBicategoricalLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherLocalization.lean` |
@@ -489,6 +1079,27 @@
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceTwoCell_rightIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMap₂SourceTwoCell_rightIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_rightIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_firstRightIdentity_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceTwoCell_leftIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMap₂SourceTwoCell_leftIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_leftIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_secondLeftIdentity_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceTwoCell_leftRightIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMap₂SourceTwoCell_leftRightIdentities_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_secondRightIdentity_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_firstLeftIdentity_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceRightIdentity_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceRightIdentity_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceRightIdentity_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceLeftIdentity_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceLeftIdentity_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceLeftIdentity_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceMixedIdentity_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSource_identityNormalizations_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompSourceIdentity_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_iso_right_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_iso_left_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -500,6 +1111,58 @@
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseRetainedMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseRetained` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseRetained_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalRetainedInverseCompositionComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalRetainedInverseRetainedComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseRetainedMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalForwardRetainedInverseComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardRetainedInverseMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalRetainedForwardInverseComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardInverseMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalForwardInverseRetainedComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseRetainedMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalInverseForwardRetainedComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardRetainedMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalInverseRetainedForwardComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseRetainedForwardMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalRetainedInverseForwardComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseForwardMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalForwardInverseForwardComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseForwardMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalInverseForwardInverseComparison_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardInverseMapCompTarget_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseSlidingSource_hom_directMate` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftEquivalenceUnitInsertion_inverseSliding` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseUnitFactorization_compositor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseMapCompSourceNormalized_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardMapCompSourceNormalized_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardRetainedInverseMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardRetainedInverseMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardInverseMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardInverseMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseRetainedMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseRetainedMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardRetainedMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardRetainedMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseRetainedForwardMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseRetainedForwardMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseForwardMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseForwardMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseForwardMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardInverseForwardMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardInverseMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseForwardInverseMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSource_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSource_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSource_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSourceNormalized_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSourceNormalized_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSource_eq_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseRetainedMapCompSourceNormalized_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseRetainedMapCompSource_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedInverseRetainedMapCompTransport_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompForward_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -509,6 +1172,19 @@
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompRetainedInverse_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_retainedInverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_forwardInverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseForward` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_retainedRetainedInverse_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_retainedInverseRetained_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_forwardRetainedInverse_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_retainedForwardInverse_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_forwardInverseRetained_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseForwardRetained_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseRetainedForward_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_retainedInverseForward_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_forwardInverseForward_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseForwardInverse_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward_naturality_right` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapCompInverseForward_naturality_left` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -532,6 +1208,40 @@
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardMapIdTail` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceGeneratorRetainedComparison_unit` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceRetainedGeneratorComparison_unit` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceGeneratorRetainedComparison_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceGeneratorRetainedComparison_factorization_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceRetainedGeneratorComparison_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceRetainedGeneratorComparison_factorization_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceGeneratorRetainedComparison_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceGeneratorRetainedComparison_factorization_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRetainedGeneratorComparison_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRetainedGeneratorComparison_factorization_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceLeftUnitor_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceRightUnitor_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceLeftUnitor_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRightUnitor_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceGeneratorRetainedComparison_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceRetainedGeneratorComparison_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceGeneratorRetainedComparison_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRetainedGeneratorComparison_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceGeneratorRetainedComparison_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.canonicalSourceRetainedGeneratorComparison_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceGeneratorRetainedComparison_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceRetainedGeneratorComparison_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_hom_unitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_hom_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_inv_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardFactorizationSource_hom_unitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardFactorizationSource_hom_normalized` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardFactorizationSource_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRetainedForwardFactorizationSource_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_interchange` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardFactorizationSource_interchange_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardSlidingSource_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardSlidingSource_tensor_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftInverseSlidingSource_tensor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceLeftUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftSourceLeftUnitor_afterCompositionComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftForwardSlidingSource_unit` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
@@ -553,6 +1263,33 @@
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_inverseRightIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRightUnitor_inverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftRightUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftEndpointMapComp_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_associativity` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPseudofunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPseudofunctor_map_inclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationNaturalityOfHEq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationNaturalityOfHEq_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPseudofunctor_map_inclusion_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftPseudofunctor_map₂_inclusion_heq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationObjEq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationApp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationNaturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationHom` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationObjEqInv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationAppInv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationNaturalityInv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorizationInverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftFactorsThrough` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.inclusion_isBicategoricalLocalization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TotalModelWalkingLocalization.lift` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TotalModelWalkingLocalization.lean` |
+| `Ript.Examples.TotalModelWalkingLocalization.restrictionEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TotalModelWalkingLocalization.lean` |
+| `Ript.Examples.TotalModelWalkingLocalization.factorsThrough` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TotalModelWalkingLocalization.lean` |
+| `Ript.Examples.TotalModelWalkingLocalization.localPrecompositionIsEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TotalModelWalkingLocalization.lean` |
+| `Ript.Examples.TotalModelWalkingLocalization.universalProperty` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TotalModelWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftMapComp_associativity_of_locallyThin` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftLocallyThinPseudofunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
+| `Ript.Examples.TwoDimensionalWalkingLocalization.generalLiftLocallyThinPseudofunctor_map_inclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/TwoDimensionalWalkingLocalization.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.discardTwoCell_not_isIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.homotopy_classes_ne` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
 | `Ript.Examples.HigherNoninvertibleTwoCell.locallyDiscrete_map_identifies_discard` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/HigherNoninvertibleTwoCell.lean` |
@@ -596,6 +1333,15 @@
 | `Ript.Univalent.UniverseModel.interfaceNerveStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveSegalEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `CategoryTheory.Nerve.kanComplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.two_simplex_eq_of_faces_except` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.simplex_eq_of_all_faces` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.simplex_eq_of_faces_except_high` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.boundaryRestriction` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.boundaryRestriction_injective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `SSet.hornToBoundary` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `SSet.hornFaceToBoundary` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.boundaryRestriction_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
+| `CategoryTheory.Nerve.boundaryRestriction_bijective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidNerve.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveKanComplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveHornFiller_restricts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
 | `Ript.Univalent.UniverseModel.interfaceNerveQuasicategory` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/Simplicial.lean` |
@@ -627,11 +1373,56 @@
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessFunctorIsEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessMap_eq_nerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `SSet.NerveEquivalenceWitness.ofEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
+| `CategoryTheory.NerveHomotopy.nerveCylinder` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
+| `CategoryTheory.NerveHomotopy.ofNatTrans` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
+| `CategoryTheory.Functor.isIsofibrationId` | `[propext]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.coreInclusionIsIsofibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.isIsofibrationComp` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.coreArrowEndpointsIsIsofibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.exists_lift_iso_hom` | `none` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.exists_lift_iso_inv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.nerveMap_mk₁_isoLift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.nerveMap_hornOne_lift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.nerveMap_hornTwo_lift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.nerveMap_hornHigh_lift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `SSet.fibration_iff_hornFamily` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.nerveMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.Functor.nerveMap_coreArrowEndpoints_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
+| `CategoryTheory.TriangleBoundary.isoMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.functorBoundaryEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.restrictAlongFunctor_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.restrictionFunctor_comp_restrictAlongFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.toBoundaryNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.boundaryNerveFace_endpoint` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.ofBoundaryNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.boundaryNerveVertexObject_toBoundaryNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.cofaceFactorization_nonempty` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.boundarySimplex_eq_coface_map` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.restrictAlong_ofBoundaryNerveMap_coface` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.ofBoundaryNerveMap_toBoundaryNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.toBoundaryNerveMap_ofBoundaryNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.boundaryNerveEquiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.fillable_iff_exists_extension` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.fillable_of_iso_restriction` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.coreRestrictionFunctorIsIsofibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
+| `CategoryTheory.TriangleBoundary.nerveMap_coreRestrictionFunctor_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/TriangleBoundary.lean` |
 | `SSet.KanComplex.ofIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramCompletenessNerveEquivalenceWitness` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelStrictSegal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `Ript.Univalent.UniverseModel.interfaceClassifyingDiagramLevelKan` | `[propext, Classical.choice, Quot.sound]` | `Ript/Univalent/ClassifyingDiagram.lean` |
 | `SSet.boundaryMatchingMap_fibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.boundaryMatchingIndexProjection` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.boundaryMatchingIndexMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.simplicialSpaceBoundaryMatchingDiagram` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.simplicialSpaceBoundaryMatchingConeIsLimit` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.boundaryMatchingSimplex_naturality` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.boundaryMatchingSimplex_not_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.boundaryMatchingSimplex_degreeTwoBoundaryFaceElement` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.boundaryMatchingSimplex_degreeTwoBoundaryVertexElement` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.degreeTwoBoundaryFaceToVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.simplicialSpaceBoundaryRestrictionCone` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.simplicialSpaceBoundaryMatchingMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
+| `SSet.simplicialSpaceBoundaryMatchingMap_eq_limitLift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
 | `SSet.boundaryMatchingConeIsLimit` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
 | `SSet.boundaryMatchingMap_eq_limitLift` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |
 | `SSet.nerveFunctorSimplexMappingIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/ReedyMatching.lean` |

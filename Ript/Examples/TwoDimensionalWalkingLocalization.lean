@@ -69,9 +69,21 @@ composed with that transport into the exact oplax associativity equation for
 every triple of canonical forward arrows.  The first genuinely inverse
 endpoint sequence, inverse followed by two retained arrows, now satisfies the
 same exact equation through an inverse-whiskered source law and seven endpoint
-transports.  The ten remaining endpoint sequences involving inverse or
-cancellation arrows, pseudofunctor packaging, and the resulting arbitrary
-nonseparable biessential factorization still remain open;
+transports.  The retained/retained/inverse target-normalization square,
+inverse-sliding multiplicativity, normalized source law, seven-endpoint
+transport, and exact all-arrow associativity equation are now compiled too;
+the mixed retained/inverse/retained sequence now compiles by the same layered
+target/source/transport method.  The forward/retained/inverse,
+retained/forward/inverse, forward/inverse/retained,
+inverse/forward/retained, inverse/retained/forward, and
+retained/inverse/forward cancellation sequences now compile through the same
+target, source, endpoint-transport, and all-arrow layers.
+The dual inverse/forward/inverse sequence now also compiles through all four
+layers.  Endpoint normalization reduces every arbitrary triple to these
+sixteen cases, so the action packages as `generalLiftPseudofunctor` for an
+arbitrary destination bicategory; the locally thin construction remains as a
+specialized corollary.  The resulting arbitrary nonseparable biessential
+factorization still remains open;
 consequently the global `lift` field of the bicategorical-localization
 predicate is not yet claimed.
 -/
@@ -4536,6 +4548,146 @@ theorem generalLiftForwardMapCompSource_associativity
       slice_lhs 2 3 => rw [hleft]
       simp only [Category.assoc]
 
+/-- The source associator 2-cell is heterogeneously unchanged when the
+walking arrow is followed twice by its identity. -/
+theorem canonicalSourceTwoCell_rightIdentities_heq
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq (canonicalSourceTwoCell ((f ≫ 𝟙 Y) ≫ 𝟙 Y) η)
+      (canonicalSourceTwoCell f η) := by
+  have h : (f ≫ 𝟙 Y) ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- Mapping preserves the heterogeneous right-identity transport of source
+2-cells. -/
+theorem generalLiftMap₂SourceTwoCell_rightIdentities_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq (F.map₂ (canonicalSourceTwoCell ((f ≫ 𝟙 Y) ≫ 𝟙 Y) η))
+      (F.map₂ (canonicalSourceTwoCell f η)) := by
+  have h : (f ≫ 𝟙 Y) ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The normalized compositor is heterogeneously unchanged when its second
+walking arrow is itself a composite of two identities. -/
+theorem generalLiftForwardMapCompSource_rightIdentities_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    HEq (generalLiftForwardMapCompSource F f (𝟙 Y ≫ 𝟙 Y) A B)
+      (generalLiftForwardMapCompSource F f (𝟙 Y) A B) := by
+  have h : 𝟙 Y ≫ 𝟙 Y = 𝟙 Y := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The normalized compositor is heterogeneously unchanged when its first
+walking arrow is followed by the identity. -/
+theorem generalLiftForwardMapCompSource_firstRightIdentity_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    HEq (generalLiftForwardMapCompSource F (f ≫ 𝟙 Y) (𝟙 Y) A B)
+      (generalLiftForwardMapCompSource F f (𝟙 Y) A B) := by
+  have h : f ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The source associator 2-cell is heterogeneously unchanged when the
+walking arrow is preceded twice by its identity. -/
+theorem canonicalSourceTwoCell_leftIdentities_heq
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq (canonicalSourceTwoCell ((𝟙 X ≫ 𝟙 X) ≫ f) η)
+      (canonicalSourceTwoCell f η) := by
+  have h : (𝟙 X ≫ 𝟙 X) ≫ f = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- Mapping preserves the heterogeneous left-identity transport of source
+2-cells. -/
+theorem generalLiftMap₂SourceTwoCell_leftIdentities_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq (F.map₂ (canonicalSourceTwoCell ((𝟙 X ≫ 𝟙 X) ≫ f) η))
+      (F.map₂ (canonicalSourceTwoCell f η)) := by
+  have h : (𝟙 X ≫ 𝟙 X) ≫ f = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The normalized compositor is heterogeneously unchanged when its first
+walking arrow is a composite of two identities. -/
+theorem generalLiftForwardMapCompSource_leftIdentities_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    HEq (generalLiftForwardMapCompSource F (𝟙 X ≫ 𝟙 X) f A B)
+      (generalLiftForwardMapCompSource F (𝟙 X) f A B) := by
+  have h : 𝟙 X ≫ 𝟙 X = 𝟙 X := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The normalized compositor is heterogeneously unchanged when its second
+walking arrow is preceded by the identity. -/
+theorem generalLiftForwardMapCompSource_secondLeftIdentity_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    HEq (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X ≫ f) A B)
+      (generalLiftForwardMapCompSource F (𝟙 X) f A B) := by
+  have h : 𝟙 X ≫ f = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The source associator 2-cell is heterogeneously unchanged when the
+walking arrow is preceded and followed by identities. -/
+theorem canonicalSourceTwoCell_leftRightIdentities_heq
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq (canonicalSourceTwoCell ((𝟙 X ≫ f) ≫ 𝟙 Y) η)
+      (canonicalSourceTwoCell f η) := by
+  have h : (𝟙 X ≫ f) ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- Mapping preserves the heterogeneous two-sided identity transport. -/
+theorem generalLiftMap₂SourceTwoCell_leftRightIdentities_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A B : Type} (η : A ⟶ B) :
+    HEq (F.map₂ (canonicalSourceTwoCell ((𝟙 X ≫ f) ≫ 𝟙 Y) η))
+      (F.map₂ (canonicalSourceTwoCell f η)) := by
+  have h : (𝟙 X ≫ f) ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The normalized compositor is heterogeneously unchanged when its second
+walking arrow is followed by the identity. -/
+theorem generalLiftForwardMapCompSource_secondRightIdentity_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    HEq (generalLiftForwardMapCompSource F (𝟙 X) (f ≫ 𝟙 Y) A B)
+      (generalLiftForwardMapCompSource F (𝟙 X) f A B) := by
+  have h : f ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
+/-- The normalized compositor is heterogeneously unchanged when its first
+walking arrow is preceded by the identity. -/
+theorem generalLiftForwardMapCompSource_firstLeftIdentity_heq
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    HEq (generalLiftForwardMapCompSource F (𝟙 X ≫ f) (𝟙 Y) A B)
+      (generalLiftForwardMapCompSource F f (𝟙 Y) A B) := by
+  have h : 𝟙 X ≫ f = f := Subsingleton.elim _ _
+  cases h
+  rfl
+
 /-- Associativity of a compositor is preserved when every one-arrow and
 composite endpoint is transported through a chosen isomorphism.  This
 isolates the bicategorical associator naturality needed by the arbitrary
@@ -4619,6 +4771,750 @@ private theorem eqToHom_naturality_of_heq
   subst Y'
   simpa using eq_of_heq h
 
+/-- Normalize the source compositor along the unique right-identity equality
+in the walking preorder.  Unlike the raw compositor, this isomorphism starts
+at the chosen representative `f` rather than the propositionally equal
+composite `f ≫ 𝟙 Y`. -/
+noncomputable def generalLiftForwardMapCompSourceRightIdentity
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom f (A × B)) ≅
+      F.map (canonicalSourceHom f A) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B) :=
+  eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)))
+      (Subsingleton.elim f (f ≫ 𝟙 Y))) ≪≫
+    generalLiftForwardMapCompSource F f (𝟙 Y) A B
+
+/-- Hom expansion of the right-identity-normalized source compositor. -/
+theorem generalLiftForwardMapCompSourceRightIdentity_hom
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardMapCompSourceRightIdentity F f A B).hom =
+      eqToHom (congrArg
+        (fun k => F.map (canonicalSourceHom k (A × B)))
+        (Subsingleton.elim f (f ≫ 𝟙 Y))) ≫
+      (generalLiftForwardMapCompSource F f (𝟙 Y) A B).hom := by
+  rfl
+
+/-- Right-identity-normalized source composition is natural in its first
+retained coordinate. -/
+theorem generalLiftForwardMapCompSourceRightIdentity_naturality_left
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+          (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B))) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F f C B).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F f A B).hom ≫
+        F.map₂ (canonicalSourceTwoCell f η) ▷
+          F.map (canonicalSourceHom (𝟙 Y) B) := by
+  rw [generalLiftForwardMapCompSourceRightIdentity_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom]
+  simp only [Category.assoc]
+  simp
+  have h := generalLiftForwardMapCompSource_naturality_left F
+    f (𝟙 Y) η B
+  have hid : f ≫ 𝟙 Y = f := Subsingleton.elim _ _
+  rw [hid] at h
+  exact h
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The right-identity-normalized source compositors satisfy the general
+three-fold associativity law.  The proof transports the raw pseudofunctor law
+across all seven dependent endpoints and uses heterogeneous naturality for
+the two nontrivial outer compositor changes. -/
+private theorem generalLiftForwardMapCompSourceRightIdentity3_associativity
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (U A B : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator U A B).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F f
+          U (A × B)).hom ≫
+        F.map (canonicalSourceHom f U) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 Y) A B).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          (U × A) B).hom ≫
+        ((generalLiftForwardMapCompSourceRightIdentity F f
+          U A).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+        (α_ (F.map (canonicalSourceHom f U))
+          (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))).hom := by
+  let e₀₁ :
+      F.map (canonicalSourceHom f (U × A)) ≅
+        F.map (canonicalSourceHom (f ≫ 𝟙 Y) (U × A)) :=
+    eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (U × A)))
+      (Subsingleton.elim f (f ≫ 𝟙 Y)))
+  let e₁₂ :
+      F.map (canonicalSourceHom (𝟙 Y) (A × B)) ≅
+        F.map (canonicalSourceHom (𝟙 Y ≫ 𝟙 Y) (A × B)) :=
+    eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)))
+      (Subsingleton.elim (𝟙 Y) (𝟙 Y ≫ 𝟙 Y)))
+  let hL :
+      F.map (canonicalSourceHom f ((U × A) × B)) =
+        F.map (canonicalSourceHom ((f ≫ 𝟙 Y) ≫ 𝟙 Y)
+          ((U × A) × B)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k ((U × A) × B)))
+      (Subsingleton.elim f ((f ≫ 𝟙 Y) ≫ 𝟙 Y))
+  let eL :
+      F.map (canonicalSourceHom f ((U × A) × B)) ≅
+        F.map (canonicalSourceHom ((f ≫ 𝟙 Y) ≫ 𝟙 Y)
+          ((U × A) × B)) :=
+    eqToIso hL
+  let hR :
+      F.map (canonicalSourceHom f (U × (A × B))) =
+        F.map (canonicalSourceHom (f ≫ (𝟙 Y ≫ 𝟙 Y))
+          (U × (A × B))) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (U × (A × B))))
+      (Subsingleton.elim f (f ≫ (𝟙 Y ≫ 𝟙 Y)))
+  let eR :
+      F.map (canonicalSourceHom f (U × (A × B))) ≅
+        F.map (canonicalSourceHom (f ≫ (𝟙 Y ≫ 𝟙 Y))
+          (U × (A × B))) :=
+    eqToIso hR
+  have ha :
+      F.map₂ (canonicalSourceTwoCell f
+            (MonoidalCategory.associator U A B).hom) ≫ eR.hom =
+        eL.hom ≫
+          F.map₂ (canonicalSourceTwoCell ((f ≫ 𝟙 Y) ≫ 𝟙 Y)
+            (MonoidalCategory.associator U A B).hom) := by
+    exact eqToHom_naturality_of_heq hL hR
+      (generalLiftMap₂SourceTwoCell_rightIdentities_heq F f
+        (MonoidalCategory.associator U A B).hom).symm
+  have htransport := transportCompositor_associativity
+    (e₀ := Iso.refl (F.map (canonicalSourceHom f U)))
+    (e₁ := Iso.refl (F.map (canonicalSourceHom (𝟙 Y) A)))
+    (e₂ := Iso.refl (F.map (canonicalSourceHom (𝟙 Y) B)))
+    (e₀₁ := e₀₁) (e₁₂ := e₁₂) (eL := eL) (eR := eR)
+    (c₀₁ := (generalLiftForwardMapCompSource F f (𝟙 Y) U A).hom)
+    (c₁₂ := (generalLiftForwardMapCompSource F (𝟙 Y) (𝟙 Y) A B).hom)
+    (cL := (generalLiftForwardMapCompSource F (f ≫ 𝟙 Y) (𝟙 Y)
+      (U × A) B).hom)
+    (cR := (generalLiftForwardMapCompSource F f (𝟙 Y ≫ 𝟙 Y)
+      U (A × B)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell ((f ≫ 𝟙 Y) ≫ 𝟙 Y)
+      (MonoidalCategory.associator U A B).hom))
+    (aQ := F.map₂ (canonicalSourceTwoCell f
+      (MonoidalCategory.associator U A B).hom))
+    (ha := ha)
+    (hc := generalLiftForwardMapCompSource_associativity F
+      f (𝟙 Y) (𝟙 Y) U A B)
+  simp at htransport
+  have hcompR : HEq
+      (generalLiftForwardMapCompSource F f (𝟙 Y)
+        U (A × B)).hom
+      (generalLiftForwardMapCompSource F f (𝟙 Y ≫ 𝟙 Y)
+        U (A × B)).hom := by
+    have h := (generalLiftForwardMapCompSource_rightIdentities_heq
+      F f U (A × B)).symm
+    cases h
+    rfl
+  let hXR :
+      F.map (canonicalSourceHom (f ≫ 𝟙 Y) (U × (A × B))) =
+        F.map (canonicalSourceHom (f ≫ (𝟙 Y ≫ 𝟙 Y))
+          (U × (A × B))) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (U × (A × B))))
+      (Subsingleton.elim (f ≫ 𝟙 Y) (f ≫ (𝟙 Y ≫ 𝟙 Y)))
+  let hYR :
+      F.map (canonicalSourceHom f U) ≫
+          F.map (canonicalSourceHom (𝟙 Y) (A × B)) =
+        F.map (canonicalSourceHom f U) ≫
+          F.map (canonicalSourceHom (𝟙 Y ≫ 𝟙 Y) (A × B)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom f U) ≫
+        F.map (canonicalSourceHom k (A × B)))
+      (Subsingleton.elim (𝟙 Y) (𝟙 Y ≫ 𝟙 Y))
+  have hnatR := eqToHom_naturality_of_heq hXR hYR hcompR
+  have hright :
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          U (A × B)).hom ≫
+        (F.map (canonicalSourceHom f U) ◁ e₁₂.hom) =
+      eR.hom ≫
+        (generalLiftForwardMapCompSource F f (𝟙 Y ≫ 𝟙 Y)
+          U (A × B)).hom := by
+    rw [generalLiftForwardMapCompSourceRightIdentity_hom]
+    simp only [Category.assoc]
+    simpa [eR, e₁₂, hR, hXR, hYR] using congrArg
+      (fun k =>
+        eqToHom (congrArg
+          (fun m => F.map (canonicalSourceHom m (U × (A × B))))
+          (Subsingleton.elim f (f ≫ 𝟙 Y))) ≫ k)
+      hnatR
+  have hcompL : HEq
+      (generalLiftForwardMapCompSource F f (𝟙 Y)
+        (U × A) B).hom
+      (generalLiftForwardMapCompSource F (f ≫ 𝟙 Y) (𝟙 Y)
+        (U × A) B).hom := by
+    have h := (generalLiftForwardMapCompSource_firstRightIdentity_heq
+      F f (U × A) B).symm
+    cases h
+    rfl
+  let hXL :
+      F.map (canonicalSourceHom (f ≫ 𝟙 Y) ((U × A) × B)) =
+        F.map (canonicalSourceHom ((f ≫ 𝟙 Y) ≫ 𝟙 Y)
+          ((U × A) × B)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k ((U × A) × B)))
+      (Subsingleton.elim (f ≫ 𝟙 Y) ((f ≫ 𝟙 Y) ≫ 𝟙 Y))
+  let hYL :
+      F.map (canonicalSourceHom f (U × A)) ≫
+          F.map (canonicalSourceHom (𝟙 Y) B) =
+        F.map (canonicalSourceHom (f ≫ 𝟙 Y) (U × A)) ≫
+          F.map (canonicalSourceHom (𝟙 Y) B) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (U × A)) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B))
+      (Subsingleton.elim f (f ≫ 𝟙 Y))
+  have hnatL := eqToHom_naturality_of_heq hXL hYL hcompL
+  have hleft :
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          (U × A) B).hom ≫
+        (e₀₁.hom ▷ F.map (canonicalSourceHom (𝟙 Y) B)) =
+      eL.hom ≫
+        (generalLiftForwardMapCompSource F (f ≫ 𝟙 Y) (𝟙 Y)
+          (U × A) B).hom := by
+    rw [generalLiftForwardMapCompSourceRightIdentity_hom]
+    simp only [Category.assoc]
+    simpa [eL, e₀₁, hL, hXL, hYL] using congrArg
+      (fun k =>
+        eqToHom (congrArg
+          (fun m => F.map (canonicalSourceHom m ((U × A) × B)))
+          (Subsingleton.elim f (f ≫ 𝟙 Y))) ≫ k)
+      hnatL
+  rw [generalLiftForwardMapCompSourceRightIdentity_hom
+      F (𝟙 Y) A B,
+    generalLiftForwardMapCompSourceRightIdentity_hom
+      F f U A]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  change
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator U A B).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F f
+          U (A × B)).hom ≫
+        (F.map (canonicalSourceHom f U) ◁ e₁₂.hom) ≫
+        (F.map (canonicalSourceHom f U) ◁
+          (generalLiftForwardMapCompSource F (𝟙 Y) (𝟙 Y) A B).hom) =
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          (U × A) B).hom ≫
+        (e₀₁.hom ▷ F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+        ((generalLiftForwardMapCompSource F f (𝟙 Y) U A).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+        (α_ (F.map (canonicalSourceHom f U))
+          (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))).hom
+  slice_lhs 2 3 => rw [hright]
+  slice_rhs 1 2 => rw [hleft]
+  simpa only [Category.assoc] using htransport
+
+/-- Unit-coordinate specialization retained for the forward-factorization
+proofs that use the marked generator's chosen unit representative. -/
+theorem generalLiftForwardMapCompSourceRightIdentity_associativity
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator
+            (𝟙 (MonoidalSingleObj.star Type)) A B).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F f
+          (𝟙 (MonoidalSingleObj.star Type)) (A × B)).hom ≫
+        F.map (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star Type))) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 Y) A B).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          ((𝟙 (MonoidalSingleObj.star Type)) × A) B).hom ≫
+        ((generalLiftForwardMapCompSourceRightIdentity F f
+          (𝟙 (MonoidalSingleObj.star Type)) A).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+        (α_ (F.map (canonicalSourceHom f
+            (𝟙 (MonoidalSingleObj.star Type))))
+          (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))).hom := by
+  exact generalLiftForwardMapCompSourceRightIdentity3_associativity
+    F f (𝟙 (MonoidalSingleObj.star Type)) A B
+
+/-- Normalize the source compositor along the unique left-identity equality
+in the walking preorder. -/
+noncomputable def generalLiftForwardMapCompSourceLeftIdentity
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom f (A × B)) ≅
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+        F.map (canonicalSourceHom f B) :=
+  eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)))
+      (Subsingleton.elim f (𝟙 X ≫ f))) ≪≫
+    generalLiftForwardMapCompSource F (𝟙 X) f A B
+
+/-- Hom expansion of the left-identity-normalized source compositor. -/
+theorem generalLiftForwardMapCompSourceLeftIdentity_hom
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom =
+      eqToHom (congrArg
+        (fun k => F.map (canonicalSourceHom k (A × B)))
+        (Subsingleton.elim f (𝟙 X ≫ f))) ≫
+      (generalLiftForwardMapCompSource F (𝟙 X) f A B).hom := by
+  rfl
+
+/-- Left-identity-normalized source composition is natural in its second
+retained coordinate. -/
+theorem generalLiftForwardMapCompSourceLeftIdentity_naturality_right
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    F.map₂ (canonicalSourceTwoCell f
+          (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η)) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f A C).hom =
+      (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom ≫
+        F.map (canonicalSourceHom (𝟙 X) A) ◁
+          F.map₂ (canonicalSourceTwoCell f η) := by
+  rw [generalLiftForwardMapCompSourceLeftIdentity_hom,
+    generalLiftForwardMapCompSourceLeftIdentity_hom]
+  simp only [Category.assoc]
+  simp
+  have h := generalLiftForwardMapCompSource_naturality_right F
+    (𝟙 X) f A η
+  have hid : 𝟙 X ≫ f = f := Subsingleton.elim _ _
+  rw [hid] at h
+  exact h
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The left-identity-normalized source compositors satisfy the symmetric
+three-fold associativity law after seven dependent endpoint transports. -/
+theorem generalLiftForwardMapCompSourceLeftIdentity_associativity
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B
+            (𝟙 (MonoidalSingleObj.star Type))).hom) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f
+          A (B × 𝟙 (MonoidalSingleObj.star Type))).hom ≫
+        F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardMapCompSourceLeftIdentity F
+            f B (𝟙 (MonoidalSingleObj.star Type))).hom =
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+          (A × B) (𝟙 (MonoidalSingleObj.star Type))).hom ≫
+        ((generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).hom ▷
+          F.map (canonicalSourceHom f
+            (𝟙 (MonoidalSingleObj.star Type)))) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom f
+            (𝟙 (MonoidalSingleObj.star Type))))).hom := by
+  let U : Type := 𝟙 (MonoidalSingleObj.star Type)
+  let e₀₁ :
+      F.map (canonicalSourceHom (𝟙 X) (A × B)) ≅
+        F.map (canonicalSourceHom (𝟙 X ≫ 𝟙 X) (A × B)) :=
+    eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)))
+      (Subsingleton.elim (𝟙 X) (𝟙 X ≫ 𝟙 X)))
+  let e₁₂ :
+      F.map (canonicalSourceHom f (B × U)) ≅
+        F.map (canonicalSourceHom (𝟙 X ≫ f) (B × U)) :=
+    eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (B × U)))
+      (Subsingleton.elim f (𝟙 X ≫ f)))
+  let hL :
+      F.map (canonicalSourceHom f ((A × B) × U)) =
+        F.map (canonicalSourceHom ((𝟙 X ≫ 𝟙 X) ≫ f)
+          ((A × B) × U)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k ((A × B) × U)))
+      (Subsingleton.elim f ((𝟙 X ≫ 𝟙 X) ≫ f))
+  let eL :
+      F.map (canonicalSourceHom f ((A × B) × U)) ≅
+        F.map (canonicalSourceHom ((𝟙 X ≫ 𝟙 X) ≫ f)
+          ((A × B) × U)) :=
+    eqToIso hL
+  let hR :
+      F.map (canonicalSourceHom f (A × (B × U))) =
+        F.map (canonicalSourceHom (𝟙 X ≫ (𝟙 X ≫ f))
+          (A × (B × U))) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (A × (B × U))))
+      (Subsingleton.elim f (𝟙 X ≫ (𝟙 X ≫ f)))
+  let eR :
+      F.map (canonicalSourceHom f (A × (B × U))) ≅
+        F.map (canonicalSourceHom (𝟙 X ≫ (𝟙 X ≫ f))
+          (A × (B × U))) :=
+    eqToIso hR
+  have ha :
+      F.map₂ (canonicalSourceTwoCell f
+            (MonoidalCategory.associator A B U).hom) ≫ eR.hom =
+        eL.hom ≫
+          F.map₂ (canonicalSourceTwoCell ((𝟙 X ≫ 𝟙 X) ≫ f)
+            (MonoidalCategory.associator A B U).hom) := by
+    exact eqToHom_naturality_of_heq hL hR
+      (generalLiftMap₂SourceTwoCell_leftIdentities_heq F f
+        (MonoidalCategory.associator A B U).hom).symm
+  have htransport := transportCompositor_associativity
+    (e₀ := Iso.refl (F.map (canonicalSourceHom (𝟙 X) A)))
+    (e₁ := Iso.refl (F.map (canonicalSourceHom (𝟙 X) B)))
+    (e₂ := Iso.refl (F.map (canonicalSourceHom f U)))
+    (e₀₁ := e₀₁) (e₁₂ := e₁₂) (eL := eL) (eR := eR)
+    (c₀₁ := (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B).hom)
+    (c₁₂ := (generalLiftForwardMapCompSource F (𝟙 X) f B U).hom)
+    (cL := (generalLiftForwardMapCompSource F (𝟙 X ≫ 𝟙 X) f
+      (A × B) U).hom)
+    (cR := (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X ≫ f)
+      A (B × U)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell ((𝟙 X ≫ 𝟙 X) ≫ f)
+      (MonoidalCategory.associator A B U).hom))
+    (aQ := F.map₂ (canonicalSourceTwoCell f
+      (MonoidalCategory.associator A B U).hom))
+    (ha := ha)
+    (hc := generalLiftForwardMapCompSource_associativity F
+      (𝟙 X) (𝟙 X) f A B U)
+  simp at htransport
+  have hcompR : HEq
+      (generalLiftForwardMapCompSource F (𝟙 X) f
+        A (B × U)).hom
+      (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X ≫ f)
+        A (B × U)).hom := by
+    have h := (generalLiftForwardMapCompSource_secondLeftIdentity_heq
+      F f A (B × U)).symm
+    cases h
+    rfl
+  let hXR :
+      F.map (canonicalSourceHom (𝟙 X ≫ f) (A × (B × U))) =
+        F.map (canonicalSourceHom (𝟙 X ≫ (𝟙 X ≫ f))
+          (A × (B × U))) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (A × (B × U))))
+      (Subsingleton.elim (𝟙 X ≫ f) (𝟙 X ≫ (𝟙 X ≫ f)))
+  let hYR :
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+          F.map (canonicalSourceHom f (B × U)) =
+        F.map (canonicalSourceHom (𝟙 X) A) ≫
+          F.map (canonicalSourceHom (𝟙 X ≫ f) (B × U)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom (𝟙 X) A) ≫
+        F.map (canonicalSourceHom k (B × U)))
+      (Subsingleton.elim f (𝟙 X ≫ f))
+  have hnatR := eqToHom_naturality_of_heq hXR hYR hcompR
+  have hright :
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+          A (B × U)).hom ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁ e₁₂.hom) =
+      eR.hom ≫
+        (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X ≫ f)
+          A (B × U)).hom := by
+    rw [generalLiftForwardMapCompSourceLeftIdentity_hom]
+    simp only [Category.assoc]
+    simpa [eR, e₁₂, hR, hXR, hYR] using congrArg
+      (fun k =>
+        eqToHom (congrArg
+          (fun m => F.map (canonicalSourceHom m (A × (B × U))))
+          (Subsingleton.elim f (𝟙 X ≫ f))) ≫ k)
+      hnatR
+  have hcompL : HEq
+      (generalLiftForwardMapCompSource F (𝟙 X) f
+        (A × B) U).hom
+      (generalLiftForwardMapCompSource F (𝟙 X ≫ 𝟙 X) f
+        (A × B) U).hom := by
+    have h := (generalLiftForwardMapCompSource_leftIdentities_heq
+      F f (A × B) U).symm
+    cases h
+    rfl
+  let hXL :
+      F.map (canonicalSourceHom (𝟙 X ≫ f) ((A × B) × U)) =
+        F.map (canonicalSourceHom ((𝟙 X ≫ 𝟙 X) ≫ f)
+          ((A × B) × U)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k ((A × B) × U)))
+      (Subsingleton.elim (𝟙 X ≫ f) ((𝟙 X ≫ 𝟙 X) ≫ f))
+  let hYL :
+      F.map (canonicalSourceHom (𝟙 X) (A × B)) ≫
+          F.map (canonicalSourceHom f U) =
+        F.map (canonicalSourceHom (𝟙 X ≫ 𝟙 X) (A × B)) ≫
+          F.map (canonicalSourceHom f U) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)) ≫
+        F.map (canonicalSourceHom f U))
+      (Subsingleton.elim (𝟙 X) (𝟙 X ≫ 𝟙 X))
+  have hnatL := eqToHom_naturality_of_heq hXL hYL hcompL
+  have hleft :
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+          (A × B) U).hom ≫
+        (e₀₁.hom ▷ F.map (canonicalSourceHom f U)) =
+      eL.hom ≫
+        (generalLiftForwardMapCompSource F (𝟙 X ≫ 𝟙 X) f
+          (A × B) U).hom := by
+    rw [generalLiftForwardMapCompSourceLeftIdentity_hom]
+    simp only [Category.assoc]
+    simpa [eL, e₀₁, hL, hXL, hYL] using congrArg
+      (fun k =>
+        eqToHom (congrArg
+          (fun m => F.map (canonicalSourceHom m ((A × B) × U)))
+          (Subsingleton.elim f (𝟙 X ≫ f))) ≫ k)
+      hnatL
+  rw [generalLiftForwardMapCompSourceLeftIdentity_hom
+      F f B U,
+    generalLiftForwardMapCompSourceLeftIdentity_hom
+      F (𝟙 X) A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  change
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B U).hom) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f
+          A (B × U)).hom ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁ e₁₂.hom) ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardMapCompSource F (𝟙 X) f B U).hom) =
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+          (A × B) U).hom ≫
+        (e₀₁.hom ▷ F.map (canonicalSourceHom f U)) ≫
+        ((generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B).hom ▷
+          F.map (canonicalSourceHom f U)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom f U))).hom
+  slice_lhs 2 3 => rw [hright]
+  slice_rhs 1 2 => rw [hleft]
+  simpa only [Category.assoc] using htransport
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Mixed left/right identity normalization satisfies associativity.  This is
+the exact source square needed to compare the two canonical forward
+factorizations before proving sliding multiplicativity. -/
+theorem generalLiftForwardMapCompSourceMixedIdentity_associativity
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f
+          A (B × C)).hom ≫
+        F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F f B C).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompSourceLeftIdentity F f A B).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom f B))
+          (F.map (canonicalSourceHom (𝟙 Y) C))).hom := by
+  let e₀₁ :
+      F.map (canonicalSourceHom f (A × B)) ≅
+        F.map (canonicalSourceHom (𝟙 X ≫ f) (A × B)) :=
+    eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)))
+      (Subsingleton.elim f (𝟙 X ≫ f)))
+  let e₁₂ :
+      F.map (canonicalSourceHom f (B × C)) ≅
+        F.map (canonicalSourceHom (f ≫ 𝟙 Y) (B × C)) :=
+    eqToIso (congrArg
+      (fun k => F.map (canonicalSourceHom k (B × C)))
+      (Subsingleton.elim f (f ≫ 𝟙 Y)))
+  let hL :
+      F.map (canonicalSourceHom f ((A × B) × C)) =
+        F.map (canonicalSourceHom ((𝟙 X ≫ f) ≫ 𝟙 Y)
+          ((A × B) × C)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k ((A × B) × C)))
+      (Subsingleton.elim f ((𝟙 X ≫ f) ≫ 𝟙 Y))
+  let eL :
+      F.map (canonicalSourceHom f ((A × B) × C)) ≅
+        F.map (canonicalSourceHom ((𝟙 X ≫ f) ≫ 𝟙 Y)
+          ((A × B) × C)) :=
+    eqToIso hL
+  let hR :
+      F.map (canonicalSourceHom f (A × (B × C))) =
+        F.map (canonicalSourceHom (𝟙 X ≫ (f ≫ 𝟙 Y))
+          (A × (B × C))) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (A × (B × C))))
+      (Subsingleton.elim f (𝟙 X ≫ (f ≫ 𝟙 Y)))
+  let eR :
+      F.map (canonicalSourceHom f (A × (B × C))) ≅
+        F.map (canonicalSourceHom (𝟙 X ≫ (f ≫ 𝟙 Y))
+          (A × (B × C))) :=
+    eqToIso hR
+  have ha :
+      F.map₂ (canonicalSourceTwoCell f
+            (MonoidalCategory.associator A B C).hom) ≫ eR.hom =
+        eL.hom ≫
+          F.map₂ (canonicalSourceTwoCell ((𝟙 X ≫ f) ≫ 𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) := by
+    exact eqToHom_naturality_of_heq hL hR
+      (generalLiftMap₂SourceTwoCell_leftRightIdentities_heq F f
+        (MonoidalCategory.associator A B C).hom).symm
+  have htransport := transportCompositor_associativity
+    (e₀ := Iso.refl (F.map (canonicalSourceHom (𝟙 X) A)))
+    (e₁ := Iso.refl (F.map (canonicalSourceHom f B)))
+    (e₂ := Iso.refl (F.map (canonicalSourceHom (𝟙 Y) C)))
+    (e₀₁ := e₀₁) (e₁₂ := e₁₂) (eL := eL) (eR := eR)
+    (c₀₁ := (generalLiftForwardMapCompSource F (𝟙 X) f A B).hom)
+    (c₁₂ := (generalLiftForwardMapCompSource F f (𝟙 Y) B C).hom)
+    (cL := (generalLiftForwardMapCompSource F (𝟙 X ≫ f) (𝟙 Y)
+      (A × B) C).hom)
+    (cR := (generalLiftForwardMapCompSource F (𝟙 X) (f ≫ 𝟙 Y)
+      A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell ((𝟙 X ≫ f) ≫ 𝟙 Y)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := F.map₂ (canonicalSourceTwoCell f
+      (MonoidalCategory.associator A B C).hom))
+    (ha := ha)
+    (hc := generalLiftForwardMapCompSource_associativity F
+      (𝟙 X) f (𝟙 Y) A B C)
+  simp at htransport
+  have hcompR : HEq
+      (generalLiftForwardMapCompSource F (𝟙 X) f
+        A (B × C)).hom
+      (generalLiftForwardMapCompSource F (𝟙 X) (f ≫ 𝟙 Y)
+        A (B × C)).hom := by
+    have h := (generalLiftForwardMapCompSource_secondRightIdentity_heq
+      F f A (B × C)).symm
+    cases h
+    rfl
+  let hXR :
+      F.map (canonicalSourceHom (𝟙 X ≫ f) (A × (B × C))) =
+        F.map (canonicalSourceHom (𝟙 X ≫ (f ≫ 𝟙 Y))
+          (A × (B × C))) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (A × (B × C))))
+      (Subsingleton.elim (𝟙 X ≫ f) (𝟙 X ≫ (f ≫ 𝟙 Y)))
+  let hYR :
+      F.map (canonicalSourceHom (𝟙 X) A) ≫
+          F.map (canonicalSourceHom f (B × C)) =
+        F.map (canonicalSourceHom (𝟙 X) A) ≫
+          F.map (canonicalSourceHom (f ≫ 𝟙 Y) (B × C)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom (𝟙 X) A) ≫
+        F.map (canonicalSourceHom k (B × C)))
+      (Subsingleton.elim f (f ≫ 𝟙 Y))
+  have hnatR := eqToHom_naturality_of_heq hXR hYR hcompR
+  have hright :
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁ e₁₂.hom) =
+      eR.hom ≫
+        (generalLiftForwardMapCompSource F (𝟙 X) (f ≫ 𝟙 Y)
+          A (B × C)).hom := by
+    rw [generalLiftForwardMapCompSourceLeftIdentity_hom]
+    simp only [Category.assoc]
+    simpa [eR, e₁₂, hR, hXR, hYR] using congrArg
+      (fun k =>
+        eqToHom (congrArg
+          (fun m => F.map (canonicalSourceHom m (A × (B × C))))
+          (Subsingleton.elim f (𝟙 X ≫ f))) ≫ k)
+      hnatR
+  have hcompL : HEq
+      (generalLiftForwardMapCompSource F f (𝟙 Y)
+        (A × B) C).hom
+      (generalLiftForwardMapCompSource F (𝟙 X ≫ f) (𝟙 Y)
+        (A × B) C).hom := by
+    have h := (generalLiftForwardMapCompSource_firstLeftIdentity_heq
+      F f (A × B) C).symm
+    cases h
+    rfl
+  let hXL :
+      F.map (canonicalSourceHom (f ≫ 𝟙 Y) ((A × B) × C)) =
+        F.map (canonicalSourceHom ((𝟙 X ≫ f) ≫ 𝟙 Y)
+          ((A × B) × C)) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k ((A × B) × C)))
+      (Subsingleton.elim (f ≫ 𝟙 Y) ((𝟙 X ≫ f) ≫ 𝟙 Y))
+  let hYL :
+      F.map (canonicalSourceHom f (A × B)) ≫
+          F.map (canonicalSourceHom (𝟙 Y) C) =
+        F.map (canonicalSourceHom (𝟙 X ≫ f) (A × B)) ≫
+          F.map (canonicalSourceHom (𝟙 Y) C) :=
+    congrArg
+      (fun k => F.map (canonicalSourceHom k (A × B)) ≫
+        F.map (canonicalSourceHom (𝟙 Y) C))
+      (Subsingleton.elim f (𝟙 X ≫ f))
+  have hnatL := eqToHom_naturality_of_heq hXL hYL hcompL
+  have hleft :
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          (A × B) C).hom ≫
+        (e₀₁.hom ▷ F.map (canonicalSourceHom (𝟙 Y) C)) =
+      eL.hom ≫
+        (generalLiftForwardMapCompSource F (𝟙 X ≫ f) (𝟙 Y)
+          (A × B) C).hom := by
+    rw [generalLiftForwardMapCompSourceRightIdentity_hom]
+    simp only [Category.assoc]
+    simpa [eL, e₀₁, hL, hXL, hYL] using congrArg
+      (fun k =>
+        eqToHom (congrArg
+          (fun m => F.map (canonicalSourceHom m ((A × B) × C)))
+          (Subsingleton.elim f (f ≫ 𝟙 Y))) ≫ k)
+      hnatL
+  rw [generalLiftForwardMapCompSourceRightIdentity_hom F f B C,
+    generalLiftForwardMapCompSourceLeftIdentity_hom F f A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  change
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁ e₁₂.hom) ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardMapCompSource F f (𝟙 Y) B C).hom) =
+      (generalLiftForwardMapCompSourceRightIdentity F f
+          (A × B) C).hom ≫
+        (e₀₁.hom ▷ F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+        ((generalLiftForwardMapCompSource F (𝟙 X) f A B).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom f B))
+          (F.map (canonicalSourceHom (𝟙 Y) C))).hom
+  slice_lhs 2 3 => rw [hright]
+  slice_rhs 1 2 => rw [hleft]
+  simpa only [Category.assoc] using htransport
+
+/-- At a walking identity, left- and right-identity normalization choose the
+same compositor. -/
+theorem generalLiftForwardMapCompSource_identityNormalizations_eq
+    (F : Source ⥤ᵖ E)
+    (X : Ript.Examples.WalkingLocalization.Arrow)
+    (A B : Type) :
+    generalLiftForwardMapCompSourceLeftIdentity F (𝟙 X) A B =
+      generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B := by
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The normalized compositor for three retained factors satisfies the full
+associativity law. -/
+theorem generalLiftForwardMapCompSourceIdentity_associativity
+    (F : Source ⥤ᵖ E)
+    (X : Ript.Examples.WalkingLocalization.Arrow)
+    (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+          A (B × C)).hom ≫
+        F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) B C).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom ▷
+          F.map (canonicalSourceHom (𝟙 X) C)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  simpa [generalLiftForwardMapCompSource_identityNormalizations_eq] using
+    generalLiftForwardMapCompSourceMixedIdentity_associativity
+      F (𝟙 X) A B C
+
 private theorem iso_inv_naturality_of_square
     {C : Type u₂} [Category.{v₂} C]
     {X₀ X₁ Y₀ Y₁ : C} (e₀ : X₀ ≅ Y₀) (e₁ : X₁ ≅ Y₁)
@@ -4663,6 +5559,128 @@ private theorem equivalenceCounitInsertion_naturality
       (whisker_exchange e.counit.inv η)
       (associator_naturality_right e.inv e.hom η))
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Counit insertion on a composite is the right whiskering of counit
+insertion on its first factor, up to the canonical reassociation. -/
+@[reassoc]
+private theorem equivalenceCounitInsertion_rightWhisker
+    {a b : E} (e : a ≌ b) (T S : b ⟶ b) :
+    (equivalenceCounitInsertion e (T ≫ S)).hom ≫
+        (α_ e.inv e.hom (T ≫ S)).inv ≫
+        (α_ (e.inv ≫ e.hom) T S).inv ≫
+        ((α_ e.inv e.hom T).hom ▷ S) =
+      ((equivalenceCounitInsertion e T).hom ▷ S) := by
+  rw [equivalenceCounitInsertion_hom,
+    equivalenceCounitInsertion_hom]
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The counit-insertion, forward-sliding, and forward-factorization pasting
+is compatible with adding an arbitrary retained tail on the right. -/
+private theorem inverseForward_rightWhisker
+    {a b : E} (e : a ≌ b)
+    {yA yB yBC yC : b ⟶ b} {xA : a ⟶ a} {zB : a ⟶ b}
+    (sA : e.hom ≫ yA ⟶ xA ≫ e.hom)
+    (qB : e.hom ≫ yB ⟶ zB) (k : yBC ⟶ yB ≫ yC) :
+    (equivalenceCounitInsertion e (yA ≫ yBC)).hom ≫
+        (e.inv ◁ (α_ e.hom yA yBC).inv) ≫
+        (e.inv ◁ (sA ▷ yBC)) ≫
+        (e.inv ◁ (α_ xA e.hom yBC).hom) ≫
+        (α_ e.inv xA (e.hom ≫ yBC)).inv ≫
+        ((e.inv ≫ xA) ◁ (e.hom ◁ k)) ≫
+        ((e.inv ≫ xA) ◁ (α_ e.hom yB yC).inv) ≫
+        ((e.inv ≫ xA) ◁ (qB ▷ yC)) =
+      (yA ◁ k) ≫
+        (α_ yA yB yC).inv ≫
+        ((equivalenceCounitInsertion e (yA ≫ yB)).hom ▷ yC) ≫
+        ((e.inv ◁ (α_ e.hom yA yB).inv) ▷ yC) ≫
+        ((e.inv ◁ (sA ▷ yB)) ▷ yC) ≫
+        ((e.inv ◁ (α_ xA e.hom yB).hom) ▷ yC) ≫
+        ((α_ e.inv xA (e.hom ≫ yB)).inv ▷ yC) ≫
+        (((e.inv ≫ xA) ◁ qB) ▷ yC) ≫
+        (α_ (e.inv ≫ xA) zB yC).hom := by
+  let η := (yA ◁ k) ≫ (α_ yA yB yC).inv
+  let bridge :=
+    (α_ e.inv e.hom ((yA ≫ yB) ≫ yC)).symm ≪≫
+      (α_ (e.inv ≫ e.hom) (yA ≫ yB) yC).symm ≪≫
+      whiskerRightIso (α_ e.inv e.hom (yA ≫ yB)) yC
+  let postTail :=
+    ((e.inv ◁ (α_ e.hom yA yB).inv) ▷ yC) ≫
+      ((e.inv ◁ (sA ▷ yB)) ▷ yC) ≫
+      ((e.inv ◁ (α_ xA e.hom yB).hom) ▷ yC) ≫
+      ((α_ e.inv xA (e.hom ≫ yB)).inv ▷ yC) ≫
+      (((e.inv ≫ xA) ◁ qB) ▷ yC) ≫
+      (α_ (e.inv ≫ xA) zB yC).hom
+  let post := bridge.hom ≫ postTail
+  have hnat := equivalenceCounitInsertion_naturality e η
+  have hnatPost := congrArg (fun u => u ≫ post) hnat
+  dsimp [η, post, postTail, bridge] at hnatPost
+  convert hnatPost.symm using 1
+  · simp only [Category.assoc]
+    rw [cancel_epi (equivalenceCounitInsertion e (yA ≫ yBC)).hom]
+    let pre := e.inv ◁ (α_ e.hom yA yBC).inv
+    let after :=
+      (e.inv ◁ (α_ xA e.hom (yB ≫ yC)).hom) ≫
+        (α_ e.inv xA (e.hom ≫ (yB ≫ yC))).inv ≫
+        ((e.inv ≫ xA) ◁ (α_ e.hom yB yC).inv) ≫
+        ((e.inv ≫ xA) ◁ (qB ▷ yC))
+    have hex := whisker_exchange sA k
+    have hexW := congrArg (fun u => e.inv ◁ u) hex
+    have hexContext := congrArg
+      (fun u => pre ≫ u ≫ after) hexW
+    dsimp [pre, after] at hexContext
+    convert hexContext.symm using 1
+    · bicategory
+    · simp only [whiskerRightIso_hom]
+      bicategory
+  · have hright :=
+      equivalenceCounitInsertion_rightWhisker e (yA ≫ yB) yC
+    have hrightContext := congrArg
+      (fun u => η ≫ u ≫ postTail) hright.symm
+    dsimp [η, postTail, bridge] at hrightContext
+    simpa only [whiskerRightIso_hom, Category.assoc] using hrightContext
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The right-whiskering law remains valid when the retained tail is finally
+collapsed through a second forward factorization. -/
+private theorem inverseForward_rightWhisker_factorization
+    {a b : E} (e : a ≌ b)
+    {yA yB yBC yC : b ⟶ b} {xA xB : a ⟶ a}
+    {zC : a ⟶ b}
+    (sA : e.hom ≫ yA ⟶ xA ≫ e.hom)
+    (sB : e.hom ≫ yB ⟶ xB ≫ e.hom)
+    (qC : e.hom ≫ yC ⟶ zC) (k : yBC ⟶ yB ≫ yC) :
+    (equivalenceCounitInsertion e (yA ≫ yBC)).hom ≫
+        (e.inv ◁ (α_ e.hom yA yBC).inv) ≫
+        (e.inv ◁ (sA ▷ yBC)) ≫
+        (e.inv ◁ (α_ xA e.hom yBC).hom) ≫
+        (α_ e.inv xA (e.hom ≫ yBC)).inv ≫
+        ((e.inv ≫ xA) ◁ (e.hom ◁ k)) ≫
+        ((e.inv ≫ xA) ◁ (α_ e.hom yB yC).inv) ≫
+        ((e.inv ≫ xA) ◁ (sB ▷ yC)) ≫
+        ((e.inv ≫ xA) ◁ (α_ xB e.hom yC).hom) ≫
+        ((e.inv ≫ xA) ◁ (xB ◁ qC)) =
+      (yA ◁ k) ≫
+        (α_ yA yB yC).inv ≫
+        ((equivalenceCounitInsertion e (yA ≫ yB)).hom ▷ yC) ≫
+        ((e.inv ◁ (α_ e.hom yA yB).inv) ▷ yC) ≫
+        ((e.inv ◁ (sA ▷ yB)) ▷ yC) ≫
+        ((e.inv ◁ (α_ xA e.hom yB).hom) ▷ yC) ≫
+        ((α_ e.inv xA (e.hom ≫ yB)).inv ▷ yC) ≫
+        (((e.inv ≫ xA) ◁ sB) ▷ yC) ≫
+        (α_ (e.inv ≫ xA) (xB ≫ e.hom) yC).hom ≫
+        ((e.inv ≫ xA) ◁ (α_ xB e.hom yC).hom) ≫
+        ((e.inv ≫ xA) ◁ (xB ◁ qC)) := by
+  have h := inverseForward_rightWhisker e sA sB k
+  let post :=
+    ((e.inv ≫ xA) ◁ (α_ xB e.hom yC).hom) ≫
+      ((e.inv ≫ xA) ◁ (xB ◁ qC))
+  have hpost := congrArg (fun u => u ≫ post) h
+  dsimp [post] at hpost
+  convert hpost using 1
+  · bicategory
+  · bicategory
+
 private noncomputable def equivalenceUnitInsertion
     {C : Type u₂} [Bicategory.{w₂, v₂} C]
     {a b : C} (e : a ≌ b) (T : a ⟶ a) :
@@ -4679,6 +5697,15 @@ private theorem equivalenceUnitInsertion_hom
         (associator e.hom e.inv T).hom := by
   rfl
 
+private theorem equivalenceUnitInsertion_inv
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b) (T : a ⟶ a) :
+    (equivalenceUnitInsertion e T).inv =
+      (associator e.hom e.inv T).inv ≫
+        (e.unit.inv ▷ T) ≫
+        (leftUnitor T).hom := by
+  simp [equivalenceUnitInsertion]
+
 private theorem equivalenceUnitInsertion_naturality
     {C : Type u₂} [Bicategory.{w₂, v₂} C]
     {a b : C} (e : a ≌ b) {T S : a ⟶ a} (η : T ⟶ S) :
@@ -4692,6 +5719,566 @@ private theorem equivalenceUnitInsertion_naturality
     (comp_naturality_of_squares
       (whisker_exchange e.unit.hom η)
       (associator_naturality_right e.hom e.inv η))
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Naturality of unit insertion after a fixed left factor and a comparison
+out of that factor followed by the chosen equivalence. -/
+private theorem equivalenceUnitInsertion_whisker_naturality
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b)
+    {x : a ⟶ a} {y : a ⟶ b}
+    (p : x ≫ e.hom ⟶ y)
+    {T S : a ⟶ a} (η : T ⟶ S) :
+    (x ◁ η) ≫
+        (x ◁ (equivalenceUnitInsertion e S).hom) ≫
+        (α_ x e.hom (e.inv ≫ S)).inv ≫
+        (p ▷ (e.inv ≫ S)) =
+      (x ◁ (equivalenceUnitInsertion e T).hom) ≫
+        (α_ x e.hom (e.inv ≫ T)).inv ≫
+        (p ▷ (e.inv ≫ T)) ≫
+        (y ◁ (e.inv ◁ η)) := by
+  simpa only [Category.assoc] using
+    comp_naturality_of_squares
+      (whiskerLeft_naturality_of_square x
+        (equivalenceUnitInsertion_naturality e η))
+      (comp_naturality_of_squares
+        (associator_inv_naturality_right x e.hom (e.inv ◁ η))
+        (whisker_exchange p (e.inv ◁ η)))
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Unit insertion is compatible with passing a left-adjoint square through
+its right-adjoint mate, including an arbitrary retained tail. -/
+private theorem equivalenceUnitInsertion_mate_vcomp
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b)
+    {x z : a ⟶ a} {y : b ⟶ b}
+    (α : x ≫ e.hom ⟶ e.hom ≫ y) :
+    (equivalenceUnitInsertion e (x ≫ z)).hom ≫
+        (e.hom ◁ (α_ e.inv x z).inv) ≫
+        (e.hom ◁
+          (mateEquiv e.toAdjunction e.toAdjunction α ▷ z)) ≫
+        (e.hom ◁ (α_ y e.inv z).hom) =
+      (x ◁ (equivalenceUnitInsertion e z).hom) ≫
+        (α_ x e.hom (e.inv ≫ z)).inv ≫
+        (α ▷ (e.inv ≫ z)) ≫
+        (α_ e.hom y (e.inv ≫ z)).hom := by
+  have h := (mateEquiv_eq_iff e.toAdjunction e.toAdjunction α
+    (mateEquiv e.toAdjunction e.toAdjunction α)).mp rfl
+  rw [Adjunction.homEquiv₁_symm_apply,
+    Adjunction.homEquiv₂_apply] at h
+  let post :=
+    (α_ e.hom (y ≫ e.inv) z).hom ≫
+      (e.hom ◁ (α_ y e.inv z).hom)
+  have hz := congrArg (fun k => (k ▷ z) ≫ post) h
+  dsimp [post] at hz
+  rw [equivalenceUnitInsertion_hom, equivalenceUnitInsertion_hom]
+  convert hz using 1
+  · bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Reassociate a cancellation unit past a comparison that splits the
+retained prefix. -/
+private theorem forwardCancellation_prefix
+    {a b : E}
+    {xAB x bPart cPart : a ⟶ a}
+    {e : a ⟶ b} {t : b ⟶ a}
+    (c : xAB ⟶ x ≫ bPart) (u : cPart ⟶ e ≫ t) :
+    (xAB ◁ u) ≫
+        (α_ xAB e t).inv ≫
+        ((c ▷ e) ▷ t) ≫
+        ((α_ x bPart e).hom ▷ t) =
+      (c ▷ cPart) ≫
+        (α_ x bPart cPart).hom ≫
+        (x ◁ (bPart ◁ u)) ≫
+        (x ◁ (α_ bPart e t).inv) ≫
+        (α_ x (bPart ≫ e) t).inv := by
+  calc
+    _ = (xAB ◁ u) ≫ (c ▷ (e ≫ t)) ≫
+        (α_ (x ≫ bPart) e t).inv ≫
+        ((α_ x bPart e).hom ▷ t) := by bicategory
+    _ = (c ▷ cPart) ≫ ((x ≫ bPart) ◁ u) ≫
+        (α_ (x ≫ bPart) e t).inv ≫
+        ((α_ x bPart e).hom ▷ t) := by
+      have hex := congrArg
+        (fun k => k ≫ (α_ (x ≫ bPart) e t).inv ≫
+          ((α_ x bPart e).hom ▷ t))
+        (whisker_exchange c u)
+      simpa only [Category.assoc] using hex
+    _ = _ := by bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Reassociate the forward-sliding and fixed-factorization suffix of a
+cancellation pasting. -/
+private theorem forwardCancellation_suffix
+    {a b c : E}
+    {x : a ⟶ a} {e : a ⟶ b} {y : b ⟶ b}
+    {z : a ⟶ b} {bPart : a ⟶ a}
+    (s : bPart ≫ e ⟶ e ≫ y) (p : x ≫ e ⟶ z)
+    (t : b ⟶ c) :
+    (x ◁ (s ▷ t)) ≫
+        (x ◁ (α_ e y t).hom) ≫
+        (α_ x e (y ≫ t)).inv ≫
+      (p ▷ (y ≫ t)) =
+      (α_ x (bPart ≫ e) t).inv ≫
+        ((x ◁ s) ▷ t) ≫
+        ((α_ x e y).inv ▷ t) ≫
+        ((p ▷ y) ▷ t) ≫
+        (α_ z y t).hom := by
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Reassociate a retained-forward factorization after whiskering by a
+retained prefix and a cancellation tail. -/
+private theorem forwardCancellation_factorizationSuffix
+    {a b c : E}
+    {x bPart : a ⟶ a} {e : a ⟶ b} {z : a ⟶ b}
+    (p : bPart ≫ e ⟶ z) (t : b ⟶ c) :
+    x ◁ (p ▷ t) =
+      (α_ x (bPart ≫ e) t).inv ≫
+        ((x ◁ p) ▷ t) ≫
+        (α_ x z t).hom := by
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Move a fixed forward factorization across an arbitrary comparison on
+its retained tail. -/
+private theorem forwardCancellation_tail
+    {a b c : E}
+    {x : a ⟶ a} {e : a ⟶ b} {z : a ⟶ b}
+    (p : x ≫ e ⟶ z) {T S : b ⟶ c} (k : T ⟶ S) :
+    (α_ x e T).inv ≫ (p ▷ T) ≫ (z ◁ k) =
+      (x ◁ (e ◁ k)) ≫ (α_ x e S).inv ≫ (p ▷ S) := by
+  rw [← whisker_exchange p k]
+  rw [← Category.assoc, ← associator_inv_naturality_right]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Conjugating a whiskered 2-cell by an isomorphism cancels, including an
+arbitrary fixed left prefix. -/
+@[reassoc]
+private theorem whiskerLeft_iso_conjugation
+    {a b c d : E} (r : a ⟶ b)
+    {x y : b ⟶ c} (e : x ≅ y)
+    {s t : c ⟶ d} (q : s ⟶ t) :
+    (r ◁ (e.inv ▷ s)) ≫
+        (r ◁ (x ◁ q)) ≫
+        (r ◁ (e.hom ▷ t)) =
+      r ◁ (y ◁ q) := by
+  have hbase :
+      (e.inv ▷ s) ≫ (x ◁ q) ≫ (e.hom ▷ t) =
+        y ◁ q := by
+    rw [whisker_exchange e.hom q]
+    simp
+  simpa only [Bicategory.whiskerLeft_comp] using
+    congrArg (fun u => r ◁ u) hbase
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Bicategorical reassociation form of `whiskerLeft_iso_conjugation`, suited
+to a split retained prefix and a composite tail. -/
+@[reassoc]
+private theorem whiskerLeft_iso_conjugation_bicategorical
+    {w a b c : E} (r : w ⟶ a)
+    {x y₁ y₂ : a ⟶ a} (e : x ≅ y₁ ≫ y₂)
+    {l : a ⟶ b} {t : b ⟶ c} {z : a ⟶ c}
+    (q : l ≫ t ⟶ z) :
+    (r ◁ (α_ y₁ (y₂ ≫ l) t).inv) ≫
+        (r ◁ ((α_ y₁ y₂ l).inv ▷ t)) ≫
+        (r ◁ ((e.inv ▷ l) ▷ t)) ≫
+        (r ◁ (α_ x l t).hom) ≫
+        (r ◁ (x ◁ q)) ≫
+        (r ◁ (e.hom ▷ z)) ≫
+        (r ◁ (α_ y₁ y₂ z).hom) ≫
+        (α_ r y₁ (y₂ ≫ z)).inv =
+      (r ◁ (y₁ ◁ (α_ y₂ l t).hom)) ≫
+        (r ◁ (y₁ ◁ (y₂ ◁ q))) ≫
+        (α_ r y₁ (y₂ ≫ z)).inv := by
+  have hbase :
+      (e.inv ▷ (l ≫ t)) ≫ (x ◁ q) ≫ (e.hom ▷ z) =
+        (y₁ ≫ y₂) ◁ q := by
+    rw [whisker_exchange e.hom q]
+    simp
+  have h := congrArg (fun u => r ◁ u) hbase
+  let pre :=
+    (r ◁ (y₁ ◁ (α_ y₂ l t).hom)) ≫
+      (r ◁ (α_ y₁ y₂ (l ≫ t)).inv)
+  let post :=
+    (r ◁ (α_ y₁ y₂ z).hom) ≫
+      (α_ r y₁ (y₂ ≫ z)).inv
+  have hcontext := congrArg (fun u => pre ≫ u ≫ post) h
+  dsimp [pre, post] at hcontext
+  convert hcontext using 1
+  · bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Bicategorical reassociation form of iso conjugation without an additional
+left prefix.  It cancels a split compositor around an arbitrary composite
+tail. -/
+private theorem iso_conjugation_bicategorical
+    {a b c : E} {x y₁ y₂ : a ⟶ a} (e : x ≅ y₁ ≫ y₂)
+    {l : a ⟶ b} {t : b ⟶ c} {z : a ⟶ c}
+    (q : l ≫ t ⟶ z) :
+    (α_ y₁ (y₂ ≫ l) t).inv ≫
+        ((α_ y₁ y₂ l).inv ▷ t) ≫
+        ((e.inv ▷ l) ▷ t) ≫
+        (α_ x l t).hom ≫
+        (x ◁ q) ≫
+        (e.hom ▷ z) ≫
+        (α_ y₁ y₂ z).hom =
+      (y₁ ◁ (α_ y₂ l t).hom) ≫
+        (y₁ ◁ (y₂ ◁ q)) := by
+  have hbase :
+      (e.inv ▷ (l ≫ t)) ≫ (x ◁ q) ≫ (e.hom ▷ z) =
+        (y₁ ≫ y₂) ◁ q := by
+    rw [whisker_exchange e.hom q]
+    simp
+  let pre :=
+    (y₁ ◁ (α_ y₂ l t).hom) ≫
+      (α_ y₁ y₂ (l ≫ t)).inv
+  let post := (α_ y₁ y₂ z).hom
+  have hcontext := congrArg (fun u => pre ≫ u ≫ post) hbase
+  dsimp [pre, post] at hcontext
+  convert hcontext using 1
+  · bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inner segment of `iso_conjugation_bicategorical`, with the two outer
+associators moved to the result. -/
+private theorem iso_conjugation_bicategorical_inner
+    {a b c : E} {x y₁ y₂ : a ⟶ a} (e : x ≅ y₁ ≫ y₂)
+    {l : a ⟶ b} {t : b ⟶ c} {z : a ⟶ c}
+    (q : l ≫ t ⟶ z) :
+    ((α_ y₁ y₂ l).inv ▷ t) ≫
+        ((e.inv ▷ l) ▷ t) ≫
+        (α_ x l t).hom ≫
+        (x ◁ q) ≫
+        (e.hom ▷ z) =
+      (α_ y₁ (y₂ ≫ l) t).hom ≫
+        (y₁ ◁ (α_ y₂ l t).hom) ≫
+        (y₁ ◁ (y₂ ◁ q)) ≫
+        (α_ y₁ y₂ z).inv := by
+  rw [← cancel_epi (α_ y₁ (y₂ ≫ l) t).inv]
+  rw [← cancel_mono (α_ y₁ y₂ z).hom]
+  simp only [Category.assoc]
+  simp
+  exact iso_conjugation_bicategorical e q
+
+/-- Transport an equality of right-whiskered tails across an isomorphism of
+their fixed left factors. -/
+private theorem iso_whisker_transport_of_eq
+    {a b : E} {r s : a ⟶ b} (p : r ≅ s)
+    {U V : b ⟶ b} {kL kR : U ⟶ V} (h : kL = kR) :
+    (p.inv ▷ U) ≫ (r ◁ kL) =
+      (s ◁ kR) ≫ (p.inv ▷ V) := by
+  calc
+    _ = (s ◁ kL) ≫ (p.inv ▷ V) :=
+      (whisker_exchange p.inv kL).symm
+    _ = _ := by rw [h]
+
+/-- Transport a tail across an isomorphic left factor when the comparison is
+known only after whiskering by the exposed inner left factor. -/
+private theorem iso_whisker_transport_of_whiskered_eq
+    {a b : E} {r x : a ⟶ b} {xA : a ⟶ a} (p : r ≅ xA ≫ x)
+    {U V : b ⟶ b} {kL : U ⟶ V} {kR : x ≫ U ⟶ x ≫ V}
+    (h : (x ◁ kL) = kR) :
+    (p.inv ▷ U) ≫ (r ◁ kL) =
+      (α_ xA x U).hom ≫
+        (xA ◁ kR) ≫
+        (α_ xA x V).inv ≫
+        (p.inv ▷ V) := by
+  rw [← whisker_exchange p.inv kL]
+  rw [← h]
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Reversing an adjoint equivalence preserves the original inverse unit as
+its counit; the adjointification inserted by `Equivalence.symm` cancels by
+the second triangle identity. -/
+private theorem equivalenceSymm_counit_eq_unit_symm
+    {a b : E} (e : a ≌ b) :
+    e.symm.counit = e.unit.symm := by
+  apply Iso.ext
+  dsimp [Bicategory.Equivalence.symm,
+    Bicategory.Equivalence.mkOfAdjointifyCounit,
+    adjointifyCounit]
+  rw [e.right_triangle]
+  simp
+
+private theorem equivalenceSymm_unit_eq_counit_symm
+    {a b : E} (e : a ≌ b) :
+    e.symm.unit = e.counit.symm := by
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Counit insertion for the reversed equivalence is unit insertion for the
+original equivalence. -/
+private theorem equivalenceCounitInsertion_symm_eq_unitInsertion
+    {a b : E} (e : a ≌ b) (T : a ⟶ a) :
+    equivalenceCounitInsertion e.symm T =
+      equivalenceUnitInsertion e T := by
+  apply Iso.ext
+  rw [equivalenceCounitInsertion_hom,
+    equivalenceUnitInsertion_hom]
+  rw [equivalenceSymm_counit_eq_unit_symm]
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Unit insertion for the reversed equivalence is counit insertion for the
+original equivalence. -/
+private theorem equivalenceUnitInsertion_symm_eq_counitInsertion
+    {a b : E} (e : a ≌ b) (T : b ⟶ b) :
+    equivalenceUnitInsertion e.symm T =
+      equivalenceCounitInsertion e T := by
+  apply Iso.ext
+  rw [equivalenceUnitInsertion_hom,
+    equivalenceCounitInsertion_hom]
+  rw [equivalenceSymm_unit_eq_counit_symm]
+  rfl
+
+/-- The adjunction obtained by reversing a chosen adjoint equivalence, with
+the endpoints exposed definitionally. -/
+private noncomputable def reverseEquivalenceAdjunction
+    {a b : E} (e : a ≌ b) : e.inv ⊣ e.hom := by
+  simpa only [Bicategory.Equivalence.symm_hom,
+    Bicategory.Equivalence.symm_inv] using e.symm.toAdjunction
+
+private theorem reverseEquivalenceAdjunction_unit
+    {a b : E} (e : a ≌ b) :
+    (reverseEquivalenceAdjunction e).unit = e.counit.inv := by
+  rfl
+
+private theorem reverseEquivalenceAdjunction_counit
+    {a b : E} (e : a ≌ b) :
+    (reverseEquivalenceAdjunction e).counit = e.unit.inv := by
+  exact congrArg Iso.hom (equivalenceSymm_counit_eq_unit_symm e)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Taking the mate of the inverse of an invertible right-adjoint square
+along the reversed equivalence recovers the original forward square. -/
+private theorem reverseMate_inv
+    {a b : E} (e : a ≌ b) {x : a ⟶ a} {y : b ⟶ b}
+    (s : e.hom ≫ y ≅ x ≫ e.hom)
+    (β : e.inv ≫ x ≅ y ≫ e.inv)
+    (hβ : β.hom =
+      mateEquiv e.toAdjunction e.toAdjunction s.inv) :
+    mateEquiv (reverseEquivalenceAdjunction e)
+        (reverseEquivalenceAdjunction e) β.inv = s.hom := by
+  rw [← cancel_mono s.inv]
+  simp only [Iso.hom_inv_id]
+  have hs : s.inv =
+      (mateEquiv e.toAdjunction e.toAdjunction).symm β.hom := by
+    rw [hβ, Equiv.symm_apply_apply]
+  rw [hs, mateEquiv_apply', mateEquiv_symm_apply']
+  rw [reverseEquivalenceAdjunction_unit,
+    reverseEquivalenceAdjunction_counit]
+  bicategory_nf
+  have hunit : e.toAdjunction.unit = e.unit.hom := rfl
+  have hcounit : e.toAdjunction.counit = e.counit.hom := rfl
+  rw [hunit, hcounit]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Counit insertion is compatible with an invertible inverse-sliding
+square and its mate, with an arbitrary retained tail. -/
+private theorem equivalenceCounitInsertion_reverseMate_vcomp
+    {a b : E} (e : a ≌ b)
+    {x : a ⟶ a} {y z : b ⟶ b}
+    (β : e.inv ≫ x ≅ y ≫ e.inv) :
+    (equivalenceCounitInsertion e (y ≫ z)).hom ≫
+        (e.inv ◁ (α_ e.hom y z).inv) ≫
+        (e.inv ◁
+          (mateEquiv (reverseEquivalenceAdjunction e)
+            (reverseEquivalenceAdjunction e) β.inv ▷ z)) ≫
+        (e.inv ◁ (α_ x e.hom z).hom) =
+      (y ◁ (equivalenceCounitInsertion e z).hom) ≫
+        (α_ y e.inv (e.hom ≫ z)).inv ≫
+        (β.inv ▷ (e.hom ≫ z)) ≫
+        (α_ e.inv x (e.hom ≫ z)).hom := by
+  let adj := reverseEquivalenceAdjunction e
+  have h := (mateEquiv_eq_iff adj adj β.inv
+    (mateEquiv adj adj β.inv)).mp rfl
+  rw [Adjunction.homEquiv₁_symm_apply,
+    Adjunction.homEquiv₂_apply] at h
+  let post :=
+    (α_ e.inv (x ≫ e.hom) z).hom ≫
+      (e.inv ◁ (α_ x e.hom z).hom)
+  have hz := congrArg (fun k => (k ▷ z) ≫ post) h
+  dsimp [post, adj] at hz
+  rw [reverseEquivalenceAdjunction_unit] at hz
+  rw [equivalenceCounitInsertion_hom,
+    equivalenceCounitInsertion_hom]
+  convert hz using 1
+  · bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Splitting a fixed left factor commutes with counit insertion in the tail,
+including the associators needed to expose the inverse-equivalence factor. -/
+private theorem equivalenceCounitInsertion_splitLeft_naturality
+    {a b : E} (e : a ≌ b)
+    {xAB xA xB : b ⟶ b} (η : xAB ⟶ xA ≫ xB)
+    (z : b ⟶ b) :
+    (η ▷ z) ≫
+        (α_ xA xB z).hom ≫
+        (xA ◁ (xB ◁ (equivalenceCounitInsertion e z).hom)) ≫
+        (xA ◁ (α_ xB e.inv (e.hom ≫ z)).inv) =
+      (xAB ◁ (equivalenceCounitInsertion e z).hom) ≫
+        (α_ xAB e.inv (e.hom ≫ z)).inv ≫
+        (((η ▷ e.inv) ≫ (α_ xA xB e.inv).hom) ▷
+          (e.hom ≫ z)) ≫
+        (α_ xA (xB ≫ e.inv) (e.hom ≫ z)).hom := by
+  have h := whisker_exchange η (equivalenceCounitInsertion e z).hom
+  let post :=
+    (α_ xA xB (e.inv ≫ (e.hom ≫ z))).hom ≫
+      (xA ◁ (α_ xB e.inv (e.hom ≫ z)).inv)
+  have hpost := congrArg (fun u => u ≫ post) h
+  dsimp [post] at hpost
+  convert hpost.symm using 1
+  · bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The two ways to expose an alternating `hom/inv/hom` segment agree: one
+may insert the counit in the codomain tail, or first slide the retained factor
+through `hom` and then insert the unit in the domain factor. -/
+private theorem equivalenceUnitCounit_alternating
+    {a b : E} (e : a ≌ b)
+    {x : a ⟶ a} {y z : b ⟶ b} {w : a ⟶ b}
+    (s : e.hom ≫ y ≅ x ≫ e.hom) (q : e.hom ≫ z ≅ w) :
+    (e.hom ◁ (equivalenceCounitInsertion e (y ≫ z)).hom) ≫
+        (e.hom ◁ (e.inv ◁ (α_ e.hom y z).inv)) ≫
+        (e.hom ◁ (e.inv ◁ (s.hom ▷ z))) ≫
+        (e.hom ◁ (e.inv ◁ (α_ x e.hom z).hom)) ≫
+        (e.hom ◁ (α_ e.inv x (e.hom ≫ z)).inv) ≫
+        (e.hom ◁ ((e.inv ≫ x) ◁ q.hom)) =
+      (α_ e.hom y z).inv ≫
+        (s.hom ▷ z) ≫
+        (α_ x e.hom z).hom ≫
+        (x ◁ q.hom) ≫
+        ((equivalenceUnitInsertion e x).hom ▷ w) ≫
+        (α_ e.hom (e.inv ≫ x) w).hom := by
+  let insert : x ≫ w ≅ e.hom ≫ ((e.inv ≫ x) ≫ w) :=
+    whiskerRightIso (equivalenceUnitInsertion e x) w ≪≫
+      α_ e.hom (e.inv ≫ x) w
+  let collapse := insert.symm
+  have hsymm := congrArg Iso.symm e.left_triangle
+  have htriangleRaw :
+      rightZigzag e.counit.inv e.unit.inv =
+        (λ_ e.hom ≪≫ (ρ_ e.hom).symm).inv := by
+    have hhom := congrArg Iso.hom hsymm
+    simpa only [leftZigzagIso_symm, rightZigzagIso_hom,
+      Iso.symm_hom] using hhom
+  have htriangle :
+      (ρ_ e.hom).inv ≫
+          rightZigzag e.counit.inv e.unit.inv ≫
+          (λ_ e.hom).hom =
+        𝟙 e.hom := by
+    rw [htriangleRaw]
+    dsimp [bicategoricalIsoComp]
+    simp
+  rw [← cancel_mono collapse.hom]
+  let direct :=
+    (α_ e.hom y z).inv ≫
+      (s.hom ▷ z) ≫
+      (α_ x e.hom z).hom ≫
+      (x ◁ q.hom)
+  simp only [Category.assoc]
+  slice_rhs 5 6 =>
+    change insert.hom
+    rfl
+  rw [show collapse.hom = insert.inv by rfl]
+  slice_rhs 5 6 =>
+    rw [Iso.hom_inv_id]
+  rw [equivalenceCounitInsertion_hom]
+  rw [show insert.inv =
+      (α_ e.hom (e.inv ≫ x) w).inv ≫
+        ((equivalenceUnitInsertion e x).inv ▷ w) by rfl,
+    equivalenceUnitInsertion_inv]
+  simp only [Bicategory.comp_whiskerRight]
+  have hcontext := congrArg
+    (fun u : e.hom ⟶ e.hom => (u ▷ (y ≫ z)) ≫ direct) htriangle
+  dsimp [direct, rightZigzag] at hcontext
+  calc
+    _ = (((ρ_ e.hom).inv ≫
+          rightZigzag e.counit.inv e.unit.inv ≫
+          (λ_ e.hom).hom) ▷ (y ≫ z)) ≫ direct := by
+      have hex := whisker_exchange e.unit.inv direct
+      let pre :=
+        (e.hom ◁ (equivalenceCounitInsertion e (y ≫ z)).hom) ≫
+          (α_ e.hom e.inv (e.hom ≫ (y ≫ z))).inv
+      have hhex := congrArg
+        (fun u => pre ≫ u ≫ (λ_ (x ≫ w)).hom) hex
+      dsimp [pre] at hhex
+      rw [equivalenceCounitInsertion_hom] at hhex
+      convert hhex using 1
+      · simp
+        bicategory
+      · dsimp [rightZigzag, bicategoricalComp]
+        simp
+        bicategory
+    _ = ((𝟙 e.hom) ▷ (y ≫ z)) ≫ direct := hcontext
+    _ = _ := by
+      dsimp [direct]
+      bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Dual alternating triangle, obtained by applying
+`equivalenceUnitCounit_alternating` to the reversed equivalence and then
+identifying its insertions with those of the original equivalence. -/
+private theorem equivalenceUnitCounit_alternating_dual
+    {a b : E} (e : a ≌ b)
+    {x : b ⟶ b} {y z : a ⟶ a}
+    (s : e.inv ≫ y ≅ x ≫ e.inv) :
+    (e.inv ◁ (equivalenceUnitInsertion e (y ≫ z)).hom) ≫
+        (e.inv ◁ (e.hom ◁ (α_ e.inv y z).inv)) ≫
+        (e.inv ◁ (e.hom ◁ (s.hom ▷ z))) ≫
+        (e.inv ◁ (e.hom ◁ (α_ x e.inv z).hom)) ≫
+        (e.inv ◁ (α_ e.hom x (e.inv ≫ z)).inv) =
+      (α_ e.inv y z).inv ≫
+        (s.hom ▷ z) ≫
+        (α_ x e.inv z).hom ≫
+        ((equivalenceCounitInsertion e x).hom ▷ (e.inv ≫ z)) ≫
+        (α_ e.inv (e.hom ≫ x) (e.inv ≫ z)).hom := by
+  have h := equivalenceUnitCounit_alternating e.symm s
+    (Iso.refl (e.inv ≫ z))
+  rw [equivalenceCounitInsertion_symm_eq_unitInsertion,
+    equivalenceUnitInsertion_symm_eq_counitInsertion] at h
+  simpa only [Bicategory.Equivalence.symm_hom,
+    Bicategory.Equivalence.symm_inv, Iso.refl_hom,
+    Bicategory.whiskerLeft_id, Bicategory.id_whiskerRight,
+    Category.id_comp, Category.comp_id] using h
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Mapping an adjunction through the identity pseudofunctor does not change
+the mate operation.  This removes the compositor wrappers introduced by the
+generic pseudofunctorial mate theorem. -/
+private theorem identityPseudofunctor_mateEquiv
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {a b : C} (e : a ≌ b)
+    {x : a ⟶ a} {y : b ⟶ b}
+    (α : x ≫ e.hom ⟶ e.hom ≫ y) :
+    mateEquiv
+        ((Pseudofunctor.id C).mapAdjunction e.toAdjunction)
+        ((Pseudofunctor.id C).mapAdjunction e.toAdjunction) α =
+      mateEquiv e.toAdjunction e.toAdjunction α := by
+  have hleft :
+      Pseudofunctor.mapLeftAdjointSquare (Pseudofunctor.id C) α = α := by
+    change (𝟙 (x ≫ e.hom)) ≫ α ≫ (𝟙 (e.hom ≫ y)) = α
+    simp
+  have hright :
+      Pseudofunctor.mapRightAdjointSquare (Pseudofunctor.id C)
+          (mateEquiv e.toAdjunction e.toAdjunction α) =
+        mateEquiv e.toAdjunction e.toAdjunction α := by
+    change (𝟙 (e.inv ≫ x)) ≫
+        mateEquiv e.toAdjunction e.toAdjunction α ≫
+          (𝟙 (y ≫ e.inv)) = _
+    simp
+  have h := Pseudofunctor.map_mateEquiv (Pseudofunctor.id C)
+    e.toAdjunction e.toAdjunction α
+  rw [hleft, hright] at h
+  exact h
 
 private theorem mate_precomp
     {C : Type u₂} [Bicategory.{w₂, v₂} C]
@@ -5893,6 +7480,343 @@ theorem canonicalSourceRetainedGeneratorComparison_unit
   · apply Subsingleton.elim
   · rfl
 
+/-- Generator/retained normalization factors as the ordinary normalized
+source compositor followed by the cartesian left unitor. -/
+theorem canonicalSourceGeneratorRetainedComparison_factorization
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (canonicalSourceGeneratorRetainedComparison f A).hom =
+      (canonicalSourceCompositionComparison f (𝟙 Y)
+        (𝟙 (MonoidalSingleObj.star (Type))) A).hom ≫
+      canonicalSourceTwoCell f (MonoidalCategory.leftUnitor A).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Inverse orientation of generator/retained factorization. -/
+theorem canonicalSourceGeneratorRetainedComparison_factorization_inv
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (canonicalSourceGeneratorRetainedComparison f A).inv =
+      canonicalSourceTwoCell f (MonoidalCategory.leftUnitor A).inv ≫
+      (canonicalSourceCompositionComparison f (𝟙 Y)
+        (𝟙 (MonoidalSingleObj.star (Type))) A).inv := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Retained/generator normalization factors as the ordinary normalized
+source compositor followed by the cartesian right unitor. -/
+theorem canonicalSourceRetainedGeneratorComparison_factorization
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (canonicalSourceRetainedGeneratorComparison f A).hom =
+      (canonicalSourceCompositionComparison (𝟙 X) f A
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom ≫
+      canonicalSourceTwoCell f (MonoidalCategory.rightUnitor A).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Inverse orientation of retained/generator factorization. -/
+theorem canonicalSourceRetainedGeneratorComparison_factorization_inv
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (canonicalSourceRetainedGeneratorComparison f A).inv =
+      canonicalSourceTwoCell f (MonoidalCategory.rightUnitor A).inv ≫
+      (canonicalSourceCompositionComparison (𝟙 X) f A
+        (𝟙 (MonoidalSingleObj.star (Type)))).inv := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- The source pseudofunctor preserves generator/retained factorization. -/
+theorem generalLiftSourceGeneratorRetainedComparison_factorization
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map₂ (canonicalSourceGeneratorRetainedComparison f A).hom =
+      F.map₂ (canonicalSourceCompositionComparison f (𝟙 Y)
+        (𝟙 (MonoidalSingleObj.star (Type))) A).hom ≫
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.leftUnitor A).hom) := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceGeneratorRetainedComparison_factorization f A)
+
+/-- The source pseudofunctor preserves inverse generator/retained
+factorization. -/
+theorem generalLiftSourceGeneratorRetainedComparison_factorization_inv
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map₂ (canonicalSourceGeneratorRetainedComparison f A).inv =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.leftUnitor A).inv) ≫
+      F.map₂ (canonicalSourceCompositionComparison f (𝟙 Y)
+        (𝟙 (MonoidalSingleObj.star (Type))) A).inv := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceGeneratorRetainedComparison_factorization_inv f A)
+
+/-- The source pseudofunctor preserves retained/generator factorization. -/
+theorem generalLiftSourceRetainedGeneratorComparison_factorization
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map₂ (canonicalSourceRetainedGeneratorComparison f A).hom =
+      F.map₂ (canonicalSourceCompositionComparison (𝟙 X) f A
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom ≫
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.rightUnitor A).hom) := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceRetainedGeneratorComparison_factorization f A)
+
+/-- The source pseudofunctor preserves inverse retained/generator
+factorization. -/
+theorem generalLiftSourceRetainedGeneratorComparison_factorization_inv
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    F.map₂ (canonicalSourceRetainedGeneratorComparison f A).inv =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.rightUnitor A).inv) ≫
+      F.map₂ (canonicalSourceCompositionComparison (𝟙 X) f A
+        (𝟙 (MonoidalSingleObj.star (Type)))).inv := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceRetainedGeneratorComparison_factorization_inv f A)
+
+/-- The source 2-cell for the inverse left unitor on a retained product
+decomposes into the inverse left unitor on the first factor followed by the
+associator. -/
+theorem canonicalSourceLeftUnitor_tensor_inv
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    canonicalSourceTwoCell f (MonoidalCategory.leftUnitor (A × B)).inv =
+      canonicalSourceTwoCell f
+          (CategoryTheory.MonoidalCategory.tensorHom
+            (MonoidalCategory.leftUnitor A).inv (𝟙 B)) ≫
+        canonicalSourceTwoCell f
+          (MonoidalCategory.associator
+            (𝟙 (MonoidalSingleObj.star (Type))) A B).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · exact MonoidalCategory.leftUnitor_tensor_inv A B
+
+/-- The source 2-cell for the inverse right unitor on a retained product
+decomposes through the second factor and inverse associator. -/
+theorem canonicalSourceRightUnitor_tensor_inv
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    canonicalSourceTwoCell f (MonoidalCategory.rightUnitor (A × B)).inv =
+      canonicalSourceTwoCell f
+          (CategoryTheory.MonoidalCategory.tensorHom
+            (𝟙 A) (MonoidalCategory.rightUnitor B).inv) ≫
+        canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B
+            (𝟙 (MonoidalSingleObj.star (Type)))).inv := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · exact MonoidalCategory.rightUnitor_tensor_inv A B
+
+/-- Mapping preserves the inverse-left-unitor product decomposition. -/
+theorem generalLiftSourceLeftUnitor_tensor_inv
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+      (MonoidalCategory.leftUnitor (A × B)).inv) =
+      F.map₂ (canonicalSourceTwoCell f
+        (CategoryTheory.MonoidalCategory.tensorHom
+          (MonoidalCategory.leftUnitor A).inv (𝟙 B))) ≫
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.associator
+          (𝟙 (MonoidalSingleObj.star (Type))) A B).hom) := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceLeftUnitor_tensor_inv f A B)
+
+/-- Mapping preserves the inverse-right-unitor product decomposition. -/
+theorem generalLiftSourceRightUnitor_tensor_inv
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+      (MonoidalCategory.rightUnitor (A × B)).inv) =
+      F.map₂ (canonicalSourceTwoCell f
+        (CategoryTheory.MonoidalCategory.tensorHom
+          (𝟙 A) (MonoidalCategory.rightUnitor B).inv)) ≫
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.associator A B
+          (𝟙 (MonoidalSingleObj.star (Type)))).inv) := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceRightUnitor_tensor_inv f A B)
+
+/-- Generator/retained normalization is multiplicative in the retained
+coordinate.  Decomposing `A × B`, normalizing the first retained factor, and
+then recomposing agrees with normalizing the product at once. -/
+theorem canonicalSourceGeneratorRetainedComparison_tensor
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))) ◁
+        (canonicalSourceCompositionComparison
+          (𝟙 Y) (𝟙 Y) A B).inv) ≫
+      (α_ (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))
+        (canonicalSourceHom (𝟙 Y) A)
+        (canonicalSourceHom (𝟙 Y) B)).inv ≫
+      ((canonicalSourceGeneratorRetainedComparison f A).hom ▷
+        canonicalSourceHom (𝟙 Y) B) ≫
+      (canonicalSourceCompositionComparison f (𝟙 Y) A B).hom =
+    (canonicalSourceGeneratorRetainedComparison f (A × B)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Retained/generator normalization is multiplicative in the retained
+coordinate.  Decomposing the retained product and normalizing its second
+factor agrees with normalizing the product at once. -/
+theorem canonicalSourceRetainedGeneratorComparison_tensor
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    ((canonicalSourceCompositionComparison
+          (𝟙 X) (𝟙 X) A B).inv ▷
+        canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type)))) ≫
+      (α_ (canonicalSourceHom (𝟙 X) A)
+        (canonicalSourceHom (𝟙 X) B)
+        (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))).hom ≫
+      (canonicalSourceHom (𝟙 X) A ◁
+        (canonicalSourceRetainedGeneratorComparison f B).hom) ≫
+      (canonicalSourceCompositionComparison (𝟙 X) f A B).hom =
+    (canonicalSourceRetainedGeneratorComparison f (A × B)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Mapping generator/retained multiplicativity through an arbitrary source
+pseudofunctor preserves its four-stage vertical composite. -/
+theorem generalLiftSourceGeneratorRetainedComparison_tensor
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))) ◁
+        (canonicalSourceCompositionComparison
+          (𝟙 Y) (𝟙 Y) A B).inv) ≫
+      F.map₂ (α_ (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))
+        (canonicalSourceHom (𝟙 Y) A)
+        (canonicalSourceHom (𝟙 Y) B)).inv ≫
+      F.map₂ ((canonicalSourceGeneratorRetainedComparison f A).hom ▷
+        canonicalSourceHom (𝟙 Y) B) ≫
+      F.map₂ (canonicalSourceCompositionComparison f (𝟙 Y) A B).hom =
+    F.map₂ (canonicalSourceGeneratorRetainedComparison f (A × B)).hom := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceGeneratorRetainedComparison_tensor f A B)
+
+/-- Mapping retained/generator multiplicativity through an arbitrary source
+pseudofunctor preserves its four-stage vertical composite. -/
+theorem generalLiftSourceRetainedGeneratorComparison_tensor
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ ((canonicalSourceCompositionComparison
+          (𝟙 X) (𝟙 X) A B).inv ▷
+        canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type)))) ≫
+      F.map₂ (α_ (canonicalSourceHom (𝟙 X) A)
+        (canonicalSourceHom (𝟙 X) B)
+        (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))).hom ≫
+      F.map₂ (canonicalSourceHom (𝟙 X) A ◁
+        (canonicalSourceRetainedGeneratorComparison f B).hom) ≫
+      F.map₂ (canonicalSourceCompositionComparison (𝟙 X) f A B).hom =
+    F.map₂ (canonicalSourceRetainedGeneratorComparison f (A × B)).hom := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceRetainedGeneratorComparison_tensor f A B)
+
+/-- Inverse orientation of generator/retained multiplicativity. -/
+theorem canonicalSourceGeneratorRetainedComparison_tensor_inv
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (canonicalSourceGeneratorRetainedComparison f (A × B)).inv =
+      (canonicalSourceCompositionComparison f (𝟙 Y) A B).inv ≫
+      ((canonicalSourceGeneratorRetainedComparison f A).inv ▷
+        canonicalSourceHom (𝟙 Y) B) ≫
+      (α_ (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))
+        (canonicalSourceHom (𝟙 Y) A)
+        (canonicalSourceHom (𝟙 Y) B)).hom ≫
+      (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))) ◁
+        (canonicalSourceCompositionComparison
+          (𝟙 Y) (𝟙 Y) A B).hom) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- Inverse orientation of retained/generator multiplicativity. -/
+theorem canonicalSourceRetainedGeneratorComparison_tensor_inv
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (canonicalSourceRetainedGeneratorComparison f (A × B)).inv =
+      (canonicalSourceCompositionComparison (𝟙 X) f A B).inv ≫
+      (canonicalSourceHom (𝟙 X) A ◁
+        (canonicalSourceRetainedGeneratorComparison f B).inv) ≫
+      (α_ (canonicalSourceHom (𝟙 X) A)
+        (canonicalSourceHom (𝟙 X) B)
+        (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))).inv ≫
+      ((canonicalSourceCompositionComparison
+          (𝟙 X) (𝟙 X) A B).hom ▷
+        canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type)))) := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+/-- The source pseudofunctor preserves inverse generator/retained
+multiplicativity. -/
+theorem generalLiftSourceGeneratorRetainedComparison_tensor_inv
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceGeneratorRetainedComparison f (A × B)).inv =
+      F.map₂ (canonicalSourceCompositionComparison f (𝟙 Y) A B).inv ≫
+      F.map₂ ((canonicalSourceGeneratorRetainedComparison f A).inv ▷
+        canonicalSourceHom (𝟙 Y) B) ≫
+      F.map₂ (α_ (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))
+        (canonicalSourceHom (𝟙 Y) A)
+        (canonicalSourceHom (𝟙 Y) B)).hom ≫
+      F.map₂ (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))) ◁
+        (canonicalSourceCompositionComparison
+          (𝟙 Y) (𝟙 Y) A B).hom) := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceGeneratorRetainedComparison_tensor_inv f A B)
+
+/-- The source pseudofunctor preserves inverse retained/generator
+multiplicativity. -/
+theorem generalLiftSourceRetainedGeneratorComparison_tensor_inv
+    (F : Source ⥤ᵖ E)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map₂ (canonicalSourceRetainedGeneratorComparison f (A × B)).inv =
+      F.map₂ (canonicalSourceCompositionComparison (𝟙 X) f A B).inv ≫
+      F.map₂ (canonicalSourceHom (𝟙 X) A ◁
+        (canonicalSourceRetainedGeneratorComparison f B).inv) ≫
+      F.map₂ (α_ (canonicalSourceHom (𝟙 X) A)
+        (canonicalSourceHom (𝟙 X) B)
+        (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type))))).inv ≫
+      F.map₂ ((canonicalSourceCompositionComparison
+          (𝟙 X) (𝟙 X) A B).hom ▷
+        canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star (Type)))) := by
+  simpa only [F.map₂_comp] using congrArg (fun η ↦ F.map₂ η)
+    (canonicalSourceRetainedGeneratorComparison_tensor_inv f A B)
+
 /-- The source pseudofunctor's image of retained data slides across the image
 of the marked forward generator. -/
 noncomputable def generalLiftForwardSlidingSource
@@ -5942,6 +7866,114 @@ noncomputable def canonicalRetainedInverseCompositionComparison
         inv (CategoryTheory.FreeGroupoid.homMk f) =
       inv (CategoryTheory.FreeGroupoid.homMk f)
     simp)) (Iso.refl _)
+
+/-- The retained/retained/inverse target comparisons satisfy their
+three-fold associativity square.  The two retained coordinates compose first
+on the left, while the right route slides their product across the freely
+adjoined inverse. -/
+theorem canonicalRetainedInverseCompositionComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalForwardCompositionComparison
+          (𝟙 Y) (𝟙 Y) A B).hom ▷ canonicalInverseHom f C) ≫
+        (canonicalRetainedInverseCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalInverseTwoCell f
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom (𝟙 Y) A)
+          (canonicalForwardHom (𝟙 Y) B)
+          (canonicalInverseHom f C)).hom ≫
+        (canonicalForwardHom (𝟙 Y) A ◁
+          (canonicalRetainedInverseCompositionComparison f B C).hom) ≫
+        (canonicalRetainedInverseCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+retained/retained/inverse target associativity square. -/
+theorem generalLiftRetainedInverseMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardCompositionComparison
+              (𝟙 Y) (𝟙 Y) A B).hom ▷ canonicalInverseHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalRetainedInverseCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 Y) A)
+            (canonicalForwardHom (𝟙 Y) B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom (𝟙 Y) A ◁
+            (canonicalRetainedInverseCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalRetainedInverseCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalRetainedInverseCompositionComparison_associativity
+        f A B C)
+
+/-- Retained/inverse/retained target comparisons satisfy their mixed
+three-fold associativity square. -/
+theorem canonicalRetainedInverseRetainedComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalRetainedInverseCompositionComparison f A B).hom ▷
+          canonicalForwardHom (𝟙 X) C) ≫
+        (canonicalInverseRetainedCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalInverseTwoCell f
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom (𝟙 Y) A)
+          (canonicalInverseHom f B)
+          (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (canonicalForwardHom (𝟙 Y) A ◁
+          (canonicalInverseRetainedCompositionComparison f B C).hom) ≫
+        (canonicalRetainedInverseCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the mixed
+retained/inverse/retained target associativity square. -/
+theorem generalLiftRetainedInverseRetainedMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalRetainedInverseCompositionComparison f A B).hom ▷
+            canonicalForwardHom (𝟙 X) C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseRetainedCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 Y) A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom (𝟙 Y) A ◁
+            (canonicalInverseRetainedCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalRetainedInverseCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalRetainedInverseRetainedComparison_associativity
+        f A B C)
 
 /-- The retained-then-inverse target comparison is natural in the inverse
 factor's retained coordinate. -/
@@ -6149,6 +8181,149 @@ theorem generalLiftForwardFactorizationSource_hom
           (canonicalSourceHom (𝟙 Y) A)).hom := by
   rfl
 
+/-- The forward factorization hom is a mapped left-unitor inverse followed by
+the ordinary normalized source compositor. -/
+theorem generalLiftForwardFactorizationSource_hom_unitor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftForwardFactorizationSource F hF f A).hom =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.leftUnitor A).inv) ≫
+      (generalLiftForwardMapCompSource F f (𝟙 Y)
+        (𝟙 (MonoidalSingleObj.star (Type))) A).hom := by
+  rw [generalLiftForwardFactorizationSource_hom,
+    generalLiftSourceGeneratorRetainedComparison_factorization_inv]
+  rw [Category.assoc]
+  congr 1
+
+/-- The forward factorization hom can be written with the explicitly
+right-identity-normalized compositor.  The inserted equality transport is
+canonical and contracts to the original unitor formula. -/
+theorem generalLiftForwardFactorizationSource_hom_normalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftForwardFactorizationSource F hF f A).hom =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.leftUnitor A).inv) ≫
+      (generalLiftForwardMapCompSourceRightIdentity F f
+        (𝟙 (MonoidalSingleObj.star Type)) A).hom := by
+  rw [generalLiftForwardFactorizationSource_hom_unitor,
+    generalLiftForwardMapCompSourceRightIdentity_hom]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Forward source factorization is multiplicative in retained data.  The
+strictly normalized statement exposes the initial retained compositor, the
+factorization of the first factor, target reassociation, and the inverse
+retained compositor as one exact square. -/
+theorem generalLiftForwardFactorizationSource_tensor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardFactorizationSource F hF f (A × B)).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F f A B).hom ≫
+      ((generalLiftForwardFactorizationSource F hF f A).hom ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))).hom ≫
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).inv) := by
+  rw [generalLiftForwardFactorizationSource_hom_normalized,
+    generalLiftForwardFactorizationSource_hom_normalized,
+    generalLiftSourceLeftUnitor_tensor_inv]
+  have hnat :=
+    generalLiftForwardMapCompSourceRightIdentity_naturality_left F
+      f (MonoidalCategory.leftUnitor A).inv B
+  have hassoc :=
+    generalLiftForwardMapCompSourceRightIdentity_associativity F f A B
+  simp only [Bicategory.comp_whiskerRight,
+    generalLiftSourceEquivalence_hom, Category.assoc]
+  slice_rhs 1 2 => rw [← hnat]
+  have hassocInv := congrArg
+    (fun k => k ≫
+      (F.map (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star Type))) ◁
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).inv))
+    hassoc
+  simp only [Category.assoc] at hassocInv
+  simp at hassocInv
+  have hfinal := congrArg
+    (fun k =>
+      F.map₂ (canonicalSourceTwoCell f
+        (CategoryTheory.MonoidalCategory.tensorHom
+          (MonoidalCategory.leftUnitor A).inv (𝟙 B))) ≫ k)
+    hassocInv
+  simp only [Category.assoc] at hfinal ⊢
+  exact eq_of_heq (heq_of_eq hfinal)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inverse expansion of the normalized forward factorization. -/
+theorem generalLiftForwardFactorizationSource_inv_normalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftForwardFactorizationSource F hF f A).inv =
+      (generalLiftForwardMapCompSourceRightIdentity F f
+        (𝟙 (MonoidalSingleObj.star Type)) A).inv ≫
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.leftUnitor A).hom) := by
+  let u : canonicalSourceHom f A ≅
+      canonicalSourceHom f
+        ((𝟙 (MonoidalSingleObj.star Type)) × A) :=
+    Iso.prod (Iso.refl _) (MonoidalCategory.leftUnitor A).symm
+  let e := F.map₂Iso u ≪≫
+    generalLiftForwardMapCompSourceRightIdentity F f
+      (𝟙 (MonoidalSingleObj.star Type)) A
+  have he : generalLiftForwardFactorizationSource F hF f A = e := by
+    apply Iso.ext
+    change (generalLiftForwardFactorizationSource F hF f A).hom =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.leftUnitor A).inv) ≫
+      (generalLiftForwardMapCompSourceRightIdentity F f
+        (𝟙 (MonoidalSingleObj.star Type)) A).hom
+    exact generalLiftForwardFactorizationSource_hom_normalized F hF f A
+  rw [he]
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inverse orientation of forward-factorization multiplicativity. -/
+theorem generalLiftForwardFactorizationSource_tensor_inv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardFactorizationSource F hF f (A × B)).inv =
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).hom) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))).inv ≫
+      ((generalLiftForwardFactorizationSource F hF f A).inv ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+      (generalLiftForwardMapCompSourceRightIdentity F f A B).inv := by
+  let e :=
+    generalLiftForwardMapCompSourceRightIdentity F f A B ≪≫
+      whiskerRightIso
+        (generalLiftForwardFactorizationSource F hF f A)
+        (F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
+      whiskerLeftIso (generalLiftSourceEquivalence F hF f).hom
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).symm
+  have he : generalLiftForwardFactorizationSource F hF f (A × B) = e := by
+    apply Iso.ext
+    simpa [e] using
+      (generalLiftForwardFactorizationSource_tensor F hF f A B)
+  rw [he]
+  simp [e]
+
 /-- The hom of the retained-forward source factorization is its mapped
 comparison followed by the source pseudofunctor compositor. -/
 theorem generalLiftRetainedForwardFactorizationSource_hom
@@ -6161,6 +8336,295 @@ theorem generalLiftRetainedForwardFactorizationSource_hom
           (canonicalSourceHom f
             (𝟙 (MonoidalSingleObj.star (Type))))).hom := by
   rfl
+
+/-- The retained-forward factorization hom is a mapped right-unitor inverse
+followed by the ordinary normalized source compositor. -/
+theorem generalLiftRetainedForwardFactorizationSource_hom_unitor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftRetainedForwardFactorizationSource F hF f A).hom =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.rightUnitor A).inv) ≫
+      (generalLiftForwardMapCompSource F (𝟙 X) f A
+        (𝟙 (MonoidalSingleObj.star (Type)))).hom := by
+  rw [generalLiftRetainedForwardFactorizationSource_hom,
+    generalLiftSourceRetainedGeneratorComparison_factorization_inv]
+  rw [Category.assoc]
+  congr 1
+
+/-- The retained-forward factorization hom can be written with the explicitly
+left-identity-normalized compositor. -/
+theorem generalLiftRetainedForwardFactorizationSource_hom_normalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftRetainedForwardFactorizationSource F hF f A).hom =
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.rightUnitor A).inv) ≫
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+        A (𝟙 (MonoidalSingleObj.star Type))).hom := by
+  rw [generalLiftRetainedForwardFactorizationSource_hom_unitor,
+    generalLiftForwardMapCompSourceLeftIdentity_hom]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Retained-forward source factorization is multiplicative in retained data.
+This is the left-identity-normalized mirror of
+`generalLiftForwardFactorizationSource_tensor`. -/
+theorem generalLiftRetainedForwardFactorizationSource_tensor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftRetainedForwardFactorizationSource F hF f (A × B)).hom =
+      (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (generalLiftRetainedForwardFactorizationSource F hF f B).hom) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (generalLiftSourceEquivalence F hF f).hom).inv ≫
+      ((generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).inv ▷
+        (generalLiftSourceEquivalence F hF f).hom) := by
+  rw [generalLiftRetainedForwardFactorizationSource_hom_normalized,
+    generalLiftRetainedForwardFactorizationSource_hom_normalized,
+    generalLiftSourceRightUnitor_tensor_inv]
+  have hnat :=
+    generalLiftForwardMapCompSourceLeftIdentity_naturality_right F
+      f A (MonoidalCategory.rightUnitor B).inv
+  have hassoc :=
+    generalLiftForwardMapCompSourceLeftIdentity_associativity F f A B
+  simp only [Bicategory.whiskerLeft_comp,
+    generalLiftSourceEquivalence_hom, Category.assoc]
+  slice_rhs 1 2 => rw [← hnat]
+  have hassocInv := congrArg
+    (fun k =>
+      F.map₂ (canonicalSourceTwoCell f
+        (MonoidalCategory.associator A B
+          (𝟙 (MonoidalSingleObj.star Type))).inv) ≫ k ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (F.map (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star Type))))).inv ≫
+      ((generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).inv ▷
+        F.map (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star Type)))))
+    hassoc
+  simp only [Category.assoc] at hassocInv
+  simp at hassocInv
+  have hreverse := hassocInv.symm
+  have hcancel :
+      F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B
+            (𝟙 (MonoidalSingleObj.star Type))).inv) ≫
+        F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B
+            (𝟙 (MonoidalSingleObj.star Type))).hom) = 𝟙 _ := by
+    rw [← F.map₂_comp]
+    have hsource :
+        canonicalSourceTwoCell f
+              (MonoidalCategory.associator A B
+                (𝟙 (MonoidalSingleObj.star Type))).inv ≫
+            canonicalSourceTwoCell f
+              (MonoidalCategory.associator A B
+                (𝟙 (MonoidalSingleObj.star Type))).hom =
+          𝟙 _ := by
+      apply Prod.ext
+      · apply Subsingleton.elim
+      · exact (MonoidalCategory.associator A B
+          (𝟙 (MonoidalSingleObj.star Type))).inv_hom_id
+    rw [hsource, F.map₂_id]
+  rw [← Category.assoc] at hreverse
+  rw [hcancel] at hreverse
+  simp at hreverse
+  have hfinal := congrArg
+    (fun k =>
+      F.map₂ (canonicalSourceTwoCell f
+        (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A)
+          (MonoidalCategory.rightUnitor B).inv)) ≫ k)
+    hreverse
+  simp only [Category.assoc] at hfinal ⊢
+  exact eq_of_heq (heq_of_eq hfinal)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inverse orientation of retained-forward factorization multiplicativity. -/
+theorem generalLiftRetainedForwardFactorizationSource_tensor_inv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftRetainedForwardFactorizationSource F hF f (A × B)).inv =
+      ((generalLiftForwardMapCompSourceLeftIdentity F (𝟙 X) A B).hom ▷
+        (generalLiftSourceEquivalence F hF f).hom) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (generalLiftSourceEquivalence F hF f).hom).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (generalLiftRetainedForwardFactorizationSource F hF f B).inv) ≫
+      (generalLiftForwardMapCompSourceLeftIdentity F f A B).inv := by
+  let e :=
+    generalLiftForwardMapCompSourceLeftIdentity F f A B ≪≫
+      whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftRetainedForwardFactorizationSource F hF f B) ≪≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (generalLiftSourceEquivalence F hF f).hom).symm ≪≫
+      whiskerRightIso
+        (generalLiftForwardMapCompSourceLeftIdentity F (𝟙 X) A B).symm
+        (generalLiftSourceEquivalence F hF f).hom
+  have he :
+      generalLiftRetainedForwardFactorizationSource F hF f (A × B) = e := by
+    apply Iso.ext
+    simpa [e] using
+      (generalLiftRetainedForwardFactorizationSource_tensor F hF f A B)
+  rw [he]
+  simp [e]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The two normalized compositor orders are related by the two forward
+factorizations.  This interchange square is the middle coherence needed for
+forward-sliding multiplicativity. -/
+theorem generalLiftForwardFactorizationSource_interchange
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardMapCompSourceRightIdentity F f A B).inv ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom =
+      ((generalLiftRetainedForwardFactorizationSource F hF f A).hom ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (generalLiftForwardFactorizationSource F hF f B).inv) := by
+  let U : Type := 𝟙 (MonoidalSingleObj.star Type)
+  have hmix := generalLiftForwardMapCompSourceMixedIdentity_associativity
+    F f A U B
+  have hmiddle := congrArg
+    (fun k =>
+      (generalLiftForwardMapCompSourceRightIdentity F f
+        (A × U) B).inv ≫ k ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (generalLiftForwardMapCompSourceRightIdentity F f U B).inv))
+    hmix
+  simp only [Category.assoc] at hmiddle
+  simp at hmiddle
+  have hmiddle := hmiddle.symm
+  have hnatR :=
+    generalLiftForwardMapCompSourceRightIdentity_naturality_left F
+      f (MonoidalCategory.rightUnitor A).inv B
+  have hnatRInv := iso_inv_naturality_of_square
+    (generalLiftForwardMapCompSourceRightIdentity F f A B)
+    (generalLiftForwardMapCompSourceRightIdentity F f (A × U) B)
+    hnatR
+  have hnatL :=
+    generalLiftForwardMapCompSourceLeftIdentity_naturality_right F
+      f A (MonoidalCategory.leftUnitor B).hom
+  have hnatL' :
+      F.map₂ (canonicalSourceTwoCell f
+            (CategoryTheory.MonoidalCategory.tensorHom
+              (𝟙 A) (MonoidalCategory.leftUnitor B).hom)) ≫
+          (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom =
+        (generalLiftForwardMapCompSourceLeftIdentity F f
+            A (U × B)).hom ≫
+          F.map (canonicalSourceHom (𝟙 X) A) ◁
+            F.map₂ (canonicalSourceTwoCell f
+              (MonoidalCategory.leftUnitor B).hom) := by
+    exact eq_of_heq (heq_of_eq hnatL)
+  rw [generalLiftRetainedForwardFactorizationSource_hom_normalized,
+    generalLiftForwardFactorizationSource_inv_normalized]
+  simp only [Bicategory.comp_whiskerRight,
+    Bicategory.whiskerLeft_comp, generalLiftSourceEquivalence_hom,
+    Category.assoc]
+  slice_rhs 2 4 => rw [hmiddle]
+  slice_rhs 1 2 => rw [hnatRInv]
+  slice_rhs 4 5 => rw [← hnatL']
+  have htriangle :
+      F.map₂ (canonicalSourceTwoCell f
+          (CategoryTheory.MonoidalCategory.tensorHom
+            (MonoidalCategory.rightUnitor A).inv (𝟙 B))) ≫
+        F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A U B).hom) ≫
+        F.map₂ (canonicalSourceTwoCell f
+          (CategoryTheory.MonoidalCategory.tensorHom
+            (𝟙 A) (MonoidalCategory.leftUnitor B).hom)) = 𝟙 _ := by
+    rw [← F.map₂_comp, ← F.map₂_comp]
+    have hsource :
+        canonicalSourceTwoCell f
+              (CategoryTheory.MonoidalCategory.tensorHom
+                (MonoidalCategory.rightUnitor A).inv (𝟙 B)) ≫
+            canonicalSourceTwoCell f
+              (MonoidalCategory.associator A U B).hom ≫
+            canonicalSourceTwoCell f
+              (CategoryTheory.MonoidalCategory.tensorHom
+                (𝟙 A) (MonoidalCategory.leftUnitor B).hom) =
+          𝟙 _ := by
+      apply Prod.ext
+      · apply Subsingleton.elim
+      · have htri :
+            MonoidalCategoryStruct.whiskerRight
+                  (MonoidalCategory.rightUnitor A).inv B ≫
+                (MonoidalCategory.associator A
+                  (MonoidalCategoryStruct.tensorUnit Type) B).hom ≫
+                MonoidalCategoryStruct.whiskerLeft A
+                  (MonoidalCategory.leftUnitor B).hom = 𝟙 _ := by
+          rw [← Category.assoc,
+            MonoidalCategory.triangle_assoc_comp_right_inv]
+          simp
+        exact eq_of_heq (heq_of_eq htri)
+    rw [hsource, F.map₂_id]
+  slice_rhs 2 4 => rw [htriangle]
+  have htransport : HEq
+      ((generalLiftForwardMapCompSourceRightIdentity F f A B).inv ≫
+        (𝟙 (F.map (canonicalSourceHom f
+          (MonoidalCategoryStruct.tensorObj A B)))) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom)
+      ((generalLiftForwardMapCompSourceRightIdentity F f A B).inv ≫
+        (𝟙 (F.map (canonicalSourceHom f (A × B)))) ≫
+        (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom) := by
+    rfl
+  have hgood :
+      (generalLiftForwardMapCompSourceRightIdentity F f A B).inv ≫
+          (𝟙 (F.map (canonicalSourceHom f (A × B)))) ≫
+          (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom =
+        (generalLiftForwardMapCompSourceRightIdentity F f A B).inv ≫
+          (generalLiftForwardMapCompSourceLeftIdentity F f A B).hom := by
+    simp
+  exact eq_of_heq ((heq_of_eq hgood).symm.trans htransport.symm)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inverse orientation of the forward-factorization interchange square. -/
+theorem generalLiftForwardFactorizationSource_interchange_inv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardMapCompSourceLeftIdentity F f A B).inv ≫
+        (generalLiftForwardMapCompSourceRightIdentity F f A B).hom =
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (generalLiftForwardFactorizationSource F hF f B).hom) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))).inv ≫
+      ((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) := by
+  let e :=
+    (generalLiftForwardMapCompSourceRightIdentity F f A B).symm ≪≫
+      generalLiftForwardMapCompSourceLeftIdentity F f A B
+  let q :=
+    whiskerRightIso
+        (generalLiftRetainedForwardFactorizationSource F hF f A)
+        (F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
+      whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftForwardFactorizationSource F hF f B).symm
+  have he : e = q := by
+    apply Iso.ext
+    simpa [e, q] using
+      (generalLiftForwardFactorizationSource_interchange F hF f A B)
+  have hi := congrArg (fun k => k.inv) he
+  simpa [e, q] using hi
 
 /-- The forward source factorization is natural in retained-coordinate
 2-cells. -/
@@ -6211,6 +8675,92 @@ theorem generalLiftForwardSlidingSource_hom
         (generalLiftRetainedForwardFactorizationSource F hF f A).hom := by
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Forward sliding is multiplicative in retained data.  The formula slides
+the first factor, reassociates, slides the second factor, and reassembles the
+retained product through the two normalized identity compositors. -/
+theorem generalLiftForwardSlidingSource_tensor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardSlidingSource F hF f (A × B)).hom =
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).hom) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))).inv ≫
+      ((generalLiftForwardSlidingSource F hF f A).hom ▷
+        F.map (canonicalSourceHom (𝟙 Y) B)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+        (generalLiftForwardSlidingSource F hF f B).hom) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (generalLiftSourceEquivalence F hF f).hom).inv ≫
+      ((generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).inv ▷
+        (generalLiftSourceEquivalence F hF f).hom) := by
+  rw [generalLiftForwardSlidingSource_hom,
+    generalLiftForwardFactorizationSource_tensor_inv,
+    generalLiftRetainedForwardFactorizationSource_tensor]
+  simp only [generalLiftSourceEquivalence_hom, Category.assoc]
+  slice_lhs 4 5 =>
+    rw [generalLiftForwardFactorizationSource_interchange F hF f A B]
+  slice_lhs 3 4 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← generalLiftForwardSlidingSource_hom F hF f A]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← generalLiftForwardSlidingSource_hom F hF f B]
+  simp only [generalLiftSourceEquivalence_hom, Category.assoc]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inverse orientation of forward-sliding multiplicativity, packaged as the
+vertical composite of its two left-adjoint squares. -/
+theorem generalLiftForwardSlidingSource_tensor_inv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardSlidingSource F hF f (A × B)).inv =
+      ((generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).hom ▷
+        (generalLiftSourceEquivalence F hF f).hom) ≫
+      leftAdjointSquare.vcomp
+        (generalLiftForwardSlidingSource F hF f A).inv
+        (generalLiftForwardSlidingSource F hF f B).inv ≫
+      ((generalLiftSourceEquivalence F hF f).hom ◁
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).inv) := by
+  let e :=
+    whiskerLeftIso (generalLiftSourceEquivalence F hF f).hom
+        (generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B) ≪≫
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))).symm ≪≫
+      whiskerRightIso (generalLiftForwardSlidingSource F hF f A)
+        (F.map (canonicalSourceHom (𝟙 Y) B)) ≪≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))) ≪≫
+      whiskerLeftIso (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftForwardSlidingSource F hF f B) ≪≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (generalLiftSourceEquivalence F hF f).hom).symm ≪≫
+      whiskerRightIso
+        (generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).symm
+        (generalLiftSourceEquivalence F hF f).hom
+  have he : generalLiftForwardSlidingSource F hF f (A × B) = e := by
+    apply Iso.ext
+    simpa [e] using generalLiftForwardSlidingSource_tensor F hF f A B
+  rw [he]
+  simp [e, leftAdjointSquare.vcomp]
+
 /-- Forward sliding is natural in retained-coordinate 2-cells. -/
 theorem generalLiftForwardSlidingSource_naturality
     (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
@@ -6250,6 +8800,335 @@ theorem generalLiftInverseSlidingSource_hom
     (F.map (canonicalSourceHom (𝟙 X) A))
     (F.map (canonicalSourceHom (𝟙 Y) A))
     (generalLiftForwardSlidingSource F hF f A)
+
+/-- The inverse-sliding hom can equivalently be read as the direct mate for
+the source equivalence, without the identity-pseudofunctor wrapper used by
+the generic inverse-naturality construction. -/
+theorem generalLiftInverseSlidingSource_hom_directMate
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    (generalLiftInverseSlidingSource F hF f A).hom =
+      mateEquiv
+        (generalLiftSourceEquivalence F hF f).toAdjunction
+        (generalLiftSourceEquivalence F hF f).toAdjunction
+        (generalLiftForwardSlidingSource F hF f A).inv := by
+  rw [generalLiftInverseSlidingSource_hom]
+  exact identityPseudofunctor_mateEquiv
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftForwardSlidingSource F hF f A).inv
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Taking the inverse-sliding constraint back across the reversed source
+equivalence recovers the original forward-sliding hom. -/
+private theorem generalLiftInverseSlidingSource_reverseMate
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) :
+    mateEquiv
+        (reverseEquivalenceAdjunction
+          (generalLiftSourceEquivalence F hF f))
+        (reverseEquivalenceAdjunction
+          (generalLiftSourceEquivalence F hF f))
+        (generalLiftInverseSlidingSource F hF f A).inv =
+      (generalLiftForwardSlidingSource F hF f A).hom := by
+  apply reverseMate_inv
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftForwardSlidingSource F hF f A)
+  exact generalLiftInverseSlidingSource_hom_directMate F hF f A
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Counit insertion across a retained source factor agrees with moving that
+factor through the inverse-sliding constraint before inserting the counit in
+the remaining tail. -/
+private theorem generalLiftCounitInsertion_inverseSliding
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type)
+    (z : F.obj (canonicalSourceObject Y) ⟶
+      F.obj (canonicalSourceObject Y)) :
+    (equivalenceCounitInsertion (generalLiftSourceEquivalence F hF f)
+        (F.map (canonicalSourceHom (𝟙 Y) A) ≫ z)).hom ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) A)) z).inv) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        ((generalLiftForwardSlidingSource F hF f A).hom ▷ z)) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (generalLiftSourceEquivalence F hF f).hom z).hom) =
+    (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+        (equivalenceCounitInsertion
+          (generalLiftSourceEquivalence F hF f) z).hom) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+        (generalLiftSourceEquivalence F hF f).inv
+        ((generalLiftSourceEquivalence F hF f).hom ≫ z)).inv ≫
+      ((generalLiftInverseSlidingSource F hF f A).inv ▷
+        ((generalLiftSourceEquivalence F hF f).hom ≫ z)) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) A))
+        ((generalLiftSourceEquivalence F hF f).hom ≫ z)).hom := by
+  rw [← generalLiftInverseSlidingSource_reverseMate F hF f A]
+  exact equivalenceCounitInsertion_reverseMate_vcomp
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftInverseSlidingSource F hF f A)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inserting the unit of the chosen source equivalence across a retained
+pair agrees with first inserting it in the tail and then passing the first
+retained factor through the inverse-sliding mate. -/
+theorem generalLiftEquivalenceUnitInsertion_inverseSliding
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+          (F.map (canonicalSourceHom (𝟙 X) A) ≫
+            F.map (canonicalSourceHom (𝟙 X) B))).hom ≫
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          (α_ (generalLiftSourceEquivalence F hF f).inv
+            (F.map (canonicalSourceHom (𝟙 X) A))
+            (F.map (canonicalSourceHom (𝟙 X) B))).inv) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          ((generalLiftInverseSlidingSource F hF f A).hom ▷
+            F.map (canonicalSourceHom (𝟙 X) B))) ≫
+        ((generalLiftSourceEquivalence F hF f).hom ◁
+          (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+            (generalLiftSourceEquivalence F hF f).inv
+            (F.map (canonicalSourceHom (𝟙 X) B))).hom) =
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+            (F.map (canonicalSourceHom (𝟙 X) B))).hom) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (generalLiftSourceEquivalence F hF f).hom
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+        ((generalLiftForwardSlidingSource F hF f A).inv ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) A))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))).hom := by
+  rw [generalLiftInverseSlidingSource_hom_directMate]
+  exact equivalenceUnitInsertion_mate_vcomp
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftForwardSlidingSource F hF f A).inv
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Mate transfer of forward-sliding multiplicativity.  Inverse sliding on a
+retained product is the vertical composite of the two right-adjoint mate
+squares, with normalized retained compositors on the outside. -/
+theorem generalLiftInverseSlidingSource_tensor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseSlidingSource F hF f (A × B)).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (generalLiftForwardMapCompSourceLeftIdentity F
+          (𝟙 X) A B).hom) ≫
+      rightAdjointSquare.vcomp
+        (generalLiftInverseSlidingSource F hF f A).hom
+        (generalLiftInverseSlidingSource F hF f B).hom ≫
+      ((generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).inv ▷
+        (generalLiftSourceEquivalence F hF f).inv) := by
+  let adj := (Pseudofunctor.id E).mapAdjunction
+    (generalLiftSourceEquivalence F hF f).toAdjunction
+  rw [generalLiftInverseSlidingSource_hom,
+    generalLiftForwardSlidingSource_tensor_inv]
+  have hpre := Bicategory.mateEquiv_precomp_postcomp adj adj
+    (generalLiftForwardMapCompSourceLeftIdentity F (𝟙 X) A B).hom
+    (leftAdjointSquare.vcomp
+      (generalLiftForwardSlidingSource F hF f A).inv
+      (generalLiftForwardSlidingSource F hF f B).inv)
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).inv
+  have hv := Bicategory.mateEquiv_vcomp adj adj adj
+    (generalLiftForwardSlidingSource F hF f A).inv
+    (generalLiftForwardSlidingSource F hF f B).inv
+  have hA :
+      mateEquiv adj adj
+          (generalLiftForwardSlidingSource F hF f A).inv =
+        (generalLiftInverseSlidingSource F hF f A).hom := by
+    exact (generalLiftInverseSlidingSource_hom F hF f A).symm
+  have hB :
+      mateEquiv adj adj
+          (generalLiftForwardSlidingSource F hF f B).inv =
+        (generalLiftInverseSlidingSource F hF f B).hom := by
+    exact (generalLiftInverseSlidingSource_hom F hF f B).symm
+  rw [hA, hB] at hv
+  rw [hv] at hpre
+  have hmapHom :
+      (Pseudofunctor.id E).map
+          (generalLiftSourceEquivalence F hF f).hom =
+        (generalLiftSourceEquivalence F hF f).hom := by
+    rfl
+  have hmapInv :
+      (Pseudofunctor.id E).map
+          (generalLiftSourceEquivalence F hF f).inv =
+        (generalLiftSourceEquivalence F hF f).inv := by
+    rfl
+  have hLeft : HEq
+      ((mateEquiv adj adj)
+        (((generalLiftForwardMapCompSourceLeftIdentity F
+              (𝟙 X) A B).hom ▷
+            (Pseudofunctor.id E).map
+              (generalLiftSourceEquivalence F hF f).hom ≫
+          leftAdjointSquare.vcomp
+            (generalLiftForwardSlidingSource F hF f A).inv
+            (generalLiftForwardSlidingSource F hF f B).inv) ≫
+        (Pseudofunctor.id E).map
+            (generalLiftSourceEquivalence F hF f).hom ◁
+          (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 Y) A B).inv))
+      ((mateEquiv adj adj)
+        (((generalLiftForwardMapCompSourceLeftIdentity F
+              (𝟙 X) A B).hom ▷
+            (generalLiftSourceEquivalence F hF f).hom ≫
+          leftAdjointSquare.vcomp
+            (generalLiftForwardSlidingSource F hF f A).inv
+            (generalLiftForwardSlidingSource F hF f B).inv) ≫
+        (generalLiftSourceEquivalence F hF f).hom ◁
+          (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 Y) A B).inv)) := by
+    cases hmapHom
+    rfl
+  have hRight : HEq
+      ((Pseudofunctor.id E).map
+            (generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceLeftIdentity F
+            (𝟙 X) A B).hom ≫
+        rightAdjointSquare.vcomp
+            (generalLiftInverseSlidingSource F hF f A).hom
+            (generalLiftInverseSlidingSource F hF f B).hom ≫
+        (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 Y) A B).inv ▷
+          (Pseudofunctor.id E).map
+            (generalLiftSourceEquivalence F hF f).inv)
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceLeftIdentity F
+            (𝟙 X) A B).hom ≫
+        rightAdjointSquare.vcomp
+            (generalLiftInverseSlidingSource F hF f A).hom
+            (generalLiftInverseSlidingSource F hF f B).hom ≫
+        (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 Y) A B).inv ▷
+          (generalLiftSourceEquivalence F hF f).inv) := by
+    cases hmapInv
+    rfl
+  have hdirect := eq_of_heq
+    (hLeft.symm.trans ((heq_of_eq hpre).trans hRight))
+  simpa only [Category.assoc] using hdirect
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Inverse orientation of inverse-sliding multiplicativity, stopped after
+the first retained factor.  The remaining inverse sliding and normalized
+codomain compositor are exposed on the other side. -/
+private theorem generalLiftInverseSlidingSource_tensor_inv_prefix
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseSlidingSource F hF f (A × B)).inv ≫
+        ((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceLeftIdentity F
+            (𝟙 X) A B).hom) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+        ((generalLiftInverseSlidingSource F hF f A).hom ▷
+          F.map (canonicalSourceHom (𝟙 X) B)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) B))).hom =
+      ((generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).hom ▷
+        (generalLiftSourceEquivalence F hF f).inv) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          (generalLiftSourceEquivalence F hF f).inv).hom ≫
+        (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          (generalLiftInverseSlidingSource F hF f B).inv) := by
+  let suffix :=
+    (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+      (generalLiftInverseSlidingSource F hF f B).hom) ≫
+    (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+      (F.map (canonicalSourceHom (𝟙 Y) B))
+      (generalLiftSourceEquivalence F hF f).inv).inv ≫
+    ((generalLiftForwardMapCompSourceRightIdentity F
+      (𝟙 Y) A B).inv ▷
+        (generalLiftSourceEquivalence F hF f).inv)
+  rw [← cancel_mono suffix]
+  simp only [Category.assoc]
+  dsimp [suffix]
+  have ht := generalLiftInverseSlidingSource_tensor F hF f A B
+  simp only [rightAdjointSquare.vcomp, Category.assoc] at ht
+  rw [← ht]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The inverse tensor-sliding prefix is natural in an arbitrary following
+2-cell.  This is the exchange form needed when a forward factorization sits
+between cancellation and the retained/inverse normalization. -/
+private theorem generalLiftInverseSlidingSource_tensor_inv_prefix_naturality
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type)
+    {S T : F.obj (canonicalSourceObject X) ⟶
+      F.obj (canonicalSourceObject Y)} (q : S ⟶ T) :
+    ((generalLiftInverseSlidingSource F hF f (A × B)).inv ▷ S) ≫
+        (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) (A × B))) ◁ q) ≫
+        ((((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceLeftIdentity F
+            (𝟙 X) A B).hom) ≫
+          (α_ (generalLiftSourceEquivalence F hF f).inv
+            (F.map (canonicalSourceHom (𝟙 X) A))
+            (F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+          ((generalLiftInverseSlidingSource F hF f A).hom ▷
+            F.map (canonicalSourceHom (𝟙 X) B)) ≫
+          (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+            (generalLiftSourceEquivalence F hF f).inv
+            (F.map (canonicalSourceHom (𝟙 X) B))).hom) ▷ T) =
+      ((((generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 Y) A B).hom ▷
+        (generalLiftSourceEquivalence F hF f).inv) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          (generalLiftSourceEquivalence F hF f).inv).hom ≫
+        (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          (generalLiftInverseSlidingSource F hF f B).inv)) ▷ S) ≫
+        ((F.map (canonicalSourceHom (𝟙 Y) A) ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) ◁ q) := by
+  let p :=
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      (generalLiftForwardMapCompSourceLeftIdentity F
+        (𝟙 X) A B).hom) ≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+    ((generalLiftInverseSlidingSource F hF f A).hom ▷
+      F.map (canonicalSourceHom (𝟙 X) B)) ≫
+    (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+      (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) B))).hom
+  calc
+    _ = ((generalLiftInverseSlidingSource F hF f (A × B)).inv ▷ S) ≫
+        (p ▷ S) ≫
+        ((F.map (canonicalSourceHom (𝟙 Y) A) ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) ◁ q) := by
+      dsimp [p]
+      rw [whisker_exchange]
+    _ = (((generalLiftInverseSlidingSource F hF f (A × B)).inv ≫
+          p) ▷ S) ≫
+        ((F.map (canonicalSourceHom (𝟙 Y) A) ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) ◁ q) := by
+      conv_rhs => rw [Bicategory.comp_whiskerRight]
+      simp only [Category.assoc]
+    _ = _ := by
+      dsimp [p]
+      rw [generalLiftInverseSlidingSource_tensor_inv_prefix]
 
 /-- Inverse sliding is natural in retained-coordinate 2-cells. -/
 theorem generalLiftInverseSlidingSource_naturality
@@ -6351,6 +9230,404 @@ theorem generalLiftRetainedInverseMapCompSliding_naturality_left
       (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η))
       (generalLiftSourceEquivalence F hF f).inv
       (F.map (canonicalSourceHom (𝟙 X) B)))
+
+/-- Source-normalized retained-then-inverse compositor, before endpoint
+equality transports return to the arbitrary target action. -/
+noncomputable def generalLiftRetainedInverseMapCompSource
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) (A × B)) ≅
+      F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B)) :=
+  whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftForwardMapCompSource F (𝟙 X) (𝟙 X) A B) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    generalLiftRetainedInverseMapCompSliding F hF f A B
+
+/-- Hom expansion of the source-normalized retained/inverse compositor. -/
+theorem generalLiftRetainedInverseMapCompSource_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftRetainedInverseMapCompSource F hF f A B).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSource F
+            (𝟙 X) (𝟙 X) A B).hom) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+        (generalLiftRetainedInverseMapCompSliding F hF f A B).hom := by
+  rfl
+
+/-- Endpoint-strict source-normalized retained/inverse compositor.  This
+version uses the right-identity-normalized retained compositor explicitly,
+so its source is definitionally the chosen walking-identity representative. -/
+noncomputable def generalLiftRetainedInverseMapCompSourceNormalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) (A × B)) ≅
+      F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B)) :=
+  whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).symm ≪≫
+    generalLiftRetainedInverseMapCompSliding F hF f A B
+
+/-- Hom expansion of the endpoint-strict retained/inverse compositor. -/
+theorem generalLiftRetainedInverseMapCompSourceNormalized_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftRetainedInverseMapCompSourceNormalized F hF f A B).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+        (generalLiftRetainedInverseMapCompSliding F hF f A B).hom := by
+  rfl
+
+/-- Exchange inverse sliding with a compositor on the retained tail, keeping
+all associator transports explicit. -/
+private theorem retainedInverse_whiskerExchange
+    {a b : E} {r : b ⟶ a}
+    {xA xB xC xBC : a ⟶ a} {yA yB : b ⟶ b}
+    (sA : r ≫ xA ⟶ yA ≫ r)
+    (sB : r ≫ xB ⟶ yB ≫ r)
+    (cBC : xBC ⟶ xB ≫ xC) :
+    (α_ r xA xBC).inv ≫
+        (sA ▷ xBC) ≫
+        (α_ yA r xBC).hom ≫
+        (yA ◁ (r ◁ cBC)) ≫
+        (yA ◁ (α_ r xB xC).inv) ≫
+        (yA ◁ (sB ▷ xC)) ≫
+        (yA ◁ (α_ yB r xC).hom) =
+      (r ◁ (xA ◁ cBC)) ≫
+        (r ◁ (α_ xA xB xC).inv) ≫
+        (α_ r (xA ≫ xB) xC).inv ≫
+        (rightAdjointSquare.vcomp sA sB ▷ xC) ≫
+        (α_ (yA ≫ yB) r xC).hom ≫
+        (α_ yA yB (r ≫ xC)).hom := by
+  let post :=
+    (α_ yA r (xB ≫ xC)).hom ≫
+      (yA ◁ (α_ r xB xC).inv) ≫
+      (yA ◁ (sB ▷ xC)) ≫
+      (yA ◁ (α_ yB r xC).hom)
+  have hex := congrArg
+    (fun k => (α_ r xA xBC).inv ≫ k ≫ post)
+    (whisker_exchange sA cBC).symm
+  dsimp [post] at hex
+  convert hex using 1
+  · bicategory
+  · simp only [rightAdjointSquare.vcomp]
+    bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict retained/retained/inverse source compositor satisfies
+its full three-fold associativity law. -/
+theorem generalLiftRetainedInverseMapCompSourceNormalized_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom)) ≫
+        (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+            B C).hom =
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).hom ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom]
+  rw [generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompSliding_hom]
+  rw [generalLiftInverseSlidingSource_tensor F hF f A B]
+  rw [generalLiftForwardMapCompSource_identityNormalizations_eq F X A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 3 9 =>
+    rw [retainedInverse_whiskerExchange
+      (generalLiftInverseSlidingSource F hF f A).hom
+      (generalLiftInverseSlidingSource F hF f B).hom
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) B C).hom]
+  have hsource :=
+    generalLiftForwardMapCompSourceIdentity_associativity F X A B C
+  have hsourceW := congrArg
+    (fun k => (generalLiftSourceEquivalence F hF f).inv ◁ k)
+    hsource
+  simp only [Bicategory.whiskerLeft_comp] at hsourceW
+  slice_lhs 1 3 => rw [hsourceW]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The historical source-normalized retained/inverse compositor is exactly
+the endpoint-strict normalized compositor. -/
+theorem generalLiftRetainedInverseMapCompSource_eq_normalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    generalLiftRetainedInverseMapCompSource F hF f A B =
+      generalLiftRetainedInverseMapCompSourceNormalized F hF f A B := by
+  apply Iso.ext
+  rw [generalLiftRetainedInverseMapCompSource_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The existing source-normalized retained/retained/inverse compositor
+satisfies the endpoint-strict three-fold associativity law. -/
+theorem generalLiftRetainedInverseMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom)) ≫
+        (generalLiftRetainedInverseMapCompSource F hF f
+          A (B × C)).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          (generalLiftRetainedInverseMapCompSource F hF f B C).hom =
+      (generalLiftRetainedInverseMapCompSource F hF f
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).hom ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftRetainedInverseMapCompSource_eq_normalized,
+    generalLiftRetainedInverseMapCompSource_eq_normalized,
+    generalLiftRetainedInverseMapCompSource_eq_normalized]
+  exact generalLiftRetainedInverseMapCompSourceNormalized_associativity
+    F hF f A B C
+
+/-- Endpoint-strict inverse/retained source compositor used by mixed
+retained/inverse/retained associativity. -/
+noncomputable def generalLiftInverseRetainedMapCompSourceNormalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) (A × B)) ≅
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) A)) ≫
+          F.map (canonicalSourceHom (𝟙 X) B) :=
+  whiskerLeftIso (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B) ≪≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).symm
+
+/-- Hom expansion of the endpoint-strict inverse/retained source compositor. -/
+theorem generalLiftInverseRetainedMapCompSourceNormalized_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseRetainedMapCompSourceNormalized F hF f A B).hom =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))).inv := by
+  rfl
+
+/-- Exchange one inverse-sliding square with a compositor on its retained
+tail, with the necessary associators made explicit. -/
+private theorem retainedInverse_singleWhiskerExchange
+    {a b : E} {r : b ⟶ a}
+    {xA xB xC xBC : a ⟶ a} {yA : b ⟶ b}
+    (sA : r ≫ xA ⟶ yA ≫ r)
+    (cBC : xBC ⟶ xB ≫ xC) :
+    (α_ r xA xBC).inv ≫
+        (sA ▷ xBC) ≫
+        (α_ yA r xBC).hom ≫
+        (yA ◁ (r ◁ cBC)) ≫
+        (yA ◁ (α_ r xB xC).inv) =
+      (r ◁ (xA ◁ cBC)) ≫
+        (r ◁ (α_ xA xB xC).inv) ≫
+        (α_ r (xA ≫ xB) xC).inv ≫
+        (((α_ r xA xB).inv ≫
+          (sA ▷ xB) ≫
+          (α_ yA r xB).hom) ▷ xC) ≫
+        (α_ yA (r ≫ xB) xC).hom := by
+  let post :=
+    (α_ yA r (xB ≫ xC)).hom ≫
+      (yA ◁ (α_ r xB xC).inv)
+  have hex := congrArg
+    (fun k => (α_ r xA xBC).inv ≫ k ≫ post)
+    (whisker_exchange sA cBC).symm
+  dsimp [post] at hex
+  convert hex using 1
+  · bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The normalized retained/inverse/retained source compositors satisfy their
+mixed three-fold associativity law. -/
+theorem generalLiftRetainedInverseRetainedMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom)) ≫
+        (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          (generalLiftInverseRetainedMapCompSourceNormalized F hF f B C).hom =
+      (generalLiftInverseRetainedMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftRetainedInverseMapCompSourceNormalized F hF f A B).hom ▷
+          F.map (canonicalSourceHom (𝟙 X) C)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom]
+  rw [generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompSliding_hom]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 3 7 =>
+    rw [retainedInverse_singleWhiskerExchange
+      (generalLiftInverseSlidingSource F hF f A).hom
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) B C).hom]
+  have hsource :=
+    generalLiftForwardMapCompSourceIdentity_associativity F X A B C
+  let tail :=
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (F.map (canonicalSourceHom (𝟙 X) C))).inv) ≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A) ≫
+        F.map (canonicalSourceHom (𝟙 X) B))
+      (F.map (canonicalSourceHom (𝟙 X) C))).inv ≫
+    (((α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))).inv ≫
+      ((generalLiftInverseSlidingSource F hF f A).hom ▷
+        F.map (canonicalSourceHom (𝟙 X) B)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+        (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) B))).hom) ▷
+      F.map (canonicalSourceHom (𝟙 X) C)) ≫
+    (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))
+      (F.map (canonicalSourceHom (𝟙 X) C))).hom
+  calc
+    _ = ((generalLiftSourceEquivalence F hF f).inv ◁
+          (F.map₂ (canonicalSourceTwoCell (𝟙 X)
+              (MonoidalCategory.associator A B C).hom) ≫
+            (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+              A (B × C)).hom ≫
+            F.map (canonicalSourceHom (𝟙 X) A) ◁
+              (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) B C).hom)) ≫
+          tail := by
+      dsimp [tail]
+      bicategory
+    _ = ((generalLiftSourceEquivalence F hF f).inv ◁
+          ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+              (A × B) C).hom ≫
+            ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom ▷
+              F.map (canonicalSourceHom (𝟙 X) C)) ≫
+            (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+              (F.map (canonicalSourceHom (𝟙 X) B))
+              (F.map (canonicalSourceHom (𝟙 X) C))).hom)) ≫
+          tail := by
+      rw [hsource]
+    _ = _ := by
+      dsimp [tail]
+      bicategory
+
+/-- Source-normalized retained/inverse composition is natural in the inverse
+factor's retained coordinate. -/
+theorem generalLiftRetainedInverseMapCompSource_naturality_right
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A : Type) {B C : Type} (η : B ⟶ C) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom (𝟙 A) η))) ≫
+        (generalLiftRetainedInverseMapCompSource F hF f A C).hom =
+      (generalLiftRetainedInverseMapCompSource F hF f A B).hom ≫
+        (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          ((generalLiftSourceEquivalence F hF f).inv ◁
+            F.map₂ (canonicalSourceTwoCell (𝟙 X) η))) := by
+  have hsource := generalLiftForwardMapCompSource_naturality_right F
+    (𝟙 X) (𝟙 X) A η
+  have hid : (𝟙 X ≫ 𝟙 X) = 𝟙 X := Subsingleton.elim _ _
+  rw [hid] at hsource
+  rw [generalLiftRetainedInverseMapCompSource_hom,
+    generalLiftRetainedInverseMapCompSource_hom]
+  exact comp_naturality_of_squares
+    (whiskerLeft_naturality_of_square
+      (generalLiftSourceEquivalence F hF f).inv hsource)
+    (comp_naturality_of_squares
+      (associator_inv_naturality_right
+        (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map₂ (canonicalSourceTwoCell (𝟙 X) η)))
+      (generalLiftRetainedInverseMapCompSliding_naturality_right
+        F hF f A η))
+
+/-- Source-normalized retained/inverse composition is natural in the first
+retained coordinate. -/
+theorem generalLiftRetainedInverseMapCompSource_naturality_left
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) {A C : Type} (η : A ⟶ C) (B : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (CategoryTheory.MonoidalCategory.tensorHom η (𝟙 B)))) ≫
+        (generalLiftRetainedInverseMapCompSource F hF f C B).hom =
+      (generalLiftRetainedInverseMapCompSource F hF f A B).hom ≫
+        (F.map₂ (canonicalSourceTwoCell (𝟙 Y) η) ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))) := by
+  have hsource := generalLiftForwardMapCompSource_naturality_left F
+    (𝟙 X) (𝟙 X) η B
+  have hid : (𝟙 X ≫ 𝟙 X) = 𝟙 X := Subsingleton.elim _ _
+  rw [hid] at hsource
+  rw [generalLiftRetainedInverseMapCompSource_hom,
+    generalLiftRetainedInverseMapCompSource_hom]
+  exact comp_naturality_of_squares
+    (whiskerLeft_naturality_of_square
+      (generalLiftSourceEquivalence F hF f).inv hsource)
+    (comp_naturality_of_squares
+      (associator_inv_naturality_middle
+        (generalLiftSourceEquivalence F hF f).inv
+        (F.map₂ (canonicalSourceTwoCell (𝟙 X) η))
+        (F.map (canonicalSourceHom (𝟙 X) B)))
+      (generalLiftRetainedInverseMapCompSliding_naturality_left
+        F hF f η B))
 
 /-- The factor-transport stage of the retained-then-inverse compositor
 returns from source endpoints to the arbitrary lift. -/
@@ -6533,6 +9810,148 @@ theorem generalLiftRetainedInverseMapCompTransport_naturality_left
       (generalLiftRetainedInverseMapCompFactors_naturality_left
         F hF f hf η B))
 
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the retained/retained/inverse source
+associativity law. -/
+theorem generalLiftRetainedInverseMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftRetainedInverseMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A) ◁
+          (generalLiftRetainedInverseMapCompTransport F hF f hf B C).hom =
+      (generalLiftRetainedInverseMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompTransport F hF
+            (𝟙 Y) (𝟙 Y) A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  simp only [generalLiftRetainedInverseMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompFactors_hom,
+    generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftRetainedInverseMapCompSource_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × (B × C))))
+    (c₀₁ := (generalLiftForwardMapCompSourceRightIdentity F
+      (𝟙 Y) A B).hom)
+    (c₁₂ := (generalLiftRetainedInverseMapCompSource F hF f B C).hom)
+    (cL := (generalLiftRetainedInverseMapCompSource F hF f (A × B) C).hom)
+    (cR := (generalLiftRetainedInverseMapCompSource F hF f A (B × C)).hom)
+    (aP := (generalLiftSourceEquivalence F hF f).inv ◁
+      F.map₂ (canonicalSourceTwoCell (𝟙 X)
+        (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalInverseTwoCell f
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂InverseTransport F hF f hf
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftRetainedInverseMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the mixed retained/inverse/retained source
+associativity law. -/
+theorem generalLiftRetainedInverseRetainedMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftRetainedInverseMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A) ◁
+          (generalLiftInverseRetainedMapCompTransport F hF f hf B C).hom =
+      (generalLiftInverseRetainedMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftRetainedInverseMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) C))).hom := by
+  simp only [generalLiftRetainedInverseMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompFactors_hom,
+    generalLiftInverseRetainedMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ :=
+      (generalLiftInverseRetainedMapCompSourceNormalized F hF f B C).hom)
+    (cL :=
+      (generalLiftInverseRetainedMapCompSourceNormalized F hF f (A × B) C).hom)
+    (cR :=
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f A (B × C)).hom)
+    (aP := (generalLiftSourceEquivalence F hF f).inv ◁
+      F.map₂ (canonicalSourceTwoCell (𝟙 X)
+        (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalInverseTwoCell f
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂InverseTransport F hF f hf
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftRetainedInverseRetainedMapCompSource_associativity
+      F hF f A B C)
+
 /-- Composition comparison for a retained-coordinate endomorphism followed
 by a genuine inverse arrow. -/
 noncomputable def generalLiftMapCompRetainedInverse
@@ -6634,6 +10053,430 @@ noncomputable def canonicalForwardInverseCompositionComparison
         inv (CategoryTheory.FreeGroupoid.homMk f) =
       CategoryTheory.FreeGroupoid.homMk (𝟙 X)
     simp)) (Iso.refl _)
+
+/-- Forward/retained/inverse target comparisons satisfy the cancellation
+three-fold associativity square. -/
+theorem canonicalForwardRetainedInverseComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalForwardCompositionComparison f (𝟙 Y) A B).hom ▷
+          canonicalInverseHom f C) ≫
+        (canonicalForwardInverseCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalForwardTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom f A)
+          (canonicalForwardHom (𝟙 Y) B)
+          (canonicalInverseHom f C)).hom ≫
+        (canonicalForwardHom f A ◁
+          (canonicalRetainedInverseCompositionComparison f B C).hom) ≫
+        (canonicalForwardInverseCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+forward/retained/inverse target associativity square. -/
+theorem generalLiftForwardRetainedInverseMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardCompositionComparison f (𝟙 Y) A B).hom ▷
+            canonicalInverseHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A)
+            (canonicalForwardHom (𝟙 Y) B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁
+            (canonicalRetainedInverseCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalForwardRetainedInverseComparison_associativity
+        f A B C)
+
+/-- Retained/forward/inverse target comparisons satisfy the cancellation
+three-fold associativity square. -/
+theorem canonicalRetainedForwardInverseComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalForwardCompositionComparison (𝟙 X) f A B).hom ▷
+          canonicalInverseHom f C) ≫
+        (canonicalForwardInverseCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalForwardTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom (𝟙 X) A)
+          (canonicalForwardHom f B)
+          (canonicalInverseHom f C)).hom ≫
+        (canonicalForwardHom (𝟙 X) A ◁
+          (canonicalForwardInverseCompositionComparison f B C).hom) ≫
+        (canonicalForwardCompositionComparison
+          (𝟙 X) (𝟙 X) A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+retained/forward/inverse target associativity square. -/
+theorem generalLiftRetainedForwardInverseMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardCompositionComparison (𝟙 X) f A B).hom ▷
+            canonicalInverseHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 X) A)
+            (canonicalForwardHom f B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom (𝟙 X) A ◁
+            (canonicalForwardInverseCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison
+            (𝟙 X) (𝟙 X) A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalRetainedForwardInverseComparison_associativity
+        f A B C)
+
+/-- Forward/inverse/retained target comparisons satisfy the cancellation
+three-fold associativity square. -/
+theorem canonicalForwardInverseRetainedComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalForwardInverseCompositionComparison f A B).hom ▷
+          canonicalForwardHom (𝟙 X) C) ≫
+        (canonicalForwardCompositionComparison
+          (𝟙 X) (𝟙 X) (A × B) C).hom ≫
+        canonicalForwardTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom f A)
+          (canonicalInverseHom f B)
+          (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (canonicalForwardHom f A ◁
+          (canonicalInverseRetainedCompositionComparison f B C).hom) ≫
+        (canonicalForwardInverseCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+forward/inverse/retained target associativity square. -/
+theorem generalLiftForwardInverseRetainedMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardInverseCompositionComparison f A B).hom ▷
+            canonicalForwardHom (𝟙 X) C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison
+            (𝟙 X) (𝟙 X) (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁
+            (canonicalInverseRetainedCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardInverseCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalForwardInverseRetainedComparison_associativity
+        f A B C)
+
+/-- Inverse/forward/retained target comparisons satisfy the cancellation
+three-fold associativity square. -/
+theorem canonicalInverseForwardRetainedComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalInverseForwardCompositionComparison f A B).hom ▷
+          canonicalForwardHom (𝟙 Y) C) ≫
+        (canonicalForwardCompositionComparison
+          (𝟙 Y) (𝟙 Y) (A × B) C).hom ≫
+        canonicalForwardTwoCell (𝟙 Y)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalInverseHom f A)
+          (canonicalForwardHom f B)
+          (canonicalForwardHom (𝟙 Y) C)).hom ≫
+        (canonicalInverseHom f A ◁
+          (canonicalForwardCompositionComparison f (𝟙 Y) B C).hom) ≫
+        (canonicalInverseForwardCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+inverse/forward/retained target associativity square. -/
+theorem generalLiftInverseForwardRetainedMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalInverseForwardCompositionComparison f A B).hom ▷
+            canonicalForwardHom (𝟙 Y) C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison
+            (𝟙 Y) (𝟙 Y) (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalInverseHom f A)
+            (canonicalForwardHom f B)
+            (canonicalForwardHom (𝟙 Y) C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseHom f A ◁
+            (canonicalForwardCompositionComparison f (𝟙 Y) B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalInverseForwardRetainedComparison_associativity
+        f A B C)
+
+/-- Inverse/retained/forward target comparisons satisfy the cancellation
+three-fold associativity square. -/
+theorem canonicalInverseRetainedForwardComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalInverseRetainedCompositionComparison f A B).hom ▷
+          canonicalForwardHom f C) ≫
+        (canonicalInverseForwardCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalForwardTwoCell (𝟙 Y)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalInverseHom f A)
+          (canonicalForwardHom (𝟙 X) B)
+          (canonicalForwardHom f C)).hom ≫
+        (canonicalInverseHom f A ◁
+          (canonicalForwardCompositionComparison (𝟙 X) f B C).hom) ≫
+        (canonicalInverseForwardCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+inverse/retained/forward target associativity square. -/
+theorem generalLiftInverseRetainedForwardMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalInverseRetainedCompositionComparison f A B).hom ▷
+            canonicalForwardHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalInverseHom f A)
+            (canonicalForwardHom (𝟙 X) B)
+            (canonicalForwardHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseHom f A ◁
+            (canonicalForwardCompositionComparison (𝟙 X) f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalInverseRetainedForwardComparison_associativity
+        f A B C)
+
+/-- Retained/inverse/forward target comparisons satisfy the cancellation
+three-fold associativity square. -/
+theorem canonicalRetainedInverseForwardComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalRetainedInverseCompositionComparison f A B).hom ▷
+          canonicalForwardHom f C) ≫
+        (canonicalInverseForwardCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalForwardTwoCell (𝟙 Y)
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom (𝟙 Y) A)
+          (canonicalInverseHom f B)
+          (canonicalForwardHom f C)).hom ≫
+        (canonicalForwardHom (𝟙 Y) A ◁
+          (canonicalInverseForwardCompositionComparison f B C).hom) ≫
+        (canonicalForwardCompositionComparison
+          (𝟙 Y) (𝟙 Y) A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the
+retained/inverse/forward target associativity square. -/
+theorem generalLiftRetainedInverseForwardMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalRetainedInverseCompositionComparison f A B).hom ▷
+            canonicalForwardHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseForwardCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 Y) A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom (𝟙 Y) A ◁
+            (canonicalInverseForwardCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison
+            (𝟙 Y) (𝟙 Y) A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalRetainedInverseForwardComparison_associativity
+        f A B C)
+
+/-- Forward/inverse/forward target comparisons satisfy the alternating
+cancellation three-fold associativity square. -/
+theorem canonicalForwardInverseForwardComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalForwardInverseCompositionComparison f A B).hom ▷
+          canonicalForwardHom f C) ≫
+        (canonicalForwardCompositionComparison
+          (𝟙 X) f (A × B) C).hom ≫
+        canonicalForwardTwoCell f
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalForwardHom f A)
+          (canonicalInverseHom f B)
+          (canonicalForwardHom f C)).hom ≫
+        (canonicalForwardHom f A ◁
+          (canonicalInverseForwardCompositionComparison f B C).hom) ≫
+        (canonicalForwardCompositionComparison
+          f (𝟙 Y) A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the alternating
+forward/inverse/forward target associativity square. -/
+theorem generalLiftForwardInverseForwardMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalForwardInverseCompositionComparison f A B).hom ▷
+            canonicalForwardHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison
+            (𝟙 X) f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardHom f A ◁
+            (canonicalInverseForwardCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardCompositionComparison
+            f (𝟙 Y) A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalForwardInverseForwardComparison_associativity
+        f A B C)
+
+/-- Inverse/forward/inverse target comparisons satisfy the dual alternating
+cancellation three-fold associativity square. -/
+theorem canonicalInverseForwardInverseComparison_associativity
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((canonicalInverseForwardCompositionComparison f A B).hom ▷
+          canonicalInverseHom f C) ≫
+        (canonicalRetainedInverseCompositionComparison
+          f (A × B) C).hom ≫
+        canonicalInverseTwoCell f
+          (MonoidalCategory.associator A B C).hom =
+      (α_ (canonicalInverseHom f A)
+          (canonicalForwardHom f B)
+          (canonicalInverseHom f C)).hom ≫
+        (canonicalInverseHom f A ◁
+          (canonicalForwardInverseCompositionComparison f B C).hom) ≫
+        (canonicalInverseRetainedCompositionComparison
+          f A (B × C)).hom := by
+  apply Prod.ext
+  · apply Subsingleton.elim
+  · rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Applying the arbitrary target action preserves the dual alternating
+inverse/forward/inverse target associativity square. -/
+theorem generalLiftInverseForwardInverseMapCompTarget_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          ((canonicalInverseForwardCompositionComparison f A B).hom ▷
+            canonicalInverseHom f C) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalRetainedInverseCompositionComparison
+            f (A × B) C).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.associator A B C).hom) =
+      (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalInverseHom f A)
+            (canonicalForwardHom f B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseHom f A ◁
+            (canonicalForwardInverseCompositionComparison f B C).hom) ≫
+        (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseRetainedCompositionComparison
+            f A (B × C)).hom := by
+  simpa only [(generalLiftPrelaxFunctor F hF).map₂_comp] using
+    congrArg (fun η => (generalLiftPrelaxFunctor F hF).map₂ η)
+      (canonicalInverseForwardInverseComparison_associativity
+        f A B C)
 
 /-- Inverse/forward cancellation is natural in the forward factor's retained
 coordinate. -/
@@ -7085,6 +10928,31 @@ theorem generalLiftInverseForwardMapCompSourceTransport_hom
       (generalLiftInverseForwardMapCompFactorization F hF f A B).hom := by
   rfl
 
+/-- Endpoint-strict inverse/forward cancellation source compositor.  It
+starts at the chosen retained codomain representative and exposes the source
+normal form needed by the remaining inverse/forward associativity branches. -/
+noncomputable def generalLiftInverseForwardMapCompSourceNormalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom (𝟙 Y) (A × B)) ≅
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ≫
+        F.map (canonicalSourceHom f B) :=
+  generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B ≪≫
+    generalLiftInverseForwardMapCompSourceTransport F hF f A B
+
+/-- Hom expansion of the endpoint-strict inverse/forward cancellation source
+compositor. -/
+theorem generalLiftInverseForwardMapCompSourceNormalized_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftInverseForwardMapCompSourceNormalized F hF f A B).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).hom ≫
+      (generalLiftInverseForwardMapCompSourceTransport F hF f A B).hom := by
+  rfl
+
 /-- Source transport is natural in the forward factor's retained
 coordinate. -/
 theorem generalLiftInverseForwardMapCompSourceTransport_naturality_right
@@ -7459,6 +11327,48 @@ theorem generalLiftForwardInverseMapCompFactorization_hom
           F.map (canonicalSourceHom (𝟙 X) B))) := by
   rfl
 
+set_option backward.isDefEq.respectTransparency false in
+/-- The retained compositor may be moved through the unit-insertion and
+fixed forward-factorization stages of forward/inverse cancellation. -/
+theorem generalLiftForwardInverseUnitFactorization_compositor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F
+            (𝟙 X) B C).hom) ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+            (F.map (canonicalSourceHom (𝟙 X) B) ≫
+              F.map (canonicalSourceHom (𝟙 X) C))).hom) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (generalLiftSourceEquivalence F hF f).hom
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            (F.map (canonicalSourceHom (𝟙 X) B) ≫
+              F.map (canonicalSourceHom (𝟙 X) C)))).inv ≫
+        ((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            (F.map (canonicalSourceHom (𝟙 X) B) ≫
+              F.map (canonicalSourceHom (𝟙 X) C)))) =
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+            (F.map (canonicalSourceHom (𝟙 X) (B × C)))).hom) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (generalLiftSourceEquivalence F hF f).hom
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) (B × C)))).inv ≫
+        ((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) (B × C)))) ≫
+        (F.map (canonicalSourceHom f A) ◁
+          ((generalLiftSourceEquivalence F hF f).inv ◁
+            (generalLiftForwardMapCompSourceRightIdentity F
+              (𝟙 X) B C).hom)) := by
+  exact equivalenceUnitInsertion_whisker_naturality
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftRetainedForwardFactorizationSource F hF f A).inv
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) B C).hom
+
 /-- Factorization is natural in the inverse factor's retained coordinate. -/
 theorem generalLiftForwardInverseMapCompFactorization_naturality_right
     (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
@@ -7638,6 +11548,870 @@ theorem generalLiftForwardInverseMapCompSourceTransport_hom
       (generalLiftForwardInverseMapCompFactorization F hF f A B).hom := by
   rfl
 
+/-- Endpoint-strict source compositor for forward/inverse cancellation.  It
+starts at the chosen source representative rather than at the arbitrary
+target action, so it can participate directly in source associativity. -/
+noncomputable def generalLiftForwardInverseMapCompSourceNormalized
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    F.map (canonicalSourceHom (𝟙 X) (A × B)) ≅
+      F.map (canonicalSourceHom f A) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B)) :=
+  generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B ≪≫
+    generalLiftForwardInverseMapCompUnit F hF f A B ≪≫
+    generalLiftForwardInverseMapCompFactorization F hF f A B
+
+/-- Hom expansion of the endpoint-strict forward/inverse source
+compositor. -/
+theorem generalLiftForwardInverseMapCompSourceNormalized_hom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B : Type) :
+    (generalLiftForwardInverseMapCompSourceNormalized F hF f A B).hom =
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom ≫
+      (generalLiftForwardInverseMapCompUnit F hF f A B).hom ≫
+      (generalLiftForwardInverseMapCompFactorization F hF f A B).hom := by
+  rfl
+
+set_option backward.isDefEq.respectTransparency false in
+/-- After the retained identity compositor has been exposed, counit
+insertion and inverse sliding identify the two source pastings for a
+retained arrow, the matching inverse, and the matching forward arrow. -/
+private theorem retainedInverseForward_afterIdentity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).hom ▷
+        F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+        (F.map (canonicalSourceHom (𝟙 Y) B))
+        (F.map (canonicalSourceHom (𝟙 Y) C))).hom ≫
+      (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+        (generalLiftInverseForwardMapCompSourceTransport F hF f
+          B C).hom) =
+    (generalLiftInverseForwardMapCompSourceTransport F hF f
+        (A × B) C).hom ≫
+      ((generalLiftRetainedInverseMapCompSourceNormalized F hF f A B).hom ▷
+        F.map (canonicalSourceHom f C)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) B))
+        (F.map (canonicalSourceHom f C))).hom := by
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom]
+  rw [generalLiftInverseForwardMapCompSliding_hom,
+    generalLiftInverseForwardMapCompSliding_hom]
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom,
+    generalLiftInverseForwardMapCompSlidingInner_hom]
+  rw [generalLiftInverseForwardMapCompFactorization_hom,
+    generalLiftInverseForwardMapCompFactorization_hom]
+  rw [generalLiftRetainedInverseMapCompSliding_hom]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 3 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← Bicategory.whiskerLeft_comp,
+      ← Bicategory.whiskerLeft_comp]
+    change F.map (canonicalSourceHom (𝟙 Y) A) ◁
+      ((equivalenceCounitInsertion
+        (generalLiftSourceEquivalence F hF f)
+        (F.map (canonicalSourceHom (𝟙 Y) B) ≫
+          F.map (canonicalSourceHom (𝟙 Y) C))).hom ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          (F.map (canonicalSourceHom (𝟙 Y) C))).inv) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        ((generalLiftForwardSlidingSource F hF f B).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) C))) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (F.map (canonicalSourceHom (𝟙 X) B))
+          (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) C))).hom))
+    rw [generalLiftCounitInsertion_inverseSliding F hF f B
+      (F.map (canonicalSourceHom (𝟙 Y) C))]
+  slice_rhs 1 4 =>
+    rw [generalLiftCounitInsertion_inverseSliding F hF f (A × B)
+      (F.map (canonicalSourceHom (𝟙 Y) C))]
+  simp only [Category.assoc]
+  slice_rhs 4 5 => simp
+  simp only [generalLiftSourceEquivalence_hom]
+  have hprefix :=
+    generalLiftInverseSlidingSource_tensor_inv_prefix_naturality
+      F hF f A B
+      (generalLiftForwardFactorizationSource F hF f C).inv
+  simp only [generalLiftForwardMapCompSource_identityNormalizations_eq,
+    generalLiftSourceEquivalence_hom] at hprefix
+  slice_rhs 3 9 =>
+    rw [Category.id_comp]
+    rw [← Bicategory.comp_whiskerRight,
+      ← Bicategory.comp_whiskerRight,
+      ← Bicategory.comp_whiskerRight]
+    rw [hprefix]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  have hsplit := equivalenceCounitInsertion_splitLeft_naturality
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).hom
+    (F.map (canonicalSourceHom (𝟙 Y) C))
+  simp only [generalLiftSourceEquivalence_hom] at hsplit
+  slice_lhs 1 4 => rw [hsplit]
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict retained/inverse/forward source compositors satisfy
+the cancellation three-fold associativity law. -/
+theorem generalLiftRetainedInverseForwardMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 Y)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y)
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom (𝟙 Y) A) ◁
+          (generalLiftInverseForwardMapCompSourceNormalized F hF f
+            B C).hom) =
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftRetainedInverseMapCompSourceNormalized F hF f A B).hom ▷
+          F.map (canonicalSourceHom f C)) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 Y) A))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom f C))).hom := by
+  rw [generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom]
+  simp only [Bicategory.whiskerLeft_comp, Category.assoc]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceIdentity_associativity
+      F Y A B C]
+  simp only [Category.assoc]
+  rw [cancel_epi
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y)
+      (A × B) C).hom]
+  exact retainedInverseForward_afterIdentity F hF f A B C
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict forward/inverse/forward source compositors satisfy
+the alternating cancellation three-fold associativity law. -/
+theorem generalLiftForwardInverseForwardMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell f
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F f
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom f A) ◁
+          (generalLiftInverseForwardMapCompSourceNormalized F hF f
+            B C).hom) =
+      (generalLiftForwardMapCompSourceLeftIdentity F f
+          (A × B) C).hom ≫
+        ((generalLiftForwardInverseMapCompSourceNormalized F hF f A B).hom ▷
+          F.map (canonicalSourceHom f C)) ≫
+        (α_ (F.map (canonicalSourceHom f A))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom f C))).hom := by
+  rw [generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom]
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom]
+  rw [generalLiftInverseForwardMapCompSliding_hom]
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom]
+  rw [generalLiftInverseForwardMapCompFactorization_hom]
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceRightIdentity3_associativity
+      F f A B C]
+  simp only [Category.assoc]
+  rw [← cancel_epi
+    (generalLiftForwardMapCompSourceRightIdentity F f (A × B) C).inv]
+  slice_rhs 1 2 =>
+    rw [generalLiftForwardFactorizationSource_interchange
+      F hF f (A × B) C]
+  simp only [Category.assoc]
+  slice_lhs 1 2 => simp
+  rw [generalLiftRetainedForwardFactorizationSource_tensor F hF f A B]
+  simp only [Bicategory.comp_whiskerRight, Category.assoc,
+    Category.id_comp]
+  rw [← cancel_epi
+    ((generalLiftForwardMapCompSourceRightIdentity F f A B).inv ▷
+      F.map (canonicalSourceHom (𝟙 Y) C))]
+  slice_lhs 1 2 =>
+    rw [← Bicategory.comp_whiskerRight, Iso.inv_hom_id]
+    simp
+  slice_rhs 1 2 =>
+    rw [← Bicategory.comp_whiskerRight,
+      generalLiftForwardFactorizationSource_interchange F hF f A B]
+  simp only [Bicategory.comp_whiskerRight, Category.assoc]
+  rw [← cancel_epi
+    (((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+      F.map (canonicalSourceHom (𝟙 Y) B)) ▷
+      F.map (canonicalSourceHom (𝟙 Y) C))]
+  slice_rhs 1 2 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← Bicategory.comp_whiskerRight, Iso.inv_hom_id]
+    simp
+  slice_rhs 3 4 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← Bicategory.whiskerLeft_comp,
+      ← generalLiftForwardSlidingSource_hom F hF f B]
+  rw [generalLiftForwardMapCompSource_identityNormalizations_eq
+    F X A B]
+  slice_rhs 4 8 =>
+    rw [iso_conjugation_bicategorical_inner
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B)
+      (generalLiftForwardFactorizationSource F hF f C).inv]
+  have hcore := equivalenceUnitCounit_alternating
+    (generalLiftSourceEquivalence F hF f)
+    (generalLiftForwardSlidingSource F hF f B)
+    (generalLiftForwardFactorizationSource F hF f C).symm
+  let kR :=
+    (α_ (generalLiftSourceEquivalence F hF f).hom
+      (F.map (canonicalSourceHom (𝟙 Y) B))
+      (F.map (canonicalSourceHom (𝟙 Y) C))).inv ≫
+    ((generalLiftForwardSlidingSource F hF f B).hom ▷
+      F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+    (α_ (F.map (canonicalSourceHom (𝟙 X) B))
+      (generalLiftSourceEquivalence F hF f).hom
+      (F.map (canonicalSourceHom (𝟙 Y) C))).hom ≫
+    (F.map (canonicalSourceHom (𝟙 X) B) ◁
+      (generalLiftForwardFactorizationSource F hF f C).inv) ≫
+    ((equivalenceUnitInsertion (generalLiftSourceEquivalence F hF f)
+      (F.map (canonicalSourceHom (𝟙 X) B))).hom ▷
+        F.map (canonicalSourceHom f C)) ≫
+    (α_ (generalLiftSourceEquivalence F hF f).hom
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) B))
+      (F.map (canonicalSourceHom f C))).hom
+  have hgroup :
+      (generalLiftSourceEquivalence F hF f).hom ◁
+          (generalLiftInverseForwardMapCompSourceTransport F hF f B C).hom =
+        kR := by
+    rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+      generalLiftInverseForwardMapCompSliding_hom,
+      generalLiftInverseForwardMapCompSlidingInner_hom,
+      generalLiftInverseForwardMapCompFactorization_hom]
+    simp only [Bicategory.whiskerLeft_comp]
+    simpa only [Category.assoc, Iso.symm_hom] using hcore
+  have houter := iso_whisker_transport_of_whiskered_eq
+    (xA := F.map (canonicalSourceHom (𝟙 X) A))
+    (x := (generalLiftSourceEquivalence F hF f).hom)
+    (U := F.map (canonicalSourceHom (𝟙 Y) B) ≫
+      F.map (canonicalSourceHom (𝟙 Y) C))
+    (V := ((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) B)) ≫
+      F.map (canonicalSourceHom f C))
+    (generalLiftRetainedForwardFactorizationSource F hF f A) hgroup
+  dsimp [kR] at houter
+  simp only [generalLiftSourceEquivalence_hom] at houter ⊢
+  have houterAssoc := congrArg
+    (fun u => (α_
+      (F.map (canonicalSourceHom (𝟙 X) A) ≫
+        F.map (canonicalSourceHom f
+          (𝟙 (MonoidalSingleObj.star Type))))
+      (F.map (canonicalSourceHom (𝟙 Y) B))
+      (F.map (canonicalSourceHom (𝟙 Y) C))).hom ≫ u) houter
+  convert houterAssoc using 1
+  · rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+      generalLiftInverseForwardMapCompSliding_hom,
+      generalLiftInverseForwardMapCompSlidingInner_hom,
+      generalLiftInverseForwardMapCompFactorization_hom]
+    simp only [Bicategory.whiskerLeft_comp]
+    bicategory
+  · bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict inverse/forward/inverse source compositors satisfy
+the dual alternating cancellation three-fold associativity law. -/
+theorem generalLiftInverseForwardInverseMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom)) ≫
+        (generalLiftInverseRetainedMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        (((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) A)) ◁
+          (generalLiftForwardInverseMapCompSourceNormalized F hF f
+            B C).hom) =
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftInverseForwardMapCompSourceNormalized F hF f A B).hom ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))) ≫
+        (α_ ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom f B))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom]
+  rw [generalLiftRetainedInverseMapCompSliding_hom]
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom]
+  rw [generalLiftInverseForwardMapCompSliding_hom]
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom]
+  rw [generalLiftInverseForwardMapCompFactorization_hom]
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  rw [generalLiftInverseSlidingSource_tensor F hF f A B]
+  rw [generalLiftForwardMapCompSource_identityNormalizations_eq F X A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  have hsource :=
+    generalLiftForwardMapCompSourceIdentity_associativity F X A B C
+  have hsourceW := congrArg
+    (fun k => (generalLiftSourceEquivalence F hF f).inv ◁ k)
+    hsource
+  simp only [Bicategory.whiskerLeft_comp] at hsourceW
+  have hprefix :
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          F.map₂ (canonicalSourceTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom)) ≫
+        ((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+            A (B × C)).hom) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) (B × C)))).inv ≫
+        (((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A)) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+            B C).hom) =
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+            (A × B) C).hom) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) (A × B)))
+          (F.map (canonicalSourceHom (𝟙 X) C))).inv ≫
+        (((generalLiftSourceEquivalence F hF f).inv ◁
+          (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+            A B).hom) ▷
+          F.map (canonicalSourceHom (𝟙 X) C)) ≫
+        ((α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))).inv ▷
+          F.map (canonicalSourceHom (𝟙 X) C)) ≫
+        (α_ ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+    have hsourceWpost := congrArg
+      (fun k => k ≫
+        (α_ (generalLiftSourceEquivalence F hF f).inv
+          (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B) ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).inv)
+      hsourceW
+    convert hsourceWpost using 1 <;> bicategory
+  slice_lhs 1 4 => rw [hprefix]
+  simp only [Category.assoc]
+  rw [cancel_epi
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+        (A × B) C).hom)]
+  rw [cancel_epi
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) (A × B)))
+      (F.map (canonicalSourceHom (𝟙 X) C))).inv]
+  rw [cancel_epi
+    (((generalLiftSourceEquivalence F hF f).inv ◁
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+        A B).hom) ▷
+      F.map (canonicalSourceHom (𝟙 X) C))]
+  have hcore := equivalenceUnitCounit_alternating_dual
+    (generalLiftSourceEquivalence F hF f)
+    (z := F.map (canonicalSourceHom (𝟙 X) C))
+    (generalLiftInverseSlidingSource F hF f B)
+  rw [← cancel_mono
+    (((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) A)) ◁
+      (((generalLiftForwardFactorizationSource F hF f B).hom ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))) ≫
+        (α_ (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).hom))]
+  simp only [Bicategory.whiskerLeft_comp, Category.assoc]
+  have hslideB :
+      (generalLiftForwardSlidingSource F hF f B).inv =
+        (generalLiftRetainedForwardFactorizationSource F hF f B).inv ≫
+          (generalLiftForwardFactorizationSource F hF f B).hom := by
+    rfl
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← Bicategory.comp_whiskerRight, ← hslideB]
+  have hunit := generalLiftEquivalenceUnitInsertion_inverseSliding
+    F hF f B C
+  have hunitW := congrArg
+    (fun k => ((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) A)) ◁ k) hunit
+  simp only [Bicategory.whiskerLeft_comp] at hunitW
+  slice_lhs 3 6 => rw [← hunitW]
+  have hcounitA := generalLiftCounitInsertion_inverseSliding
+    F hF f A (F.map (canonicalSourceHom (𝟙 Y) B))
+  have hcounitAW := congrArg
+    (fun k => k ▷ ((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) C))) hcounitA
+  simp only [Bicategory.comp_whiskerRight] at hcounitAW
+  slice_rhs 5 8 => rw [hcounitAW]
+  simp only [rightAdjointSquare.vcomp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  have hη := iso_conjugation_bicategorical_inner
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B)
+    (𝟙 (((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) C))))
+  simp only [Bicategory.whiskerLeft_id,
+    Category.id_comp] at hη
+  slice_rhs 5 8 => rw [hη]
+  rw [← cancel_mono
+    (((generalLiftSourceEquivalence F hF f).inv ≫
+      F.map (canonicalSourceHom (𝟙 X) A)) ◁
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B))
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          F.map (canonicalSourceHom (𝟙 X) C))).inv)]
+  have hcoreGroup := hcore
+  rw [← Bicategory.whiskerLeft_comp,
+    ← Bicategory.whiskerLeft_comp,
+    ← Bicategory.whiskerLeft_comp,
+    ← Bicategory.whiskerLeft_comp] at hcoreGroup
+  have houter := iso_whisker_transport_of_whiskered_eq
+    (xA := F.map (canonicalSourceHom (𝟙 Y) A))
+    (x := (generalLiftSourceEquivalence F hF f).inv)
+    (generalLiftInverseSlidingSource F hF f A) hcoreGroup
+  simp only [Category.assoc]
+  rw [cancel_epi
+    ((α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) A))
+      (F.map (canonicalSourceHom (𝟙 X) B))).inv ▷
+      F.map (canonicalSourceHom (𝟙 X) C))]
+  rw [← cancel_epi
+    (((generalLiftInverseSlidingSource F hF f A).inv ▷
+      F.map (canonicalSourceHom (𝟙 X) B)) ▷
+      F.map (canonicalSourceHom (𝟙 X) C))]
+  have houterPre := congrArg
+    (fun k =>
+      (α_ (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        (generalLiftSourceEquivalence F hF f).inv)
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (F.map (canonicalSourceHom (𝟙 X) C))).hom ≫ k)
+    houter
+  convert houterPre using 1
+  all_goals simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict forward/retained/inverse source compositors satisfy
+the cancellation three-fold associativity law. -/
+theorem generalLiftForwardRetainedInverseMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardInverseMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom f A) ◁
+          (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+            B C).hom) =
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompSourceRightIdentity F f A B).hom ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))) ≫
+        (α_ (F.map (canonicalSourceHom f A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom]
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  rw [generalLiftRetainedInverseMapCompSliding_hom]
+  rw [generalLiftRetainedForwardFactorizationSource_tensor_inv
+    F hF f A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_rhs 7 8 =>
+    rw [← Bicategory.comp_whiskerRight,
+      generalLiftForwardFactorizationSource_interchange_inv F hF f A B]
+  simp only [Bicategory.comp_whiskerRight, Category.assoc]
+  have hslideB :
+      (generalLiftForwardSlidingSource F hF f B).inv =
+        (generalLiftRetainedForwardFactorizationSource F hF f B).inv ≫
+          (generalLiftForwardFactorizationSource F hF f B).hom := by
+    rfl
+  slice_rhs 6 7 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← Bicategory.whiskerLeft_comp, ← hslideB]
+  slice_lhs 3 6 =>
+    rw [← generalLiftForwardInverseUnitFactorization_compositor
+      F hF f A B C]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceIdentity_associativity F X A B C]
+  simp only [Category.assoc]
+  rw [cancel_epi
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+      (A × B) C).hom]
+  have hunit := generalLiftEquivalenceUnitInsertion_inverseSliding
+    F hF f B C
+  have hunitContext := congrArg
+    (fun k =>
+      ((generalLiftForwardMapCompSourceRightIdentity F
+          (𝟙 X) A B).hom ▷
+        F.map (canonicalSourceHom (𝟙 X) C)) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B))
+        (F.map (canonicalSourceHom (𝟙 X) C))).hom ≫
+      (F.map (canonicalSourceHom (𝟙 X) A) ◁ k) ≫
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) B) ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C)))).inv ≫
+      ((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+        (F.map (canonicalSourceHom (𝟙 Y) B) ≫
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C)))))
+    hunit
+  let kLeft :=
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) B))
+      (F.map (canonicalSourceHom (𝟙 X) C))).inv ≫
+    ((generalLiftInverseSlidingSource F hF f B).hom ▷
+      F.map (canonicalSourceHom (𝟙 X) C)) ≫
+    (α_ (F.map (canonicalSourceHom (𝟙 Y) B))
+      (generalLiftSourceEquivalence F hF f).inv
+      (F.map (canonicalSourceHom (𝟙 X) C))).hom
+  slice_lhs 6 8 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← Bicategory.whiskerLeft_comp]
+  slice_lhs 4 7 =>
+    change
+      (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+        (generalLiftSourceEquivalence F hF f).hom
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          (F.map (canonicalSourceHom (𝟙 X) B) ≫
+            F.map (canonicalSourceHom (𝟙 X) C)))).inv ≫
+      ((generalLiftRetainedForwardFactorizationSource F hF f A).inv ▷
+        ((generalLiftSourceEquivalence F hF f).inv ≫
+          (F.map (canonicalSourceHom (𝟙 X) B) ≫
+            F.map (canonicalSourceHom (𝟙 X) C)))) ≫
+      (F.map (canonicalSourceHom f A) ◁ kLeft)
+    rw [forwardCancellation_tail
+      (generalLiftRetainedForwardFactorizationSource F hF f A).inv
+      kLeft]
+  rw [generalLiftForwardMapCompSource_identityNormalizations_eq
+    F X A B]
+  slice_rhs 1 4 =>
+    rw [forwardCancellation_prefix
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom]
+  slice_rhs 5 9 =>
+    rw [← forwardCancellation_suffix
+      (generalLiftForwardSlidingSource F hF f B).inv
+      (generalLiftRetainedForwardFactorizationSource F hF f A).inv
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) C))]
+  simpa only [kLeft, Bicategory.whiskerLeft_comp,
+    Category.assoc] using hunitContext
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict retained/forward/inverse source compositors satisfy
+the cancellation three-fold associativity law. -/
+theorem generalLiftRetainedForwardInverseMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (generalLiftForwardInverseMapCompSourceNormalized F hF f
+            B C).hom) =
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompSourceLeftIdentity F f A B).hom ▷
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))) ≫
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom f B))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom]
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  rw [generalLiftRetainedForwardFactorizationSource_tensor_inv
+    F hF f A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_rhs 7 8 =>
+    rw [← Bicategory.comp_whiskerRight, Iso.inv_hom_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceIdentity_associativity F X A B C]
+  simp only [Category.assoc]
+  rw [cancel_epi
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+      (A × B) C).hom]
+  rw [generalLiftForwardMapCompSource_identityNormalizations_eq
+    F X A B]
+  slice_rhs 1 4 =>
+    rw [forwardCancellation_prefix
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom]
+  slice_rhs 5 7 =>
+    rw [← forwardCancellation_factorizationSuffix
+      (generalLiftRetainedForwardFactorizationSource F hF f B).inv
+      ((generalLiftSourceEquivalence F hF f).inv ≫
+        F.map (canonicalSourceHom (𝟙 X) C))]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict forward/inverse/retained source compositors satisfy
+the cancellation three-fold associativity law. -/
+theorem generalLiftForwardInverseRetainedMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 X)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardInverseMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        (F.map (canonicalSourceHom f A) ◁
+          (generalLiftInverseRetainedMapCompSourceNormalized F hF f
+            B C).hom) =
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+          (A × B) C).hom ≫
+        ((generalLiftForwardInverseMapCompSourceNormalized F hF f A B).hom ▷
+          F.map (canonicalSourceHom (𝟙 X) C)) ≫
+        (α_ (F.map (canonicalSourceHom f A))
+          ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom (𝟙 X) C))).hom := by
+  rw [generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom]
+  rw [generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftForwardInverseMapCompFactorization_hom]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 3 6 =>
+    rw [← generalLiftForwardInverseUnitFactorization_compositor
+      F hF f A B C]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceIdentity_associativity F X A B C]
+  simp only [Category.assoc]
+  rw [cancel_epi
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X)
+      (A × B) C).hom]
+  rw [cancel_epi
+    ((generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B).hom ▷
+      F.map (canonicalSourceHom (𝟙 X) C))]
+  rw [equivalenceUnitInsertion_hom,
+    equivalenceUnitInsertion_hom]
+  bicategory
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict inverse/forward/retained source compositors satisfy
+the cancellation three-fold associativity law. -/
+theorem generalLiftInverseForwardRetainedMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 Y)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftInverseForwardMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        (((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) A)) ◁
+          (generalLiftForwardMapCompSourceRightIdentity F f B C).hom) =
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y)
+          (A × B) C).hom ≫
+        ((generalLiftInverseForwardMapCompSourceNormalized F hF f A B).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+        (α_ ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom f B))
+          (F.map (canonicalSourceHom (𝟙 Y) C))).hom := by
+  rw [generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom]
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom]
+  rw [generalLiftInverseForwardMapCompSliding_hom,
+    generalLiftInverseForwardMapCompSliding_hom]
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom,
+    generalLiftInverseForwardMapCompSlidingInner_hom]
+  rw [generalLiftInverseForwardMapCompFactorization_hom,
+    generalLiftInverseForwardMapCompFactorization_hom]
+  rw [generalLiftForwardFactorizationSource_tensor_inv F hF f B C]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 11 12 =>
+    rw [← Bicategory.whiskerLeft_comp, Iso.inv_hom_id]
+    simp
+  slice_lhs 3 10 =>
+    rw [inverseForward_rightWhisker
+      (generalLiftSourceEquivalence F hF f)
+      (generalLiftForwardSlidingSource F hF f A).hom
+      (generalLiftForwardFactorizationSource F hF f B).inv
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) B C).hom]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceIdentity_associativity F Y A B C]
+  simp
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The endpoint-strict inverse/retained/forward source compositors satisfy
+the cancellation three-fold associativity law. -/
+theorem generalLiftInverseRetainedForwardMapCompSource_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (A B C : Type) :
+    F.map₂ (canonicalSourceTwoCell (𝟙 Y)
+          (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftInverseForwardMapCompSourceNormalized F hF f
+          A (B × C)).hom ≫
+        (((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) A)) ◁
+          (generalLiftForwardMapCompSourceLeftIdentity F f B C).hom) =
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f
+          (A × B) C).hom ≫
+        ((generalLiftInverseRetainedMapCompSourceNormalized F hF f A B).hom ▷
+          F.map (canonicalSourceHom f C)) ≫
+        (α_ ((generalLiftSourceEquivalence F hF f).inv ≫
+            F.map (canonicalSourceHom (𝟙 X) A))
+          (F.map (canonicalSourceHom (𝟙 X) B))
+          (F.map (canonicalSourceHom f C))).hom := by
+  rw [generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom]
+  rw [generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom]
+  rw [generalLiftInverseForwardMapCompSliding_hom,
+    generalLiftInverseForwardMapCompSliding_hom]
+  rw [generalLiftInverseForwardMapCompSlidingInner_hom,
+    generalLiftInverseForwardMapCompSlidingInner_hom]
+  rw [generalLiftInverseForwardMapCompFactorization_hom,
+    generalLiftInverseForwardMapCompFactorization_hom]
+  rw [generalLiftForwardFactorizationSource_tensor_inv F hF f B C]
+  rw [generalLiftForwardSlidingSource_tensor F hF f A B]
+  rw [generalLiftForwardMapCompSource_identityNormalizations_eq F X A B]
+  simp only [Bicategory.whiskerLeft_comp,
+    Bicategory.comp_whiskerRight, Category.assoc]
+  slice_lhs 11 12 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      generalLiftForwardFactorizationSource_interchange F hF f B C]
+  simp only [Bicategory.whiskerLeft_comp]
+  slice_lhs 10 11 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← Bicategory.comp_whiskerRight,
+      ← generalLiftForwardSlidingSource_hom F hF f B]
+  slice_lhs 3 12 =>
+    rw [inverseForward_rightWhisker_factorization
+      (generalLiftSourceEquivalence F hF f)
+      (generalLiftForwardSlidingSource F hF f A).hom
+      (generalLiftForwardSlidingSource F hF f B).hom
+      (generalLiftForwardFactorizationSource F hF f C).inv
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) B C).hom]
+  slice_lhs 1 3 =>
+    rw [generalLiftForwardMapCompSourceIdentity_associativity F Y A B C]
+  simp
+  let η :=
+    (generalLiftForwardMapCompSourceRightIdentity F (𝟙 Y) A B).hom ▷
+      F.map (canonicalSourceHom (𝟙 Y) C)
+  let post :=
+    ((generalLiftSourceEquivalence F hF f).inv ◁
+      (α_ (generalLiftSourceEquivalence F hF f).hom
+        (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+          F.map (canonicalSourceHom (𝟙 Y) B))
+        (F.map (canonicalSourceHom (𝟙 Y) C))).inv) ≫
+    (α_ (generalLiftSourceEquivalence F hF f).inv
+        ((generalLiftSourceEquivalence F hF f).hom ≫
+          F.map (canonicalSourceHom (𝟙 Y) A) ≫
+            F.map (canonicalSourceHom (𝟙 Y) B))
+        (F.map (canonicalSourceHom (𝟙 Y) C))).inv ≫
+      (((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) A))
+          (F.map (canonicalSourceHom (𝟙 Y) B))).inv) ▷
+        F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+      (((generalLiftSourceEquivalence F hF f).inv ◁
+        ((generalLiftForwardSlidingSource F hF f A).hom ▷
+          F.map (canonicalSourceHom (𝟙 Y) B))) ▷
+        F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+      (((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          (generalLiftSourceEquivalence F hF f).hom
+          (F.map (canonicalSourceHom (𝟙 Y) B))).hom) ▷
+        F.map (canonicalSourceHom (𝟙 Y) C)) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) A) ≫
+          ((generalLiftSourceEquivalence F hF f).hom ≫
+            F.map (canonicalSourceHom (𝟙 Y) B)))
+        (F.map (canonicalSourceHom (𝟙 Y) C))).hom ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (α_ (F.map (canonicalSourceHom (𝟙 X) A))
+          ((generalLiftSourceEquivalence F hF f).hom ≫
+            F.map (canonicalSourceHom (𝟙 Y) B))
+          (F.map (canonicalSourceHom (𝟙 Y) C))).hom) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          ((generalLiftForwardSlidingSource F hF f B).hom ▷
+            F.map (canonicalSourceHom (𝟙 Y) C)))) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (α_ (F.map (canonicalSourceHom (𝟙 X) B))
+            (generalLiftSourceEquivalence F hF f).hom
+            (F.map (canonicalSourceHom (𝟙 Y) C))).hom)) ≫
+      ((generalLiftSourceEquivalence F hF f).inv ◁
+        (F.map (canonicalSourceHom (𝟙 X) A) ◁
+          (F.map (canonicalSourceHom (𝟙 X) B) ◁
+            (generalLiftForwardFactorizationSource F hF f C).inv))) ≫
+      (α_ (generalLiftSourceEquivalence F hF f).inv
+        (F.map (canonicalSourceHom (𝟙 X) A))
+        (F.map (canonicalSourceHom (𝟙 X) B) ≫
+          F.map (canonicalSourceHom f C))).inv
+  have hnat := equivalenceCounitInsertion_naturality
+    (generalLiftSourceEquivalence F hF f) η
+  have hnatPost := congrArg (fun u => u ≫ post) hnat
+  dsimp [η, post] at hnatPost
+  convert hnatPost using 1
+  · bicategory_nf
+    simp
+    rw [← equivalenceCounitInsertion_rightWhisker_assoc
+      (generalLiftSourceEquivalence F hF f)
+      (F.map (canonicalSourceHom (𝟙 Y) A) ≫
+        F.map (canonicalSourceHom (𝟙 Y) B))
+      (F.map (canonicalSourceHom (𝟙 Y) C))]
+    bicategory
+  · bicategory_nf
+    simp
+    have hconj := whiskerLeft_iso_conjugation_bicategorical
+      (generalLiftSourceEquivalence F hF f).inv
+      (generalLiftForwardMapCompSourceRightIdentity F (𝟙 X) A B)
+      (generalLiftForwardFactorizationSource F hF f C).inv
+    simp only [generalLiftSourceEquivalence_hom] at hconj
+    rw [hconj]
+
 /-- Source transport is natural in the inverse factor's retained
 coordinate. -/
 theorem generalLiftForwardInverseMapCompSourceTransport_naturality_right
@@ -7757,6 +12531,630 @@ theorem generalLiftForwardInverseMapCompTransport_naturality_left
       F hF f η B)
     (generalLiftForwardInverseMapCompFactors_naturality_left
       F hF f hf η B)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the forward/retained/inverse cancellation
+source associativity law. -/
+theorem generalLiftForwardRetainedInverseMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardInverseMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A) ◁
+          (generalLiftRetainedInverseMapCompTransport F hF f hf B C).hom =
+      (generalLiftForwardInverseMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompTransport F hF f (𝟙 Y) A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  simp only [generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardInverseMapCompFactors_hom,
+    generalLiftRetainedInverseMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompFactors_hom,
+    generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+        (A × (B × C))))
+    (c₀₁ := (generalLiftForwardMapCompSourceRightIdentity F
+      f A B).hom)
+    (c₁₂ :=
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f B C).hom)
+    (cL :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f
+        (A × B) C).hom)
+    (cR :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f
+        A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell (𝟙 X)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell (𝟙 X)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF (𝟙 X)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftForwardRetainedInverseMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the retained/forward/inverse cancellation
+source associativity law. -/
+theorem generalLiftRetainedForwardInverseMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompTransport F hF (𝟙 X) (𝟙 X)
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) A) ◁
+          (generalLiftForwardInverseMapCompTransport F hF f hf B C).hom =
+      (generalLiftForwardInverseMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftForwardMapCompTransport F hF (𝟙 X) f A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  simp only [generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom,
+    generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardInverseMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    generalLiftForwardMapCompSourceLeftIdentity_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+        (A × (B × C))))
+    (c₀₁ := (generalLiftForwardMapCompSourceLeftIdentity F
+      f A B).hom)
+    (c₁₂ :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f B C).hom)
+    (cL :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f
+        (A × B) C).hom)
+    (cR := (generalLiftForwardMapCompSourceRightIdentity F
+      (𝟙 X) A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell (𝟙 X)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell (𝟙 X)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF (𝟙 X)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftRetainedForwardInverseMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the forward/inverse/retained cancellation
+source associativity law. -/
+theorem generalLiftForwardInverseRetainedMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 X)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardInverseMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A) ◁
+          (generalLiftInverseRetainedMapCompTransport F hF f hf B C).hom =
+      (generalLiftForwardMapCompTransport F hF (𝟙 X) (𝟙 X)
+          (A × B) C).hom ≫
+        ((generalLiftForwardInverseMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) C))).hom := by
+  simp only [generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardInverseMapCompFactors_hom,
+    generalLiftInverseRetainedMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftInverseRetainedMapCompFactors_hom,
+    generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X)
+        (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ :=
+      (generalLiftInverseRetainedMapCompSourceNormalized F hF f B C).hom)
+    (cL := (generalLiftForwardMapCompSourceRightIdentity F
+      (𝟙 X) (A × B) C).hom)
+    (cR :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f
+        A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell (𝟙 X)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell (𝟙 X)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF (𝟙 X)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftForwardInverseRetainedMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the inverse/forward/retained cancellation
+source associativity law. -/
+theorem generalLiftInverseForwardRetainedMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftInverseForwardMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ◁
+          (generalLiftForwardMapCompTransport F hF f (𝟙 Y) B C).hom =
+      (generalLiftForwardMapCompTransport F hF (𝟙 Y) (𝟙 Y)
+          (A × B) C).hom ≫
+        ((generalLiftInverseForwardMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) C))).hom := by
+  simp only [generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompFactors_hom,
+    generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+        (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ := (generalLiftForwardMapCompSourceRightIdentity F
+      f B C).hom)
+    (cL := (generalLiftForwardMapCompSourceRightIdentity F
+      (𝟙 Y) (A × B) C).hom)
+    (cR :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f
+        A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell (𝟙 Y)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell (𝟙 Y)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF (𝟙 Y)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftInverseForwardRetainedMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the inverse/retained/forward cancellation
+source associativity law. -/
+theorem generalLiftInverseRetainedForwardMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftInverseForwardMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ◁
+          (generalLiftForwardMapCompTransport F hF (𝟙 X) f B C).hom =
+      (generalLiftInverseForwardMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftInverseRetainedMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C))).hom := by
+  simp only [generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompFactors_hom,
+    generalLiftInverseRetainedMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftInverseRetainedMapCompFactors_hom,
+    generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    generalLiftForwardMapCompSourceLeftIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+        (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftInverseRetainedMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ := (generalLiftForwardMapCompSourceLeftIdentity F
+      f B C).hom)
+    (cL :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f
+        (A × B) C).hom)
+    (cR :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f
+        A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell (𝟙 Y)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell (𝟙 Y)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF (𝟙 Y)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftInverseRetainedForwardMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the retained/inverse/forward cancellation
+source associativity law. -/
+theorem generalLiftRetainedInverseForwardMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell (𝟙 Y)
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompTransport F hF (𝟙 Y) (𝟙 Y)
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A) ◁
+          (generalLiftInverseForwardMapCompTransport F hF f hf B C).hom =
+      (generalLiftInverseForwardMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftRetainedInverseMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C))).hom := by
+  simp only [generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom,
+    generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompFactors_hom,
+    generalLiftRetainedInverseMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y)
+        (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f B C).hom)
+    (cL :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f
+        (A × B) C).hom)
+    (cR := (generalLiftForwardMapCompSourceRightIdentity F
+      (𝟙 Y) A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell (𝟙 Y)
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell (𝟙 Y)
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF (𝟙 Y)
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftRetainedInverseForwardMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the alternating forward/inverse/forward
+source associativity law. -/
+theorem generalLiftForwardInverseForwardMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalForwardTwoCell f
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftForwardMapCompTransport F hF f (𝟙 Y)
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A) ◁
+          (generalLiftInverseForwardMapCompTransport F hF f hf B C).hom =
+      (generalLiftForwardMapCompTransport F hF (𝟙 X) f
+          (A × B) C).hom ≫
+        ((generalLiftForwardInverseMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C))).hom := by
+  simp only [generalLiftForwardMapCompTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardMapCompFactors_hom,
+    generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompFactors_hom,
+    generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardInverseMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    generalLiftForwardMapCompSourceLeftIdentity_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f
+        (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f B C).hom)
+    (cL := (generalLiftForwardMapCompSourceLeftIdentity F
+      f (A × B) C).hom)
+    (cR := (generalLiftForwardMapCompSourceRightIdentity F
+      f A (B × C)).hom)
+    (aP := F.map₂ (canonicalSourceTwoCell f
+      (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalForwardTwoCell f
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂ForwardTransport F hF f
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftForwardInverseForwardMapCompSource_associativity
+      F hF f A B C)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Endpoint transport preserves the dual alternating
+inverse/forward/inverse source associativity law. -/
+theorem generalLiftInverseForwardInverseMapCompTransport_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (canonicalInverseTwoCell f
+            (MonoidalCategory.associator A B C).hom) ≫
+        (generalLiftInverseRetainedMapCompTransport F hF f hf
+          A (B × C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ◁
+          (generalLiftForwardInverseMapCompTransport F hF f hf B C).hom =
+      (generalLiftRetainedInverseMapCompTransport F hF f hf
+          (A × B) C).hom ≫
+        ((generalLiftInverseForwardMapCompTransport F hF f hf A B).hom ▷
+          (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C)) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  simp only [generalLiftInverseRetainedMapCompTransport_hom,
+    generalLiftInverseRetainedMapCompCore_hom,
+    generalLiftInverseRetainedMapCompFactors_hom,
+    generalLiftForwardInverseMapCompTransport_hom,
+    generalLiftForwardInverseMapCompSourceTransport_hom,
+    generalLiftForwardMapCompCore_hom,
+    generalLiftForwardInverseMapCompFactors_hom,
+    generalLiftRetainedInverseMapCompTransport_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftRetainedInverseMapCompFactors_hom,
+    generalLiftInverseForwardMapCompTransport_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftInverseForwardMapCompFactors_hom, Category.assoc]
+  simpa [eqToIso.hom, eqToIso.inv,
+    generalLiftInverseRetainedMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompSourceNormalized_hom,
+    generalLiftForwardInverseMapCompUnit_hom,
+    generalLiftForwardInverseMapCompFactorization_hom,
+    generalLiftRetainedInverseMapCompSourceNormalized_hom,
+    generalLiftRetainedInverseMapCompSliding_hom,
+    generalLiftInverseForwardMapCompSourceNormalized_hom,
+    generalLiftInverseForwardMapCompSourceTransport_hom,
+    generalLiftForwardMapCompSourceRightIdentity_hom,
+    Category.assoc] using
+    transportCompositor_associativity
+    (e₀ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf A))
+    (e₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF f B))
+    (e₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf C))
+    (e₀₁ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 Y) (A × B)))
+    (e₁₂ := eqToIso
+      (generalLiftPrelaxFunctor_map_forward F hF (𝟙 X) (B × C)))
+    (eL := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf
+        ((A × B) × C)))
+    (eR := eqToIso
+      (generalLiftPrelaxFunctor_map_inverse F hF f hf
+        (A × (B × C))))
+    (c₀₁ :=
+      (generalLiftInverseForwardMapCompSourceNormalized F hF f A B).hom)
+    (c₁₂ :=
+      (generalLiftForwardInverseMapCompSourceNormalized F hF f B C).hom)
+    (cL :=
+      (generalLiftRetainedInverseMapCompSourceNormalized F hF f
+        (A × B) C).hom)
+    (cR :=
+      (generalLiftInverseRetainedMapCompSourceNormalized F hF f
+        A (B × C)).hom)
+    (aP := (generalLiftSourceEquivalence F hF f).inv ◁
+      F.map₂ (canonicalSourceTwoCell (𝟙 X)
+        (MonoidalCategory.associator A B C).hom))
+    (aQ := (generalLiftPrelaxFunctor F hF).map₂
+      (canonicalInverseTwoCell f
+        (MonoidalCategory.associator A B C).hom))
+    (ha := generalLiftMap₂InverseTransport F hF f hf
+      (MonoidalCategory.associator A B C).hom)
+    (hc := generalLiftInverseForwardInverseMapCompSource_associativity
+      F hF f A B C)
 
 /-- Composition comparison for a canonical forward arrow followed by the
 matching inverse. -/
@@ -8515,6 +13913,56 @@ theorem generalLiftMapComp_forward
     exact (generalLiftMapComp_endpoint F hF 1 1 1 A B).trans
       (generalLiftEndpointMapComp_one_one_one F hF A B)
 
+/-- On a genuine forward arrow followed by its matching inverse, the
+all-arrow compositor selects the explicit forward/inverse cancellation
+comparison. -/
+theorem generalLiftMapComp_forwardInverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    generalLiftMapComp F hF
+        (canonicalForwardHom f A)
+        (canonicalInverseHom f B) =
+      generalLiftMapCompForwardInverse F hF f hf A B := by
+  fin_cases X <;> fin_cases Y
+  · exact False.elim (hf (by decide))
+  · have hf' : f = Ript.Examples.WalkingLocalization.arrow :=
+      Subsingleton.elim _ _
+    subst f
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    exact (generalLiftMapComp_endpoint F hF 0 1 0 A B).trans
+      (generalLiftEndpointMapComp_zero_one_zero F hF A B)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
+  · exact False.elim (hf (by decide))
+
+/-- On a genuine inverse arrow followed by its matching forward arrow, the
+all-arrow compositor selects the explicit inverse/forward cancellation
+comparison. -/
+theorem generalLiftMapComp_inverseForward
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    generalLiftMapComp F hF
+        (canonicalInverseHom f A)
+        (canonicalForwardHom f B) =
+      generalLiftMapCompInverseForward F hF f hf A B := by
+  fin_cases X <;> fin_cases Y
+  · exact False.elim (hf (by decide))
+  · have hf' : f = Ript.Examples.WalkingLocalization.arrow :=
+      Subsingleton.elim _ _
+    subst f
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    exact (generalLiftMapComp_endpoint F hF 1 0 1 A B).trans
+      (generalLiftEndpointMapComp_one_zero_one F hF A B)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
+  · exact False.elim (hf (by decide))
+
 /-- On a genuine inverse arrow followed by a retained endomorphism, the
 all-arrow compositor selects the explicit inverse/retained comparison. -/
 theorem generalLiftMapComp_inverseRetained
@@ -8536,6 +13984,30 @@ theorem generalLiftMapComp_inverseRetained
       (𝟙 (0 : Ript.Examples.WalkingLocalization.Arrow)) B
     exact (generalLiftMapComp_endpoint F hF 1 0 0 A B).trans
       (generalLiftEndpointMapComp_one_zero_zero F hF A B)
+  · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
+  · exact False.elim (hf (by decide))
+
+/-- On a retained endomorphism followed by a genuine inverse arrow, the
+all-arrow compositor selects the explicit retained/inverse comparison. -/
+theorem generalLiftMapComp_retainedInverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B : Type) :
+    generalLiftMapComp F hF
+        (canonicalForwardHom (𝟙 Y) A)
+        (canonicalInverseHom f B) =
+      generalLiftMapCompRetainedInverse F hF f hf A B := by
+  fin_cases X <;> fin_cases Y
+  · exact False.elim (hf (by decide))
+  · have hf' : f = Ript.Examples.WalkingLocalization.arrow :=
+      Subsingleton.elim _ _
+    subst f
+    cases canonicalEndpointHom_eq_forward
+      (𝟙 (1 : Ript.Examples.WalkingLocalization.Arrow)) A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    exact (generalLiftMapComp_endpoint F hF 1 1 0 A B).trans
+      (generalLiftEndpointMapComp_one_one_zero F hF A B)
   · exact False.elim ((by omega : ¬ (1 : Fin 2) ≤ 0) f.le)
   · exact False.elim (hf (by decide))
 
@@ -8679,6 +14151,718 @@ theorem generalLiftMapComp_inverseRetained_associativity
       F hF f A B C]
   slice_lhs 3 6 =>
     rw [generalLiftInverseRetainedMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for
+two retained-coordinate endomorphisms followed by a genuine inverse arrow. -/
+theorem generalLiftMapComp_retainedRetainedInverse_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 Y) A)
+            (canonicalForwardHom (𝟙 Y) B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A)
+          (canonicalForwardHom (𝟙 Y) B ≫
+            canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A) ◁
+          (generalLiftMapComp F hF
+            (canonicalForwardHom (𝟙 Y) B)
+            (canonicalInverseHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A ≫
+            canonicalForwardHom (𝟙 Y) B)
+          (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A)
+          (canonicalForwardHom (𝟙 Y) B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalInverseHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom (𝟙 Y) A)
+    (canonicalRetainedInverseCompositionComparison f B C)]
+  rw [generalLiftMapComp_retainedInverse F hF f hf A (B × C)]
+  rw [generalLiftMapComp_retainedInverse F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalForwardCompositionComparison (𝟙 Y) (𝟙 Y) A B)
+    (canonicalInverseHom f C)]
+  have hid : (𝟙 Y ≫ 𝟙 Y) = 𝟙 Y :=
+    Subsingleton.elim _ _
+  rw [hid]
+  rw [generalLiftMapComp_retainedInverse F hF f hf (A × B) C]
+  rw [generalLiftMapComp_forward F hF (𝟙 Y) (𝟙 Y) A B]
+  simp only [generalLiftMapCompRetainedInverse_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftRetainedInverseMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftRetainedInverseMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+retained endomorphism, a genuine inverse arrow, and a retained endomorphism. -/
+theorem generalLiftMapComp_retainedInverseRetained_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 Y) A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A)
+          (canonicalInverseHom f B ≫
+            canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A) ◁
+          (generalLiftMapComp F hF
+            (canonicalInverseHom f B)
+            (canonicalForwardHom (𝟙 X) C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A ≫
+            canonicalInverseHom f B)
+          (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A)
+          (canonicalInverseHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom (𝟙 X) C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom (𝟙 Y) A)
+    (canonicalInverseRetainedCompositionComparison f B C)]
+  rw [generalLiftMapComp_retainedInverse F hF f hf A (B × C)]
+  rw [generalLiftMapComp_inverseRetained F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalRetainedInverseCompositionComparison f A B)
+    (canonicalForwardHom (𝟙 X) C)]
+  rw [generalLiftMapComp_inverseRetained F hF f hf (A × B) C]
+  rw [generalLiftMapComp_retainedInverse F hF f hf A B]
+  simp only [generalLiftMapCompRetainedInverse_hom,
+    generalLiftMapCompInverseRetained_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftRetainedInverseRetainedMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftRetainedInverseRetainedMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for
+a genuine forward arrow, a retained endomorphism, and the matching inverse
+arrow. -/
+theorem generalLiftMapComp_forwardRetainedInverse_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A)
+            (canonicalForwardHom (𝟙 Y) B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom f A)
+          (canonicalForwardHom (𝟙 Y) B ≫
+            canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A) ◁
+          (generalLiftMapComp F hF
+            (canonicalForwardHom (𝟙 Y) B)
+            (canonicalInverseHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom f A ≫
+            canonicalForwardHom (𝟙 Y) B)
+          (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom f A)
+          (canonicalForwardHom (𝟙 Y) B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalInverseHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom f A)
+    (canonicalRetainedInverseCompositionComparison f B C)]
+  rw [generalLiftMapComp_forwardInverse F hF f hf A (B × C)]
+  rw [generalLiftMapComp_retainedInverse F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalForwardCompositionComparison f (𝟙 Y) A B)
+    (canonicalInverseHom f C)]
+  have hid : (f ≫ 𝟙 Y) = f := Subsingleton.elim _ _
+  rw [hid]
+  rw [generalLiftMapComp_forwardInverse F hF f hf (A × B) C]
+  rw [generalLiftMapComp_forward F hF f (𝟙 Y) A B]
+  simp only [generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompRetainedInverse_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftForwardRetainedInverseMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftForwardRetainedInverseMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+retained endomorphism, a genuine forward arrow, and the matching inverse. -/
+theorem generalLiftMapComp_retainedForwardInverse_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 X) A)
+            (canonicalForwardHom f B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 X) A)
+          (canonicalForwardHom f B ≫
+            canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) A) ◁
+          (generalLiftMapComp F hF
+            (canonicalForwardHom f B)
+            (canonicalInverseHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 X) A ≫
+            canonicalForwardHom f B)
+          (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 X) A)
+          (canonicalForwardHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalInverseHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom (𝟙 X) A)
+    (canonicalForwardInverseCompositionComparison f B C)]
+  rw [generalLiftMapComp_forward F hF (𝟙 X) (𝟙 X) A (B × C)]
+  rw [generalLiftMapComp_forwardInverse F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalForwardCompositionComparison (𝟙 X) f A B)
+    (canonicalInverseHom f C)]
+  have hid : (𝟙 X ≫ f) = f := Subsingleton.elim _ _
+  rw [hid]
+  rw [generalLiftMapComp_forwardInverse F hF f hf (A × B) C]
+  rw [generalLiftMapComp_forward F hF (𝟙 X) f A B]
+  simp only [generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftRetainedForwardInverseMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftRetainedForwardInverseMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+genuine forward arrow, its matching inverse, and a retained endomorphism. -/
+theorem generalLiftMapComp_forwardInverseRetained_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom f A)
+          (canonicalInverseHom f B ≫
+            canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A) ◁
+          (generalLiftMapComp F hF
+            (canonicalInverseHom f B)
+            (canonicalForwardHom (𝟙 X) C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom f A ≫
+            canonicalInverseHom f B)
+          (canonicalForwardHom (𝟙 X) C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom f A)
+          (canonicalInverseHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom (𝟙 X) C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom f A)
+    (canonicalInverseRetainedCompositionComparison f B C)]
+  rw [generalLiftMapComp_forwardInverse F hF f hf A (B × C)]
+  rw [generalLiftMapComp_inverseRetained F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalForwardInverseCompositionComparison f A B)
+    (canonicalForwardHom (𝟙 X) C)]
+  rw [generalLiftMapComp_forward F hF (𝟙 X) (𝟙 X) (A × B) C]
+  rw [generalLiftMapComp_forwardInverse F hF f hf A B]
+  simp only [generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompInverseRetained_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftForwardInverseRetainedMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftForwardInverseRetainedMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+genuine inverse arrow, its matching forward arrow, and a retained
+endomorphism. -/
+theorem generalLiftMapComp_inverseForwardRetained_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalInverseHom f A)
+            (canonicalForwardHom f B)
+            (canonicalForwardHom (𝟙 Y) C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalInverseHom f A)
+          (canonicalForwardHom f B ≫
+            canonicalForwardHom (𝟙 Y) C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ◁
+          (generalLiftMapComp F hF
+            (canonicalForwardHom f B)
+            (canonicalForwardHom (𝟙 Y) C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalInverseHom f A ≫
+            canonicalForwardHom f B)
+          (canonicalForwardHom (𝟙 Y) C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalInverseHom f A)
+          (canonicalForwardHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom (𝟙 Y) C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalInverseHom f A)
+    (canonicalForwardCompositionComparison f (𝟙 Y) B C)]
+  have hid : (f ≫ 𝟙 Y) = f := Subsingleton.elim _ _
+  rw [hid]
+  rw [generalLiftMapComp_inverseForward F hF f hf A (B × C)]
+  rw [generalLiftMapComp_forward F hF f (𝟙 Y) B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalInverseForwardCompositionComparison f A B)
+    (canonicalForwardHom (𝟙 Y) C)]
+  rw [generalLiftMapComp_forward F hF (𝟙 Y) (𝟙 Y) (A × B) C]
+  rw [generalLiftMapComp_inverseForward F hF f hf A B]
+  simp only [generalLiftMapCompInverseForward_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftInverseForwardRetainedMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftInverseForwardRetainedMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+genuine inverse arrow, a retained endomorphism, and the matching forward
+arrow. -/
+theorem generalLiftMapComp_inverseRetainedForward_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalInverseHom f A)
+            (canonicalForwardHom (𝟙 X) B)
+            (canonicalForwardHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalInverseHom f A)
+          (canonicalForwardHom (𝟙 X) B ≫
+            canonicalForwardHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ◁
+          (generalLiftMapComp F hF
+            (canonicalForwardHom (𝟙 X) B)
+            (canonicalForwardHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalInverseHom f A ≫
+            canonicalForwardHom (𝟙 X) B)
+          (canonicalForwardHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalInverseHom f A)
+          (canonicalForwardHom (𝟙 X) B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 X) B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalInverseHom f A)
+    (canonicalForwardCompositionComparison (𝟙 X) f B C)]
+  have hid : (𝟙 X ≫ f) = f := Subsingleton.elim _ _
+  rw [hid]
+  rw [generalLiftMapComp_inverseForward F hF f hf A (B × C)]
+  rw [generalLiftMapComp_forward F hF (𝟙 X) f B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalInverseRetainedCompositionComparison f A B)
+    (canonicalForwardHom f C)]
+  rw [generalLiftMapComp_inverseForward F hF f hf (A × B) C]
+  rw [generalLiftMapComp_inverseRetained F hF f hf A B]
+  simp only [generalLiftMapCompInverseForward_hom,
+    generalLiftMapCompInverseRetained_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftInverseRetainedForwardMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftInverseRetainedForwardMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+retained endomorphism, the matching inverse, and the matching forward arrow. -/
+theorem generalLiftMapComp_retainedInverseForward_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom (𝟙 Y) A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A)
+          (canonicalInverseHom f B ≫
+            canonicalForwardHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A) ◁
+          (generalLiftMapComp F hF
+            (canonicalInverseHom f B)
+            (canonicalForwardHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A ≫
+            canonicalInverseHom f B)
+          (canonicalForwardHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom (𝟙 Y) A)
+          (canonicalInverseHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom (𝟙 Y) A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom (𝟙 Y) A)
+    (canonicalInverseForwardCompositionComparison f B C)]
+  rw [generalLiftMapComp_forward F hF (𝟙 Y) (𝟙 Y)
+    A (B × C)]
+  rw [generalLiftMapComp_inverseForward F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalRetainedInverseCompositionComparison f A B)
+    (canonicalForwardHom f C)]
+  rw [generalLiftMapComp_inverseForward F hF f hf (A × B) C]
+  rw [generalLiftMapComp_retainedInverse F hF f hf A B]
+  simp only [generalLiftMapCompInverseForward_hom,
+    generalLiftMapCompRetainedInverse_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftRetainedInverseForwardMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftRetainedInverseForwardMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for a
+forward arrow, its matching inverse, and the forward arrow again. -/
+theorem generalLiftMapComp_forwardInverseForward_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalForwardHom f A)
+            (canonicalInverseHom f B)
+            (canonicalForwardHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom f A)
+          (canonicalInverseHom f B ≫
+            canonicalForwardHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A) ◁
+          (generalLiftMapComp F hF
+            (canonicalInverseHom f B)
+            (canonicalForwardHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalForwardHom f A ≫
+            canonicalInverseHom f B)
+          (canonicalForwardHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalForwardHom f A)
+          (canonicalInverseHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalForwardHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalForwardHom f A)
+    (canonicalInverseForwardCompositionComparison f B C)]
+  rw [generalLiftMapComp_forward F hF f (𝟙 Y) A (B × C)]
+  rw [generalLiftMapComp_inverseForward F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalForwardInverseCompositionComparison f A B)
+    (canonicalForwardHom f C)]
+  rw [generalLiftMapComp_forward F hF (𝟙 X) f (A × B) C]
+  rw [generalLiftMapComp_forwardInverse F hF f hf A B]
+  simp only [generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompInverseForward_hom,
+    generalLiftMapCompForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftForwardInverseForwardMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftForwardInverseForwardMapCompTransport_associativity
+      F hF f hf A B C]
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies the full oplax associativity law for
+an inverse arrow, its matching forward arrow, and the inverse arrow again. -/
+theorem generalLiftMapComp_inverseForwardInverse_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Ript.Examples.WalkingLocalization.Arrow}
+    (f : X ⟶ Y) (hf : ¬ Y ≤ X) (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalInverseHom f A)
+            (canonicalForwardHom f B)
+            (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalInverseHom f A)
+          (canonicalForwardHom f B ≫
+            canonicalInverseHom f C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A) ◁
+          (generalLiftMapComp F hF
+            (canonicalForwardHom f B)
+            (canonicalInverseHom f C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalInverseHom f A ≫
+            canonicalForwardHom f B)
+          (canonicalInverseHom f C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalInverseHom f A)
+          (canonicalForwardHom f B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalInverseHom f C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalForwardHom f B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalInverseHom f C))).hom := by
+  rw [generalLiftMapComp_iso_right_hom F hF
+    (canonicalInverseHom f A)
+    (canonicalForwardInverseCompositionComparison f B C)]
+  rw [generalLiftMapComp_inverseRetained F hF f hf A (B × C)]
+  rw [generalLiftMapComp_forwardInverse F hF f hf B C]
+  rw [generalLiftMapComp_iso_left_hom F hF
+    (canonicalInverseForwardCompositionComparison f A B)
+    (canonicalInverseHom f C)]
+  rw [generalLiftMapComp_retainedInverse F hF f hf (A × B) C]
+  rw [generalLiftMapComp_inverseForward F hF f hf A B]
+  simp only [generalLiftMapCompInverseRetained_hom,
+    generalLiftMapCompForwardInverse_hom,
+    generalLiftMapCompRetainedInverse_hom,
+    generalLiftMapCompInverseForward_hom,
+    Bicategory.whiskerLeft_comp, Bicategory.comp_whiskerRight,
+    Category.assoc]
+  slice_lhs 5 6 =>
+    rw [← Bicategory.whiskerLeft_comp,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  slice_rhs 4 5 =>
+    rw [← Bicategory.comp_whiskerRight,
+      ← (generalLiftPrelaxFunctor F hF).map₂_comp,
+      Iso.inv_hom_id,
+      (generalLiftPrelaxFunctor F hF).map₂_id]
+    simp
+  simp only [Category.id_comp]
+  slice_lhs 1 3 =>
+    rw [← generalLiftInverseForwardInverseMapCompTarget_associativity
+      F hF f A B C]
+  slice_lhs 3 6 =>
+    rw [generalLiftInverseForwardInverseMapCompTransport_associativity
       F hF f hf A B C]
 
 /-! ## The forward left-unit coherence frontier -/
@@ -10063,6 +16247,1300 @@ theorem generalLiftRightUnitor
   cases hX
   cases hY
   exact generalLiftRightUnitor_canonicalObjects F hF f
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The all-arrow compositor satisfies oplax associativity on every triple
+of endpoint-normal arrows.  The sixteen endpoint sequences reduce to the
+twelve compiled forward, retained, inverse, and cancellation laws. -/
+theorem generalLiftEndpointMapComp_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    (W X Y Z : Ript.Examples.WalkingLocalization.Arrow)
+    (A B C : Type) :
+    (generalLiftPrelaxFunctor F hF).map₂
+          (α_ (canonicalEndpointHom W X A)
+            (canonicalEndpointHom X Y B)
+            (canonicalEndpointHom Y Z C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalEndpointHom W X A)
+          (canonicalEndpointHom X Y B ≫
+            canonicalEndpointHom Y Z C)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom W X A) ◁
+          (generalLiftMapComp F hF
+            (canonicalEndpointHom X Y B)
+            (canonicalEndpointHom Y Z C)).hom =
+      (generalLiftMapComp F hF
+          (canonicalEndpointHom W X A ≫
+            canonicalEndpointHom X Y B)
+          (canonicalEndpointHom Y Z C)).hom ≫
+        (generalLiftMapComp F hF
+          (canonicalEndpointHom W X A)
+          (canonicalEndpointHom X Y B)).hom ▷
+            (generalLiftPrelaxFunctor F hF).map
+              (canonicalEndpointHom Y Z C) ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom W X A))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom X Y B))
+          ((generalLiftPrelaxFunctor F hF).map
+            (canonicalEndpointHom Y Z C))).hom := by
+  rcases walkingArrow_eq_zero_or_one W with rfl | rfl <;>
+    rcases walkingArrow_eq_zero_or_one X with rfl | rfl <;>
+      rcases walkingArrow_eq_zero_or_one Y with rfl | rfl <;>
+        rcases walkingArrow_eq_zero_or_one Z with rfl | rfl
+  · cases canonicalEndpointHom_eq_forward (𝟙 0) A
+    cases canonicalEndpointHom_eq_forward (𝟙 0) B
+    cases canonicalEndpointHom_eq_forward (𝟙 0) C
+    exact generalLiftMapComp_forward_associativity F hF
+      (𝟙 0) (𝟙 0) (𝟙 0) A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 0) A
+    cases canonicalEndpointHom_eq_forward (𝟙 0) B
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_forward_associativity F hF
+      (𝟙 0) (𝟙 0) Ript.Examples.WalkingLocalization.arrow A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 0) A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_retainedForwardInverse_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 0) A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward (𝟙 1) C
+    exact generalLiftMapComp_forward_associativity F hF
+      (𝟙 0) Ript.Examples.WalkingLocalization.arrow (𝟙 1) A B C
+  · cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward (𝟙 0) C
+    exact generalLiftMapComp_forwardInverseRetained_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_forwardInverseForward_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward (𝟙 1) B
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_forwardRetainedInverse_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward (𝟙 1) B
+    cases canonicalEndpointHom_eq_forward (𝟙 1) C
+    exact generalLiftMapComp_forward_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (𝟙 1) (𝟙 1) A B C
+  · cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward (𝟙 0) B
+    cases canonicalEndpointHom_eq_forward (𝟙 0) C
+    exact generalLiftMapComp_inverseRetained_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward (𝟙 0) B
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_inverseRetainedForward_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_inverseForwardInverse_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow A
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward (𝟙 1) C
+    exact generalLiftMapComp_inverseForwardRetained_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 1) A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward (𝟙 0) C
+    exact generalLiftMapComp_retainedInverseRetained_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 1) A
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow B
+    cases canonicalEndpointHom_eq_forward
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_retainedInverseForward_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 1) A
+    cases canonicalEndpointHom_eq_forward (𝟙 1) B
+    cases canonicalEndpointHom_eq_inverse
+      Ript.Examples.WalkingLocalization.arrow C
+    exact generalLiftMapComp_retainedRetainedInverse_associativity F hF
+      Ript.Examples.WalkingLocalization.arrow (by decide) A B C
+  · cases canonicalEndpointHom_eq_forward (𝟙 1) A
+    cases canonicalEndpointHom_eq_forward (𝟙 1) B
+    cases canonicalEndpointHom_eq_forward (𝟙 1) C
+    exact generalLiftMapComp_forward_associativity F hF
+      (𝟙 1) (𝟙 1) (𝟙 1) A B C
+
+private theorem generalLiftMapComp_associativity_canonicalObjects
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {W X Y Z : Ript.Examples.WalkingLocalization.Arrow}
+    (f : canonicalTargetObject W ⟶ canonicalTargetObject X)
+    (g : canonicalTargetObject X ⟶ canonicalTargetObject Y)
+    (h : canonicalTargetObject Y ⟶ canonicalTargetObject Z) :
+    (generalLiftPrelaxFunctor F hF).map₂ (α_ f g h).hom ≫
+        (generalLiftMapComp F hF f (g ≫ h)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftMapComp F hF g h).hom =
+      (generalLiftMapComp F hF (f ≫ g) h).hom ≫
+        (generalLiftMapComp F hF f g).hom ▷
+          (generalLiftPrelaxFunctor F hF).map h ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map f)
+          ((generalLiftPrelaxFunctor F hF).map g)
+          ((generalLiftPrelaxFunctor F hF).map h)).hom := by
+  rcases f with ⟨⟨f⟩, A⟩
+  rcases g with ⟨⟨g⟩, B⟩
+  rcases h with ⟨⟨h⟩, C⟩
+  have hf : f = canonicalCompletionHom W X :=
+    completion_hom_eq_canonical f
+  have hg : g = canonicalCompletionHom X Y :=
+    completion_hom_eq_canonical g
+  have hh : h = canonicalCompletionHom Y Z :=
+    completion_hom_eq_canonical h
+  cases hf
+  cases hg
+  cases hh
+  exact generalLiftEndpointMapComp_associativity F hF W X Y Z A B C
+
+/-- The all-arrow compositor satisfies the full oplax associativity equation
+for every triple of target arrows, without any local-thinness assumption on
+the codomain bicategory. -/
+theorem generalLiftMapComp_associativity
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {W X Y Z : Target} (f : W ⟶ X) (g : X ⟶ Y) (h : Y ⟶ Z) :
+    (generalLiftPrelaxFunctor F hF).map₂ (α_ f g h).hom ≫
+        (generalLiftMapComp F hF f (g ≫ h)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftMapComp F hF g h).hom =
+      (generalLiftMapComp F hF (f ≫ g) h).hom ≫
+        (generalLiftMapComp F hF f g).hom ▷
+          (generalLiftPrelaxFunctor F hF).map h ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map f)
+          ((generalLiftPrelaxFunctor F hF).map g)
+          ((generalLiftPrelaxFunctor F hF).map h)).hom := by
+  rcases W with ⟨⟨W⟩, W'⟩
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  rcases Z with ⟨⟨Z⟩, Z'⟩
+  cases W'
+  cases X'
+  cases Y'
+  cases Z'
+  let w : Ript.Examples.WalkingLocalization.Arrow := W.as.as
+  let x : Ript.Examples.WalkingLocalization.Arrow := X.as.as
+  let y : Ript.Examples.WalkingLocalization.Arrow := Y.as.as
+  let z : Ript.Examples.WalkingLocalization.Arrow := Z.as.as
+  have hW : W = CategoryTheory.FreeGroupoid.mk w :=
+    CategoryTheory.FreeGroupoid.eq_mk W
+  have hX : X = CategoryTheory.FreeGroupoid.mk x :=
+    CategoryTheory.FreeGroupoid.eq_mk X
+  have hY : Y = CategoryTheory.FreeGroupoid.mk y :=
+    CategoryTheory.FreeGroupoid.eq_mk Y
+  have hZ : Z = CategoryTheory.FreeGroupoid.mk z :=
+    CategoryTheory.FreeGroupoid.eq_mk Z
+  cases hW
+  cases hX
+  cases hY
+  cases hZ
+  exact generalLiftMapComp_associativity_canonicalObjects F hF f g h
+
+/-- An arbitrary source pseudofunctor that inverts the marked walking arrow
+extends to a genuine pseudofunctor on the two-dimensional localization. -/
+noncomputable def generalLiftPseudofunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) : Target ⥤ᵖ E where
+  toPrelaxFunctor := generalLiftPrelaxFunctor F hF
+  mapId := generalLiftMapId F hF
+  mapComp := generalLiftMapComp F hF
+  map₂_whisker_left := by
+    intro a b c f g h η
+    rw [← cancel_mono (generalLiftMapComp F hF f h).hom]
+    simp only [Category.assoc]
+    simp
+    exact generalLiftMapComp_naturality_right F hF f η
+  map₂_whisker_right := by
+    intro a b c f g η h
+    rw [← cancel_mono (generalLiftMapComp F hF g h).hom]
+    simp only [Category.assoc]
+    simp
+    exact generalLiftMapComp_naturality_left F hF η h
+  map₂_associator := by
+    intro a b c d f g h
+    rw [← cancel_mono
+      ((generalLiftMapComp F hF f (g ≫ h)).hom ≫
+        ((generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftMapComp F hF g h).hom))]
+    simp only [Category.assoc]
+    simp
+    exact generalLiftMapComp_associativity F hF f g h
+  map₂_left_unitor := by
+    intro a b f
+    exact generalLiftLeftUnitor F hF f
+  map₂_right_unitor := by
+    intro a b f
+    exact generalLiftRightUnitor F hF f
+
+/-- The genuine arbitrary lift has exactly the previously constructed
+prelax action as its underlying object/arrow/2-cell map. -/
+theorem generalLiftPseudofunctor_toPrelaxFunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    (generalLiftPseudofunctor F hF).toPrelaxFunctor =
+      generalLiftPrelaxFunctor F hF :=
+  rfl
+
+/-- The general lift maps every included source arrow exactly as the original
+source pseudofunctor. -/
+theorem generalLiftPseudofunctor_map_inclusion
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Source} (f : X ⟶ Y) :
+    (generalLiftPseudofunctor F hF).map (inclusion.map f) = F.map f := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  rcases f with ⟨⟨f⟩, A⟩
+  exact generalLiftPrelaxFunctor_map_forward F hF f A
+
+/-- The general lift and the original source pseudofunctor agree on objects
+after precomposition with the walking inclusion. -/
+theorem generalLiftPseudofunctor_obj_inclusion
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Source) :
+    (inclusion.comp (generalLiftPseudofunctor F hF)).obj X = F.obj X := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  rfl
+
+/-! ## Arbitrary factorization and the full localization theorem -/
+
+/-- Transport an `HEq` between bicategorical 1-morphisms across object
+equalities to the canonical naturality 2-isomorphism. -/
+noncomputable def generalLiftFactorizationNaturalityOfHEq
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {X Y X' Y' : C} (hX : X = X') (hY : Y = Y')
+    {f : X ⟶ Y} {g : X' ⟶ Y'} (h : HEq f g) :
+    f ≫ eqToHom hY ≅ eqToHom hX ≫ g := by
+  subst X'
+  subst Y'
+  exact (ρ_ f) ≪≫ eqToIso (eq_of_heq h) ≪≫ (λ_ g).symm
+
+/-- The transported `HEq` naturality is compatible with arbitrary
+heterogeneously equal 2-morphisms. -/
+theorem generalLiftFactorizationNaturalityOfHEq_naturality
+    {C : Type u₂} [Bicategory.{w₂, v₂} C]
+    {X Y X' Y' : C} (hX : X = X') (hY : Y = Y')
+    {f₀ f₁ : X ⟶ Y} {g₀ g₁ : X' ⟶ Y'}
+    (hf₀ : HEq f₀ g₀) (hf₁ : HEq f₁ g₁)
+    {η : f₀ ⟶ f₁} {θ : g₀ ⟶ g₁} (hη : HEq η θ) :
+    (η ▷ eqToHom hY) ≫
+        (generalLiftFactorizationNaturalityOfHEq hX hY hf₁).hom =
+      (generalLiftFactorizationNaturalityOfHEq hX hY hf₀).hom ≫
+        (eqToHom hX ◁ θ) := by
+  subst X'
+  subst Y'
+  have e₀ := eq_of_heq hf₀
+  have e₁ := eq_of_heq hf₁
+  subst g₀
+  subst g₁
+  have eη := eq_of_heq hη
+  subst θ
+  dsimp [generalLiftFactorizationNaturalityOfHEq]
+  simp
+
+/-- The restriction of the general lift maps every source arrow
+heterogeneously equally to the original pseudofunctor. -/
+theorem generalLiftPseudofunctor_map_inclusion_heq
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {a b : Source} (f : a ⟶ b) :
+    HEq ((inclusion.comp (generalLiftPseudofunctor F hF)).map f)
+      (F.map f) :=
+  heq_of_eq (generalLiftPseudofunctor_map_inclusion F hF f)
+
+/-- The restriction of the general lift agrees with the original
+pseudofunctor on every source 2-morphism. -/
+theorem generalLiftPseudofunctor_map₂_inclusion_heq
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {a b : Source} {f g : a ⟶ b} (η : f ⟶ g) :
+    HEq ((inclusion.comp (generalLiftPseudofunctor F hF)).map₂ η)
+      (F.map₂ η) := by
+  rcases a with ⟨⟨a⟩, a'⟩
+  rcases b with ⟨⟨b⟩, b'⟩
+  cases a'
+  cases b'
+  rcases f with ⟨⟨f⟩, A⟩
+  rcases g with ⟨⟨g⟩, B⟩
+  rcases η with ⟨η, θ⟩
+  have hfg : f = g := Subsingleton.elim _ _
+  cases hfg
+  have hη : η = 𝟙 _ := Subsingleton.elim _ _
+  cases hη
+  exact generalLiftPrelaxFunctor_map₂_forward F hF f θ
+
+set_option linter.defProp false in
+/-- Object equality underlying the restriction comparison.  It is kept
+reducible because the comparison components are transported identities. -/
+def generalLiftFactorizationObjEq
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Source) :
+    (inclusion.comp (generalLiftPseudofunctor F hF)).obj X = F.obj X := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  rfl
+
+/-- Identity component of the comparison from the restricted general lift
+to the original source pseudofunctor. -/
+noncomputable def generalLiftFactorizationApp
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Source) :
+    (inclusion.comp (generalLiftPseudofunctor F hF)).obj X ⟶ F.obj X := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  exact 𝟙 _
+
+/-- Canonical naturality isomorphism for the forward restriction
+comparison. -/
+noncomputable def generalLiftFactorizationNaturality
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Source} (f : X ⟶ Y) :
+    (inclusion.comp (generalLiftPseudofunctor F hF)).map f ≫
+        generalLiftFactorizationApp F hF Y ≅
+      generalLiftFactorizationApp F hF X ≫ F.map f :=
+by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  exact generalLiftFactorizationNaturalityOfHEq
+    (rfl : (inclusion.comp (generalLiftPseudofunctor F hF)).obj
+      ((LocallyDiscrete.mk X, PUnit.unit) : Source) =
+        F.obj ((LocallyDiscrete.mk X, PUnit.unit) : Source))
+    (rfl : (inclusion.comp (generalLiftPseudofunctor F hF)).obj
+      ((LocallyDiscrete.mk Y, PUnit.unit) : Source) =
+        F.obj ((LocallyDiscrete.mk Y, PUnit.unit) : Source))
+    (generalLiftPseudofunctor_map_inclusion_heq F hF f)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The forward strong transformation from the restricted general lift to
+the original source pseudofunctor. -/
+noncomputable def generalLiftFactorizationHom
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    inclusion.comp (generalLiftPseudofunctor F hF) ⟶ F where
+  app := generalLiftFactorizationApp F hF
+  naturality := generalLiftFactorizationNaturality F hF
+  naturality_naturality := by
+    intro a b f g η
+    exact generalLiftFactorizationNaturalityOfHEq_naturality
+      (generalLiftFactorizationObjEq F hF a)
+      (generalLiftFactorizationObjEq F hF b)
+      (generalLiftPseudofunctor_map_inclusion_heq F hF f)
+      (generalLiftPseudofunctor_map_inclusion_heq F hF g)
+      (generalLiftPseudofunctor_map₂_inclusion_heq F hF η)
+  naturality_id := by
+    intro a
+    rcases a with ⟨⟨a⟩, a'⟩
+    cases a'
+    have hrestrictionMapIdRaw :
+        ((inclusion.comp (generalLiftPseudofunctor F hF)).mapId
+          ((LocallyDiscrete.mk a, PUnit.unit) : Source)).hom =
+        (generalLiftPseudofunctor F hF).map₂
+            (canonicalForwardIdentityComparison a).hom ≫
+          (generalLiftPseudofunctor F hF).map₂
+            (canonicalForwardIdentityComparison a).inv ≫
+          eqToHom (generalLiftPrelaxFunctor_map_forward F hF (𝟙 a)
+            (𝟙 (MonoidalSingleObj.star (Type)))) ≫
+          F.map₂ (canonicalSourceIdentityComparison a).hom ≫
+          (F.mapId ((LocallyDiscrete.mk a, PUnit.unit) : Source)).hom := by
+      rfl
+    have hrestrictionMapIdSimpleRaw :
+        ((inclusion.comp (generalLiftPseudofunctor F hF)).mapId
+          ((LocallyDiscrete.mk a, PUnit.unit) : Source)).hom =
+        eqToHom (generalLiftPrelaxFunctor_map_forward F hF (𝟙 a)
+            (𝟙 (MonoidalSingleObj.star (Type)))) ≫
+          F.map₂ (canonicalSourceIdentityComparison a).hom ≫
+          (F.mapId ((LocallyDiscrete.mk a, PUnit.unit) : Source)).hom := by
+      rw [hrestrictionMapIdRaw]
+      have hcancel :
+          (generalLiftPseudofunctor F hF).map₂
+                (canonicalForwardIdentityComparison a).hom ≫
+              (generalLiftPseudofunctor F hF).map₂
+                (canonicalForwardIdentityComparison a).inv =
+            𝟙 _ := by
+        rw [← (generalLiftPseudofunctor F hF).map₂_comp,
+          Iso.hom_inv_id,
+          (generalLiftPseudofunctor F hF).map₂_id]
+      let tail :=
+          eqToHom (generalLiftPrelaxFunctor_map_forward F hF (𝟙 a)
+            (𝟙 (MonoidalSingleObj.star (Type)))) ≫
+          F.map₂ (canonicalSourceIdentityComparison a).hom ≫
+          (F.mapId ((LocallyDiscrete.mk a, PUnit.unit) : Source)).hom
+      change _ ≫ _ ≫ tail = tail
+      calc
+        _ = (((generalLiftPseudofunctor F hF).map₂
+              (canonicalForwardIdentityComparison a).hom ≫
+            (generalLiftPseudofunctor F hF).map₂
+              (canonicalForwardIdentityComparison a).inv) ≫ tail) :=
+          (Category.assoc _ _ _).symm
+        _ = tail := by rw [hcancel]; simp
+    have hrestrictionMapIdW := congrArg
+      (fun k => k ▷ generalLiftFactorizationApp F hF
+        ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+      hrestrictionMapIdSimpleRaw
+    simp only [Bicategory.comp_whiskerRight] at hrestrictionMapIdW
+    rw [hrestrictionMapIdW]
+    have hsourceId : (canonicalSourceIdentityComparison a).hom =
+        𝟙 (canonicalSourceHom (𝟙 a)
+          (𝟙 (MonoidalSingleObj.star (Type)))) := by
+      rfl
+    rw [hsourceId, F.map₂_id]
+    simp [generalLiftFactorizationApp,
+      generalLiftFactorizationNaturality,
+      generalLiftFactorizationNaturalityOfHEq]
+    bicategory
+  naturality_comp := by
+    intro a b c f g
+    rcases a with ⟨⟨a⟩, a'⟩
+    rcases b with ⟨⟨b⟩, b'⟩
+    rcases c with ⟨⟨c⟩, c'⟩
+    cases a'
+    cases b'
+    cases c'
+    rcases f with ⟨⟨f⟩, A⟩
+    rcases g with ⟨⟨g⟩, B⟩
+    let fRaw :
+        ((LocallyDiscrete.mk a, PUnit.unit) : Source) ⟶
+          ((LocallyDiscrete.mk b, PUnit.unit) : Source) :=
+      (⟨f⟩, A)
+    let gRaw :
+        ((LocallyDiscrete.mk b, PUnit.unit) : Source) ⟶
+          ((LocallyDiscrete.mk c, PUnit.unit) : Source) :=
+      (⟨g⟩, B)
+    have hmapf : inclusion.map fRaw = canonicalForwardHom f A := rfl
+    have hmapg : inclusion.map gRaw = canonicalForwardHom g B := rfl
+    have hinclusionMapComp :
+        inclusion.mapComp fRaw gRaw =
+        (canonicalForwardCompositionComparison f g A B).symm := by
+      apply Iso.ext
+      apply Prod.ext
+      · exact Subsingleton.elim _ _
+      · rfl
+    have hgeneralLiftMapComp :
+        generalLiftMapComp F hF (inclusion.map fRaw)
+          (inclusion.map gRaw) =
+        generalLiftMapCompForward F hF f g A B := by
+      cases hmapf
+      cases hmapg
+      exact generalLiftMapComp_forward F hF f g A B
+    have hrestrictionMapComp :
+        ((inclusion.comp (generalLiftPseudofunctor F hF)).mapComp
+          fRaw gRaw).hom =
+          (generalLiftPseudofunctor F hF).map₂
+            (canonicalForwardCompositionComparison f g A B).inv ≫
+          (generalLiftMapCompForward F hF f g A B).hom := by
+      change
+        (((generalLiftPseudofunctor F hF).map₂Iso
+            (inclusion.mapComp fRaw gRaw)) ≪≫
+          generalLiftMapComp F hF
+            (inclusion.map fRaw) (inclusion.map gRaw)).hom = _
+      rw [hinclusionMapComp]
+      rw [hgeneralLiftMapComp]
+      rfl
+    have hrestrictionMapCompSimple :
+        ((inclusion.comp (generalLiftPseudofunctor F hF)).mapComp
+          fRaw gRaw).hom =
+        (generalLiftForwardMapCompTransport F hF f g A B).hom := by
+      rw [hrestrictionMapComp]
+      rw [generalLiftMapCompForward_hom]
+      have hcancel :
+          (generalLiftPseudofunctor F hF).map₂
+                (canonicalForwardCompositionComparison f g A B).inv ≫
+              (generalLiftPseudofunctor F hF).map₂
+                (canonicalForwardCompositionComparison f g A B).hom =
+            𝟙 _ := by
+        rw [← (generalLiftPseudofunctor F hF).map₂_comp,
+          Iso.inv_hom_id,
+          (generalLiftPseudofunctor F hF).map₂_id]
+      let tail :=
+        (generalLiftForwardMapCompTransport F hF f g A B).hom
+      change _ ≫ _ ≫ tail = tail
+      calc
+        _ = (((generalLiftPseudofunctor F hF).map₂
+              (canonicalForwardCompositionComparison f g A B).inv ≫
+            (generalLiftPseudofunctor F hF).map₂
+              (canonicalForwardCompositionComparison f g A B).hom) ≫
+              tail) := (Category.assoc _ _ _).symm
+        _ = tail := by rw [hcancel]; simp
+    have hrestrictionMapCompW := congrArg
+      (fun k => k ▷ generalLiftFactorizationApp F hF
+        ((LocallyDiscrete.mk c, PUnit.unit) : Source))
+      hrestrictionMapCompSimple
+    change
+      (generalLiftFactorizationNaturality F hF (fRaw ≫ gRaw)).hom ≫
+        generalLiftFactorizationApp F hF
+          ((LocallyDiscrete.mk a, PUnit.unit) : Source) ◁
+          (F.mapComp fRaw gRaw).hom =
+      ((inclusion.comp (generalLiftPseudofunctor F hF)).mapComp
+          fRaw gRaw).hom ▷
+          generalLiftFactorizationApp F hF
+            ((LocallyDiscrete.mk c, PUnit.unit) : Source) ≫
+        (α_ ((inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw)
+          ((inclusion.comp (generalLiftPseudofunctor F hF)).map gRaw)
+          (generalLiftFactorizationApp F hF
+            ((LocallyDiscrete.mk c, PUnit.unit) : Source))).hom ≫
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw ◁
+          (generalLiftFactorizationNaturality F hF gRaw).hom ≫
+        (α_ ((inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw)
+          (generalLiftFactorizationApp F hF
+            ((LocallyDiscrete.mk b, PUnit.unit) : Source))
+          (F.map gRaw)).inv ≫
+        (generalLiftFactorizationNaturality F hF fRaw).hom ▷ F.map gRaw ≫
+        (α_ (generalLiftFactorizationApp F hF
+          ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+          (F.map fRaw) (F.map gRaw)).hom
+    rw [hrestrictionMapCompW]
+    rw [generalLiftForwardMapCompTransport_hom,
+      generalLiftForwardMapCompCore_hom,
+      generalLiftForwardMapCompFactors_hom]
+    simp only [generalLiftForwardMapCompSource, Iso.trans_hom,
+      PrelaxFunctor.map₂Iso_hom, Category.assoc]
+    simp [generalLiftFactorizationApp,
+      generalLiftFactorizationNaturality,
+      generalLiftFactorizationNaturalityOfHEq]
+    have hsourceComp :
+        (canonicalSourceCompositionComparison f g A B).inv =
+          𝟙 (canonicalSourceHom (f ≫ g) (A × B)) := by
+      rfl
+    rw [hsourceComp, F.map₂_id]
+    simp
+    bicategory
+    simp
+    bicategory_nf
+    simp
+    have hfRestr :
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw =
+          F.map fRaw := eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF fRaw)
+    have hgRestr :
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map gRaw =
+          F.map gRaw := eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF gRaw)
+    have hpair :
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw ≫
+            (inclusion.comp (generalLiftPseudofunctor F hF)).map gRaw =
+          F.map fRaw ≫ F.map gRaw := by
+      rw [hfRestr, hgRestr]
+    let ePair := eqToIso hpair
+    have hexplicit :
+        (λ_ (F.map fRaw ≫ F.map gRaw)).inv =
+          ePair.inv ≫
+            (ρ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map fRaw ≫
+              (inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)).inv ≫
+            (α_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)
+              ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)
+              (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk c, PUnit.unit) : Source)))).hom ≫
+            (α_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)
+              ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)
+              (𝟙 (F.obj ((LocallyDiscrete.mk c,
+                PUnit.unit) : Source)))).inv ≫
+            (ρ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map fRaw ≫
+              (inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)).hom ≫
+            ePair.hom ≫
+            (λ_ (F.map fRaw ≫ F.map gRaw)).inv := by
+      have hmiddle :
+          ((ρ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map fRaw ≫
+              (inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)).inv ≫
+            (α_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)
+              ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)
+              (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk c, PUnit.unit) : Source)))).hom ≫
+            (α_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)
+              ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)
+              (𝟙 (F.obj ((LocallyDiscrete.mk c,
+                PUnit.unit) : Source)))).inv ≫
+            (ρ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map fRaw ≫
+              (inclusion.comp
+                (generalLiftPseudofunctor F hF)).map gRaw)).hom) =
+          𝟙 _ := by
+        bicategory
+      slice_rhs 2 5 => rw [hmiddle]
+      simp [ePair]
+    convert hexplicit using 1
+    all_goals simp [ePair]
+
+set_option linter.defProp false in
+/-- Reverse object equality underlying the inverse restriction comparison.
+It remains reducible for the same transport calculation as the forward
+comparison. -/
+def generalLiftFactorizationObjEqInv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Source) :
+    F.obj X = (inclusion.comp (generalLiftPseudofunctor F hF)).obj X := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  rfl
+
+/-- Identity component of the comparison from the source pseudofunctor back
+to the restricted general lift. -/
+noncomputable def generalLiftFactorizationAppInv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Source) :
+    F.obj X ⟶ (inclusion.comp (generalLiftPseudofunctor F hF)).obj X := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  exact 𝟙 _
+
+/-- Canonical naturality isomorphism for the inverse restriction
+comparison. -/
+noncomputable def generalLiftFactorizationNaturalityInv
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Source} (f : X ⟶ Y) :
+    F.map f ≫ generalLiftFactorizationAppInv F hF Y ≅
+      generalLiftFactorizationAppInv F hF X ≫
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map f := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  exact generalLiftFactorizationNaturalityOfHEq
+    (rfl : F.obj ((LocallyDiscrete.mk X, PUnit.unit) : Source) =
+      (inclusion.comp (generalLiftPseudofunctor F hF)).obj
+        ((LocallyDiscrete.mk X, PUnit.unit) : Source))
+    (rfl : F.obj ((LocallyDiscrete.mk Y, PUnit.unit) : Source) =
+      (inclusion.comp (generalLiftPseudofunctor F hF)).obj
+        ((LocallyDiscrete.mk Y, PUnit.unit) : Source))
+    (generalLiftPseudofunctor_map_inclusion_heq F hF f).symm
+
+set_option backward.isDefEq.respectTransparency false in
+/-- The inverse strong transformation from the original source
+pseudofunctor to the restricted general lift. -/
+noncomputable def generalLiftFactorizationInverse
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    F ⟶ inclusion.comp (generalLiftPseudofunctor F hF) where
+  app := generalLiftFactorizationAppInv F hF
+  naturality := generalLiftFactorizationNaturalityInv F hF
+  naturality_naturality := by
+    intro a b f g η
+    exact generalLiftFactorizationNaturalityOfHEq_naturality
+      (generalLiftFactorizationObjEqInv F hF a)
+      (generalLiftFactorizationObjEqInv F hF b)
+      (generalLiftPseudofunctor_map_inclusion_heq F hF f).symm
+      (generalLiftPseudofunctor_map_inclusion_heq F hF g).symm
+      (generalLiftPseudofunctor_map₂_inclusion_heq F hF η).symm
+  naturality_id := by
+    intro a
+    rcases a with ⟨⟨a⟩, a'⟩
+    cases a'
+    have h := (generalLiftFactorizationHom F hF).naturality_id
+      ((LocallyDiscrete.mk a, PUnit.unit) : Source)
+    dsimp [generalLiftFactorizationHom] at h
+    simp [generalLiftFactorizationApp,
+      generalLiftFactorizationNaturality,
+      generalLiftFactorizationAppInv,
+      generalLiftFactorizationNaturalityInv,
+      generalLiftFactorizationNaturalityOfHEq] at h ⊢
+    let iF := 𝟙 (F.obj ((LocallyDiscrete.mk a,
+      PUnit.unit) : Source))
+    let iR := 𝟙 ((inclusion.comp
+      (generalLiftPseudofunctor F hF)).obj
+        ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+    have hkF : (λ_ iF).inv = (ρ_ iF).inv := by bicategory
+    have hkR : (λ_ iR).inv = (ρ_ iR).inv := by bicategory
+    rw [hkR, ← hkF]
+    rw [← h]
+    rw [← Category.assoc, eqToHom_trans]
+    simp
+    rfl
+  naturality_comp := by
+    intro a b c f g
+    rcases a with ⟨⟨a⟩, a'⟩
+    rcases b with ⟨⟨b⟩, b'⟩
+    rcases c with ⟨⟨c⟩, c'⟩
+    cases a'
+    cases b'
+    cases c'
+    rcases f with ⟨⟨f⟩, A⟩
+    rcases g with ⟨⟨g⟩, B⟩
+    let fRaw :
+        ((LocallyDiscrete.mk a, PUnit.unit) : Source) ⟶
+          ((LocallyDiscrete.mk b, PUnit.unit) : Source) :=
+      (⟨f⟩, A)
+    let gRaw :
+        ((LocallyDiscrete.mk b, PUnit.unit) : Source) ⟶
+          ((LocallyDiscrete.mk c, PUnit.unit) : Source) :=
+      (⟨g⟩, B)
+    have h := (generalLiftFactorizationHom F hF).naturality_comp
+      fRaw gRaw
+    dsimp [generalLiftFactorizationHom] at h
+    simp [generalLiftFactorizationApp, generalLiftFactorizationNaturality,
+      generalLiftFactorizationAppInv, generalLiftFactorizationNaturalityInv,
+      generalLiftFactorizationNaturalityOfHEq] at h ⊢
+    have hfRestr :
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw =
+          F.map fRaw :=
+      eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF fRaw)
+    have hgRestr :
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map gRaw =
+          F.map gRaw :=
+      eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF gRaw)
+    have hpair :
+        (inclusion.comp (generalLiftPseudofunctor F hF)).map fRaw ≫
+            (inclusion.comp (generalLiftPseudofunctor F hF)).map gRaw =
+          F.map fRaw ≫ F.map gRaw := by
+      rw [hfRestr, hgRestr]
+    let ePair := eqToIso hpair
+    let eComp := eqToIso
+      (eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF (fRaw ≫ gRaw)))
+    have hmiddleR :
+        ((ρ_ ((inclusion.comp
+            (generalLiftPseudofunctor F hF)).map fRaw ≫
+            (inclusion.comp
+              (generalLiftPseudofunctor F hF)).map gRaw)).inv ≫
+          (α_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map fRaw)
+            ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map gRaw)
+            (𝟙 ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).obj
+              ((LocallyDiscrete.mk c, PUnit.unit) : Source)))).hom ≫
+          (α_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map fRaw)
+            ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map gRaw)
+            (𝟙 (F.obj ((LocallyDiscrete.mk c,
+              PUnit.unit) : Source)))).inv ≫
+          (ρ_ ((inclusion.comp
+            (generalLiftPseudofunctor F hF)).map fRaw ≫
+            (inclusion.comp
+              (generalLiftPseudofunctor F hF)).map gRaw)).hom) =
+        𝟙 _ := by
+      bicategory
+    have hmiddleF :
+        ((ρ_ (F.map fRaw ≫ F.map gRaw)).inv ≫
+          (α_ (F.map fRaw) (F.map gRaw)
+            (𝟙 (F.obj ((LocallyDiscrete.mk c,
+              PUnit.unit) : Source)))).hom ≫
+          (α_ (F.map fRaw) (F.map gRaw)
+            (𝟙 ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).obj
+              ((LocallyDiscrete.mk c, PUnit.unit) : Source)))).inv ≫
+          (ρ_ (F.map fRaw ≫ F.map gRaw)).hom) =
+        𝟙 _ := by
+      bicategory
+    change
+      eComp.hom ≫ (F.mapComp fRaw gRaw).hom ≫
+          (λ_ (F.map fRaw ≫ F.map gRaw)).inv = _ at h
+    change eComp.inv ≫ _ = _
+    change _ = _ ≫ _ ≫
+      (ρ_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw ≫
+          (inclusion.comp
+            (generalLiftPseudofunctor F hF)).map gRaw)).inv ≫
+      (α_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw)
+        ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map gRaw)
+        (𝟙 ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).obj
+          ((LocallyDiscrete.mk c, PUnit.unit) : Source)))).hom ≫
+      (α_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw)
+        ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map gRaw)
+        (𝟙 (F.obj ((LocallyDiscrete.mk c,
+          PUnit.unit) : Source)))).inv ≫
+      (ρ_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw ≫
+          (inclusion.comp
+            (generalLiftPseudofunctor F hF)).map gRaw)).hom ≫
+      ePair.hom ≫
+      (λ_ (F.map fRaw ≫ F.map gRaw)).inv at h
+    change _ = (F.mapComp fRaw gRaw).hom ≫
+      (ρ_ (F.map fRaw ≫ F.map gRaw)).inv ≫
+      (α_ (F.map fRaw) (F.map gRaw)
+        (𝟙 (F.obj ((LocallyDiscrete.mk c,
+          PUnit.unit) : Source)))).hom ≫
+      (α_ (F.map fRaw) (F.map gRaw)
+        (𝟙 ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).obj
+          ((LocallyDiscrete.mk c, PUnit.unit) : Source)))).inv ≫
+      (ρ_ (F.map fRaw ≫ F.map gRaw)).hom ≫
+      ePair.inv ≫
+      (λ_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw ≫
+          (inclusion.comp
+            (generalLiftPseudofunctor F hF)).map gRaw)).inv
+    have hmiddleRTail := congrArg
+      (fun k => k ≫ ePair.hom ≫
+        (λ_ (F.map fRaw ≫ F.map gRaw)).inv)
+      hmiddleR
+    have hmiddleFTail := congrArg
+      (fun k => k ≫ ePair.inv ≫
+        (λ_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw ≫
+          (inclusion.comp
+            (generalLiftPseudofunctor F hF)).map gRaw)).inv)
+      hmiddleF
+    simp only [Category.assoc, Category.id_comp] at hmiddleRTail hmiddleFTail
+    rw [hmiddleRTail] at h
+    rw [hmiddleFTail]
+    have hAssoc := h
+    simp only [← Category.assoc] at hAssoc
+    have hcore := (cancel_mono
+      (λ_ (F.map fRaw ≫ F.map gRaw)).inv).mp hAssoc
+    have hcoreInv := congrArg
+      (fun k => eComp.inv ≫ k ≫ ePair.inv) hcore
+    simp only [Category.assoc] at hcoreInv
+    simp at hcoreInv
+    have hfinal := congrArg
+      (fun k => k ≫
+        (λ_ ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).map fRaw ≫
+          (inclusion.comp
+            (generalLiftPseudofunctor F hF)).map gRaw)).inv)
+      hcoreInv.symm
+    simp only [Category.assoc] at hfinal
+    convert hfinal using 1 <;> simp [fRaw, gRaw]
+
+/-- Every marking-inverting source pseudofunctor is adjoint equivalent to
+the restriction of its general lift. -/
+noncomputable def generalLiftFactorization
+    (F : Pseudofunctor Source E) (hF : marking.IsInvertedBy F) :
+    inclusion.comp (generalLiftPseudofunctor F hF) ≌ F :=
+  Bicategory.Equivalence.mkOfAdjointifyCounit
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := 𝟙 (inclusion.comp (generalLiftPseudofunctor F hF)))
+      (θ := generalLiftFactorizationHom F hF ≫ generalLiftFactorizationInverse F hF)
+      (fun X =>
+        (ρ_ (𝟙 ((inclusion.comp
+          (generalLiftPseudofunctor F hF)).obj X))).symm)
+      (by
+        intro a b f
+        rcases a with ⟨⟨a⟩, a'⟩
+        rcases b with ⟨⟨b⟩, b'⟩
+        cases a'
+        cases b'
+        rcases f with ⟨⟨f⟩, A⟩
+        let fRaw :
+            ((LocallyDiscrete.mk a, PUnit.unit) : Source) ⟶
+              ((LocallyDiscrete.mk b, PUnit.unit) : Source) :=
+          (⟨f⟩, A)
+        let e := eqToIso
+          (eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF fRaw))
+        have hforwardNat :
+            (generalLiftFactorizationNaturality F hF fRaw).hom =
+              (ρ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)).hom ≫
+              e.hom ≫ (λ_ (F.map fRaw)).inv := by
+          dsimp [generalLiftFactorizationNaturality,
+            generalLiftFactorizationNaturalityOfHEq, e]
+          rfl
+        have hinverseNat :
+            (generalLiftFactorizationNaturalityInv F hF fRaw).hom =
+              (ρ_ (F.map fRaw)).hom ≫ e.inv ≫
+              (λ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)).inv := by
+          dsimp [generalLiftFactorizationNaturalityInv,
+            generalLiftFactorizationNaturalityOfHEq, e]
+          rfl
+        simp only [fRaw] at hforwardNat hinverseNat
+        have hcompNat :
+            (((generalLiftFactorizationHom F hF ≫
+              generalLiftFactorizationInverse F hF).naturality
+                ((⟨f⟩, A) :
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source) ⟶
+                    ((LocallyDiscrete.mk b,
+                      PUnit.unit) : Source))).hom) =
+              (α_ ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))
+                (generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source))
+                (generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source))).inv ≫
+              (generalLiftFactorizationNaturality F hF (⟨f⟩, A)).hom ▷
+                generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source) ≫
+              (α_ (generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+                (F.map (⟨f⟩, A))
+                (generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source))).hom ≫
+              generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source) ◁
+                (generalLiftFactorizationNaturalityInv F hF (⟨f⟩, A)).hom ≫
+              (α_ (generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+                (generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+                ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map
+                    (⟨f⟩, A))).inv := by
+          rfl
+        rw [hcompNat, hforwardNat, hinverseNat]
+        simp [generalLiftFactorizationApp, generalLiftFactorizationAppInv]
+        dsimp [fRaw] at e ⊢
+        bicategory
+        simp
+        let mIso :=
+          ((λ_ (F.map (⟨f⟩, A))).symm ≪≫
+            (ρ_ (𝟙 (F.obj ((LocallyDiscrete.mk a,
+              PUnit.unit) : Source)) ≫
+              F.map (⟨f⟩, A))).symm) ≪≫
+            α_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a, PUnit.unit) : Source)))
+              (F.map (⟨f⟩, A))
+              (𝟙 (F.obj ((LocallyDiscrete.mk b,
+                PUnit.unit) : Source))) ≪≫
+            λ_ (F.map (⟨f⟩, A) ≫
+              𝟙 (F.obj ((LocallyDiscrete.mk b,
+                PUnit.unit) : Source))) ≪≫
+            ρ_ (F.map (⟨f⟩, A))
+        have hmiddle : mIso.hom = 𝟙 _ := by
+          dsimp [mIso, Iso.trans]
+          bicategory
+        unfold mIso at hmiddle
+        slice_lhs 3 3 => erw [hmiddle]
+        let sIso :=
+          ((λ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).symm ≪≫
+            (λ_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a, PUnit.unit) : Source)) ≫
+              (inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).symm) ≪≫
+            (α_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a, PUnit.unit) : Source)))
+              (𝟙 (F.obj ((LocallyDiscrete.mk a,
+                PUnit.unit) : Source)))
+              ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).symm
+        have hcancelTail :
+            e.hom ≫ 𝟙 _ ≫ e.inv ≫ sIso.hom = sIso.hom := by
+          convert e.hom_inv_id_assoc sIso.hom using 1
+          exact congrArg (fun k => e.hom ≫ k)
+            (Category.id_comp (e.inv ≫ sIso.hom))
+        unfold sIso at hcancelTail
+        slice_lhs 2 3 => erw [hcancelTail]
+        simp
+        dsimp [Iso.trans]
+        have hpure :
+            (((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A) ◁ᵢ
+              (ρ_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk b,
+                  PUnit.unit) : Source)))).symm).hom ≫
+              (α_ ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))
+                (𝟙 ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).obj
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source)))
+                (𝟙 ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).obj
+                  ((LocallyDiscrete.mk b,
+                    PUnit.unit) : Source)))).inv ≫
+              (ρ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A) ≫
+                𝟙 ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).obj
+                  ((LocallyDiscrete.mk b,
+                    PUnit.unit) : Source)))).hom ≫
+              (ρ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).hom) ≫
+            ((λ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).inv ≫
+              (λ_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a, PUnit.unit) : Source)) ≫
+                (inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).inv) ≫
+              (α_ (𝟙 ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).obj
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source)))
+                (𝟙 ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).obj
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source)))
+                ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).inv =
+              (ρ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).hom ≫
+              (λ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).inv ≫
+              (ρ_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a,
+                  PUnit.unit) : Source)))).inv ▷
+                (inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map (⟨f⟩, A) := by
+          dsimp [Iso.trans, whiskerLeftIso, whiskerRightIso]
+          bicategory
+        convert hpure using 1
+        all_goals rfl))
+    (Pseudofunctor.StrongTrans.isoMk
+      (η := generalLiftFactorizationInverse F hF ≫ generalLiftFactorizationHom F hF)
+      (θ := 𝟙 F)
+      (fun X => ρ_ (𝟙 (F.obj X)))
+      (by
+        intro a b f
+        rcases a with ⟨⟨a⟩, a'⟩
+        rcases b with ⟨⟨b⟩, b'⟩
+        cases a'
+        cases b'
+        rcases f with ⟨⟨f⟩, A⟩
+        let fRaw :
+            ((LocallyDiscrete.mk a, PUnit.unit) : Source) ⟶
+              ((LocallyDiscrete.mk b, PUnit.unit) : Source) :=
+          (⟨f⟩, A)
+        let e := eqToIso
+          (eq_of_heq (generalLiftPseudofunctor_map_inclusion_heq F hF fRaw))
+        have hforwardNat :
+            (generalLiftFactorizationNaturality F hF fRaw).hom =
+              (ρ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)).hom ≫
+              e.hom ≫ (λ_ (F.map fRaw)).inv := by
+          dsimp [generalLiftFactorizationNaturality,
+            generalLiftFactorizationNaturalityOfHEq, e]
+          rfl
+        have hinverseNat :
+            (generalLiftFactorizationNaturalityInv F hF fRaw).hom =
+              (ρ_ (F.map fRaw)).hom ≫ e.inv ≫
+              (λ_ ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map fRaw)).inv := by
+          dsimp [generalLiftFactorizationNaturalityInv,
+            generalLiftFactorizationNaturalityOfHEq, e]
+          rfl
+        simp only [fRaw] at hforwardNat hinverseNat
+        have hcompNat :
+            (((generalLiftFactorizationInverse F hF ≫
+              generalLiftFactorizationHom F hF).naturality
+                ((⟨f⟩, A) :
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source) ⟶
+                    ((LocallyDiscrete.mk b,
+                      PUnit.unit) : Source))).hom) =
+              (α_ (F.map (⟨f⟩, A))
+                (generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source))
+                (generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source))).inv ≫
+              (generalLiftFactorizationNaturalityInv F hF (⟨f⟩, A)).hom ▷
+                generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source) ≫
+              (α_ (generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+                ((inclusion.comp
+                  (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))
+                (generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk b, PUnit.unit) : Source))).hom ≫
+              generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source) ◁
+                (generalLiftFactorizationNaturality F hF (⟨f⟩, A)).hom ≫
+              (α_ (generalLiftFactorizationAppInv F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+                (generalLiftFactorizationApp F hF
+                  ((LocallyDiscrete.mk a, PUnit.unit) : Source))
+                (F.map (⟨f⟩, A))).inv := by
+          rfl
+        rw [hcompNat, hinverseNat, hforwardNat]
+        simp [generalLiftFactorizationApp, generalLiftFactorizationAppInv]
+        dsimp [fRaw] at e ⊢
+        bicategory
+        simp
+        let mIso :=
+          ((λ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).symm ≪≫
+            (ρ_ (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a, PUnit.unit) : Source)) ≫
+              (inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))).symm) ≪≫
+            α_ (𝟙 (F.obj ((LocallyDiscrete.mk a,
+                PUnit.unit) : Source)))
+              ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))
+              (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk b, PUnit.unit) : Source))) ≪≫
+            λ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map (⟨f⟩, A) ≫
+              𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk b, PUnit.unit) : Source))) ≪≫
+            ρ_ ((inclusion.comp
+              (generalLiftPseudofunctor F hF)).map (⟨f⟩, A))
+        have hmiddle : mIso.hom = 𝟙 _ := by
+          dsimp [mIso, Iso.trans]
+          bicategory
+        unfold mIso at hmiddle
+        slice_rhs 3 3 => erw [hmiddle]
+        let sIso :=
+          (((λ_ (F.map (⟨f⟩, A))).symm ≪≫
+            (λ_ (𝟙 (F.obj ((LocallyDiscrete.mk a,
+                PUnit.unit) : Source)) ≫
+              F.map (⟨f⟩, A))).symm) ≪≫
+            (α_ (𝟙 (F.obj ((LocallyDiscrete.mk a,
+                PUnit.unit) : Source)))
+              (𝟙 ((inclusion.comp
+                (generalLiftPseudofunctor F hF)).obj
+                ((LocallyDiscrete.mk a, PUnit.unit) : Source)))
+              (F.map (⟨f⟩, A))).symm) ≪≫
+            (ρ_ (𝟙 (F.obj ((LocallyDiscrete.mk a,
+              PUnit.unit) : Source)))) ▷ᵢ F.map (⟨f⟩, A)
+        have hcancelTail :
+            e.inv ≫ 𝟙 _ ≫ e.hom ≫ sIso.hom = sIso.hom := by
+          exact (congrArg (fun k => e.inv ≫ k)
+            (Category.id_comp (e.hom ≫ sIso.hom))).trans
+              (e.inv_hom_id_assoc sIso.hom)
+        unfold sIso at hcancelTail
+        slice_rhs 2 3 => erw [hcancelTail]
+        simp
+        dsimp [Iso.trans, whiskerLeftIso, whiskerRightIso]
+        let ff := F.map (⟨f⟩, A)
+        let ia := 𝟙 (F.obj ((LocallyDiscrete.mk a,
+          PUnit.unit) : Source))
+        let ib := 𝟙 (F.obj ((LocallyDiscrete.mk b,
+          PUnit.unit) : Source))
+        have hpure :
+            (α_ ff ib ib).inv ≫ (ρ_ (ff ≫ ib)).hom ≫
+                (ρ_ ff).hom ≫ (λ_ ff).inv =
+              ((α_ ff ib ib).inv ≫ (ρ_ (ff ≫ ib)).hom ≫
+                (ρ_ ff).hom) ≫
+              (((λ_ ff).inv ≫ (λ_ (ia ≫ ff)).inv) ≫
+                (α_ ia ia ff).inv) ≫
+              (ρ_ ia).hom ▷ ff := by
+          dsimp [ff, ia, ib]
+          bicategory
+        convert hpure using 1
+        all_goals rfl))
+
+/-- Every pseudofunctor that inverts the walking marking factors through the
+completion up to adjoint equivalence. -/
+theorem generalLiftFactorsThrough
+    (F : Pseudofunctor Source E) (hF : marking.IsInvertedBy F) :
+    inclusion.FactorsThrough F :=
+  ⟨generalLiftPseudofunctor F hF,
+    ⟨generalLiftFactorization F hF⟩⟩
+
+/-- The two-dimensional walking inclusion is a bicategorical localization:
+it inverts the marking, admits all marking-inverting lifts, and induces
+equivalences on strong transformations and modifications. -/
+theorem inclusion_isBicategoricalLocalization :
+    marking.IsBicategoricalLocalization inclusion where
+  inverts := inclusion_inverts
+  lift _E _ F hF := generalLiftFactorsThrough F hF
+  local_equivalence _E _ F G :=
+    inclusion_localPrecomposition_isEquivalence F G
+
+/-! ## Locally thin target packaging -/
+
+section LocallyThinTarget
+
+variable [∀ (a b : E) (f g : a ⟶ b), Subsingleton (f ⟶ g)]
+
+/-- In a locally thin target bicategory, compositor associativity is also the
+unique 2-cell equality; this is retained as the short proof underlying the
+historical specialized packaging. -/
+theorem generalLiftMapComp_associativity_of_locallyThin
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {W X Y Z : Target} (f : W ⟶ X) (g : X ⟶ Y) (h : Y ⟶ Z) :
+    (generalLiftPrelaxFunctor F hF).map₂ (α_ f g h).hom ≫
+        (generalLiftMapComp F hF f (g ≫ h)).hom ≫
+        (generalLiftPrelaxFunctor F hF).map f ◁
+          (generalLiftMapComp F hF g h).hom =
+      (generalLiftMapComp F hF (f ≫ g) h).hom ≫
+        (generalLiftMapComp F hF f g).hom ▷
+          (generalLiftPrelaxFunctor F hF).map h ≫
+        (α_ ((generalLiftPrelaxFunctor F hF).map f)
+          ((generalLiftPrelaxFunctor F hF).map g)
+          ((generalLiftPrelaxFunctor F hF).map h)).hom := by
+  apply Subsingleton.elim
+
+/-- Specialized locally thin packaging of the arbitrary lift.  The general
+construction above no longer requires this extra hypothesis. -/
+noncomputable def generalLiftLocallyThinPseudofunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) : Target ⥤ᵖ E where
+  toPrelaxFunctor := generalLiftPrelaxFunctor F hF
+  mapId := generalLiftMapId F hF
+  mapComp := generalLiftMapComp F hF
+  map₂_whisker_left := by
+    intro a b c f g h η
+    apply Subsingleton.elim
+  map₂_whisker_right := by
+    intro a b c f g η h
+    apply Subsingleton.elim
+  map₂_associator := by
+    intro a b c d f g h
+    apply Subsingleton.elim
+  map₂_left_unitor := by
+    intro a b f
+    apply Subsingleton.elim
+  map₂_right_unitor := by
+    intro a b f
+    apply Subsingleton.elim
+
+/-- The locally thin pseudofunctor has exactly the already-constructed
+arbitrary lift as its underlying prelax action. -/
+theorem generalLiftLocallyThinPseudofunctor_toPrelaxFunctor
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) :
+    (generalLiftLocallyThinPseudofunctor F hF).toPrelaxFunctor =
+      generalLiftPrelaxFunctor F hF :=
+  rfl
+
+/-- After precomposition by the walking inclusion, the locally thin lift maps
+every source arrow exactly as the original pseudofunctor. -/
+theorem generalLiftLocallyThinPseudofunctor_map_inclusion
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F)
+    {X Y : Source} (f : X ⟶ Y) :
+    (generalLiftLocallyThinPseudofunctor F hF).map (inclusion.map f) =
+      F.map f := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  rcases Y with ⟨⟨Y⟩, Y'⟩
+  cases X'
+  cases Y'
+  rcases f with ⟨⟨f⟩, A⟩
+  exact generalLiftPrelaxFunctor_map_forward F hF f A
+
+/-- The locally thin lift and the original source pseudofunctor agree on
+objects after precomposition. -/
+theorem generalLiftLocallyThinPseudofunctor_obj_inclusion
+    (F : Source ⥤ᵖ E) (hF : marking.IsInvertedBy F) (X : Source) :
+    (inclusion.comp (generalLiftLocallyThinPseudofunctor F hF)).obj X =
+      F.obj X := by
+  rcases X with ⟨⟨X⟩, X'⟩
+  cases X'
+  rfl
+
+end LocallyThinTarget
 
 end ArbitraryLiftPrelaxAction
 

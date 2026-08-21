@@ -1,0 +1,447 @@
+import Ript.Higher.LocalizationCompleteSegal
+import Mathlib.CategoryTheory.Category.ULift
+/-!
+# Universe-lifted full local nerves for bicategorical localizations
+
+The ordinary categorical nerve requires source and target categories to share
+universe levels. Presented bicategorical localizations generally enlarge their
+local hom universes, so their exact local nerve maps cannot use that interface
+directly.
+
+This module replaces both local categories by equivalent `AsSmall` categories
+in one common universe. It constructs the induced nerve maps, proves exact
+1-cell and 2-cell action, transports compositor natural isomorphisms, and
+retains the resulting genuine simplicial homotopies. The construction works for
+source, localization target, and semantic test targets in independent
+universes. Unit and compositor homotopies retain exact associator and
+left/right-unitor edge coherence.
+-/
+
+
+set_option autoImplicit false
+set_option linter.checkUnivs false
+
+namespace Ript.Higher.UniverseLiftedNerve
+
+open CategoryTheory
+open Opposite Simplicial
+
+universe u₁ v₁ u₂ v₂
+
+variable {C : Type u₁} [Category.{v₁} C]
+variable {D : Type u₂} [Category.{v₂} D]
+
+/-- A functor between common-universe small replacements. -/
+def commonAsSmallFunctor (F : C ⥤ D) :
+    AsSmall.{max u₂ v₂} C ⥤ AsSmall.{max u₁ v₁} D :=
+  AsSmall.down ⋙ F ⋙ AsSmall.up
+
+/-- The nerve map of a functor after lifting both categories to a common
+object-and-morphism universe. -/
+def commonNerveMap (F : C ⥤ D) :
+    CategoryTheory.nerve (AsSmall.{max u₂ v₂} C) ⟶
+      CategoryTheory.nerve (AsSmall.{max u₁ v₁} D) :=
+  CategoryTheory.nerveMap (commonAsSmallFunctor F)
+
+@[simp]
+theorem commonNerveMap_vertex (F : C ⥤ D) (X : C) :
+    (commonNerveMap F).app (op ⦋0⦌)
+        (ComposableArrows.mk₀
+          ((AsSmall.up : C ⥤ AsSmall.{max u₂ v₂} C).obj X)) =
+      ComposableArrows.mk₀
+        ((AsSmall.up : D ⥤ AsSmall.{max u₁ v₁} D).obj (F.obj X)) := by
+  apply ComposableArrows.ext₀
+  rfl
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+@[simp]
+theorem commonNerveMap_edge (F : C ⥤ D) {X Y : C} (f : X ⟶ Y) :
+    (commonNerveMap F).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          ((AsSmall.up : C ⥤ AsSmall.{max u₂ v₂} C).map f)) =
+      ComposableArrows.mk₁
+        ((AsSmall.up : D ⥤ AsSmall.{max u₁ v₁} D).map (F.map f)) := by
+  unfold commonNerveMap
+  rw [CategoryTheory.nerveMap_app_mk₁]
+  rfl
+
+variable {F G : C ⥤ D}
+
+/-- A natural transformation transported to the common-universe small
+replacements. -/
+def commonAsSmallNatTrans (α : F ⟶ G) :
+    commonAsSmallFunctor F ⟶ commonAsSmallFunctor G :=
+  Functor.whiskerRight (Functor.whiskerLeft AsSmall.down α) AsSmall.up
+
+/-- A natural transformation between arbitrary-universe categories induces
+a homotopy between their common-universe nerve maps. -/
+noncomputable def commonNerveHomotopy (α : F ⟶ G) :
+    SSet.Homotopy (commonNerveMap F) (commonNerveMap G) :=
+  CategoryTheory.NerveHomotopy.ofNatTrans (commonAsSmallNatTrans α)
+
+open CategoryTheory.Bicategory
+open scoped CategoryTheory.Bicategory
+
+universe u₃ v₃ w₃ u₄ v₄ w₄
+
+variable {B : Type u₃} [Bicategory.{w₃, v₃} B]
+variable {E : Type u₄} [Bicategory.{w₄, v₄} E]
+variable (Q : B ⥤ᵖ E)
+
+/-- Source local hom-category lifted to the common local universe shared with
+the target bicategory. -/
+abbrev CommonSourceHom (_Q : B ⥤ᵖ E) (X Y : B) :=
+  AsSmall.{max v₄ w₄} (X ⟶ Y)
+
+/-- Target local hom-category lifted to the same common local universe. -/
+abbrev CommonTargetHom (X Y : B) :=
+  AsSmall.{max v₃ w₃} (Q.obj X ⟶ Q.obj Y)
+
+/-- Full local mapping nerve after common-universe replacement. -/
+abbrev CommonLocalMappingNerve (X Y : B) :=
+  CategoryTheory.nerve (CommonSourceHom (_Q := Q) X Y)
+
+/-- Target full local mapping nerve in the same simplicial-set universe. -/
+abbrev CommonTargetMappingNerve (X Y : B) :=
+  CategoryTheory.nerve (CommonTargetHom (Q := Q) X Y)
+
+/-- Common-universe local nerve map induced by an arbitrary pseudofunctor. -/
+def commonLocalMap (X Y : B) :
+    CommonLocalMappingNerve (Q := Q) X Y ⟶
+      CommonTargetMappingNerve (Q := Q) X Y :=
+  commonNerveMap (Q.mapFunctor X Y)
+
+@[simp]
+theorem commonLocalMap_vertex {X Y : B} (f : X ⟶ Y) :
+    (commonLocalMap Q X Y).app (op ⦋0⦌)
+        (ComposableArrows.mk₀ ((AsSmall.up :
+          (X ⟶ Y) ⥤ CommonSourceHom (_Q := Q) X Y).obj f)) =
+      ComposableArrows.mk₀ ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Y) ⥤
+          CommonTargetHom (Q := Q) X Y).obj (Q.map f)) :=
+  commonNerveMap_vertex (Q.mapFunctor X Y) f
+
+@[simp]
+theorem commonLocalMap_twoCell {X Y : B} {f g : X ⟶ Y} (α : f ⟶ g) :
+    (commonLocalMap Q X Y).app (op ⦋1⦌)
+        (ComposableArrows.mk₁ ((AsSmall.up :
+          (X ⟶ Y) ⥤ CommonSourceHom (_Q := Q) X Y).map α)) =
+      ComposableArrows.mk₁ ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Y) ⥤
+          CommonTargetHom (Q := Q) X Y).map (Q.map₂ α)) :=
+  commonNerveMap_edge (Q.mapFunctor X Y) α
+
+/-- Arbitrary-universe constant diagram selecting the image of a source
+identity. -/
+def mappedIdentityFunctor (X : B) :
+    (X ⟶ X) ⥤ (Q.obj X ⟶ Q.obj X) :=
+  (Functor.const (X ⟶ X)).obj (Q.map (𝟙 X))
+
+/-- Arbitrary-universe constant diagram selecting the target identity. -/
+def targetIdentityFunctor (X : B) :
+    (X ⟶ X) ⥤ (Q.obj X ⟶ Q.obj X) :=
+  (Functor.const (X ⟶ X)).obj (𝟙 (Q.obj X))
+
+/-- Arbitrary-universe pseudofunctor unit natural isomorphism. -/
+noncomputable def identityComparisonNatIso (X : B) :
+    mappedIdentityFunctor Q X ≅ targetIdentityFunctor Q X :=
+  (Functor.const (X ⟶ X)).mapIso (Q.mapId X)
+
+/-- Common-universe form of the pseudofunctor unit natural isomorphism. -/
+noncomputable def commonIdentityComparisonNatIso (X : B) :
+    commonAsSmallFunctor
+        (mappedIdentityFunctor Q X) ≅
+      commonAsSmallFunctor
+        (targetIdentityFunctor Q X) :=
+  Functor.isoWhiskerRight
+    (Functor.isoWhiskerLeft AsSmall.down
+      (identityComparisonNatIso Q X))
+    AsSmall.up
+
+/-- Genuine common-universe simplicial homotopy induced by the pseudofunctor
+unit constraint. -/
+noncomputable def commonIdentityComparisonHomotopy (X : B) :
+    SSet.Homotopy
+      (commonNerveMap
+        (mappedIdentityFunctor Q X))
+      (commonNerveMap
+        (targetIdentityFunctor Q X)) :=
+  CategoryTheory.NerveHomotopy.ofNatTrans
+    (commonIdentityComparisonNatIso Q X).hom
+
+/-- Horizontal composition for an arbitrary bicategory, without any universe
+balance assumption. -/
+def horizontalCompositionFunctor (X Y Z : B) :
+    ((X ⟶ Y) × (Y ⟶ Z)) ⥤ (X ⟶ Z) where
+  obj pair := pair.1 ≫ pair.2
+  map := @fun first second transformation =>
+    first.1 ◁ transformation.2 ≫ transformation.1 ▷ second.2
+  map_id pair := by simp
+  map_comp := @fun first second third firstTransformation
+      secondTransformation => by
+    change
+      first.1 ◁ (firstTransformation.2 ≫ secondTransformation.2) ≫
+          (firstTransformation.1 ≫ secondTransformation.1) ▷ third.2 =
+        (first.1 ◁ firstTransformation.2 ≫
+            firstTransformation.1 ▷ second.2) ≫
+          (second.1 ◁ secondTransformation.2 ≫
+            secondTransformation.1 ▷ third.2)
+    symm
+    simp only [Category.assoc]
+    rw [← whisker_exchange_assoc firstTransformation.1 secondTransformation.2,
+      ← whiskerLeft_comp_assoc, ← comp_whiskerRight]
+
+/-- First compose in the source bicategory and then apply the
+pseudofunctor. -/
+def composeThenMapFunctor (X Y Z : B) :
+    ((X ⟶ Y) × (Y ⟶ Z)) ⥤ (Q.obj X ⟶ Q.obj Z) :=
+  horizontalCompositionFunctor X Y Z ⋙ Q.mapFunctor X Z
+
+/-- First apply the pseudofunctor locally and then compose in the target
+bicategory. -/
+def mapThenComposeFunctor (X Y Z : B) :
+    ((X ⟶ Y) × (Y ⟶ Z)) ⥤ (Q.obj X ⟶ Q.obj Z) :=
+  (Q.mapFunctor X Y).prod (Q.mapFunctor Y Z) ⋙
+    horizontalCompositionFunctor (Q.obj X) (Q.obj Y) (Q.obj Z)
+
+/-- The pseudofunctor compositor as a natural isomorphism between the two
+raw horizontal-composition functors. -/
+noncomputable def compositionComparisonNatIso (X Y Z : B) :
+    composeThenMapFunctor Q X Y Z ≅ mapThenComposeFunctor Q X Y Z :=
+  NatIso.ofComponents
+    (fun pair => Q.mapComp pair.1 pair.2)
+    (fun {first second} transformation => by
+      rcases transformation with ⟨left, right⟩
+      change Q.map₂ (first.1 ◁ right ≫ left ▷ second.2) ≫
+          (Q.mapComp second.1 second.2).hom =
+        (Q.mapComp first.1 first.2).hom ≫
+          (Q.map first.1 ◁ Q.map₂ right ≫
+            Q.map₂ left ▷ Q.map second.2)
+      simp only [PrelaxFunctor.map₂_comp, Category.assoc,
+        Q.map₂_whisker_left, Q.map₂_whisker_right]
+      simp)
+
+/-- Common-universe form of the compositor natural isomorphism. -/
+noncomputable def commonCompositionComparisonNatIso (X Y Z : B) :
+    commonAsSmallFunctor (composeThenMapFunctor Q X Y Z) ≅
+      commonAsSmallFunctor (mapThenComposeFunctor Q X Y Z) :=
+  Functor.isoWhiskerRight
+    (Functor.isoWhiskerLeft AsSmall.down
+      (compositionComparisonNatIso Q X Y Z)) AsSmall.up
+
+/-- Genuine simplicial homotopy between the common-universe horizontal
+composition maps. -/
+noncomputable def commonCompositionComparisonHomotopy (X Y Z : B) :
+    SSet.Homotopy
+      (commonNerveMap (composeThenMapFunctor Q X Y Z))
+      (commonNerveMap (mapThenComposeFunctor Q X Y Z)) :=
+  CategoryTheory.NerveHomotopy.ofNatTrans
+    (commonCompositionComparisonNatIso Q X Y Z).hom
+
+/-- Common-universe edge proposition expressing exact pseudofunctor
+associator coherence. -/
+def CommonAssociatorCompatibility
+    {A B₁ C₁ D : B} (f : A ⟶ B₁) (g : B₁ ⟶ C₁)
+    (h : C₁ ⟶ D) : Prop :=
+  ComposableArrows.mk₁ ((AsSmall.up :
+      (Q.obj A ⟶ Q.obj D) ⥤ CommonTargetHom Q A D).map
+        (Q.map₂ (α_ f g h).hom)) =
+    ComposableArrows.mk₁ ((AsSmall.up :
+      (Q.obj A ⟶ Q.obj D) ⥤ CommonTargetHom Q A D).map
+        ((Q.mapComp (f ≫ g) h).hom ≫
+          (Q.mapComp f g).hom ▷ Q.map h ≫
+            (α_ (Q.map f) (Q.map g) (Q.map h)).hom ≫
+              Q.map f ◁ (Q.mapComp g h).inv ≫
+                (Q.mapComp f (g ≫ h)).inv))
+
+/-- The lifted associator edge is exactly the lifted compositor/target-
+associator pasting. -/
+theorem commonAssociatorCompatibility
+    {A B₁ C₁ D : B} (f : A ⟶ B₁) (g : B₁ ⟶ C₁)
+    (h : C₁ ⟶ D) :
+    CommonAssociatorCompatibility Q f g h := by
+  unfold CommonAssociatorCompatibility
+  rw [Q.map₂_associator]
+
+/-- Common-universe edge proposition expressing exact pseudofunctor
+left-unitor coherence. -/
+def CommonLeftUnitorCompatibility
+    {A B₁ : B} (f : A ⟶ B₁) : Prop :=
+  ComposableArrows.mk₁ ((AsSmall.up :
+      (Q.obj A ⟶ Q.obj B₁) ⥤ CommonTargetHom Q A B₁).map
+        (Q.map₂ (λ_ f).hom)) =
+    ComposableArrows.mk₁ ((AsSmall.up :
+      (Q.obj A ⟶ Q.obj B₁) ⥤ CommonTargetHom Q A B₁).map
+        ((Q.mapComp (𝟙 A) f).hom ≫
+          (Q.mapId A).hom ▷ Q.map f ≫ (λ_ (Q.map f)).hom))
+
+/-- The lifted left-unitor edge is exactly the lifted unit/compositor/target-
+unitor pasting. -/
+theorem commonLeftUnitorCompatibility
+    {A B₁ : B} (f : A ⟶ B₁) :
+    CommonLeftUnitorCompatibility Q f := by
+  unfold CommonLeftUnitorCompatibility
+  rw [Q.map₂_left_unitor]
+
+/-- Common-universe edge proposition expressing exact pseudofunctor
+right-unitor coherence. -/
+def CommonRightUnitorCompatibility
+    {A B₁ : B} (f : A ⟶ B₁) : Prop :=
+  ComposableArrows.mk₁ ((AsSmall.up :
+      (Q.obj A ⟶ Q.obj B₁) ⥤ CommonTargetHom Q A B₁).map
+        (Q.map₂ (ρ_ f).hom)) =
+    ComposableArrows.mk₁ ((AsSmall.up :
+      (Q.obj A ⟶ Q.obj B₁) ⥤ CommonTargetHom Q A B₁).map
+        ((Q.mapComp f (𝟙 B₁)).hom ≫
+          Q.map f ◁ (Q.mapId B₁).hom ≫ (ρ_ (Q.map f)).hom))
+
+/-- The lifted right-unitor edge is exactly the lifted
+compositor/unit/target-unitor pasting. -/
+theorem commonRightUnitorCompatibility
+    {A B₁ : B} (f : A ⟶ B₁) :
+    CommonRightUnitorCompatibility Q f := by
+  unfold CommonRightUnitorCompatibility
+  rw [Q.map₂_right_unitor]
+
+universe u₅ v₅ w₅
+
+variable (W : Bicategory.MorphismProperty B)
+
+/-- Universe-explicit localization predicate for the common-universe nerve
+comparison. Source, localization target, and quantified semantic target may
+all live in independent universes. -/
+abbrev IsHigherLocalization : Prop :=
+  Bicategory.MorphismProperty.IsBicategoricalLocalization.{
+    u₃, v₃, w₃, u₄, v₄, w₄, u₅, v₅, w₅} W Q
+
+/-- Chosen target equivalence for a marked source arrow. -/
+noncomputable def markedEquivalence
+    (hQ : IsHigherLocalization Q W) {X Y : B}
+    (f : X ⟶ Y) (hf : W f) : Q.obj X ≌ Q.obj Y :=
+  (Classical.choice (hQ.inverts f hf)).1
+
+@[simp]
+theorem markedEquivalence_hom
+    (hQ : IsHigherLocalization Q W) {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    (markedEquivalence Q W hQ f hf).hom = Q.map f :=
+  (Classical.choice (hQ.inverts f hf)).2
+
+/-- Machine-facing coherent common-universe local-nerve action of a
+pseudofunctor. -/
+structure PseudofunctorNerveCore where
+  /-- Map on every full local mapping nerve after common-universe replacement. -/
+  localMap : ∀ X Y : B,
+    CommonLocalMappingNerve Q X Y ⟶ CommonTargetMappingNerve Q X Y
+  /-- The packaged maps are the canonical lifted nerve maps. -/
+  localMap_eq : localMap = UniverseLiftedNerve.commonLocalMap Q
+  /-- Exact action on lifted 1-cell vertices. -/
+  mapsVertex : ∀ {X Y : B} (f : X ⟶ Y),
+    (localMap X Y).app (op ⦋0⦌)
+        (ComposableArrows.mk₀ ((AsSmall.up :
+          (X ⟶ Y) ⥤ CommonSourceHom Q X Y).obj f)) =
+      ComposableArrows.mk₀ ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom Q X Y).obj (Q.map f))
+  /-- Exact action on lifted arbitrary 2-cell edges. -/
+  mapsTwoCell : ∀ {X Y : B} {f g : X ⟶ Y} (α : f ⟶ g),
+    (localMap X Y).app (op ⦋1⦌)
+        (ComposableArrows.mk₁ ((AsSmall.up :
+          (X ⟶ Y) ⥤ CommonSourceHom Q X Y).map α)) =
+      ComposableArrows.mk₁ ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom Q X Y).map (Q.map₂ α))
+  /-- Common-universe compositor natural isomorphism. -/
+  compositionIso : ∀ X Y Z : B,
+    commonAsSmallFunctor (composeThenMapFunctor Q X Y Z) ≅
+      commonAsSmallFunctor (mapThenComposeFunctor Q X Y Z)
+  /-- Common-universe unit natural isomorphism. -/
+  identityIso : ∀ X : B,
+    commonAsSmallFunctor
+        (mappedIdentityFunctor Q X) ≅
+      commonAsSmallFunctor
+        (targetIdentityFunctor Q X)
+  /-- Genuine common-universe simplicial unit homotopy. -/
+  identityHomotopy : ∀ X : B,
+    SSet.Homotopy
+      (commonNerveMap
+        (mappedIdentityFunctor Q X))
+      (commonNerveMap
+        (targetIdentityFunctor Q X))
+  /-- Genuine common-universe simplicial compositor homotopy. -/
+  compositionHomotopy : ∀ X Y Z : B,
+    SSet.Homotopy
+      (commonNerveMap (composeThenMapFunctor Q X Y Z))
+      (commonNerveMap (mapThenComposeFunctor Q X Y Z))
+  /-- Exact lifted associator-edge coherence. -/
+  associatorCoherence : ∀ {A B₁ C₁ D : B}
+    (f : A ⟶ B₁) (g : B₁ ⟶ C₁) (h : C₁ ⟶ D),
+    CommonAssociatorCompatibility Q f g h
+  /-- Exact lifted left-unitor-edge coherence. -/
+  leftUnitorCoherence : ∀ {A B₁ : B} (f : A ⟶ B₁),
+    CommonLeftUnitorCompatibility Q f
+  /-- Exact lifted right-unitor-edge coherence. -/
+  rightUnitorCoherence : ∀ {A B₁ : B} (f : A ⟶ B₁),
+    CommonRightUnitorCompatibility Q f
+
+/-- Canonical common-universe nerve action package. -/
+noncomputable def pseudofunctorNerveCore : PseudofunctorNerveCore Q where
+  localMap := commonLocalMap Q
+  localMap_eq := rfl
+  mapsVertex := commonLocalMap_vertex Q
+  mapsTwoCell := commonLocalMap_twoCell Q
+  compositionIso := commonCompositionComparisonNatIso Q
+  identityIso := commonIdentityComparisonNatIso Q
+  identityHomotopy := commonIdentityComparisonHomotopy Q
+  compositionHomotopy := commonCompositionComparisonHomotopy Q
+  associatorCoherence := commonAssociatorCompatibility Q
+  leftUnitorCoherence := commonLeftUnitorCompatibility Q
+  rightUnitorCoherence := commonRightUnitorCompatibility Q
+
+/-- Common-universe higher-localization comparison package. -/
+structure HigherLocalizationNerveCore
+    (hQ : IsHigherLocalization Q W) extends PseudofunctorNerveCore Q where
+  /-- Full bicategorical localization theorem. -/
+  localization : IsHigherLocalization Q W := hQ
+  /-- Every marked source vertex lands at the chosen target equivalence. -/
+  markedVertex : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
+    (toPseudofunctorNerveCore.localMap X Y).app (op ⦋0⦌)
+        (ComposableArrows.mk₀ ((AsSmall.up :
+          (X ⟶ Y) ⥤ CommonSourceHom Q X Y).obj f)) =
+      ComposableArrows.mk₀ ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom Q X Y).obj
+          (markedEquivalence Q W hQ f hf).hom)
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- Every bicategorical localization supplies its common-universe full local
+nerve comparison. -/
+noncomputable def higherLocalizationNerveCore
+    (hQ : IsHigherLocalization Q W) : HigherLocalizationNerveCore Q W hQ where
+  toPseudofunctorNerveCore := pseudofunctorNerveCore Q
+  localization := hQ
+  markedVertex := by
+    intro X Y f hf
+    change (commonLocalMap Q X Y).app (op ⦋0⦌)
+        (ComposableArrows.mk₀ ((AsSmall.up :
+          (X ⟶ Y) ⥤ CommonSourceHom Q X Y).obj f)) = _
+    rw [commonLocalMap_vertex, markedEquivalence_hom]
+
+/-- Rezk outer-diagram map after replacing both categories by the same
+common-universe small models. -/
+noncomputable def commonRezkDiagramMap (F : C ⥤ D) :=
+  RezkCore.diagramMap (AsSmall.{max u₂ v₂} C)
+    (commonAsSmallFunctor F)
+
+/-- Exact action of the common-universe outer Rezk map on an arrow vertex. -/
+theorem commonRezkDiagramMap_arrowVertex (F : C ⥤ D)
+    {X Y : C} (f : X ⟶ Y) :
+    ((commonRezkDiagramMap F).app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RezkCore.arrowVertex (AsSmall.{max u₂ v₂} C)
+          ((AsSmall.up : C ⥤ AsSmall.{max u₂ v₂} C).map f)) =
+      RezkCore.arrowVertex (AsSmall.{max u₁ v₁} D)
+        ((AsSmall.up : D ⥤ AsSmall.{max u₁ v₁} D).map (F.map f)) := by
+  apply RezkCore.diagramMap_arrowVertex
+
+end Ript.Higher.UniverseLiftedNerve

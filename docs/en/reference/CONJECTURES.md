@@ -44,19 +44,291 @@ exact translated budgets. A first literal common-syntax slice is now compiled:
 one Boolean-flip generator is realized by the exact probabilistic, Pauli-X
 quantum, finite causal, multidimensional computational, task-semantic, and
 Gibbs-preserving thermal models, with their six observable equations packaged
-by `sixModelFlipAgreement`. The following construction and theorem families
+by `sixModelFlipAgreement`. A proved compositional extension now interprets a
+three-interface two-flip syntax in all six models and packages its laws in
+`sixModelCompositionAgreement`. A symmetric monoidal extension now interprets
+one literal `flip ⊗ flip` expression in all six families, proves independent
+parallel behavior and exact computation-resource addition, and supplies six
+canonical strong symmetric resource-changing free lifts. Its quantum target is
+now the full finite Kraus category: reversible basis changes provide a compiled
+symmetric monoidal structure with all coherence laws, and tensor Pauli-X acts
+componentwise on arbitrary product density matrices. Finite quantum instruments
+are now present as normalized families of completely positive branches, with
+posterior states, serial and tensor laws, a classical-record CPTP
+representation, and outcome-controlled trace-preserving feedback. The coherent
+measurement example uses its classical result to reset both posteriors to one
+basis state. Dependent bind supports multi-round result trees, proves the Born
+chain rule and Sigma-reassociation associativity, and a concrete three-history
+tree is integrated into the resource-aware free syntax. A first-class inductive
+`InstrumentTree` now supplies canonical dependent-history normal forms, exact
+branch representation, finite induction, and computable path/tree budgets.
+The classical-record channel is proved injective on arbitrary finite
+instruments, and two dependent instrument trees are operationally equivalent
+along an explicit history equivalence exactly when their corresponding branch
+maps, equivalently their recorded channels, agree. The intrinsic image is now
+characterized too: slicing a channel's Kraus operators extracts a canonical
+instrument, and a channel is the recorded representation of a unique
+instrument—equivalently of some finite instrument tree up to history
+relabeling—exactly when its classical outcome register is block diagonal.
+One exact quarter-crossover noise generator is also shared by all six model
+families. Its quantum realization is random-unitary and demonstrably distinct
+from measurement--preparation on coherent input; randomized computation keeps
+four-resource costs; semantic risk/value are exact; all six free lifts compile.
+Monoidal derivation
+translation is proof-theoretically conservative and every heterogeneous
+monoidal interpretation has a contractible strict extension type. A separate
+object-universe lift now packages the common syntax and all six targets inside
+the total resource-model bicategory, with the full Kraus process category as
+the quantum target, where the six realizations are strong
+braided one-cells with checked resource maps. A separate
+`expose ≫ erase` syntax now also
+connects classical erasure, quantum reset, causal intervention, computation,
+semantic-value loss, and battery-paid Landauer saturation in
+`sixModelErasureAgreement`. Finite hard-intervention programs now have a
+computable last-write-wins normal form. Program execution is represented by
+one normalized intervention and its exact `FinStoch` state; when no original
+mechanism is already a parent-independent forced Dirac distribution,
+extensional local-mechanism semantics reflects normal-form equality. The
+following construction and theorem families
+are no longer wholly open for the linear bit theory: its canonical-path image
+representation and equality-reflection completeness are proved for all six
+interpretations. Their first non-thin generalization is now proved for a
+finite diamond: exact two-path image representation plus six-model completeness
+under independently checked path separation. Generic free-path normalization,
+an explicit term-category/path-category equivalence with exact free-cost
+preservation, path-image representation, and
+path-faithful completeness now hold for every typed sequential signature.
+Every ordinary interpretation also has a unique strict resource-nonincreasing
+free lift, and every heterogeneous interpretation has the corresponding
+unique lift along its ordered additive resource map; both strict-extension
+types are contractible. Globally, ordinary and heterogeneous interpretation
+spaces are classified by the corresponding free-source resource functors.
+The six diamond models
+instantiate these lifts with checked generator agreement and translated cost
+bounds. What remains open is scalable model-specific path faithfulness and
+image characterization for richer operational languages. A second
+generalization is now compiled for adaptive noise: arbitrary fixed-depth
+binary trees have executable positive-history normal forms, exact costs,
+recorded-channel representation, and observational completeness. One
+depth-two two-generator tree has probability, coherent quantum, causal,
+randomized-computation, semantic, and thermal realizations with an exact
+cross-model representation package.
+That boundary is now generalized again: generator-dependent arbitrary finite
+outcome types and variable branch depths have dependent Sigma histories,
+finite-supremum budgets, exact recorded-table representation, observational
+completeness along explicit history equivalences, and a conservative embedding
+of the fixed-depth binary language. The heterogeneous `Bool`/`Fin 3` witness
+has five histories at three different lengths.
+The free sequential algebraic layer is also discharged: branching algebras
+form a category, the tree algebra is initial, formal congruence is sound and
+absolutely complete, and associative unital leaf grafting has algebraic height
+and budget folds with subadditive bounds.
+The model-algebra category now also has chosen finite products and a cartesian
+symmetric monoidal structure. Product fold is componentwise, simultaneous
+two-model equality is exact, and pairing the term model with any second model
+is jointly complete.
+Binary tree-level parallel protocols are now compiled as explicit independent
+lanes. Their stochastic entries factor, symmetry preserves probability and
+cost, and componentwise grafting satisfies strict tensor–sequential
+interchange with subadditive height and budget.
+Arbitrary finite n-ary lane families are now compiled. Signatures, states,
+histories, and semantics may depend on the lane; product normalization,
+n-ary factorization, equivalence-based lane reindexing, simultaneous
+history/state normal-form transport, strict interchange, and n-ary
+observational completeness are proved.
+Every finite positive dependent normal form now also has generic realizations
+in all six model families. Equality reflection is proved for probability,
+measurement–preparation quantum channels, fixed-resource randomized
+computation, structured semantic experiments, and underlying thermal channels;
+the tagged two-node causal joint is faithful under a full-support prior.
+The exact finite semantic numeric boundary is also characterized. Universal
+nonnegative task value is equivalent to Blackwell dominance, and equality of
+all exact finite task values relative to the canonical no-information
+experiment is equivalent to Blackwell equivalence. A Boolean counterexample
+proves that one task-relative scalar value is not a complete invariant.
+The thermal forgetful map is now characterized intrinsically as well: a
+finite stochastic channel admits exactly one Gibbs-preserving lift between
+specified source and target equilibria precisely when it pushes the former to
+the latter. This specializes to arbitrary dependent normal forms and
+externally supplied, rather than definitionally induced, target equilibria.
+The fixed-DAG causal boundary now includes arbitrary parent-dependent soft
+mechanism replacements, parent-independent stochastic interventions, and hard
+Dirac interventions as one hierarchy. Finite programs normalize by last write,
+then computably erase writes equal to the original mechanism; this reduced
+form has exact model/channel representation and equality-reflection
+completeness. The Boolean witness randomizes the child to an independent fair
+coin and normalizes a subsequent explicit restore back to the empty program.
+The total resource-model bicategory now has a two-level simplicial bridge.
+Its Kan object core identifies single-valued internal equivalence classes with
+object-identity edges exactly. For every pair of total models, the full local
+hom-category nerve represents resource-changing 1-cells as vertices and all
+monoidal 2-cells as edges; vertical composition is a 2-simplex and horizontal
+composition is a simplicial map. A lifted deterministic discard edge decodes
+to a proved noninvertible total-model 2-cell, so this bridge does not silently
+truncate local 2-dimensional data. Global low-dimensional Duskin data are now
+explicit as well: triangles carry arbitrary composite-comparison 2-cells, and
+tetrahedra carry six edges, four face cells, and the associator-corrected
+coherence equation. A tetrahedral boundary has a unique 3-simplex exactly when
+that equation holds; the canonical composable triple uses the bicategorical
+associator as its long comparison face.
+These data now extend to every dimension as a genuine global semi-simplicial
+Duskin nerve. An `n`-simplex stores a model at every vertex, a 1-cell on every
+increasing edge, a comparison 2-cell on every increasing triangle, and the
+tetrahedral equation on every increasing quadruple. Strictly monotone ordinal
+maps act by literal restriction, with proved identity and composition laws;
+dimensions two and three recover the explicit triangle and tetrahedron.
+The degeneracy boundary is now closed by a native full Duskin nerve. Its
+`n`-simplices are strictly unitary lax functors from the locally discrete
+finite ordinal `[n]` into the total resource-model bicategory. Every monotone
+ordinal map, including every degeneracy, acts by normal-lax precomposition;
+identity and composition hold strictly. The first degeneracy duplicates its
+vertex and creates an identity 1-cell, and the lax associativity law is exactly
+the associator-corrected tetrahedral equation. A natural coordinate-decoding
+map from the restriction of this simplicial nerve to the earlier
+semi-simplicial nerve commutes with every face map.
+The inverse representation now has a compiled constructor-normal foundation:
+`Ordinal n` has only identity and strict-arrow constructors, is categorically
+equivalent to Mathlib's thin category on `Fin (n + 1)`, and that equivalence is
+lifted in both directions to strictly unitary lax functors. Coordinate
+identity/strict edges and left/right/strict comparison cells compute by
+constructor, while the three-strict-arrow coherence is exactly the stored
+coordinate tetrahedron. All seven identity-containing equations now compile
+as generic bicategory coherence/naturality theorems, and
+`constructorTetrahedralCoherence` packages all eight constructor patterns as
+one heterogeneous equality recording source associativity transport. The
+source unitors, identity transports, and associator have now been adapted to
+the exact `StrictlyUnitaryLaxFunctorCore` fields. The finite-to-normal direction
+is now an explicit choice-free core, and `toNativeSimplex` constructs a native
+Duskin simplex from every coordinate simplex. Both round trips are proved on
+the full normal-lax structure, yielding `nativeCoordinateEquiv`. Transporting
+the native action gives `coordinateNerve`, including every face and degeneracy,
+and `coordinateNerveIsoNative` proves naturality under every ordinal map.
+Global complete-Segal 2-space assembly and construction of the full
+resource-process cost-exact localization remain.
+The first exact layer of that assembly is compiled: the Rezk core diagram of
+the total-model homotopy category has Kan vertical levels, an object-space
+equivalence to the existing object core, and a selected Kan equivalence-arrow
+space whose completeness map is the nerve of a category equivalence. What
+is now added is a transparent identity-arrow forward functor, its natural
+isomorphism with the original composite equivalence, and the selected core
+inclusion into actual outer degree one. The composite is now explicitly
+naturally isomorphic to the genuine outer zero-degeneracy, and the equivalence,
+inclusion, degeneracy, and comparison are bundled as a machine-facing
+categorical factorization. A new generic cylinder construction proves that
+every natural transformation induces an `SSet.Homotopy` of nerve maps; hence
+the mediated completeness map is now simplicially homotopic to actual outer
+zero-degeneracy, and both categorical and nerve data are bundled together.
+Every horizontal row is now naturally the nerve of the category of vertical
+equivalence strings, so the actual outer spine map is an equivalence in every
+bidegree; this is bundled with vertical Kan and completeness data as
+`SegalCompletenessCore`. The selected equivalence category is now explicitly
+equivalent to the actual full subcategory of invertible outer arrows; its
+nerve inclusion commutes with the previous selected inclusion, and the direct
+object-to-actual-equivalence map is again the nerve of a category equivalence
+whose inclusion is homotopic to zero-degeneracy. All positive-degree Reedy
+matching fibrations are now compiled. The formerly separate local layer is
+attached by `HigherCompleteSegalCore`: the same total-model
+indices determine Rezk object vertices and full non-groupoidal mapping nerves;
+vertices decode to 1-cells, edges decode to arbitrary 2-cells, encoding is
+exact, noninvertibility is retained, every local nerve is strict Segal,
+quasicategorical, and 2-coskeletal, and horizontal composition is simplicial.
+Its associator and both unitors are now natural isomorphisms whose nerve maps
+carry genuine simplicial homotopies, with the pointwise pentagon and triangle
+equations bundled in the same machine-facing core.
+The first Reedy prerequisite is now compiled separately:
+`Functor.IsIsofibration` records strict object/isomorphism lifts, including
+forward and reverse edge formulas and their exact image under `nerveMap`.
+The extension to every horn is now compiled: dimension one uses the strict
+isofibration lift, dimension two uses groupoid cancellation, and higher
+dimensions use categorical-nerve horn uniqueness. Consequently
+`Functor.nerveMap_fibration` proves that the nerve map of an isofibration
+between groupoids is a Kan fibration. The degree-one application now uses the
+literal outer faces: `degreeOneMatchingFunctor` maps
+`Core(ComposableArrows C 1)` to two copies of
+`Core(ComposableArrows C 0)` by the actual `d₁` and `d₀` functors. It is a
+strict isofibration by conjugating the represented arrow with the requested
+zero-diagram endpoint isomorphisms, so its nerve is a Kan fibration. The two
+nerve projections are proved equal to the genuine outer faces. The explicit
+categorical-product limit and nerve-product preservation isomorphisms then
+transport this map to Mathlib's selected simplicial-set binary product. The
+resulting standard matching map is exactly `⟨d₁,d₀⟩` and is a Kan
+fibration; `DegreeOneReedyCore` bundles it inside `SegalCompletenessCore`.
+Degree two now has an explicit `TriangleBoundary C` category with three
+independent edges. Its strict-image representation theorem says that a
+boundary extends to `ComposableArrows C 2` exactly when the long edge equals
+the composite of the two short edges. Restriction on maximal cores is a
+strict isofibration, hence its nerve is a Kan fibration, and
+`DegreeTwoMatchingCore` packages these facts. Its hom-wise universal layer is
+also compiled: for every test category `T`, functors
+`T ⥤ TriangleBoundary C` are equivalent to triangle boundaries internal to
+`T ⥤ C`. Independently, `simplicialSpaceBoundaryMatchingDiagram` now defines
+the abstract matching diagram of every simplicial space directly from the
+elements of `∂Δ[n]`; the actual boundary-restriction cone is constructed, and
+the matching map is definitionally its universal lift into the selected limit.
+The explicit triangular-boundary nerve now has a canonical comparison cone
+and map into that limit, with every `fac` equation proved.  Its composite with
+the explicit boundary map is proved exactly equal to the abstract universal
+matching map.  Thus only invertibility of this comparison remains at degree
+two.  The three canonical nondegenerate face objects are now explicit in
+the boundary index, decode exactly to `δ₀,δ₁,δ₂`, and the comparison
+map's composites with their projections are proved.  The three canonical
+vertices and all six face-to-endpoint incidence morphisms are explicit as
+well; matching-cone naturality proves that every abstract edge projection has
+the required endpoint projections.  Independently, every
+`TriangleBoundary C` now has a complete simplicial encoding
+`∂Δ[2] ⟶ nerve C`, defined on every non-surjective simplex and proved
+natural under all faces and degeneracies.  The reverse decoder
+`ofBoundaryNerveMap` is now compiled: incidence naturality supplies endpoint
+equalities, and the three extracted edges are transported to the three shared
+canonical vertices.  All three transported edge equalities are proved, every
+non-surjective simplex of `Δ[2]` is factored through a canonical edge, and both
+full round trips are compiled.  `boundaryNerveEquiv` therefore packages the
+exact representation
+`TriangleBoundary C ≃ (∂Δ[2] ⟶ nerve C)`.
+The inverse of the canonical comparison is now constructed in every vertical
+degree: an abstract matching simplex is assembled into a boundary map in the
+nerve of `EquivalenceString C k`, decoded, commuted across
+`triangleBoundaryEquivalenceStringEquiv`, and lifted back to the maximal core
+by `degreeTwoBoundaryComparisonInverseApp`. Both inverse laws and degreewise
+bijectivity are proved; `degreeTwoBoundaryAbstractMatchingIso` identifies this
+boundary nerve with the abstract degree-two Reedy matching limit, and
+`DegreeTwoReedyCore` packages the result. Matching categories in dimensions at
+least three and the resulting full Reedy package remain. The arbitrary-degree
+infrastructure is nevertheless compiled: `abstractMatchingBoundaryMap`
+assembles any selected degree-`n` matching element as a boundary map in
+`nerve (EquivalenceString C k)`, is injective, and carries the universal
+matching map exactly to categorical-nerve boundary restriction.
+`CategoryTheory.Nerve.boundaryRestriction_injective` proves uniqueness in all
+dimensions at least two. High-dimensional existence is now also proved by
+restricting a boundary to an inner horn, filling it via strict Segal, and
+recovering the omitted face from codimension-two compatibility. Consequently
+all matching maps in degrees `n ≥ 3` are simplicial-set isomorphisms and Kan
+fibrations, packaged by `HigherMatchingCore`. The positive-degree Reedy
+matching package is therefore complete.
+The following construction and theorem families
 are still open and therefore are not entered as axioms or placeholder Lean
 declarations:
 
-1. extension of the Boolean slice to a common compositional syntax that
-   exposes the characteristic structures of all six model families;
-2. representation and conservativity theorems identifying the exact image of
-   each interpretation;
-3. relative and, where mathematically justified, absolute completeness
-   theorems for those interpretations;
-4. a univalent or complete-Segal semantics for the total heterogeneous model
-   theory, together with a universal property rather than only a constructed
-   presentation.
+1. scalable intrinsic image-membership characterizations inside richer
+   model-specific languages: heterogeneous-carrier, graph-changing, or
+   policy-dependent causal interventions, resource-bounded semantic profiles
+   or richer/infinite task languages, energy-resolved thermal-operation
+   dilations, and comparison theorems connecting those algebraic
+   interpretations (fixed-DAG soft/stochastic/hard intervention programs, the
+   coherent finite quantum instrument-tree image, the unbounded exact finite
+   semantic value profile, and arbitrary specified Gibbs-preserving target
+   equilibria are now characterized);
+2. model-specific representation and conservativity theorems beyond the
+   generic free-category/path-category equivalence and the proved finite
+   two-path image;
+3. scalable relative and, where mathematically justified, absolute
+   completeness beyond the generic path-faithfulness criterion and the proved
+   finite path-separating diamond;
+4. assemble the naturally isomorphic full coordinate/native Duskin nerve and
+   locally coherent mapping nerves into a global complete-Segal 2-space,
+   construct the cost-exact bicategorical localization of the entire
+   resource-process bicategory, and instantiate the now-compiled higher
+   local-nerve comparison for that construction.
 
 Each item must be refined into exact Lean statements before it can acquire the
 `FORMALIZED_BUT_UNPROVED` marker. Until then, the existing finite and higher
@@ -81,9 +353,80 @@ The exact localization target is no longer informal: the compiled predicate
 1-morphisms to become adjoint equivalences, biessential factorization of every
 inverting pseudofunctor, and equivalence on the local categories of strong
 transformations and modifications. Its Ript specialization is
-`IsCostExactBicategoricalLocalization`. What remains open is constructing a
-pseudofunctor that satisfies this predicate for the full resource-process
-bicategory; no existence proposition is silently assumed.
+`IsCostExactBicategoricalLocalization`.
+`CostExactZigzag.inclusion_isBicategoricalLocalization` now supplies the
+previously open existence theorem for the full resource-process bicategory.
+`CostExactZigzagNerveComparison.core` now supplies its common-universe full
+local-nerve action, including exact arbitrary 2-cell images and a compositor
+simplicial homotopy. `CostExactZigzagGlobalComparison.core` additionally
+constructs the outer Rezk map from the actual higher localization's induced
+homotopy functor and packages both layers; marked outer arrows factor through
+the target equivalence space. Local vertices, identities, horizontal
+composites, associators, and both unitors satisfy exact outer/local gluing
+laws. The remaining higher comparison problem is higher simplicial gluing and
+the complete-Segal/Rezk weak-equivalence theorem.
+
+The ordinary-localization/Rezk comparison is now compiled separately.
+`RezkCore.diagramMap` is functorial in an ordinary functor, while
+`CostExactRezkComparison.comparison` smallifies and applies the cost-exact
+localization functor. Every transported marked arrow maps to a target Rezk
+one-arrow vertex that factors strictly through the actual equivalence-arrow
+subspace. This proves the outer inversion comparison but intentionally does
+not identify the ordinary localization with the full noninvertible local
+mapping nerves.
+
+The full local comparison is now compiled conditionally on the genuine
+bicategorical universal property. For every universe-balanced
+bicategorical localization, `BicategoricalNerveComparison` constructs maps on
+all full local nerves, proves exact action on arbitrary 2-cell edges, and
+promotes pseudofunctor compositor naturality to a genuine simplicial
+homotopy; marked vertices land at chosen target adjoint equivalences. The
+complete two-dimensional walking localization instantiates this package, and
+its Boolean discard remains noninvertible after mapping. The unresolved step
+is not this comparison interface but construction of the cost-exact
+bicategorical localization for the entire resource-process bicategory and its
+global complete-Segal assembly.
+
+That construction now has a compiled syntactic beginning.
+`MarkedZigzag.Word` is an executable endpoint-indexed word with arbitrary
+forward 1-cells and backward steps restricted to the marking;
+`CostExactZigzag` specializes it to the saturated cost-exact arrows. Its raw
+2-cell language already contains original 2-cells, source identity and
+composition comparisons, marked unit/counit generators and their inverses,
+vertical composition, both whiskerings, and equality transport. Every
+marking-inverting pseudofunctor with chosen adjoint-equivalence witnesses has
+a single recursive interpretation of words, compatible with concatenation
+and both cancellation orders. The concrete zero-cost embedding that is not a
+source equivalence now has an explicit one-step reverse word and raw unit and
+counit cells. The relation closure now includes horizontal whiskering,
+interchange, associator/unitor inverse laws, pentagon and triangle. The
+quotient hom-categories assemble into an actual bicategory, the source maps by
+a genuine pseudofunctor, and marked unit/counit isomorphisms satisfy explicit
+adjunction triangle relations and form equivalences; every cost-exact arrow is
+proved inverted. The concrete
+zero-cost non-equivalence becomes an equivalence in this target. The
+representation was
+refactored to binary weak composition, making word composition evaluation
+definitionally exact. `evalCell_respects` now proves quotient descent,
+`InversionData.lift` constructs every marking-inverting target lift, and
+`factorizationHom`/`factorizationInv` are coherent strong transformations in
+both directions. Their objectwise unitors compile as invertible modifications,
+so `InversionData.factorization` packages an adjoint equivalence and
+`InversionData.factorsThrough` proves biessential factorization for every
+marking-inverting pseudofunctor. Both marked adjunction triangles are imposed
+in the quotient. `LocalExtension.extension` recursively extends every strong
+transformation using mates on formal inverses, and modification naturality
+extends across identities, inverses, and composites. Precomposition is thus
+faithful, full, and essentially surjective. Therefore
+`CostExactZigzag.inclusion_isBicategoricalLocalization` proves the complete
+bicategorical localization universal property. The source and
+word-presentation local nerves are now replaced by equivalent common-universe
+`AsSmall` nerves, and the complete cost-exact local comparison is packaged in
+`CostExactZigzagNerveComparison.core`. The outer Rezk direction induced by the
+same actual higher localization is packaged with it in
+`CostExactZigzagGlobalComparison.core`, with exact vertex, identity, and
+horizontal-composition gluing plus associator and unitor gluing. What remains
+is higher simplicial coherence and the complete-Segal/Rezk weak equivalence.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an
@@ -182,12 +525,71 @@ layers into the exact oplax associativity equation for every triple of
 canonical forward arrows. The first genuinely inverse endpoint sequence,
 1-to-0-to-0-to-0, now has the exact equation too:
 inverse/retained/retained composition is reduced through its target and
-endpoint-transport associativity squares. Ten endpoint-normalized sequences
-involving inverse or cancellation arrows are still open; after full oplax
-associativity, the invertible comparisons must be packaged as a pseudofunctor
-and the source-factorization adjoint equivalence built.
-This is the missing global `lift` field, and the corresponding construction
-for the full resource-process bicategory remains downstream.
+endpoint-transport associativity squares. The retained/retained/inverse target
+normalization square is now compiled as well. For every locally thin
+destination bicategory, all associativity, naturality, and unit equations are
+unique, so the arbitrary action packages as a genuine pseudofunctor and agrees
+with the source action on included 1-morphisms. For the same branch in a
+general non-thin target, the source-normalized retained/inverse compositor is
+now isolated and proved natural in both retained coordinates. Its missing
+three-fold law is therefore precisely the multiplicative coherence of the
+mate-derived inverse-sliding isomorphism, not an endpoint-transport ambiguity.
+At the unmapped source boundary, generator/retained and retained/generator
+normalization are now both proved multiplicative in `A × B`; their images
+under every source pseudofunctor are compiled as four-stage vertical
+equalities in both hom and inverse orientations. These eight equations are
+the unit-normalization inputs needed for the forward
+sliding multiplication proof. The two generator/retained orders now also
+factor explicitly through the ordinary source compositor followed by the
+appropriate left or right unitor, again in both orientations and before or
+after applying the source pseudofunctor. Thus the remaining proof no longer
+contains opaque `Unit × A` normalization. The two forward factorization homs
+are now rewritten directly as mapped unitor inverses followed by ordinary
+normalized compositors. Inverse left/right unitors on `A × B` also decompose
+through the factor unitors and associator, before and after mapping.
+The dependent walking-arrow endpoint equalities that defeated ordinary
+rewriting are now compiled explicitly as heterogeneous equalities: the
+three-fold source 2-cell, the mapped 2-cell, and both normalized compositor
+positions transport across `f ≫ id = f` and `id ≫ id = id` without an
+ill-typed rewrite motive. Eight symmetric HEq bridges now support explicit
+left- and right-identity-normalized source compositors whose dependent
+seven-endpoint associativity laws are proved. Consequently both forward
+factorizations are proved multiplicative in `A × B` as exact normalized
+squares. Their mixed interchange square and the resulting forward-sliding
+multiplicativity law are now proved as well. Transferring that law through the
+mate construction now proves inverse-sliding multiplicativity too. Explicit
+whisker exchange, source normalization, seven-endpoint transport, and target
+normalization now fold this law into the complete all-arrow
+retained/retained/inverse associativity square. The mixed target square,
+single-sliding whisker exchange, source law, seven-endpoint transport, and
+branch selection now also prove retained/inverse/retained associativity.
+The forward/retained/inverse cancellation sequence now compiles end to end:
+its canonical and mapped target square, identity-pseudofunctor-to-direct-mate
+transport, unit-insertion/mate compatibility, source-normalized associativity,
+seven-endpoint transport, all-arrow branch selection, and exact oplax
+associativity equation are proved. The retained/forward/inverse cancellation
+sequence is also complete, using retained-prefix compositor coherence and the
+same endpoint transport. Forward/inverse/retained now compiles as well; its
+source law is the right-whiskering coherence of unit insertion.
+Inverse/forward/retained is now complete too, supported by the corresponding
+counit-insertion right-whiskering theorem. Inverse/retained/forward is now
+complete through target, source, endpoint transport, and all-arrow branch
+selection. Retained/inverse/forward is now complete as well; its source law
+factors through reversed-adjunction mate inversion, counit insertion,
+inverse-sliding tensor multiplicativity, and split-left whisker exchange.
+Forward/inverse/forward and the dual inverse/forward/inverse sequence are now
+complete through target, source, endpoint transport, and all-arrow selection.
+Endpoint and free-groupoid normalization prove associativity for arbitrary
+target triples, and the invertible comparisons are packaged as the genuine
+`generalLiftPseudofunctor` without a local-thinness hypothesis. Its restriction
+is now adjoint equivalent to every marking-inverting source pseudofunctor;
+`generalLiftFactorsThrough` supplies arbitrary nonseparable biessential
+factorization, and `inclusion_isBicategoricalLocalization` combines it with
+marking inversion and local precomposition equivalence. Thus the parameterized
+walking example is a complete bicategorical localization. The full
+resource-process case is now independently completed by the generic
+marked-zigzag presentation and
+`CostExactZigzag.inclusion_isBicategoricalLocalization`.
 
 Two ordinary localization slices are no longer open. First, the identity,
 skeletal-completion, and restricted-Yoneda functors now satisfy Mathlib's

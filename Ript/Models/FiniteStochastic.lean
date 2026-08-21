@@ -41,11 +41,11 @@ instance : CoeSort Object (Type u) :=
 attribute [instance] Object.fintype Object.decEq
 
 /-- Bundle a type with its computational finite structure. -/
-def of (α : Type u) [Fintype α] [DecidableEq α] : Object :=
+abbrev of (α : Type u) [Fintype α] [DecidableEq α] : Object :=
   ⟨α, inferInstance, inferInstance⟩
 
 /-- Tensor unit for finite stochastic objects. -/
-def unit : Object :=
+abbrev unit : Object :=
   of PUnit
 
 /-- Cartesian product of finite stochastic objects. -/

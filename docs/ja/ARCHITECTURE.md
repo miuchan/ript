@@ -70,10 +70,16 @@ Ript は、実行可能な有限モデルが商、測度論、高次圏、内部
 - `FiniteDistribution`：有限分布モナドと Kleisli 表現
 - 確率モジュール：有限厳密チャネルから Mathlib `Stoch` へのブリッジ
 - 意思決定モジュール：Blackwell 比較、厳密リスク、資源境界、分離証明書
-- 計算モジュール：形式的ステップ/問い合わせ/記憶/ゲート量と実時間の分離
+- 計算モジュール：形式的ステップ/問い合わせ/記憶/ゲート量と実時間の分離；ランダム化計算は厳密有限核と同じ四次元資源代数を結合
 - 因果モジュール：有限トポロジカル順序 DAG と hard intervention
 - 熱モジュール：厳密な操作チャネルと実数値解析熱力学の分離
-- 量子モジュール：有限 Kraus 族を用い、チャネル化前に正値性とトレース保存を証明
+- 量子モジュール：完全対称モノイダル Kraus 圏上に instrument、結果制御フィードバック、依存 bind を構築；`InstrumentTree` は帰納正規形と計算可能予算層
+- `NoisyBitRealizations`：コヒーレンス保持 random-unitary 量子とランダム化計算を含む最初の六モデル共有ノイズ構文
+- `Syntax.Branching`：固定深度適応二分履歴、正分岐表正規形、厳密経路コスト、最悪時予算、記録確率表現、観測完全性；`AdaptiveNoiseRealizations`：六つの固有モデル実現
+- `Syntax.DependentBranching`：可変深度、生成元依存有限結果、明示的履歴同値、保守的二分埋め込み；`Examples.DependentBranching`：異種結果の実行可能見証
+- `Syntax.DependentBranching.Free`：分岐代数の圏、始木代数、等式健全性/完全性、逐次接ぎ木モノイド、高さ/予算の数値 fold 表現
+- `Syntax.DependentBranching.Monoidal`：モデル代数圏の選択有限積、笛卡尔対称モノイダル整合、成分積 fold 表現、共同モデル完全性
+- `Syntax.DependentBranching.Parallel`：明示的異種レーン、厳密独立確率分解、レーン対称性、資源加算、共有境界接ぎ木、厳密テンソル–逐次交換則
 
 [モデル能力行列](reference/MODEL_MATRIX.md)が、各モデルの任意構造についての正式記録です。
 

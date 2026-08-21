@@ -64,7 +64,7 @@ theorem tensorLinearMap_kronecker
   simp [tensorLinearMap]
 
 /-- A Kronecker product distributes over two finite sums. -/
-private theorem sum_kronecker_sum {I J : Type u} [Fintype I] [Fintype J]
+theorem sum_kronecker_sum {I J : Type u} [Fintype I] [Fintype J]
     (a : I → Matrix V V ℂ) (b : J → Matrix X X ℂ) :
     (∑ i, a i) ⊗ₖ (∑ j, b j) = ∑ i, ∑ j, a i ⊗ₖ b j := by
   ext ⟨v, x⟩ ⟨v', x'⟩
@@ -113,10 +113,10 @@ private theorem tensorLinearMap_eq_krausSum
       rw [Finset.sum_add_distrib, ha, hb]
 
 /-- Linear maps on product-indexed matrices agree when they agree on every
-Kronecker product. -/
-private theorem linearMap_ext_kronecker
-    {f g : Matrix (V × X) (V × X) ℂ →ₗ[ℂ]
-      Matrix (W × Y) (W × Y) ℂ}
+Kronecker product.  This is the reusable extensionality principle for tensor
+coherence proofs. -/
+theorem linearMap_ext_kronecker
+    {f g : Matrix (V × X) (V × X) ℂ →ₗ[ℂ] Matrix Z Z ℂ}
     (h : ∀ (ρ : Matrix V V ℂ) (σ : Matrix X X ℂ),
       f (ρ ⊗ₖ σ) = g (ρ ⊗ₖ σ)) : f = g := by
   apply LinearMap.ext
@@ -130,6 +130,38 @@ private theorem linearMap_ext_kronecker
       simp only [e, kroneckerLinearEquiv_tmul]
       exact h ρ σ
   | add a b ha hb => rw [e.map_add, f.map_add, g.map_add, ha, hb]
+
+/-- Linear maps out of a left-associated triple product agree when they agree
+on all left-associated triple Kronecker products. -/
+theorem linearMap_ext_kronecker₃_left
+    {f g : Matrix ((V × X) × Z) ((V × X) × Z) ℂ →ₗ[ℂ]
+      Matrix T T ℂ}
+    (h : ∀ (ρ : Matrix V V ℂ) (σ : Matrix X X ℂ)
+      (τ : Matrix Z Z ℂ),
+      f ((ρ ⊗ₖ σ) ⊗ₖ τ) = g ((ρ ⊗ₖ σ) ⊗ₖ τ)) : f = g := by
+  apply LinearMap.ext
+  intro ω
+  let outer : Matrix (V × X) (V × X) ℂ ⊗[ℂ] Matrix Z Z ℂ ≃ₗ[ℂ]
+      Matrix ((V × X) × Z) ((V × X) × Z) ℂ :=
+    kroneckerLinearEquiv (V × X) (V × X) Z Z ℂ
+  rw [← outer.apply_symm_apply ω]
+  induction outer.symm ω using TensorProduct.induction_on with
+  | zero => simp
+  | tmul ρσ τ =>
+      simp only [outer, kroneckerLinearEquiv_tmul]
+      let inner : Matrix V V ℂ ⊗[ℂ] Matrix X X ℂ ≃ₗ[ℂ]
+          Matrix (V × X) (V × X) ℂ :=
+        kroneckerLinearEquiv V V X X ℂ
+      rw [← inner.apply_symm_apply ρσ]
+      induction inner.symm ρσ using TensorProduct.induction_on with
+      | zero => simp
+      | tmul ρ σ =>
+          simp only [inner, kroneckerLinearEquiv_tmul]
+          exact h ρ σ τ
+      | add a b ha hb =>
+          rw [inner.map_add, Matrix.add_kronecker, f.map_add, g.map_add,
+            ha, hb]
+  | add a b ha hb => rw [outer.map_add, f.map_add, g.map_add, ha, hb]
 
 /-- Tensor product of two finite Kraus channels.  Its operational action is
 the canonical tensor of linear maps; pairwise tensor products of Kraus

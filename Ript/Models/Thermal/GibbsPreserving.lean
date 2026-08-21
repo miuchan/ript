@@ -8,7 +8,10 @@ A free thermodynamic process is an exact finite stochastic channel that maps
 the distinguished equilibrium state of its source to that of its target.
 These processes contain identities, are closed under composition, and form a
 category.  Independent tensor composition is a bifunctor, with product
-equilibria supplied by `ThermalObject.tensor`.
+equilibria supplied by `ThermalObject.tensor`. The forgetful channel map is
+injective, and its intrinsic image consists exactly of channels that send the
+specified source equilibrium to the specified target equilibrium; every such
+channel has a unique Gibbs-preserving lift.
 -/
 
 set_option autoImplicit false
@@ -41,6 +44,72 @@ theorem ext (f g : GibbsPreserving X Y) (h : f.channel = g.channel) : f = g := b
   cases g
   cases h
   rfl
+
+/-- Intrinsic image predicate for the forgetful map from thermal processes to
+finite stochastic channels: the channel sends the specified source
+equilibrium exactly to the specified target equilibrium. -/
+def IsEquilibriumCompatible
+    (channel : FinStoch X.system Y.system) : Prop :=
+  X.equilibrium.push channel = Y.equilibrium
+
+/-- An equilibrium-compatible stochastic channel has a canonical
+Gibbs-preserving lift between the supplied thermal objects. -/
+def ofCompatible (channel : FinStoch X.system Y.system)
+    (compatible : IsEquilibriumCompatible channel) : GibbsPreserving X Y where
+  channel := channel
+  preserves_equilibrium := compatible
+
+@[simp]
+theorem ofCompatible_channel (channel : FinStoch X.system Y.system)
+    (compatible : IsEquilibriumCompatible channel) :
+    (ofCompatible channel compatible).channel = channel :=
+  rfl
+
+/-- Forgetting equilibrium preservation is faithful: a thermal process is
+uniquely determined by its stochastic channel. -/
+theorem channel_injective :
+    Function.Injective
+      (channel : GibbsPreserving X Y → FinStoch X.system Y.system) := by
+  intro first second equality
+  exact ext first second equality
+
+/-- **Intrinsic image theorem.** A finite stochastic channel lies in the
+image of the forgetful map from Gibbs-preserving processes exactly when it is
+equilibrium-compatible. -/
+theorem isEquilibriumCompatible_iff_exists
+    (channel : FinStoch X.system Y.system) :
+    IsEquilibriumCompatible channel ↔
+      ∃ process : GibbsPreserving X Y, process.channel = channel := by
+  constructor
+  · intro compatible
+    exact ⟨ofCompatible channel compatible, rfl⟩
+  · rintro ⟨process, equality⟩
+    unfold IsEquilibriumCompatible
+    rw [← equality]
+    exact process.preserves_equilibrium
+
+/-- **Unique representation theorem.** Every compatible underlying channel
+has exactly one Gibbs-preserving lift; an incompatible channel has none. -/
+theorem isEquilibriumCompatible_iff_existsUnique
+    (channel : FinStoch X.system Y.system) :
+    IsEquilibriumCompatible channel ↔
+      ∃! process : GibbsPreserving X Y, process.channel = channel := by
+  constructor
+  · intro compatible
+    refine ⟨ofCompatible channel compatible, rfl, ?_⟩
+    intro process equality
+    exact ext process (ofCompatible channel compatible) equality
+  · rintro ⟨process, equality, _unique⟩
+    exact (isEquilibriumCompatible_iff_exists channel).2
+      ⟨process, equality⟩
+
+/-- Failure of equilibrium compatibility is exactly the obstruction to a
+thermal lift with the requested underlying channel. -/
+theorem not_exists_channel_iff_not_isEquilibriumCompatible
+    (channel : FinStoch X.system Y.system) :
+    (¬ ∃ process : GibbsPreserving X Y, process.channel = channel) ↔
+      ¬ IsEquilibriumCompatible channel :=
+  not_congr (isEquilibriumCompatible_iff_exists channel).symm
 
 /-- The identity stochastic channel preserves every equilibrium state. -/
 def identity (X : ThermalObject.{u}) : GibbsPreserving X X where

@@ -83,12 +83,38 @@ isolated data structures.
 - decision modules implement Blackwell comparison, exact risk, resource bounds,
   and separator certificates.
 - computation modules distinguish formal step/query/storage/gate measures from
-  wall-clock runtime.
+  wall-clock runtime; randomized computation pairs exact finite kernels with
+  the same four-coordinate resource algebra.
 - causal modules use finite topologically ordered DAGs and hard interventions.
 - thermal modules separate exact operational channels from real-valued analytic
   thermodynamics.
 - quantum modules use finite Kraus families, proving positivity and trace
-  preservation before packaging channels.
+  preservation before packaging channels; product bases and reversible basis
+  equivalences provide the full symmetric monoidal Kraus category, while
+  operations and normalized instruments expose classical outcomes and
+  posterior states through a recorded-channel representation and support
+  outcome-controlled trace-preserving feedback plus dependent multi-round
+  bind with Sigma-tree reassociation; `InstrumentTree` is the inductive
+  normal-form and computable-budget layer.
+- `NoisyBitRealizations` is the first one-syntax six-model stochastic branch,
+  including coherent random-unitary quantum and randomized-computation targets.
+- `Syntax.Branching` computes fixed-depth adaptive binary histories, positive
+  branch-table normal forms, exact path costs, worst-case budgets, recorded
+  stochastic representation, and observational completeness;
+  `AdaptiveNoiseRealizations` supplies the six native model realizations.
+- `Syntax.DependentBranching` generalizes this boundary to variable-depth,
+  generator-dependent finite outcomes, explicit history equivalences, and a
+  conservative fixed-binary embedding; `Examples.DependentBranching` is the
+  executable heterogeneous-outcome witness.
+- `Syntax.DependentBranching.Free` packages branching algebras as a category,
+  proves the tree algebra initial, supplies sound/complete equations and the
+  sequential graft monoid, and represents height and budget as numeric folds.
+- `Syntax.DependentBranching.Monoidal` gives the model-algebra category chosen
+  finite products, cartesian symmetric monoidal coherence, componentwise
+  product-fold representation, and joint-model completeness.
+- `Syntax.DependentBranching.Parallel` packages explicit heterogeneous lanes,
+  exact independent stochastic factorization, lane symmetry, additive
+  resources, shared-boundary grafting, and strict tensor–sequential interchange.
 
 The [model capability matrix](reference/MODEL_MATRIX.md) is the authoritative record
 of which optional structures each model exports.

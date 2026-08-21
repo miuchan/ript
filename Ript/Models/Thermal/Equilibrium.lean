@@ -36,14 +36,23 @@ structure ThermalObject where
 namespace ThermalObject
 
 /-- Tensor unit with its unique equilibrium state. -/
-def unit : ThermalObject.{u} where
+abbrev unit : ThermalObject.{u} where
   system := Object.unit
   equilibrium := FinDist.pure PUnit.unit
 
 /-- Independent composite system with the product equilibrium state. -/
-def tensor (X Y : ThermalObject.{u}) : ThermalObject.{u} where
+abbrev tensor (X Y : ThermalObject.{u}) : ThermalObject.{u} where
   system := Object.tensor X.system Y.system
   equilibrium := X.equilibrium.tensor Y.equilibrium
+
+@[simp]
+theorem unit_system : (unit : ThermalObject.{u}).system = Object.unit :=
+  rfl
+
+@[simp]
+theorem tensor_system (X Y : ThermalObject.{u}) :
+    (tensor X Y).system = Object.tensor X.system Y.system :=
+  rfl
 
 /-- The composite equilibrium probability factors into its two marginal
 equilibrium probabilities. -/

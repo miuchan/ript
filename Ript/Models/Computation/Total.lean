@@ -34,15 +34,15 @@ instance : CoeSort Object (Type u) :=
   ⟨Object.carrier⟩
 
 /-- Bundle an executable value type as a total-computation object. -/
-def of (X : Type u) : Object :=
+abbrev of (X : Type u) : Object :=
   ⟨X⟩
 
 /-- Unit object for independent parallel computation. -/
-def unit : Object :=
+abbrev unit : Object :=
   of PUnit
 
 /-- Cartesian interface for independent parallel computation. -/
-def tensor (X Y : Object) : Object :=
+abbrev tensor (X Y : Object) : Object :=
   of (X × Y)
 
 end Object
@@ -96,6 +96,16 @@ instance processCost : HasProcessCost Object ComputationResource where
 @[simp]
 theorem run_comp (f : W ⟶ X) (g : X ⟶ Y) (w : W) :
     (f ≫ g).run w = g.run (f.run w) :=
+  rfl
+
+/-- The identity computation executes the identity function. -/
+@[simp]
+theorem run_id (X : Object.{u}) : (𝟙 X : X ⟶ X).run = id :=
+  rfl
+
+/-- The identity computation stores zero resource. -/
+@[simp]
+theorem resource_id (X : Object.{u}) : (𝟙 X : X ⟶ X).resource = 0 :=
   rfl
 
 /-- Serial composition adds every resource coordinate exactly. -/
