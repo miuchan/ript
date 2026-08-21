@@ -134,6 +134,30 @@ theorem horizontalTwoCell_pastedCompositorSquare
       (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁ :=
   (horizontalTwoCell_pastingGlue α₀ α₁ β₀ β₁).2.2.2
 
+/-- One of the three actual target-local 3-simplices in the cost-exact
+compositor prism over a vertically composable horizontal pair. -/
+noncomputable def horizontalTwoCellCompositionPrismSimplex
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂)
+    (i : Fin 3) :=
+  commonCompositionPrismSimplex
+    (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁ i
+
+/-- The cost-exact compositor prism consists of three genuine target-local
+3-simplices with all twelve faces identified and exact source/target pair
+2-simplex end faces. -/
+theorem horizontalTwoCell_compositionPrismGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    CommonCompositionPrismGlue
+      (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁ :=
+  (core (R := R)).toPseudofunctorNerveCore.compositionPrismGlue
+    α₀ α₁ β₀ β₁
+
 /-- The cost-exact comparison satisfies the exact lifted associator-edge
 coherence law. -/
 theorem associatorEdgeCoherence
