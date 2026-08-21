@@ -397,9 +397,13 @@ first correct bridge is now compiled: generic and relative Rezk two-arrow
 vertices have exact three-face/two-degeneracy laws, relative comparison maps
 them exactly, and all three horizontal pair vertices of the degree-two local
 prism glue to those outer vertices; their target middle faces decode from
-actual mapped local composites. What remains is arbitrary outer-string and
-all-prism-face gluing and the resulting Dwyer--Kan/Rezk weak-equivalence
-theorem.
+actual mapped local composites. Arbitrary outer strings now also have
+canonical vertices with exact restriction along every simplex-category map,
+and both ordinary and relative comparisons preserve them. Every source vertex
+of every all-degree local prism decodes to a source 1-cell pair with the full
+two-arrow glue. What remains is all-prism-face projection gluing, the correct
+relative-zigzag mapping-space comparison, and the resulting Dwyer--Kan/Rezk
+weak-equivalence theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -469,8 +473,9 @@ are now exposed as well. The generic formulas are now packaged at all degrees
 and instantiated globally for every cost-exact model triple. Their remaining
 outer-relative gluing is no longer empty: degree-two represented strings,
 their faces/degeneracies, and all three prism pair vertices are compiled. The
-arbitrary-string extension and complete-Segal/Rezk weak equivalence remain
-open.
+arbitrary-string vertex/restriction extension and all-degree prism source-
+vertex glue are now compiled too. All-face projection gluing and the complete-
+Segal/Rezk weak equivalence remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

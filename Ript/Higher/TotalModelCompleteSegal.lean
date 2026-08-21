@@ -147,6 +147,39 @@ def diagramMap {D : Type u} [Category.{u} D] (F : C ⥤ D) :
     diagram C ⟶ diagram D :=
   Functor.whiskerRight (diagramCatMap C F) CategoryTheory.nerveFunctor
 
+/-- The vertical zero-simplex in arbitrary outer degree represented by a
+finite string in the underlying category. -/
+def stringVertex {n : ℕ} (F : ComposableArrows C n) :
+    ((diagram C).obj (op (SimplexCategory.mk n))).obj
+      (op (SimplexCategory.mk 0)) :=
+  ComposableArrows.mk₀ (⟨F⟩ : Core (ComposableArrows C n))
+
+/-- Outer restriction of a represented string vertex is exactly
+precomposition of its finite string. -/
+theorem stringVertex_restriction {m n : ℕ}
+    (φ : SimplexCategory.mk m ⟶ SimplexCategory.mk n)
+    (F : ComposableArrows C n) :
+    ((diagram C).map φ.op).app (op (SimplexCategory.mk 0))
+        (stringVertex C F) =
+      stringVertex C
+        (F.whiskerLeft (SimplexCategory.toCat.map φ).toFunctor) := by
+  rfl
+
+/-- Functorial Rezk comparison sends every represented finite string vertex
+to the vertex of its componentwise functor image. -/
+theorem diagramMap_stringVertex {D : Type u} [Category.{u} D]
+    (L : C ⥤ D) {n : ℕ} (F : ComposableArrows C n) :
+    ((diagramMap C L).app (op (SimplexCategory.mk n))).app
+        (op (SimplexCategory.mk 0)) (stringVertex C F) =
+      stringVertex D ((L.mapComposableArrows n).obj F) := by
+  change (CategoryTheory.nerveMap ((L.mapComposableArrows n).core)).app
+      (op (SimplexCategory.mk 0))
+        (ComposableArrows.mk₀ (⟨F⟩ : Core (ComposableArrows C n))) = _
+  rw [CategoryTheory.nerveMap_app_mk₀]
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  rfl
+
 /-- The vertical zero-simplex in outer degree one represented by an arrow of
 the underlying category. -/
 def arrowVertex {X Y : C} (f : X ⟶ Y) :

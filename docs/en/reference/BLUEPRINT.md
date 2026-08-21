@@ -374,8 +374,9 @@ Every node in this graph is an existing compiled module.
 | 12 (relative/local degree-two compositor prism) | The actual `SSet.Homotopy` prism triangulation sends every common-universe horizontal pair 2-simplex to three genuine target-local 3-simplices; all twelve faces are identified, adjacent tetrahedra share their switching faces, and the two outer faces are exactly the canonical map-then-compose and compose-then-map 2-simplices | PROVED |
 | 12 (relative/local all-degree compositor prism core) | Every source horizontal-product `n`-simplex and prism index `i : Fin (n + 1)` produces a genuine target-local `(n + 1)`-simplex; one audited core simultaneously proves both endpoint families, both side-face families, shared switching faces, and both degeneracy families in every degree; the cost-exact global comparison exposes this core for every model triple | PROVED |
 | 12 (relative-outer/local degree-two string gluing) | Rezk and relative Rezk outer degree two have canonical two-arrow vertices with exact three-face and two-degeneracy formulas; the relative comparison maps represented pairs exactly; all three horizontal pair vertices of every local compositor prism are glued to relative outer degree two, while their target middle faces decode from the actual mapped local composite vertices | PROVED |
+| 12 (relative-outer arbitrary-string vertex gluing) | Every outer `n`-string has a canonical vertical vertex whose restriction along any simplex-category map is exact; ordinary and relative Rezk comparisons preserve all such vertices componentwise; every source vertex of every all-degree cost-exact local compositor prism decodes to a source 1-cell pair and carries the complete relative two-arrow outer/local glue | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled relative-outer/local degree-two vertex-and-face glue from represented two-arrow strings to arbitrary outer strings and all prism faces, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled arbitrary-string/all-prism-vertex glue from vertices to all local prism face projections, formulate the correct relative-zigzag mapping-space comparison, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6118,9 +6119,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   identity degeneracies. Relative comparison preserves those vertices, and
   the three horizontal pair vertices of every degree-two local prism glue to
   them; target middle faces decode from actual mapped local composite vertices.
-  The remaining boundary is extending this vertex-and-face bridge to arbitrary
-  outer strings and all local prism faces, then proving the Dwyer--Kan/Rezk
-  weak-equivalence statement.
+  Arbitrary outer strings now also have canonical vertices with exact
+  restriction along every simplex map, and comparison preserves them; every
+  source vertex of every all-degree local prism decodes to a source pair with
+  complete two-arrow glue. The remaining boundary is extending this bridge to
+  all local prism face projections, formulating the correct relative-zigzag
+  mapping-space comparison, and proving the Dwyer--Kan/Rezk weak-equivalence
+  statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`

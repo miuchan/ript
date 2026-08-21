@@ -282,8 +282,11 @@ estas ekzakta: ordinaraj kaj relativaj du-sagaj verticoj havas tri edrojn kaj
 du identecajn degenerigojn, la relativa komparo konservas ilin, kaj ĉiuj tri
 horizontale paraj verticoj de ĉiu duagrada loka prismo gluiĝas al tiuj eksteraj
 verticoj; celaj mezaj edroj malkodiĝas el faktaj bildigitaj lokaj kunmetaĵoj.
-Restas arbitra ekstera ĉeno/ĉiu-prisma-edra gluado kaj la Dwyer–Kan/Rezk
-malforta ekvivalento.
+Arbitraj eksteraj ĉenverticoj nun restriktiĝas ekzakte laŭ ĉiu simplicia mapo
+kaj estas konservataj de la relativa komparo; ĉiu fonta vertico de ĉiu
+tutgrada loka prismo malkodiĝas al fonta 1-ĉela paro kun plena du-saga gluado.
+Restas gluado de ĉiuj prismaj edroprojekcioj kaj la Dwyer–Kan/Rezk malforta
+ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

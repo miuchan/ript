@@ -558,6 +558,9 @@ set_option autoImplicit false
 #print axioms Ript.Higher.RezkCore.diagramCatMap
 #print axioms Ript.Higher.RezkCore.diagramMap
 #print axioms Ript.Higher.RezkCore.diagramMap_arrowVertex
+#print axioms Ript.Higher.RezkCore.stringVertex
+#print axioms Ript.Higher.RezkCore.stringVertex_restriction
+#print axioms Ript.Higher.RezkCore.diagramMap_stringVertex
 #print axioms Ript.Higher.RezkCore.twoArrowVertex
 #print axioms Ript.Higher.RezkCore.diagramMap_twoArrowVertex
 #print axioms Ript.Higher.RezkCore.twoArrowVertex_face_one
@@ -991,6 +994,9 @@ set_option autoImplicit false
 #print axioms Ript.Higher.RelativeRezk.diagramCat
 #print axioms Ript.Higher.RelativeRezk.comparison
 #print axioms Ript.Higher.RelativeRezk.comparison_arrowVertex
+#print axioms Ript.Higher.RelativeRezk.stringVertex
+#print axioms Ript.Higher.RelativeRezk.stringVertex_restriction
+#print axioms Ript.Higher.RelativeRezk.comparison_stringVertex
 #print axioms Ript.Higher.RelativeRezk.twoArrowVertex
 #print axioms Ript.Higher.RelativeRezk.comparison_twoArrowVertex
 #print axioms Ript.Higher.RelativeRezk.twoArrowVertex_face_one
@@ -1003,6 +1009,9 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceArrow
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_stringVertex
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceHorizontalPairAt
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismVerticesGlue
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceArrow_comp
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceTwoArrow
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetTwoArrow_face_one_mappedComposite

@@ -313,8 +313,11 @@ generic and relative two-arrow vertices have all three faces and both identity
 degeneracies, relative comparison preserves them, and all three horizontal
 pair vertices of each degree-two local prism glue to those outer vertices;
 target middle faces decode from actual mapped local composites. Remaining work
-is arbitrary outer-string/all-prism-face gluing and the global Dwyer--Kan/Rezk
-weak-equivalence theorem.
+has narrowed further: arbitrary outer string vertices restrict exactly along
+every simplex map and relative comparison preserves them; every source vertex
+of every all-degree local prism decodes to a source pair with complete two-
+arrow glue. All-prism-face projection gluing and the global Dwyer--Kan/Rezk
+weak-equivalence theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,
