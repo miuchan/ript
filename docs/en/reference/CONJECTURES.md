@@ -414,9 +414,14 @@ quotient-2-cell nerve is now categorically equivalent to the actual target
 local nerve for every object pair, with a `NerveEquivalenceWitness`, explicit
 simplicial homotopy inverse, and strict all-degree factorization of the
 existing local map; the outer homotopy functor is essentially surjective.
-What remains is a model-independent derived or hammock characterization of
-this presented mapping nerve, accepted weak-equivalence packaging, and the
-resulting Dwyer--Kan/Rezk theorem.
+The underlying word/quotient-2-cell category now also has a target-independent
+presentation universal property: every interpretation of words and raw cells
+into an arbitrary category that respects all relations, identities, and
+vertical composition descends to a functor, computes exactly on every raw
+representative, and is the unique compatible lift. What remains is upgrading
+this algebraic universal property to a homotopical derived or hammock
+characterization, accepted weak-equivalence packaging, and the resulting
+Dwyer--Kan/Rezk theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -496,7 +501,9 @@ core. The presented relative-zigzag mapping nerve now has an exact categorical
 comparison with the actual target local nerve, a displayed simplicial
 homotopy inverse, and strict factorization of the source local map in every
 degree. Proving model-independent derived mapping-space correctness and the
-complete-Segal/Rezk weak equivalence remains open.
+complete-Segal/Rezk weak equivalence remains open. The target-independent
+quotient-presentation descent and uniqueness theorem is now compiled, but a
+hammock/derived homotopical comparison has not yet been deduced from it.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

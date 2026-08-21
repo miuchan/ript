@@ -912,6 +912,10 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.markedEquivalence
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion_inverts
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.descend
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.descend_map_mk
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.toFunctor_unique
 #print axioms Ript.Higher.CostExactZigzag.backwardCostReflecting
 #print axioms Ript.Higher.CostExactZigzag.unitCellCostReflecting
 #print axioms Ript.Higher.CostExactZigzag.counitCellCostReflecting
@@ -993,6 +997,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.comparisonNerveEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.comparisonHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.localMap_factorization
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.identityInterpretation
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.localPresentationCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk

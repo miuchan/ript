@@ -1,5 +1,6 @@
 import Ript.Higher.CostExactZigzagNerveComparison
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
+import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingPresentation
 
 /-!
 # Relative cost-exact zigzag mapping-space presentation
@@ -33,6 +34,58 @@ open Ript.Higher.UniverseLiftedNerve
 universe u v w
 
 variable {R : Type w} [AddCommMonoid R] [PartialOrder R]
+
+/-- Canonical source-defined interpretation of the cost-exact local
+presentation into its own quotient word category. Words are fixed and raw
+cells map to their quotient representatives. -/
+def identityInterpretation (M N : ProcessModel.{u, v, w} R) :
+    Bicategory.MarkedZigzag.Presented.LocalInterpretation
+      (costExactArrows R) M N
+      (CostExactZigzag.Word (R := R) M N) where
+  obj word := word
+  map alpha := Bicategory.MarkedZigzag.Presented.mk
+    (costExactArrows R) alpha
+  map_rel relation := Quot.sound relation
+  map_id _ := rfl
+  map_vcomp _ _ := rfl
+
+/-- The literal quotient-hom action is a compatible lift of the canonical
+cost-exact local interpretation. -/
+def identityLift (M N : ProcessModel.{u, v, w} R) :
+    Bicategory.MarkedZigzag.Presented.LocalInterpretation.LocalLift
+      (costExactArrows R) M N (identityInterpretation M N) where
+  mapHom cell := cell
+  map_id _ := rfl
+  map_comp _ _ := rfl
+  map_mk _ := rfl
+
+/-- Cost-exact specialization of the target-independent local presentation
+universal property. The literal quotient lift is the canonical descent, and
+every compatible lift is uniquely that descent. -/
+def LocalPresentationCore
+    (M N : ProcessModel.{u, v, w} R) : Prop :=
+  identityLift M N =
+      Bicategory.MarkedZigzag.Presented.LocalInterpretation.descendLift
+        (costExactArrows R) M N (identityInterpretation M N) ∧
+  ∀ (L :
+    Bicategory.MarkedZigzag.Presented.LocalInterpretation.LocalLift
+      (costExactArrows R) M N (identityInterpretation M N)),
+    L = Bicategory.MarkedZigzag.Presented.LocalInterpretation.descendLift
+      (costExactArrows R) M N (identityInterpretation M N)
+
+/-- Every cost-exact model pair satisfies the source-defined local
+presentation universal property. -/
+theorem localPresentationCore (M N : ProcessModel.{u, v, w} R) :
+    LocalPresentationCore M N := by
+  refine ⟨?_, ?_⟩
+  · exact
+    Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique
+      (costExactArrows R) M N (identityInterpretation M N)
+        (identityLift M N)
+  ·
+    intro L
+    exact Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique
+      (costExactArrows R) M N (identityInterpretation M N) L
 
 /-- Common-universe small replacement of the source-defined category of
 cost-exact marked-zigzag words and quotient 2-cells from `M` to `N`. -/
@@ -201,6 +254,8 @@ theorem localMap_factorization (M N : ProcessModel.{u, v, w} R) :
 /-- Complete represented relative-zigzag mapping-space comparison for one
 pair of process models. -/
 structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
+  /-- Source-defined quotient-presentation universal property. -/
+  localPresentation : LocalPresentationCore M N
   /-- Categorical equivalence between the source-presented zigzag category
   and the actual target local hom-category. -/
   categoricalEquivalence : RelativeZigzagMappingCategory M N ≌
@@ -250,6 +305,7 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
 zigzag mapping-space comparison. -/
 noncomputable def core (M N : ProcessModel.{u, v, w} R) :
     MappingSpaceCore M N where
+  localPresentation := localPresentationCore M N
   categoricalEquivalence := comparisonEquivalence M N
   nerveEquivalence := comparisonNerveEquivalence M N
   homotopyEquivalence := comparisonHomotopyEquivalence M N
