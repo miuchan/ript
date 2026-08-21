@@ -469,6 +469,9 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.RezkCore.diagramCatMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.diagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.diagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.stringVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.stringVertex_restriction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.diagramMap_stringVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.diagramMap_twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.twoArrowVertex_face_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
@@ -910,6 +913,9 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.RelativeRezk.diagramCat` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.comparison_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.stringVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.stringVertex_restriction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.comparison_stringVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.comparison_twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.twoArrowVertex_face_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
@@ -922,6 +928,9 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_stringVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.sourceHorizontalPairAt` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismVerticesGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceArrow_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceTwoArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.targetTwoArrow_face_one_mappedComposite` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |

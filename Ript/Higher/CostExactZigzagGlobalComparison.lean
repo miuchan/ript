@@ -331,6 +331,24 @@ theorem mappedLocalTwoSimplex_diagonal
   simp
   rfl
 
+/-- The relative outer comparison acts exactly on every represented finite
+source-homotopy string vertex. -/
+theorem relativeOuterComparison_stringVertex
+    {n : ℕ}
+    (F : ComposableArrows (SmallSource.{u, v, w} (R := R)) n) :
+    ((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk n))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.stringVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) F) =
+      RezkCore.stringVertex (SmallTarget.{u, v, w} (R := R))
+        (((smallHomotopyLocalizationFunctor (R := R)).mapComposableArrows n).obj
+          F) :=
+  RelativeRezk.comparison_stringVertex
+    (relativeSmallMarking.{u, v, w} (R := R))
+    (smallHomotopyLocalizationFunctor (R := R))
+    (smallHomotopyLocalization_invertsRelativeMarking (R := R)) F
+
 /-- The relative outer comparison acts exactly on every represented source
 arrow vertex. -/
 theorem relativeOuterComparison_sourceArrow
@@ -852,6 +870,46 @@ theorem relativeOuterLocal_prismVerticesGlue
     relativeOuterLocal_twoArrowGlue f₂ g₂,
     relativeLocal_horizontalPrismGlue α₀ α₁ β₀ β₁⟩
 
+/-- Decode one vertex of an arbitrary common-universe horizontal-product
+source simplex back to its pair of source 1-cells. -/
+def sourceHorizontalPairAt
+    {M N P : ProcessModel.{u, v, w} R} {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (j : Fin (n + 1)) : (M ⟶ N) × (N ⟶ P) :=
+  (AsSmall.down :
+    CommonHorizontalSource
+      (_Q := CostExactZigzag.inclusion (R := R)) M N P ⥤
+        ((M ⟶ N) × (N ⟶ P))).obj (x.obj j)
+
+/-- All-degree relative-outer/local prism vertex package. It combines the
+all-degree local prism core with exact two-arrow outer/local gluing for every
+vertex of every horizontal-product source simplex. -/
+def RelativeOuterLocalAllPrismVerticesGlue
+    (M N P : ProcessModel.{u, v, w} R) : Prop :=
+  CommonCompositionPrismCore
+    (CostExactZigzag.inclusion (R := R)) M N P ∧
+  ∀ (n : ℕ)
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (j : Fin (n + 1)),
+    RelativeOuterLocalTwoArrowGlue
+      (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2
+
+/-- Every cost-exact compositor prism has all source vertices glued to the
+relative outer two-arrow layer in every simplicial degree. -/
+theorem relativeOuterLocal_allPrismVerticesGlue
+    (M N P : ProcessModel.{u, v, w} R) :
+    RelativeOuterLocalAllPrismVerticesGlue M N P := by
+  refine ⟨CostExactZigzagNerveComparison.compositionPrismCore M N P, ?_⟩
+  intro n x j
+  exact relativeOuterLocal_twoArrowGlue
+    (sourceHorizontalPairAt x j).1 (sourceHorizontalPairAt x j).2
+
 /-- An arbitrary-degree target-local simplex in the global cost-exact
 compositor prism. -/
 noncomputable def mappedCompositionPrismSimplexAt
@@ -1121,6 +1179,18 @@ structure GlobalComparisonCore where
       RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
         ((smallHomotopyLocalizationFunctor (R := R)).map
           (sourceArrow f))
+  /-- Exact relative comparison action on every finite source-homotopy string
+  vertex. -/
+  relativeStringGlue : ∀ {n : ℕ}
+    (F : ComposableArrows (SmallSource.{u, v, w} (R := R)) n),
+    ((relativeOuter.app
+      (Opposite.op (SimplexCategory.mk n))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.stringVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) F)) =
+      RezkCore.stringVertex (SmallTarget.{u, v, w} (R := R))
+        (((smallHomotopyLocalizationFunctor (R := R)).mapComposableArrows n).obj
+          F)
   /-- Exact decoding of the actual mapped local zero-simplex. -/
   mappedLocalVertexExact : ∀ {M N : ProcessModel.{u, v, w} R}
     (f : M ⟶ N),
@@ -1188,6 +1258,11 @@ structure GlobalComparisonCore where
     (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
     (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
     RelativeOuterLocalPrismVerticesGlue α₀ α₁ β₀ β₁
+  /-- Relative two-arrow gluing for every source vertex of every all-degree
+  compositor prism. -/
+  relativeOuterLocalAllPrismVerticesGlue : ∀
+    (M N P : ProcessModel.{u, v, w} R),
+    RelativeOuterLocalAllPrismVerticesGlue M N P
   /-- Complete all-degree compositor-prism face and degeneracy coherence for
   every triple of source models. -/
   relativeLocalAllDegreePrismCore : ∀
@@ -1312,6 +1387,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   relativeArrowGlue := relativeOuterComparison_sourceArrow
+  relativeStringGlue := relativeOuterComparison_stringVertex
   mappedLocalVertexExact := mappedLocalVertexObject_eq
   relativeLocalVertexGlue := relativeOuter_mappedLocalVertex
   relativeLocalTwoCellGlue := relativeLocal_twoCellOneSkeleton
@@ -1322,6 +1398,8 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeOuterLocalTwoArrowGlue := relativeOuterLocal_twoArrowGlue
   relativeOuterLocalPrismVerticesGlue :=
     relativeOuterLocal_prismVerticesGlue
+  relativeOuterLocalAllPrismVerticesGlue :=
+    relativeOuterLocal_allPrismVerticesGlue
   relativeLocalAllDegreePrismCore := relativeLocal_allDegreePrismCore
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition

@@ -157,6 +157,24 @@ noncomputable def comparison
     (comparisonCat (W := W) (L := L) (hL := hL))
     CategoryTheory.nerveFunctor
 
+/-- An arbitrary finite source string as a vertical vertex in its relative
+outer degree. -/
+def stringVertex {n : ℕ} (F : ComposableArrows C n) :
+    ((diagram (W := W)).obj (op (SimplexCategory.mk n))).obj
+      (op (SimplexCategory.mk 0)) :=
+  ComposableArrows.mk₀ (⟨F⟩ : StringCategory (W := W) n)
+
+/-- Relative outer restriction of a represented string vertex is exactly
+precomposition of the underlying finite string. -/
+theorem stringVertex_restriction {m n : ℕ}
+    (φ : SimplexCategory.mk m ⟶ SimplexCategory.mk n)
+    (F : ComposableArrows C n) :
+    ((diagram (W := W)).map φ.op).app (op (SimplexCategory.mk 0))
+        (stringVertex (W := W) F) =
+      stringVertex (W := W)
+        (F.whiskerLeft (SimplexCategory.toCat.map φ).toFunctor) := by
+  rfl
+
 /-- A source arrow as a vertical vertex in relative outer degree one. -/
 def arrowVertex {X Y : C} (f : X ⟶ Y) :
     ((diagram (W := W)).obj (op (SimplexCategory.mk 1))).obj
@@ -177,6 +195,25 @@ private theorem coreObj_ext {E : Type u} {X Y : Core E}
   cases X
   cases Y
   cases h
+  rfl
+
+/-- The relative comparison maps every represented finite string vertex to
+the target Rezk vertex of its componentwise image. -/
+theorem comparison_stringVertex
+    (hL : MorphismProperty.IsInvertedBy W L)
+    {n : ℕ} (F : ComposableArrows C n) :
+    ((comparison (W := W) (L := L) (hL := hL)).app
+      (op (SimplexCategory.mk n))).app (op (SimplexCategory.mk 0))
+        (stringVertex (W := W) F) =
+      RezkCore.stringVertex D ((L.mapComposableArrows n).obj F) := by
+  change (CategoryTheory.nerveMap
+      (levelFunctor (W := W) (L := L) (hL := hL) n)).app
+      (op (SimplexCategory.mk 0))
+        (ComposableArrows.mk₀
+          (⟨F⟩ : StringCategory (W := W) n)) = _
+  rw [CategoryTheory.nerveMap_app_mk₀]
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
   rfl
 
 /-- The relative comparison sends an arrow vertex to the target Rezk vertex
