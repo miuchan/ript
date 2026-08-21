@@ -274,8 +274,12 @@ kvadratoj gluiĝas al komuta rektangulo kun ĉiuj faktoraj kaj kunmetaj lokaj
 atestoj. La fakta compositor-homotopio nun ankaŭ donas la tri celajn lokajn
 3-simplaĵojn kiuj triangulas la duagradan prismon; ĉiuj dek du edroj estas
 identigitaj kaj ambaŭ eksteraj edroj normaliĝas al la ekzaktaj paraj
-2-simplaĵoj. Restas arbitra-grada pakado de vizaĝoj/degenerigoj kaj la
-Dwyer–Kan/Rezk malforta ekvivalento.
+2-simplaĵoj. La konstruo nun estas pakita en ĉiu grado: ĉiu horizontala-
+produkta simplaĵo havas indeksitajn celajn prism-simplaĵojn, kaj unu tutmonda
+kost-ekzakta kerno registras ĉiujn sep familiojn de finaj/flankaj/komunaj/
+degenerigaj leĝoj por ĉiu modeltriopo. Restas glui tiun kernon al la relativaj
+eksteraj Rezk-vizaĝaj/degenerigaj mapoj kaj pruvi la Dwyer–Kan/Rezk malfortan
+ekvivalenton.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

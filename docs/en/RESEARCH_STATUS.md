@@ -305,8 +305,12 @@ source and target interchange are exact, both common-universe pair
 with all factor/composite local witnesses. The actual compositor homotopy now
 also gives the three target-local 3-simplices triangulating the degree-two
 prism; all twelve faces are identified and both outer faces normalize to the
-exact pair 2-simplices. Remaining work is arbitrary-degree face/degeneracy
-packaging and the global Dwyer--Kan/Rezk weak-equivalence theorem.
+exact pair 2-simplices. The construction is now packaged in every degree:
+each horizontal-product simplex has indexed target prism simplices, and one
+global cost-exact core records all seven endpoint/side/shared/degeneracy law
+families for every model triple. Remaining work is gluing this core to the
+relative outer Rezk face/degeneracy maps and proving the global Dwyer--Kan/Rezk
+weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

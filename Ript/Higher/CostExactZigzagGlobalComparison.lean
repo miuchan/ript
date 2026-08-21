@@ -655,6 +655,31 @@ theorem relativeLocal_horizontalPrismGlue
     CostExactZigzagNerveComparison.horizontalTwoCell_compositionPrismGlue
       α₀ α₁ β₀ β₁⟩
 
+/-- An arbitrary-degree target-local simplex in the global cost-exact
+compositor prism. -/
+noncomputable def mappedCompositionPrismSimplexAt
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj
+          (Opposite.op (SimplexCategory.mk n)))
+    (i : Fin (n + 1)) :=
+  CostExactZigzagNerveComparison.compositionPrismSimplexAt M N P x i
+
+/-- All-degree relative/local compositor-prism core for one triple of source
+models. -/
+def RelativeLocalAllDegreePrismCore
+    (M N P : ProcessModel.{u, v, w} R) : Prop :=
+  CommonCompositionPrismCore
+    (CostExactZigzag.inclusion (R := R)) M N P
+
+/-- The global cost-exact comparison carries endpoint, side-face,
+shared-face, and degeneracy coherence in every compositor-prism degree. -/
+theorem relativeLocal_allDegreePrismCore
+    (M N P : ProcessModel.{u, v, w} R) :
+    RelativeLocalAllDegreePrismCore M N P :=
+  CostExactZigzagNerveComparison.compositionPrismCore M N P
+
 /-- The target bicategorical associator becomes strict equality after local
 vertices are decoded into the outer homotopy category. -/
 theorem localAssociator_outerArrow
@@ -953,6 +978,11 @@ structure GlobalComparisonCore where
     (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
     (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
     RelativeLocalHorizontalPrismGlue α₀ α₁ β₀ β₁
+  /-- Complete all-degree compositor-prism face and degeneracy coherence for
+  every triple of source models. -/
+  relativeLocalAllDegreePrismCore : ∀
+    (M N P : ProcessModel.{u, v, w} R),
+    RelativeLocalAllDegreePrismCore M N P
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -1079,6 +1109,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeLocalHorizontalTwoCellGlue := relativeLocal_horizontalTwoCellGlue
   relativeLocalHorizontalPastingGlue := relativeLocal_horizontalPastingGlue
   relativeLocalHorizontalPrismGlue := relativeLocal_horizontalPrismGlue
+  relativeLocalAllDegreePrismCore := relativeLocal_allDegreePrismCore
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

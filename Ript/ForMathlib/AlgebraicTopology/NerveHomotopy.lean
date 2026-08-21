@@ -344,6 +344,59 @@ theorem prismSimplex_degeneracy_succ_of_le
   CategoryTheory.SimplicialObject.Homotopy.prismSimplex_degeneracy_succ_of_le
     H.toSimplicialObjectHomotopy i j hji x
 
+/-- Complete all-degree coherence package for the standard simplicial prism
+triangulation associated to an `SSet.Homotopy`. It records both endpoint
+faces, both side-face families, shared switching faces, and both degeneracy
+families in every simplicial degree. -/
+def AllPrismCoherence (H : SSet.Homotopy f g) : Prop :=
+  (∀ (n : ℕ) (x : X.obj (op ⦋n⦌)),
+    (Y.δ 0).hom' (prismSimplex H x 0) =
+      (g.app (op ⦋n⦌)).hom' x) ∧
+  (∀ (n : ℕ) (x : X.obj (op ⦋n⦌)),
+    (Y.δ (Fin.last (n + 1))).hom'
+        (prismSimplex H x (Fin.last n)) =
+      (f.app (op ⦋n⦌)).hom' x) ∧
+  (∀ (n : ℕ) (i : Fin (n + 2)) (j : Fin (n + 1))
+      (_hij : i ≤ j.castSucc) (x : X.obj (op ⦋n + 1⦌)),
+    (Y.δ i.castSucc).hom' (prismSimplex H x j.succ) =
+      prismSimplex H ((X.δ i).hom' x) j) ∧
+  (∀ (n : ℕ) (j : Fin (n + 1)) (x : X.obj (op ⦋n + 1⦌)),
+    (Y.δ j.castSucc.succ).hom' (prismSimplex H x j.succ) =
+      (Y.δ j.castSucc.succ).hom'
+        (prismSimplex H x j.castSucc)) ∧
+  (∀ (n : ℕ) (i : Fin (n + 2)) (j : Fin (n + 1))
+      (_hji : j.castSucc < i) (x : X.obj (op ⦋n + 1⦌)),
+    (Y.δ i.succ).hom' (prismSimplex H x j.castSucc) =
+      prismSimplex H ((X.δ i).hom' x) j) ∧
+  (∀ (n : ℕ) (i j : Fin (n + 1)) (_hij : i ≤ j)
+      (x : X.obj (op ⦋n⦌)),
+    (Y.σ i.castSucc).hom' (prismSimplex H x j) =
+      prismSimplex H ((X.σ i).hom' x) j.succ) ∧
+  (∀ (n : ℕ) (i j : Fin (n + 1)) (_hji : j ≤ i)
+      (x : X.obj (op ⦋n⦌)),
+    (Y.σ i.succ).hom' (prismSimplex H x j) =
+      prismSimplex H ((X.σ i).hom' x) j.castSucc)
+
+/-- Every simplicial homotopy satisfies the complete all-degree prism
+coherence package. -/
+theorem allPrismCoherence (H : SSet.Homotopy f g) :
+    AllPrismCoherence H := by
+  refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  · intro n x
+    exact prismSimplex_zero_face_zero H x
+  · intro n x
+    exact prismSimplex_last_face_last H x
+  · intro n i j hij x
+    exact prismSimplex_succ_face_castSucc_of_le H i j hij x
+  · intro n j x
+    exact prismSimplex_succ_face_middle H j x
+  · intro n i j hji x
+    exact prismSimplex_castSucc_face_succ_of_lt H i j hji x
+  · intro n i j hij x
+    exact prismSimplex_degeneracy_castSucc_of_le H i j hij x
+  · intro n i j hji x
+    exact prismSimplex_degeneracy_succ_of_le H i j hji x
+
 /-- Complete face package for the three tetrahedra triangulating a
 degree-two simplicial homotopy prism. -/
 def DegreeTwoPrismFaces (H : SSet.Homotopy f g)

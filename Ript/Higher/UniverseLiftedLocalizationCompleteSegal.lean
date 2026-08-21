@@ -608,6 +608,31 @@ noncomputable def commonCompositionComparisonHomotopy (X Y Z : B) :
   CategoryTheory.NerveHomotopy.ofNatTrans
     (commonCompositionComparisonNatIso Q X Y Z).hom
 
+/-- An arbitrary-degree target simplex in the common-universe compositor
+prism. For every source horizontal-product `n`-simplex there are `n + 1`
+canonical target `(n + 1)`-simplices. -/
+noncomputable def commonCompositionPrismSimplexAt
+    (X Y Z : B) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource (_Q := Q) X Y Z)).obj (op ⦋n⦌))
+    (i : Fin (n + 1)) :
+    (CategoryTheory.nerve (CommonTargetHom (Q := Q) X Z)).obj
+      (op ⦋n + 1⦌) :=
+  SSet.Homotopy.prismSimplex
+    (commonCompositionComparisonHomotopy Q X Y Z) x i
+
+/-- Complete arbitrary-degree compositor-prism coherence for a fixed triple
+of bicategory objects. -/
+def CommonCompositionPrismCore (X Y Z : B) : Prop :=
+  SSet.Homotopy.AllPrismCoherence
+    (commonCompositionComparisonHomotopy Q X Y Z)
+
+/-- The common-universe compositor homotopy satisfies all endpoint,
+side-face, shared-face, and degeneracy equations in every degree. -/
+theorem commonCompositionPrismCore (X Y Z : B) :
+    CommonCompositionPrismCore Q X Y Z :=
+  SSet.Homotopy.allPrismCoherence _
+
 /-- One of the three genuine target 3-simplices triangulating the compositor
 homotopy prism over a common-universe horizontal pair 2-simplex. -/
 noncomputable def commonCompositionPrismSimplex
@@ -618,8 +643,7 @@ noncomputable def commonCompositionPrismSimplex
     (i : Fin 3) :
     (CategoryTheory.nerve (CommonTargetHom (Q := Q) X Z)).obj
       (op ⦋3⦌) :=
-  SSet.Homotopy.prismSimplex
-    (commonCompositionComparisonHomotopy Q X Y Z)
+  commonCompositionPrismSimplexAt Q X Y Z
     (commonHorizontalPairTwoSimplex Q α₀ α₁ β₀ β₁) i
 
 /-- The first face of the first compositor-prism tetrahedron is exactly the
@@ -640,7 +664,7 @@ theorem commonCompositionPrism_zeroFace
         ((AsSmall.up :
           (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
           (horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁))) := by
-  unfold commonCompositionPrismSimplex
+  unfold commonCompositionPrismSimplex commonCompositionPrismSimplexAt
   rw [SSet.Homotopy.prismSimplex_zero_face_zero]
   apply commonMapThenCompose_twoSimplex
 
@@ -662,7 +686,7 @@ theorem commonCompositionPrism_lastFace
         ((AsSmall.up :
           (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
           (Q.map₂ (horizontalTwoCell α₁ β₁))) := by
-  unfold commonCompositionPrismSimplex
+  unfold commonCompositionPrismSimplex commonCompositionPrismSimplexAt
   rw [SSet.Homotopy.prismSimplex_last_face_last]
   apply commonComposeThenMap_twoSimplex
 
@@ -849,6 +873,10 @@ structure PseudofunctorNerveCore where
     (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
     (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
     CommonHorizontalCompositionPastingGlue Q α₀ α₁ β₀ β₁
+  /-- Complete arbitrary-degree face and degeneracy coherence of the
+  compositor prism for every object triple. -/
+  compositionPrismCore : ∀ X Y Z : B,
+    CommonCompositionPrismCore Q X Y Z
   /-- Three genuine compositor-prism 3-simplices with all faces identified
   over every common-universe horizontal pair 2-simplex. -/
   compositionPrismGlue : ∀
@@ -900,6 +928,7 @@ noncomputable def pseudofunctorNerveCore : PseudofunctorNerveCore Q where
   horizontalCompositionGlue := commonHorizontalCompositionGlue Q
   horizontalCompositionPastingGlue :=
     commonHorizontalCompositionPastingGlue Q
+  compositionPrismCore := commonCompositionPrismCore Q
   compositionPrismGlue := commonCompositionPrismGlue Q
   compositionIso := commonCompositionComparisonNatIso Q
   identityIso := commonIdentityComparisonNatIso Q
