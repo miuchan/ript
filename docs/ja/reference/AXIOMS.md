@@ -867,9 +867,17 @@
 | `Ript.Higher.CostExactZigzagNerveComparison.compositionHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
+| `CategoryTheory.Pseudofunctor.homotopyFunctor_inverts_toHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
+| `Ript.Higher.RelativeRezk.diagramCat` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.comparison_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_invertsCostExactMorphisms` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.outerComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |

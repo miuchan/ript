@@ -83,6 +83,7 @@ import Ript.Higher.Localization
 import Ript.Higher.LocalizationCompleteSegal
 import Ript.Higher.ModelBicategory
 import Ript.Higher.ModelHom
+import Ript.Higher.RelativeRezk
 import Ript.Higher.ResourceChange
 import Ript.Higher.TotalModelBicategory
 import Ript.Higher.TotalModelCoherence

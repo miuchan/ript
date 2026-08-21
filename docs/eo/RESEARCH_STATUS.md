@@ -255,6 +255,13 @@ kaj pruvi la Complete-Segal/Rezk malfort-ekvivalentan teoremon.
 La eksteraj komplet-mapoj de la fonto kaj fakta celo ambaŭ havas eksplicitajn
 simpliciajn homotopiajn inversojn kaj faktajn homotopiojn por ambaŭ inversaj leĝoj.
 
+La ĝusta relativa Rezk-fonto nun kompiliĝas: ĝia ekstera grado `n` enhavas
+ĉiujn fontajn ĉenojn, dum vertikalaj transformoj estas punkte kost-ekzaktaj.
+La fakta lokaliza funktoro donas naturan mapon al la cela Rezk-kerno en ĉiu
+interna kaj ekstera simplicia grado kaj kalkulas ekzakte reprezentitajn
+sagverticojn. Restas kunglui tiun tut-eksterdimensian mapon kun la negrupoida
+loka tavolo kaj pruvi la Dwyer–Kan/Rezk malfortan ekvivalenton.
+
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
 1-ĉelon antaŭen kaj nur markitan sagon malantaŭen. Kunmeto, longo, unuaj kaj

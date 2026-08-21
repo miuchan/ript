@@ -1,5 +1,6 @@
 import Mathlib.CategoryTheory.Bicategory.Functor.Pseudofunctor
 import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
+import Ript.ForMathlib.CategoryTheory.Bicategory.Localization
 
 /-!
 # Pseudofunctors on bicategorical homotopy categories
@@ -52,5 +53,17 @@ theorem homotopyFunctor_map_homMk (Q : B ⥤ᵖ C)
     (homotopyFunctor Q).map (HomotopyCategory.homMk f) =
       HomotopyCategory.homMk (Q.map f) :=
   rfl
+
+/-- If a pseudofunctor sends a bicategorical marking to adjoint
+equivalences, its induced homotopy-category functor inverts the descended
+ordinary marking. -/
+theorem homotopyFunctor_inverts_toHomotopy (Q : B ⥤ᵖ C)
+    (W : Bicategory.MorphismProperty B) (hQ : W.IsInvertedBy Q) :
+    W.toHomotopy.IsInvertedBy (homotopyFunctor Q) := by
+  rintro X Y q ⟨f, hf, rfl⟩
+  change IsIso (HomotopyCategory.homMk (Q.map f))
+  obtain ⟨⟨e, he⟩⟩ := hQ f hf
+  rw [← he]
+  exact (HomotopyCategory.isoOfEquivalence e).isIso_hom
 
 end CategoryTheory.Pseudofunctor
