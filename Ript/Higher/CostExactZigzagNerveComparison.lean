@@ -134,6 +134,25 @@ theorem horizontalTwoCell_pastedCompositorSquare
       (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁ :=
   (horizontalTwoCell_pastingGlue α₀ α₁ β₀ β₁).2.2.2
 
+/-- An arbitrary-degree target-local simplex in the cost-exact compositor
+prism over any common-universe horizontal-product source simplex. -/
+noncomputable def compositionPrismSimplexAt
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj (op ⦋n⦌))
+    (i : Fin (n + 1)) :=
+  commonCompositionPrismSimplexAt
+    (CostExactZigzag.inclusion (R := R)) M N P x i
+
+/-- The cost-exact compositor prism satisfies every endpoint, side-face,
+shared-face, and degeneracy equation in every simplicial degree. -/
+theorem compositionPrismCore
+    (M N P : ProcessModel.{u, v, w} R) :
+    CommonCompositionPrismCore
+      (CostExactZigzag.inclusion (R := R)) M N P :=
+  (core (R := R)).toPseudofunctorNerveCore.compositionPrismCore M N P
+
 /-- One of the three actual target-local 3-simplices in the cost-exact
 compositor prism over a vertically composable horizontal pair. -/
 noncomputable def horizontalTwoCellCompositionPrismSimplex

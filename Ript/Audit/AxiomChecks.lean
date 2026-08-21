@@ -952,6 +952,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.UniverseLiftedNerve.commonCompositionPrism_zeroFace
 #print axioms Ript.Higher.UniverseLiftedNerve.commonCompositionPrism_lastFace
 #print axioms Ript.Higher.UniverseLiftedNerve.commonCompositionPrismGlue
+#print axioms Ript.Higher.UniverseLiftedNerve.commonCompositionPrismSimplexAt
+#print axioms Ript.Higher.UniverseLiftedNerve.commonCompositionPrismCore
 #print axioms Ript.Higher.UniverseLiftedNerve.identityComparisonNatIso
 #print axioms Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonNatIso
 #print axioms Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonHomotopy
@@ -971,6 +973,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCell_pastedCompositorSquare
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCellCompositionPrismSimplex
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCell_compositionPrismGlue
+#print axioms Ript.Higher.CostExactZigzagNerveComparison.compositionPrismSimplexAt
+#print axioms Ript.Higher.CostExactZigzagNerveComparison.compositionPrismCore
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.associatorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.leftUnitorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence
@@ -1002,6 +1006,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_horizontalPastingGlue
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositionPrismSimplex
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_horizontalPrismGlue
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositionPrismSimplexAt
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_allDegreePrismCore
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.outerComparison
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence
@@ -1540,6 +1546,8 @@ set_option autoImplicit false
 #print axioms CategoryTheory.SimplicialObject.Homotopy.prismSimplex_succ_face_middle
 #print axioms SSet.Homotopy.prismSimplex
 #print axioms SSet.Homotopy.prismSimplex_degeneracy_castSucc_of_le
+#print axioms SSet.Homotopy.AllPrismCoherence
+#print axioms SSet.Homotopy.allPrismCoherence
 #print axioms SSet.Homotopy.degreeTwoPrismFaces
 #print axioms CategoryTheory.Functor.isIsofibrationId
 #print axioms CategoryTheory.Functor.coreInclusionIsIsofibration

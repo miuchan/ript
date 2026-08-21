@@ -388,9 +388,12 @@ horizontal-composite, and vertical-composite local witnesses. The actual
 degree-two compositor prism. Their twelve faces are identified: the first and
 last are the exact target/source pair 2-simplices, adjacent tetrahedra share
 their switching faces, and the other six are prisms on the source faces. The
-remaining problem is extending this explicit construction to arbitrary
-simplicial degrees with fully packaged face/degeneracy coherence and proving
-the resulting Dwyer--Kan/Rezk weak-equivalence theorem.
+construction is now packaged in every simplicial degree: every horizontal-
+product simplex has its indexed target prism simplices, and one core records
+both endpoint families, both side-face families, shared switching faces, and
+both degeneracy families. The remaining problem is gluing this local all-
+degree core to the localization-aware relative outer Rezk face/degeneracy
+maps and proving the resulting Dwyer--Kan/Rezk weak-equivalence theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -456,9 +459,9 @@ degree-one horizontal action now also contains the exact two-sided compositor
 edge maps and naturality square for arbitrary 2-cells. Its degree-two action
 now maps vertically composable pair 2-simplices exactly and proves the pasted
 rectangle. Its three actual compositor-prism 3-simplices and all twelve faces
-are now exposed as well. Arbitrary-degree packaging of the already generic
-face/degeneracy formulas and the complete-Segal/Rezk weak equivalence remain
-open.
+are now exposed as well. The generic formulas are now packaged at all degrees
+and instantiated globally for every cost-exact model triple. Their remaining
+outer-relative gluing and the complete-Segal/Rezk weak equivalence remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an
