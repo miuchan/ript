@@ -1,0 +1,264 @@
+import Ript.Higher.CostExactZigzagNerveComparison
+import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
+
+/-!
+# Relative cost-exact zigzag mapping-space presentation
+
+The presented cost-exact localization already constructs, from source data,
+the category whose objects are typed marked-zigzag words and whose morphisms
+are quotient 2-cells. This file exposes the nerve of that category as the
+relative-zigzag mapping-space presentation.
+
+For every pair of process models, the presented mapping nerve is proved
+categorically equivalent to the actual full local mapping nerve of the
+localization target. The comparison has a `NerveEquivalenceWitness`, an
+explicit simplicial homotopy inverse, exact action in every degree, and the
+existing source-to-target local nerve map factors through it strictly.
+
+This is a representation theorem for the chosen marked-zigzag presentation.
+It does not yet identify the presentation with a separately defined hammock
+or other model-independent derived mapping space, and therefore is not by
+itself the final Dwyer--Kan theorem.
+-/
+
+set_option autoImplicit false
+set_option linter.checkUnivs false
+
+namespace Ript.Higher.CostExactZigzagMappingSpace
+
+open CategoryTheory
+open Opposite Simplicial
+open Ript.Higher.UniverseLiftedNerve
+
+universe u v w
+
+variable {R : Type w} [AddCommMonoid R] [PartialOrder R]
+
+/-- Common-universe small replacement of the source-defined category of
+cost-exact marked-zigzag words and quotient 2-cells from `M` to `N`. -/
+abbrev RelativeZigzagMappingCategory
+    (M N : ProcessModel.{u, v, w} R) :=
+  AsSmall.{max (max w (v + 1)) (u + 1)}
+    (CostExactZigzag.Word (R := R) M N)
+
+/-- The relative cost-exact zigzag mapping-space presentation is the
+categorical nerve of the presented word/quotient-2-cell category. -/
+abbrev RelativeZigzagMappingNerve
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerve (RelativeZigzagMappingCategory M N)
+
+/-- The source-defined relative mapping category is categorically equivalent
+to the actual local hom-category of the presented localization target. The
+underlying categories are definitionally the same presentation, but this
+equivalence records their two semantic roles explicitly. -/
+def comparisonEquivalence (M N : ProcessModel.{u, v, w} R) :
+    RelativeZigzagMappingCategory M N ≌
+      CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N :=
+  CategoryTheory.Equivalence.refl
+
+/-- All-dimensional simplicial comparison from the relative-zigzag mapping
+nerve to the actual full local target mapping nerve. -/
+def comparison (M N : ProcessModel.{u, v, w} R) :
+    RelativeZigzagMappingNerve M N ⟶
+      CommonTargetMappingNerve
+        (CostExactZigzag.inclusion (R := R)) M N :=
+  CategoryTheory.nerveMap (comparisonEquivalence M N).functor
+
+/-- Categorical-nerve equivalence evidence for the relative-zigzag mapping
+comparison. -/
+def comparisonNerveEquivalence (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (comparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence (comparisonEquivalence M N)
+
+/-- Explicit inverse and both simplicial homotopies for the relative-zigzag
+mapping comparison. -/
+noncomputable def comparisonHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (comparison M N) :=
+  SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+    (comparisonEquivalence M N)
+
+/-- Common-universe functor embedding every source 1-cell and 2-cell into the
+relative-zigzag mapping category as a forward word and original quotient
+2-cell. -/
+def forwardFunctor (M N : ProcessModel.{u, v, w} R) :
+    CommonSourceHom (CostExactZigzag.inclusion (R := R)) M N ⥤
+      RelativeZigzagMappingCategory M N :=
+  commonAsSmallFunctor (CostExactZigzag.forwardHomFunctor M N)
+
+/-- Nerve map from the original full local source category into its
+relative-zigzag mapping-space presentation. -/
+def forwardMap (M N : ProcessModel.{u, v, w} R) :
+    CommonLocalMappingNerve
+        (CostExactZigzag.inclusion (R := R)) M N ⟶
+      RelativeZigzagMappingNerve M N :=
+  commonNerveMap (CostExactZigzag.forwardHomFunctor M N)
+
+/-- A presented marked-zigzag word as a vertex of the relative mapping
+nerve. -/
+def relativeWordVertex {M N : ProcessModel.{u, v, w} R}
+    (word : CostExactZigzag.Word (R := R) M N) :
+    (RelativeZigzagMappingNerve M N).obj (op ⦋0⦌) :=
+  ComposableArrows.mk₀ ((AsSmall.up :
+    CostExactZigzag.Word (R := R) M N ⥤
+      RelativeZigzagMappingCategory M N).obj word)
+
+/-- The same presented word as an actual vertex of the localization target's
+full local mapping nerve. -/
+def targetWordVertex {M N : ProcessModel.{u, v, w} R}
+    (word : CostExactZigzag.Word (R := R) M N) :
+    (CommonTargetMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj (op ⦋0⦌) :=
+  ComposableArrows.mk₀ ((AsSmall.up :
+    (CostExactZigzag.inclusion.obj M ⟶ CostExactZigzag.inclusion.obj N) ⥤
+      CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N).obj word)
+
+/-- A quotient 2-cell between presented words as an edge of the relative
+mapping nerve. -/
+def relativeCellEdge {M N : ProcessModel.{u, v, w} R}
+    {first second : CostExactZigzag.Word (R := R) M N}
+    (cell : first ⟶ second) :
+    (RelativeZigzagMappingNerve M N).obj (op ⦋1⦌) :=
+  ComposableArrows.mk₁ ((AsSmall.up :
+    CostExactZigzag.Word (R := R) M N ⥤
+      RelativeZigzagMappingCategory M N).map cell)
+
+/-- The same quotient 2-cell as an actual edge of the localization target's
+full local mapping nerve. -/
+def targetCellEdge {M N : ProcessModel.{u, v, w} R}
+    {first second : CostExactZigzag.Word (R := R) M N}
+    (cell : first ⟶ second) :
+    (CommonTargetMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj (op ⦋1⦌) :=
+  ComposableArrows.mk₁ ((AsSmall.up :
+    (CostExactZigzag.inclusion.obj M ⟶ CostExactZigzag.inclusion.obj N) ⥤
+      CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N).map cell)
+
+/-- The mapping comparison sends every presented word vertex to the exact
+same word in the actual target local nerve. -/
+theorem comparison_wordVertex {M N : ProcessModel.{u, v, w} R}
+    (word : CostExactZigzag.Word (R := R) M N) :
+    (comparison M N).app (op ⦋0⦌) (relativeWordVertex word) =
+      targetWordVertex word := by
+  rfl
+
+/-- The mapping comparison sends every quotient 2-cell edge to the exact
+same target-local edge. -/
+theorem comparison_cellEdge {M N : ProcessModel.{u, v, w} R}
+    {first second : CostExactZigzag.Word (R := R) M N}
+    (cell : first ⟶ second) :
+    (comparison M N).app (op ⦋1⦌) (relativeCellEdge cell) =
+      targetCellEdge cell := by
+  rfl
+
+/-- In every simplicial degree, the mapping comparison preserves the entire
+presented chain literally. -/
+theorem comparison_simplex (M N : ProcessModel.{u, v, w} R)
+    {n : ℕ} (x : (RelativeZigzagMappingNerve M N).obj (op ⦋n⦌)) :
+    (comparison M N).app (op ⦋n⦌) x = x := by
+  rfl
+
+/-- The source-to-relative map sends every source 1-cell vertex to its exact
+one-step forward marked-zigzag word. -/
+theorem forwardMap_vertex {M N : ProcessModel.{u, v, w} R}
+    (f : M ⟶ N) :
+    (forwardMap M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀ ((AsSmall.up :
+          (M ⟶ N) ⥤ CommonSourceHom
+            (CostExactZigzag.inclusion (R := R)) M N).obj f)) =
+      relativeWordVertex (CostExactZigzag.forward f) := by
+  exact commonNerveMap_vertex (CostExactZigzag.forwardHomFunctor M N) f
+
+/-- The source-to-relative map sends every arbitrary source 2-cell edge to
+its exact original quotient-2-cell generator. -/
+theorem forwardMap_twoCell {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (alpha : f ⟶ g) :
+    (forwardMap M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁ ((AsSmall.up :
+          (M ⟶ N) ⥤ CommonSourceHom
+            (CostExactZigzag.inclusion (R := R)) M N).map alpha)) =
+      relativeCellEdge ((CostExactZigzag.forwardHomFunctor M N).map alpha) := by
+  exact commonNerveMap_edge (CostExactZigzag.forwardHomFunctor M N) alpha
+
+/-- In every simplicial degree, the source-to-relative map applies the
+forward-word functor to the entire source 2-cell chain. -/
+theorem forwardMap_simplex (M N : ProcessModel.{u, v, w} R)
+    {n : ℕ}
+    (x : (CommonLocalMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj (op ⦋n⦌)) :
+    (forwardMap M N).app (op ⦋n⦌) x = x ⋙ forwardFunctor M N := by
+  rfl
+
+/-- **Strict mapping-space factorization.** The previously constructed full
+local nerve map is exactly the composite of the source-to-relative marked-
+zigzag map and the relative-zigzag-to-target comparison, in all degrees. -/
+theorem localMap_factorization (M N : ProcessModel.{u, v, w} R) :
+    (CostExactZigzagNerveComparison.core
+      (R := R)).toPseudofunctorNerveCore.localMap M N =
+      forwardMap M N ≫ comparison M N := by
+  rfl
+
+/-- Complete represented relative-zigzag mapping-space comparison for one
+pair of process models. -/
+structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
+  /-- Categorical equivalence between the source-presented zigzag category
+  and the actual target local hom-category. -/
+  categoricalEquivalence : RelativeZigzagMappingCategory M N ≌
+    CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N
+  /-- Categorical-nerve equivalence presentation of the comparison. -/
+  nerveEquivalence : SSet.NerveEquivalenceWitness (comparison M N)
+  /-- Explicit simplicial inverse and both homotopies. -/
+  homotopyEquivalence : SSet.HomotopyEquivalenceWitness (comparison M N)
+  /-- Strict all-dimensional factorization of the existing full local map. -/
+  factorization :
+    (CostExactZigzagNerveComparison.core
+      (R := R)).toPseudofunctorNerveCore.localMap M N =
+      forwardMap M N ≫ comparison M N
+  /-- Exact action on every presented word vertex. -/
+  mapsWordVertex : ∀ word, (comparison M N).app (op ⦋0⦌)
+    (relativeWordVertex word) = targetWordVertex word
+  /-- Exact action on every quotient 2-cell edge. -/
+  mapsCellEdge : ∀ {first second} (cell : first ⟶ second),
+    (comparison M N).app (op ⦋1⦌) (relativeCellEdge cell) =
+      targetCellEdge cell
+  /-- Exact action on every presented simplex in every degree. -/
+  mapsSimplex : ∀ {n : ℕ}
+    (x : (RelativeZigzagMappingNerve M N).obj (op ⦋n⦌)),
+    (comparison M N).app (op ⦋n⦌) x = x
+  /-- Exact embedding of every source 1-cell as a forward word. -/
+  mapsForwardVertex : ∀ (f : M ⟶ N),
+    (forwardMap M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀ ((AsSmall.up :
+          (M ⟶ N) ⥤ CommonSourceHom
+            (CostExactZigzag.inclusion (R := R)) M N).obj f)) =
+      relativeWordVertex (CostExactZigzag.forward f)
+  /-- Exact embedding of arbitrary source 2-cells as original quotient
+  generators. -/
+  mapsTwoCell : ∀ {f g : M ⟶ N} (alpha : f ⟶ g),
+    (forwardMap M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁ ((AsSmall.up :
+          (M ⟶ N) ⥤ CommonSourceHom
+            (CostExactZigzag.inclusion (R := R)) M N).map alpha)) =
+      relativeCellEdge ((CostExactZigzag.forwardHomFunctor M N).map alpha)
+  /-- Exact all-dimensional source-simplex action. -/
+  mapsSourceSimplex : ∀ {n : ℕ}
+    (x : (CommonLocalMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj (op ⦋n⦌)),
+    (forwardMap M N).app (op ⦋n⦌) x = x ⋙ forwardFunctor M N
+
+/-- Every pair of process models has the complete represented relative-
+zigzag mapping-space comparison. -/
+noncomputable def core (M N : ProcessModel.{u, v, w} R) :
+    MappingSpaceCore M N where
+  categoricalEquivalence := comparisonEquivalence M N
+  nerveEquivalence := comparisonNerveEquivalence M N
+  homotopyEquivalence := comparisonHomotopyEquivalence M N
+  factorization := localMap_factorization M N
+  mapsWordVertex := comparison_wordVertex
+  mapsCellEdge := comparison_cellEdge
+  mapsSimplex := comparison_simplex M N
+  mapsForwardVertex := forwardMap_vertex
+  mapsTwoCell := forwardMap_twoCell
+  mapsSourceSimplex := forwardMap_simplex M N
+
+end Ript.Higher.CostExactZigzagMappingSpace

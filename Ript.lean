@@ -77,6 +77,7 @@ import Ript.ForMathlib.RationalConvexHull
 import Ript.Higher.Coherence
 import Ript.Higher.CostExactZigzag
 import Ript.Higher.CostExactZigzagGlobalComparison
+import Ript.Higher.CostExactZigzagMappingSpace
 import Ript.Higher.CostExactZigzagNerveComparison
 import Ript.Higher.Equivalence
 import Ript.Higher.Localization

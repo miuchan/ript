@@ -294,8 +294,16 @@ klasifikita antaŭ aŭ post la komponila ŝalto kiel `map(composite)` aŭ
 `map(f) ≫ map(g)`. Ambaŭ lokaj prezentoj malkodiĝas al la sama ekstera
 kunmetaĵo kaj portas la plenan du-sagan gluadon. La kompleta loka kerno de
 edroj kaj degenerigoj restas alkroĉita, do neinversigeblaj lokaj ĉeloj ne estas
-enmetitaj en la relativan eksteran maksimuman kernon. Restas la relativa-
-zigzaga komparo de map-spacoj kaj la Dwyer–Kan/Rezk malforta ekvivalento.
+enmetitaj en la relativan eksteran maksimuman kernon. La relativa-zigzaga
+prezento de map-spacoj nun estas eksplicita: por ĉiu modelparo, la
+font-difinita nervo de markitaj zigzagaj vortoj kaj kvocientaj 2-ĉeloj estas
+kategorie ekvivalenta al la fakta cela loka nervo, havas
+`NerveEquivalenceWitness` kaj eksplicitan simplician homotopian inversilon,
+kaj la ekzistanta loka mapo strikte faktoriĝas tra ĝi en ĉiu grado kun
+ekzakta ago je antaŭaj vortoj kaj arbitraj 2-ĉeloj. La ekstera homotopia
+funktoro estas ankaŭ esence surĵeta. Restas model-sendependa derivita aŭ
+hammock-a karakterizo de tiu prezento, akceptita pakaĵo de malforta
+ekvivalento, kaj la Dwyer–Kan/Rezk-teoremo.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
