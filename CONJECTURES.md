@@ -404,9 +404,14 @@ of every all-degree local prism decodes to a source 1-cell pair with the full
 two-arrow glue. This decoding is now strictly natural under every simplex-
 category restriction of every horizontal-product simplex, and every restricted
 vertex again carries the full two-arrow glue; hence one theorem covers every
-face and degeneracy in every degree. What remains is gluing the actual target
-prism face projections, the correct relative-zigzag mapping-space comparison,
-and the resulting Dwyer--Kan/Rezk weak-equivalence theorem.
+face and degeneracy in every degree. Every actual target-prism face vertex is
+now projected literally from its target simplex, classified before or after
+the compositor switch as `map(composite)` or `map(f) ≫ map(g)`, decoded to the
+same outer composite, and equipped with the full two-arrow glue. The complete
+local face/degeneracy core remains attached without treating noninvertible
+local cells as outer equalities. What remains is the correct relative-zigzag
+mapping-space comparison and the resulting Dwyer--Kan/Rezk weak-equivalence
+theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -479,7 +484,10 @@ their faces/degeneracies, and all three prism pair vertices are compiled. The
 arbitrary-string vertex/restriction extension and all-degree prism source-
 vertex glue are now compiled too. Pair decoding and complete glue for every
 restricted source vertex are also compiled, uniformly covering all faces and
-degeneracies. Actual target-face projection gluing and the complete-Segal/Rezk
+degeneracies. Actual target-face vertices are now classified on both sides of
+the compositor switch, identified with their exact local presentations, and
+decoded to the same outer composites while retaining the full local face
+core. The relative-zigzag mapping-space comparison and complete-Segal/Rezk
 weak equivalence remain open.
 
 The first complete construction against that predicate is now kernel checked.

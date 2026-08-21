@@ -621,6 +621,36 @@ noncomputable def commonCompositionPrismSimplexAt
   SSet.Homotopy.prismSimplex
     (commonCompositionComparisonHomotopy Q X Y Z) x i
 
+/-- Before the switching vertex, an arbitrary common-universe compositor
+prism has exactly the compose-then-map target object at the corresponding
+source vertex. -/
+theorem commonCompositionPrismSimplexAt_obj_castSucc_of_le
+    (X Y Z : B) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource (_Q := Q) X Y Z)).obj (op ⦋n⦌))
+    (i j : Fin (n + 1)) (hji : j ≤ i) :
+    (commonCompositionPrismSimplexAt Q X Y Z x i).obj j.castSucc =
+      (commonAsSmallFunctor (composeThenMapFunctor Q X Y Z)).obj
+        (x.obj j) := by
+  unfold commonCompositionPrismSimplexAt commonCompositionComparisonHomotopy
+  exact CategoryTheory.NerveHomotopy.ofNatTrans_prismSimplex_obj_castSucc_of_le
+    _ x i j hji
+
+/-- After the switching vertex, an arbitrary common-universe compositor
+prism has exactly the map-then-compose target object at the corresponding
+source vertex. -/
+theorem commonCompositionPrismSimplexAt_obj_succ_of_le
+    (X Y Z : B) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource (_Q := Q) X Y Z)).obj (op ⦋n⦌))
+    (i j : Fin (n + 1)) (hij : i ≤ j) :
+    (commonCompositionPrismSimplexAt Q X Y Z x i).obj j.succ =
+      (commonAsSmallFunctor (mapThenComposeFunctor Q X Y Z)).obj
+        (x.obj j) := by
+  unfold commonCompositionPrismSimplexAt commonCompositionComparisonHomotopy
+  exact CategoryTheory.NerveHomotopy.ofNatTrans_prismSimplex_obj_succ_of_le
+    _ x i j hij
+
 /-- Complete arbitrary-degree compositor-prism coherence for a fixed triple
 of bicategory objects. -/
 def CommonCompositionPrismCore (X Y Z : B) : Prop :=

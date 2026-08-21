@@ -145,6 +145,34 @@ noncomputable def compositionPrismSimplexAt
   commonCompositionPrismSimplexAt
     (CostExactZigzag.inclusion (R := R)) M N P x i
 
+/-- Before its switching vertex, every cost-exact compositor prism has the
+exact compose-then-map local target object. -/
+theorem compositionPrismSimplexAt_obj_castSucc_of_le
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj (op ⦋n⦌))
+    (i j : Fin (n + 1)) (hji : j ≤ i) :
+    (compositionPrismSimplexAt M N P x i).obj j.castSucc =
+      (commonAsSmallFunctor (composeThenMapFunctor
+        (CostExactZigzag.inclusion (R := R)) M N P)).obj (x.obj j) :=
+  commonCompositionPrismSimplexAt_obj_castSucc_of_le
+    (CostExactZigzag.inclusion (R := R)) M N P x i j hji
+
+/-- After its switching vertex, every cost-exact compositor prism has the
+exact map-then-compose local target object. -/
+theorem compositionPrismSimplexAt_obj_succ_of_le
+    (M N P : ProcessModel.{u, v, w} R) {n : ℕ}
+    (x : (CategoryTheory.nerve
+      (CommonHorizontalSource
+        (_Q := CostExactZigzag.inclusion (R := R)) M N P)).obj (op ⦋n⦌))
+    (i j : Fin (n + 1)) (hij : i ≤ j) :
+    (compositionPrismSimplexAt M N P x i).obj j.succ =
+      (commonAsSmallFunctor (mapThenComposeFunctor
+        (CostExactZigzag.inclusion (R := R)) M N P)).obj (x.obj j) :=
+  commonCompositionPrismSimplexAt_obj_succ_of_le
+    (CostExactZigzag.inclusion (R := R)) M N P x i j hij
+
 /-- The cost-exact compositor prism satisfies every endpoint, side-face,
 shared-face, and degeneracy equation in every simplicial degree. -/
 theorem compositionPrismCore

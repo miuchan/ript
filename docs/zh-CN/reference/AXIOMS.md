@@ -933,6 +933,9 @@
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismVerticesGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceHorizontalPairAt_restriction` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismRestrictionVerticesGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositionPrismVertex_castSucc_outer` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositionPrismVertex_succ_outer` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismTargetFacesGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceArrow_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceTwoArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.targetTwoArrow_face_one_mappedComposite` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
@@ -1466,12 +1469,15 @@
 | `SSet.NerveEquivalenceWitness.homotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/GroupoidalCompleteSegal.lean` |
 | `CategoryTheory.NerveHomotopy.nerveCylinder` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `CategoryTheory.NerveHomotopy.ofNatTrans` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
+| `CategoryTheory.NerveHomotopy.ofNatTrans_prismSimplex_obj_castSucc_of_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
+| `CategoryTheory.NerveHomotopy.ofNatTrans_prismSimplex_obj_succ_of_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `CategoryTheory.SimplicialObject.Homotopy.prismSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `CategoryTheory.SimplicialObject.Homotopy.prismSimplex_succ_face_middle` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `SSet.Homotopy.prismSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `SSet.Homotopy.prismSimplex_degeneracy_castSucc_of_le` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `SSet.Homotopy.AllPrismCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `SSet.Homotopy.allPrismCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
+| `SSet.Homotopy.prismVertex_castSucc_or_succ` | `[propext]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `SSet.Homotopy.degreeTwoPrismFaces` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
 | `CategoryTheory.Functor.isIsofibrationId` | `[propext]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |
 | `CategoryTheory.Functor.coreInclusionIsIsofibration` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Isofibration.lean` |

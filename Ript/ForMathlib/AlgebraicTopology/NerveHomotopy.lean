@@ -277,6 +277,110 @@ noncomputable def prismSimplex (H : SSet.Homotopy f g)
   CategoryTheory.SimplicialObject.Homotopy.prismSimplex
     H.toSimplicialObjectHomotopy x i
 
+end SSet.Homotopy
+
+namespace CategoryTheory.NerveHomotopy
+
+universe u v
+
+variable {C D : Type max u v} [Category.{v} C] [Category.{v} D]
+variable {F G : C ⥤ D}
+
+/-- Before the switching vertex, the prism of a nerve homotopy induced by a
+natural transformation has the corresponding source-functor object. -/
+theorem ofNatTrans_prismSimplex_obj_castSucc_of_le
+    (alpha : F ⟶ G) {n : ℕ} (x : ComposableArrows C n)
+    (i j : Fin (n + 1)) (hji : j ≤ i) :
+    (SSet.Homotopy.prismSimplex (ofNatTrans alpha) x i).obj j.castSucc =
+      F.obj (x.obj j) := by
+  let sourceDegeneracy := ((CategoryTheory.nerve C).σ i).hom' x
+  let intervalSimplex :=
+    ((SSet.stdSimplex.isoNerve 1).hom.app (op ⦋n + 1⦌)
+      (SSet.stdSimplex.objMk₁ i.succ.castSucc)) ⋙
+        intervalProjection.{u, v}
+  change ((sourceDegeneracy.prod' intervalSimplex) ⋙
+    cylinderFunctor alpha).obj j.castSucc = F.obj (x.obj j)
+  have hSource : sourceDegeneracy.obj j.castSucc = x.obj j := by
+    dsimp [sourceDegeneracy]
+    change x.obj (i.predAbove j.castSucc) = x.obj j
+    rw [Fin.predAbove_of_le_castSucc i j.castSucc
+      (Fin.castSucc_le_castSucc_iff.mpr hji)]
+    rfl
+  have hInterval :
+      intervalSimplex.obj j.castSucc = ULift.up (0 : Fin 2) := by
+    change ULift.up
+      ((SSet.stdSimplex.objMk₁.{max u v} i.succ.castSucc) j.castSucc) = _
+    rw [SSet.stdSimplex.objMk₁_of_castSucc_lt]
+    simpa using Fin.castSucc_lt_succ_iff.mpr hji
+  change (cylinderFunctor alpha).obj
+    (sourceDegeneracy.obj j.castSucc, intervalSimplex.obj j.castSucc) = _
+  rw [hSource, hInterval]
+  rfl
+
+/-- After the switching vertex, the prism of a nerve homotopy induced by a
+natural transformation has the corresponding target-functor object. -/
+theorem ofNatTrans_prismSimplex_obj_succ_of_le
+    (alpha : F ⟶ G) {n : ℕ} (x : ComposableArrows C n)
+    (i j : Fin (n + 1)) (hij : i ≤ j) :
+    (SSet.Homotopy.prismSimplex (ofNatTrans alpha) x i).obj j.succ =
+      G.obj (x.obj j) := by
+  let sourceDegeneracy := ((CategoryTheory.nerve C).σ i).hom' x
+  let intervalSimplex :=
+    ((SSet.stdSimplex.isoNerve 1).hom.app (op ⦋n + 1⦌)
+      (SSet.stdSimplex.objMk₁ i.succ.castSucc)) ⋙
+        intervalProjection.{u, v}
+  change ((sourceDegeneracy.prod' intervalSimplex) ⋙
+    cylinderFunctor alpha).obj j.succ = G.obj (x.obj j)
+  have hSource : sourceDegeneracy.obj j.succ = x.obj j := by
+    dsimp [sourceDegeneracy]
+    change x.obj (i.predAbove j.succ) = x.obj j
+    rw [Fin.predAbove_of_castSucc_lt i j.succ
+      (Fin.castSucc_lt_succ_iff.mpr hij), Fin.pred_succ]
+  have hInterval :
+      intervalSimplex.obj j.succ = ULift.up (1 : Fin 2) := by
+    change ULift.up
+      ((SSet.stdSimplex.objMk₁.{max u v} i.succ.castSucc) j.succ) = _
+    rw [SSet.stdSimplex.objMk₁_of_le_castSucc]
+    simpa using Fin.succ_le_succ_iff.mpr hij
+  change (cylinderFunctor alpha).obj
+    (sourceDegeneracy.obj j.succ, intervalSimplex.obj j.succ) = _
+  rw [hSource, hInterval]
+  rfl
+
+end CategoryTheory.NerveHomotopy
+
+namespace SSet.Homotopy
+
+universe u'
+
+variable {X Y : SSet.{u'}} {f g : X ⟶ Y}
+
+/-- Every vertex of one standard prism simplex lies either before the
+switching edge as a cast source index, or after it as a successor source
+index. The two alternatives overlap exactly at the switching source vertex. -/
+theorem prismVertex_castSucc_or_succ {n : ℕ}
+    (i : Fin (n + 1)) (k : Fin (n + 2)) :
+    (∃ j : Fin (n + 1), j ≤ i ∧ k = j.castSucc) ∨
+      ∃ j : Fin (n + 1), i ≤ j ∧ k = j.succ := by
+  by_cases hki : k ≤ i.castSucc
+  · left
+    have hkLast : k ≠ Fin.last (n + 1) :=
+      Fin.ne_last_of_lt (lt_of_le_of_lt hki i.castSucc_lt_last)
+    let j := k.castPred hkLast
+    refine ⟨j, ?_, ?_⟩
+    · apply Fin.castSucc_le_castSucc_iff.mp
+      simpa [j] using hki
+    · exact (Fin.castSucc_castPred k hkLast).symm
+  · right
+    have hik : i.castSucc < k := lt_of_not_ge hki
+    have hkZero : k ≠ 0 :=
+      Fin.ne_zero_of_lt (lt_of_le_of_lt (Fin.zero_le i.castSucc) hik)
+    let j := k.pred hkZero
+    refine ⟨j, ?_, ?_⟩
+    · apply (Fin.le_pred_iff hkZero).2
+      exact Fin.castSucc_lt_iff_succ_le.mp hik
+    · exact (Fin.succ_pred k hkZero).symm
+
 @[simp]
 theorem prismSimplex_zero_face_zero (H : SSet.Homotopy f g)
     {n : ℕ} (x : X.obj (op ⦋n⦌)) :

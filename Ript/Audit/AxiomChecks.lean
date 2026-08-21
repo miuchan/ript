@@ -1014,6 +1014,9 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceHorizontalPairAt_restriction
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismVerticesGlue
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismRestrictionVerticesGlue
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositionPrismVertex_castSucc_outer
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositionPrismVertex_succ_outer
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_allPrismTargetFacesGlue
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceArrow_comp
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceTwoArrow
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetTwoArrow_face_one_mappedComposite
@@ -1568,12 +1571,15 @@ set_option autoImplicit false
 #print axioms SSet.NerveEquivalenceWitness.homotopyEquivalence
 #print axioms CategoryTheory.NerveHomotopy.nerveCylinder
 #print axioms CategoryTheory.NerveHomotopy.ofNatTrans
+#print axioms CategoryTheory.NerveHomotopy.ofNatTrans_prismSimplex_obj_castSucc_of_le
+#print axioms CategoryTheory.NerveHomotopy.ofNatTrans_prismSimplex_obj_succ_of_le
 #print axioms CategoryTheory.SimplicialObject.Homotopy.prismSimplex
 #print axioms CategoryTheory.SimplicialObject.Homotopy.prismSimplex_succ_face_middle
 #print axioms SSet.Homotopy.prismSimplex
 #print axioms SSet.Homotopy.prismSimplex_degeneracy_castSucc_of_le
 #print axioms SSet.Homotopy.AllPrismCoherence
 #print axioms SSet.Homotopy.allPrismCoherence
+#print axioms SSet.Homotopy.prismVertex_castSucc_or_succ
 #print axioms SSet.Homotopy.degreeTwoPrismFaces
 #print axioms CategoryTheory.Functor.isIsofibrationId
 #print axioms CategoryTheory.Functor.coreInclusionIsIsofibration
