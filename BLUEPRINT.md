@@ -373,8 +373,9 @@ Every node in this graph is an existing compiled module.
 | 12 (relative/local horizontal degree-two pasting) | Two vertically composable horizontal 2-cell pairs satisfy source/target interchange; both sides of the compositor homotopy map their common-universe pair 2-simplex exactly; the two degree-one squares paste to a commuting rectangle; factor, horizontal-composite, and vertically-composite local witnesses are packaged together | PROVED |
 | 12 (relative/local degree-two compositor prism) | The actual `SSet.Homotopy` prism triangulation sends every common-universe horizontal pair 2-simplex to three genuine target-local 3-simplices; all twelve faces are identified, adjacent tetrahedra share their switching faces, and the two outer faces are exactly the canonical map-then-compose and compose-then-map 2-simplices | PROVED |
 | 12 (relative/local all-degree compositor prism core) | Every source horizontal-product `n`-simplex and prism index `i : Fin (n + 1)` produces a genuine target-local `(n + 1)`-simplex; one audited core simultaneously proves both endpoint families, both side-face families, shared switching faces, and both degeneracy families in every degree; the cost-exact global comparison exposes this core for every model triple | PROVED |
+| 12 (relative-outer/local degree-two string gluing) | Rezk and relative Rezk outer degree two have canonical two-arrow vertices with exact three-face and two-degeneracy formulas; the relative comparison maps represented pairs exactly; all three horizontal pair vertices of every local compositor prism are glued to relative outer degree two, while their target middle faces decode from the actual mapped local composite vertices | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Glue the compiled all-degree local compositor-prism core to the localization-aware relative outer Rezk face/degeneracy maps, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled relative-outer/local degree-two vertex-and-face glue from represented two-arrow strings to arbitrary outer strings and all prism faces, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6113,9 +6114,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   This is now generalized to every degree: arbitrary horizontal-product
   simplices generate target prism simplices, and one core packages all seven
   endpoint/side/shared/degeneracy law families for every model triple. The
-  remaining boundary is gluing that local all-degree core to the relative
-  outer Rezk face/degeneracy maps and proving the Dwyer--Kan/Rezk weak-
-  equivalence statement.
+  outer bridge now also has exact two-arrow vertices, all three faces and both
+  identity degeneracies. Relative comparison preserves those vertices, and
+  the three horizontal pair vertices of every degree-two local prism glue to
+  them; target middle faces decode from actual mapped local composite vertices.
+  The remaining boundary is extending this vertex-and-face bridge to arbitrary
+  outer strings and all local prism faces, then proving the Dwyer--Kan/Rezk
+  weak-equivalence statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`

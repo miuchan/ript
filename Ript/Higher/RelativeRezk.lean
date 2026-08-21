@@ -164,6 +164,14 @@ def arrowVertex {X Y : C} (f : X ⟶ Y) :
   ComposableArrows.mk₀
     (⟨ComposableArrows.mk₁ f⟩ : StringCategory (W := W) 1)
 
+/-- Two composable source arrows as a vertical vertex in relative outer
+degree two. -/
+def twoArrowVertex {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram (W := W)).obj (op (SimplexCategory.mk 2))).obj
+      (op (SimplexCategory.mk 0)) :=
+  ComposableArrows.mk₀
+    (⟨ComposableArrows.mk₂ f g⟩ : StringCategory (W := W) 2)
+
 private theorem coreObj_ext {E : Type u} {X Y : Core E}
     (h : X.of = Y.of) : X = Y := by
   cases X
@@ -189,5 +197,107 @@ theorem comparison_arrowVertex
   apply ComposableArrows.ext₀
   apply coreObj_ext
   exact CategoryTheory.nerveMap_app_mk₁ L f
+
+/-- The relative comparison sends a two-arrow vertex to the target Rezk
+vertex represented by the two mapped arrows. -/
+theorem comparison_twoArrowVertex
+    (hL : MorphismProperty.IsInvertedBy W L)
+    {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((comparison (W := W) (L := L) (hL := hL)).app
+      (op (SimplexCategory.mk 2))).app
+        (op (SimplexCategory.mk 0)) (twoArrowVertex (W := W) f g) =
+      RezkCore.twoArrowVertex D (L.map f) (L.map g) := by
+  change (CategoryTheory.nerveMap
+      (levelFunctor (W := W) (L := L) (hL := hL) 2)).app
+      (op (SimplexCategory.mk 0))
+        (ComposableArrows.mk₀
+          (⟨ComposableArrows.mk₂ f g⟩ : StringCategory (W := W) 2)) = _
+  rw [CategoryTheory.nerveMap_app_mk₀]
+  apply ComposableArrows.ext₀
+  apply coreObj_ext
+  exact CategoryTheory.nerveMap_app_mk₂ L f g
+
+/-- The zero-th relative outer face of a two-arrow vertex is its second
+arrow. -/
+theorem twoArrowVertex_face_zero {X Y Z : C}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram (W := W)).δ (0 : Fin 3)).app
+        (op (SimplexCategory.mk 0)) (twoArrowVertex (W := W) f g) =
+      arrowVertex (W := W) g := by
+  rfl
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The middle relative outer face of a two-arrow vertex is its composite. -/
+theorem twoArrowVertex_face_one {X Y Z : C}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram (W := W)).δ (1 : Fin 3)).app
+        (op (SimplexCategory.mk 0)) (twoArrowVertex (W := W) f g) =
+      arrowVertex (W := W) (f ≫ g) := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      ((restrictionFunctor (W := W)
+        (SimplexCategory.toCat.map (SimplexCategory.δ 1)).toFunctor).obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply WideSubcategory.ext
+  change (CategoryTheory.nerve C).δ 1 (ComposableArrows.mk₂ f g) =
+    ComposableArrows.mk₁ (f ≫ g)
+  exact CategoryTheory.nerve.δ₁_mk₂_eq f g
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The last relative outer face of a two-arrow vertex is its first arrow. -/
+theorem twoArrowVertex_face_two {X Y Z : C}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    ((diagram (W := W)).δ (2 : Fin 3)).app
+        (op (SimplexCategory.mk 0)) (twoArrowVertex (W := W) f g) =
+      arrowVertex (W := W) f := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      ((restrictionFunctor (W := W)
+        (SimplexCategory.toCat.map (SimplexCategory.δ 2)).toFunctor).obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply WideSubcategory.ext
+  change (CategoryTheory.nerve C).δ 2 (ComposableArrows.mk₂ f g) =
+    ComposableArrows.mk₁ f
+  exact CategoryTheory.nerve.δ₂_mk₂_eq f g
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The first relative outer degeneracy inserts an identity before an arrow. -/
+theorem arrowVertex_degeneracy_zero {X Y : C} (f : X ⟶ Y) :
+    ((diagram (W := W)).σ (0 : Fin 2)).app
+        (op (SimplexCategory.mk 0)) (arrowVertex (W := W) f) =
+      twoArrowVertex (W := W) (𝟙 X) f := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      ((restrictionFunctor (W := W)
+        (SimplexCategory.toCat.map (SimplexCategory.σ 0)).toFunctor).obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply WideSubcategory.ext
+  change (CategoryTheory.nerve C).σ 0 (ComposableArrows.mk₁ f) =
+    ComposableArrows.mk₂ (𝟙 X) f
+  exact RezkCore.nerve_sigma_zero_mk_one C f
+
+set_option backward.defeqAttrib.useBackward true in
+set_option backward.isDefEq.respectTransparency false in
+/-- The second relative outer degeneracy inserts an identity after an arrow. -/
+theorem arrowVertex_degeneracy_one {X Y : C} (f : X ⟶ Y) :
+    ((diagram (W := W)).σ (1 : Fin 2)).app
+        (op (SimplexCategory.mk 0)) (arrowVertex (W := W) f) =
+      twoArrowVertex (W := W) f (𝟙 Y) := by
+  unfold twoArrowVertex arrowVertex
+  change ComposableArrows.mk₀
+      ((restrictionFunctor (W := W)
+        (SimplexCategory.toCat.map (SimplexCategory.σ 1)).toFunctor).obj _) =
+    ComposableArrows.mk₀ _
+  apply ComposableArrows.ext₀
+  apply WideSubcategory.ext
+  change (CategoryTheory.nerve C).σ 1 (ComposableArrows.mk₁ f) =
+    ComposableArrows.mk₂ f (𝟙 Y)
+  exact RezkCore.nerve_sigma_one_mk_one C f
 
 end Ript.Higher.RelativeRezk

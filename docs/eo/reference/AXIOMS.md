@@ -471,6 +471,11 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.RezkCore.diagramCatMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.diagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.diagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.diagramMap_twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.twoArrowVertex_face_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.arrowVertex_degeneracy_zero` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
+| `Ript.Higher.RezkCore.arrowVertex_degeneracy_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.actualEquivalenceObjectOfIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.actualEquivalenceSpaceInclusion_vertexOfIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
 | `Ript.Higher.RezkCore.degreeOneMatchingFunctor_obj_fst_obj` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/TotalModelCompleteSegal.lean` |
@@ -907,6 +912,11 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.RelativeRezk.diagramCat` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.RelativeRezk.comparison_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.comparison_twoArrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.twoArrowVertex_face_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.arrowVertex_degeneracy_zero` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
+| `Ript.Higher.RelativeRezk.arrowVertex_degeneracy_one` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/RelativeRezk.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
@@ -914,6 +924,11 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.sourceArrow_comp` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceTwoArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.targetTwoArrow_face_one_mappedComposite` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_twoArrowGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterLocal_prismVerticesGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalVertexObject_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalEdge_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuter_mappedLocalVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |

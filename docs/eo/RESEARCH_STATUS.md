@@ -277,9 +277,13 @@ identigitaj kaj ambaŭ eksteraj edroj normaliĝas al la ekzaktaj paraj
 2-simplaĵoj. La konstruo nun estas pakita en ĉiu grado: ĉiu horizontala-
 produkta simplaĵo havas indeksitajn celajn prism-simplaĵojn, kaj unu tutmonda
 kost-ekzakta kerno registras ĉiujn sep familiojn de finaj/flankaj/komunaj/
-degenerigaj leĝoj por ĉiu modeltriopo. Restas glui tiun kernon al la relativaj
-eksteraj Rezk-vizaĝaj/degenerigaj mapoj kaj pruvi la Dwyer–Kan/Rezk malfortan
-ekvivalenton.
+degenerigaj leĝoj por ĉiu modeltriopo. La unua relativa-ekstera ponto nun
+estas ekzakta: ordinaraj kaj relativaj du-sagaj verticoj havas tri edrojn kaj
+du identecajn degenerigojn, la relativa komparo konservas ilin, kaj ĉiuj tri
+horizontale paraj verticoj de ĉiu duagrada loka prismo gluiĝas al tiuj eksteraj
+verticoj; celaj mezaj edroj malkodiĝas el faktaj bildigitaj lokaj kunmetaĵoj.
+Restas arbitra ekstera ĉeno/ĉiu-prisma-edra gluado kaj la Dwyer–Kan/Rezk
+malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
