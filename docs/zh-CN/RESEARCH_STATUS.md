@@ -136,6 +136,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 进一步地，源 pair 解码已经对每个水平乘积单形的任意单形范畴限制严格自然，每个受限顶点都再次携带完整 two-arrow glue；因此一个定理统一覆盖所有次数的面与退化。实际目标棱柱的每个面顶点现由范畴 nerve 的面投影逐字给出，并在 compositor 切换两侧精确分类为 `map(composite)` 或 `map(f) ≫ map(g)`；两种局部呈示都解码为同一个外层复合且携带完整 two-arrow glue。完整局部面/退化 core 仍被保留，不可逆局部胞腔不会被塞入 relative outer maximal core。源定义的 marked-zigzag 词/商 2-胞腔 nerve 现为每个模型对给出一个显式 relative mapping-space 呈示：它与实际目标局部 nerve 范畴等价，具有 `NerveEquivalenceWitness` 和显式单纯同伦逆，现有 local map 在所有次数上严格经过它，并精确作用于 forward word 与任意 2-胞腔；外层同伦函子也已本质满。尚未解决的是该呈示的模型无关 derived/hammock mapping-space 刻画、认可的弱等价封装以及 Dwyer–Kan/Rezk 定理。
 
+底层商 mapping category 现还具有与具体目标无关的代数普遍性质：任意把 words 解释为目标对象、把 raw 2-胞腔解释为目标态射并保持全部关系、恒等和纵向复合的数据，都会下降为一个函子，在所有 raw 代表元上精确计算，而且是唯一的相容 lift。通用下降只依赖 `Quot.sound`；尚未完成的是把该代数普遍性质提升为 derived/hammock 同伦刻画。
+
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算
 成本到 `Nat` 步数的投影可执行且有定理支持。

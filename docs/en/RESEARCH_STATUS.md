@@ -331,9 +331,14 @@ It is categorically equivalent to the actual target local nerve, has a
 `NerveEquivalenceWitness` and explicit simplicial homotopy inverse, and the
 existing local map factors through it strictly in every degree with exact
 forward-word and arbitrary-2-cell action. The outer homotopy functor is also
-essentially surjective. A model-independent derived or hammock mapping-space
-characterization, accepted weak-equivalence packaging, and the global
-Dwyer--Kan/Rezk theorem remain.
+essentially surjective. Its underlying quotient mapping category now has a
+target-independent algebraic universal property: every assignment of target
+objects to words and target morphisms to raw cells that respects all
+relations, identities, and vertical composition descends to a functor,
+computes exactly on raw representatives, and is the unique compatible lift.
+The generic descent depends only on `Quot.sound`. A homotopical derived or
+hammock mapping-space characterization, accepted weak-equivalence packaging,
+and the global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

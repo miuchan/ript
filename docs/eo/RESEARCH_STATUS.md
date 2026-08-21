@@ -303,7 +303,13 @@ kaj la ekzistanta loka mapo strikte faktoriĝas tra ĝi en ĉiu grado kun
 ekzakta ago je antaŭaj vortoj kaj arbitraj 2-ĉeloj. La ekstera homotopia
 funktoro estas ankaŭ esence surĵeta. Restas model-sendependa derivita aŭ
 hammock-a karakterizo de tiu prezento, akceptita pakaĵo de malforta
-ekvivalento, kaj la Dwyer–Kan/Rezk-teoremo.
+ekvivalento, kaj la Dwyer–Kan/Rezk-teoremo. La suba kvocienta map-kategorio
+nun ankaŭ havas cel-sendependan algebran universalan econ: ĉiu interpreto de
+vortoj kaj krudaj 2-ĉeloj en ajnan kategorion, kiu respektas ĉiujn rilatojn,
+identecojn kaj vertikalan komponadon, descendas al funktoro, kalkulas ekzakte
+sur krudaj reprezentantoj kaj estas la unika kongrua levo. La ĝenerala
+descendo dependas nur de `Quot.sound`; la homotopia derived/hammock-a paŝo
+restas malfermita.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

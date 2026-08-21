@@ -831,6 +831,10 @@
 | `CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.Presented.markedEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzag.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.descend` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.descend_map_mk` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.toFunctor_unique` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
 | `Ript.Higher.CostExactZigzag.backwardCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.unitCellCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.counitCellCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
@@ -912,6 +916,8 @@
 | `Ript.Higher.CostExactZigzagMappingSpace.comparisonNerveEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.comparisonHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.localMap_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.identityInterpretation` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.localPresentationCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
