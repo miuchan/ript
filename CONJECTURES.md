@@ -409,9 +409,14 @@ now projected literally from its target simplex, classified before or after
 the compositor switch as `map(composite)` or `map(f) ≫ map(g)`, decoded to the
 same outer composite, and equipped with the full two-arrow glue. The complete
 local face/degeneracy core remains attached without treating noninvertible
-local cells as outer equalities. What remains is the correct relative-zigzag
-mapping-space comparison and the resulting Dwyer--Kan/Rezk weak-equivalence
-theorem.
+local cells as outer equalities. The source-defined marked-zigzag word/
+quotient-2-cell nerve is now categorically equivalent to the actual target
+local nerve for every object pair, with a `NerveEquivalenceWitness`, explicit
+simplicial homotopy inverse, and strict all-degree factorization of the
+existing local map; the outer homotopy functor is essentially surjective.
+What remains is a model-independent derived or hammock characterization of
+this presented mapping nerve, accepted weak-equivalence packaging, and the
+resulting Dwyer--Kan/Rezk theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -487,8 +492,11 @@ restricted source vertex are also compiled, uniformly covering all faces and
 degeneracies. Actual target-face vertices are now classified on both sides of
 the compositor switch, identified with their exact local presentations, and
 decoded to the same outer composites while retaining the full local face
-core. The relative-zigzag mapping-space comparison and complete-Segal/Rezk
-weak equivalence remain open.
+core. The presented relative-zigzag mapping nerve now has an exact categorical
+comparison with the actual target local nerve, a displayed simplicial
+homotopy inverse, and strict factorization of the source local map in every
+degree. Proving model-independent derived mapping-space correctness and the
+complete-Segal/Rezk weak equivalence remains open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

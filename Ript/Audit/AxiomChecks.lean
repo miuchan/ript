@@ -922,6 +922,7 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzag.markedCounitIso
 #print axioms Ript.Higher.CostExactZigzag.inclusion
 #print axioms Ript.Higher.CostExactZigzag.inclusion_inverts
+#print axioms Ript.Higher.CostExactZigzag.inclusion_obj_surjective
 #print axioms Ript.Higher.CostExactZigzag.markedEquivalence
 #print axioms Ript.Higher.CostExactZigzag.liftOfInverts
 #print axioms Ript.Higher.CostExactZigzag.factorizationOfInverts
@@ -988,6 +989,11 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.identityHomotopy
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.compositionHomotopy
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.comparison
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.comparisonNerveEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.comparisonHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.localMap_factorization
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_inverts_toHomotopy
@@ -1005,6 +1011,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap
 #print axioms Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_obj_surjective
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor_essSurj
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_invertsCostExactMorphisms
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison

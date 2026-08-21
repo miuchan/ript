@@ -325,8 +325,15 @@ compositor switch as `map(composite)` or `map(f) ≫ map(g)`, identified with
 that exact local presentation, and decoded to the same outer composite with
 complete two-arrow glue. The complete local face/degeneracy core remains
 attached, so noninvertible local cells are not inserted into the relative
-outer maximal core. The relative-zigzag mapping-space comparison and the
-global Dwyer--Kan/Rezk weak-equivalence theorem remain.
+outer maximal core. The source-defined marked-zigzag word/quotient-2-cell
+nerve now gives a represented relative mapping space for every model pair.
+It is categorically equivalent to the actual target local nerve, has a
+`NerveEquivalenceWitness` and explicit simplicial homotopy inverse, and the
+existing local map factors through it strictly in every degree with exact
+forward-word and arbitrary-2-cell action. The outer homotopy functor is also
+essentially surjective. A model-independent derived or hammock mapping-space
+characterization, accepted weak-equivalence packaging, and the global
+Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

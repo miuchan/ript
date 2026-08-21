@@ -72,6 +72,13 @@ def inclusion : ProcessModel.{u, v, w} R ⥤ᵖ Localization (R := R) :=
   CategoryTheory.Bicategory.MarkedZigzag.Presented.inclusion
     (costExactArrows R)
 
+/-- The presented cost-exact localization has exactly the source object set,
+so its canonical inclusion is surjective on objects. -/
+theorem inclusion_obj_surjective :
+    Function.Surjective (inclusion (R := R)).obj :=
+  CategoryTheory.Bicategory.MarkedZigzag.LocalExtension.inclusion_obj_surjective
+    (costExactArrows R)
+
 /-- The presented inclusion sends every saturated cost-exact arrow to an
 adjoint equivalence. -/
 theorem inclusion_inverts :

@@ -134,7 +134,7 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 该实际构造现已有可计算的呈示语法。`MarkedZigzag.Word` 由端点索引，任意源 1-胞腔可正向出现，只有携带标记证明的箭头才可反向出现。二叉弱复合使解释严格保持复合，而结合性保留为真实 2-胞腔。关系闭包现包含 whiskering、interchange、五边形、双范畴三角形以及标记 unit/counit 的两条伴随三角式。`InversionData.lift` 构造任意反演目标的提升，`InversionData.factorization` 给出伴随等价因子分解。`LocalExtension.extension` 对正向生成元保留自然性约束，对形式逆元取 mate，并递归处理空词与复合；modification 同样沿恒等、逆元和复合延拓。因此预复合忠实、满且本质满，`CostExactZigzag.inclusion_isBicategoricalLocalization` 已证明完整高阶局部化普遍性。
 
-进一步地，源 pair 解码已经对每个水平乘积单形的任意单形范畴限制严格自然，每个受限顶点都再次携带完整 two-arrow glue；因此一个定理统一覆盖所有次数的面与退化。实际目标棱柱的每个面顶点现由范畴 nerve 的面投影逐字给出，并在 compositor 切换两侧精确分类为 `map(composite)` 或 `map(f) ≫ map(g)`；两种局部呈示都解码为同一个外层复合且携带完整 two-arrow glue。完整局部面/退化 core 仍被保留，不可逆局部胞腔不会被塞入 relative outer maximal core。尚未解决的是 relative-zigzag mapping-space 比较和 Dwyer–Kan/Rezk 弱等价。
+进一步地，源 pair 解码已经对每个水平乘积单形的任意单形范畴限制严格自然，每个受限顶点都再次携带完整 two-arrow glue；因此一个定理统一覆盖所有次数的面与退化。实际目标棱柱的每个面顶点现由范畴 nerve 的面投影逐字给出，并在 compositor 切换两侧精确分类为 `map(composite)` 或 `map(f) ≫ map(g)`；两种局部呈示都解码为同一个外层复合且携带完整 two-arrow glue。完整局部面/退化 core 仍被保留，不可逆局部胞腔不会被塞入 relative outer maximal core。源定义的 marked-zigzag 词/商 2-胞腔 nerve 现为每个模型对给出一个显式 relative mapping-space 呈示：它与实际目标局部 nerve 范畴等价，具有 `NerveEquivalenceWitness` 和显式单纯同伦逆，现有 local map 在所有次数上严格经过它，并精确作用于 forward word 与任意 2-胞腔；外层同伦函子也已本质满。尚未解决的是该呈示的模型无关 derived/hammock mapping-space 刻画、认可的弱等价封装以及 Dwyer–Kan/Rezk 定理。
 
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算

@@ -1,5 +1,5 @@
 import Ript.ForMathlib.CategoryTheory.Bicategory.PseudofunctorHomotopy
-import Ript.Higher.CostExactZigzagNerveComparison
+import Ript.Higher.CostExactZigzagMappingSpace
 import Ript.Higher.RelativeRezk
 
 /-!
@@ -51,6 +51,34 @@ noncomputable def smallHomotopyLocalizationFunctor :
   commonAsSmallFunctor
     (Pseudofunctor.homotopyFunctor
       (CostExactZigzag.inclusion (R := R)))
+
+/-- The homotopy-category functor of the presented cost-exact localization
+is surjective on objects because the presented target retains exactly the
+source object set. -/
+theorem homotopyLocalizationFunctor_obj_surjective : Function.Surjective
+    (Pseudofunctor.homotopyFunctor
+      (CostExactZigzag.inclusion (R := R))).obj := by
+  intro Y
+  rcases CostExactZigzag.inclusion_obj_surjective Y.as with ⟨X, hX⟩
+  refine ⟨HomotopyCategory.of X, ?_⟩
+  apply HomotopyCategory.ext
+  exact hX
+
+/-- The common-universe outer localization functor is essentially
+surjective. This establishes the object condition of the intended
+Dwyer--Kan comparison independently of the still-open derived mapping-space
+correctness theorem. -/
+theorem smallHomotopyLocalizationFunctor_essSurj :
+    (smallHomotopyLocalizationFunctor (R := R)).EssSurj where
+  mem_essImage Y := by
+    let F := Pseudofunctor.homotopyFunctor
+      (CostExactZigzag.inclusion (R := R))
+    have hsurj : Function.Surjective F.obj :=
+      homotopyLocalizationFunctor_obj_surjective (R := R)
+    rcases hsurj (AsSmall.down.obj Y) with ⟨X, hX⟩
+    refine ⟨AsSmall.up.obj X, ⟨?_⟩⟩
+    exact (AsSmall.up.mapIso (eqToIso hX)).trans
+      (AsSmall.equiv.counitIso.app Y)
 
 /-- The actual higher localization's induced homotopy functor inverts the
 ordinary cost-exact marking descended from cost-reflecting arrows. -/
@@ -1455,9 +1483,19 @@ structure GlobalComparisonCore where
   /-- The outer map is induced by the homotopy functor of the canonical
   higher localization. -/
   outer_eq : outer = outerComparison (R := R)
+  /-- The outer localization functor satisfies the object-essential-
+  surjectivity condition of a Dwyer--Kan comparison. -/
+  outerEssentiallySurjective :
+    (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj
   /-- Full non-groupoidal local comparison, with exact 2-cell action and
   compositor simplicial homotopy. -/
   localNerve : LocalNerveCore.{w, v, u} (R := R)
+  /-- Represented relative-zigzag mapping-space comparison for every source
+  object pair, including nerve equivalence, explicit homotopy inverse, and
+  strict factorization of the full local map. -/
+  relativeZigzagMappingSpace : ∀
+    (M N : ProcessModel.{u, v, w} R),
+    CostExactZigzagMappingSpace.MappingSpaceCore M N
   /-- Explicit simplicial homotopy-equivalence witness for source outer
   completeness. -/
   sourceCompleteness : SSet.HomotopyEquivalenceWitness
@@ -1693,7 +1731,10 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeOuter_eq := rfl
   outer := outerComparison (R := R)
   outer_eq := rfl
+  outerEssentiallySurjective :=
+    smallHomotopyLocalizationFunctor_essSurj (R := R)
   localNerve := CostExactZigzagNerveComparison.core (R := R)
+  relativeZigzagMappingSpace := CostExactZigzagMappingSpace.core
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   relativeArrowGlue := relativeOuterComparison_sourceArrow

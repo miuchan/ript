@@ -841,6 +841,7 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.CostExactZigzag.markedCounitIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.inclusion` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.inclusion_inverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
+| `Ript.Higher.CostExactZigzag.inclusion_obj_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.markedEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.liftOfInverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.factorizationOfInverts` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
@@ -907,6 +908,11 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.identityHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.compositionHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.comparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.comparisonNerveEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.comparisonHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.localMap_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_inverts_toHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
@@ -924,6 +930,8 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_obj_surjective` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor_essSurj` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_invertsCostExactMorphisms` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |

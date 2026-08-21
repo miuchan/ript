@@ -141,7 +141,7 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 
 その実構成には可計算な表示構文があります。`MarkedZigzag.Word` は二分弱合成を使い、関係商は五角形・双圏三角形と marked unit/counit の両随伴三角式を含む `Presented.localizationBicategory` を形成します。`InversionData.lift` と `InversionData.factorization` は任意の marking 反転擬関手の持ち上げと随伴同値因子分解を与えます。`LocalExtension.extension` は形式逆射上で mate を用いて strong transformation を再帰的に延長し、modification も恒等・逆射・合成に沿って延長します。したがって前合成は忠実、充満、本質的全射であり、`CostExactZigzag.inclusion_isBicategoricalLocalization` が完全な高次局所化普遍性を証明します。
 
-さらに、始域 pair の復号は各水平積単体に対する任意の単体圏制限の下で厳密に自然であり、各制限後の頂点には完全な two-arrow glue が再び与えられます。したがって、全次数の面と退化を一つの定理で統一的に扱えます。実際の対象プリズムの各面頂点は圏 nerve の面射影として文字通り与えられ、compositor の切替点の前後で `map(composite)` または `map(f) ≫ map(g)` に厳密に分類されます。両方の局所表示は同じ外側合成へ復号され、完全な two-arrow glue を持ちます。完全な局所面/退化 core は保持されるため、非可逆局所セルを relative outer maximal core に混入させません。未解決なのは relative-zigzag mapping-space 比較と Dwyer–Kan/Rezk 弱同値です。
+さらに、始域 pair の復号は各水平積単体に対する任意の単体圏制限の下で厳密に自然であり、各制限後の頂点には完全な two-arrow glue が再び与えられます。したがって、全次数の面と退化を一つの定理で統一的に扱えます。実際の対象プリズムの各面頂点は圏 nerve の面射影として文字通り与えられ、compositor の切替点の前後で `map(composite)` または `map(f) ≫ map(g)` に厳密に分類されます。両方の局所表示は同じ外側合成へ復号され、完全な two-arrow glue を持ちます。完全な局所面/退化 core は保持されるため、非可逆局所セルを relative outer maximal core に混入させません。始域で定義された marked-zigzag word/商 2-cell nerve は、各モデル対に明示的な relative mapping-space 表示を与えるようになりました。これは実際の対象局所 nerve と圏同値で、`NerveEquivalenceWitness` と明示的な単体ホモトピー逆を持ち、既存の local map は全次数で厳密にこの表示を経由し、forward word と任意の 2-cell に正確に作用します。外側ホモトピー関手も本質的全射です。未解決なのは、この表示のモデル非依存な derived/hammock mapping-space 特徴付け、受理可能な弱同値包装、および Dwyer–Kan/Rezk 定理です。
 
 異なる資源代数のモデルは順序付き加法準同型で比較できます。直列、並列、構造、予算則が再添字
 付けされ、異種強モデル射は資源写像とともに合成します。これらは、資源代数とモデルを対象、
