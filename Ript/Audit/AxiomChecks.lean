@@ -932,6 +932,12 @@ set_option autoImplicit false
 #print axioms Ript.Higher.UniverseLiftedNerve.commonLocalMap
 #print axioms Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoCell
 #print axioms Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoSimplex
+#print axioms Ript.Higher.BicategoricalNerveComparison.horizontalCompositionSquare
+#print axioms Ript.Higher.UniverseLiftedNerve.horizontalCompositionSquare
+#print axioms Ript.Higher.UniverseLiftedNerve.commonComposeThenMap_edge
+#print axioms Ript.Higher.UniverseLiftedNerve.commonMapThenCompose_edge
+#print axioms Ript.Higher.UniverseLiftedNerve.commonHorizontalCompositionSquare
+#print axioms Ript.Higher.UniverseLiftedNerve.commonHorizontalCompositionGlue
 #print axioms Ript.Higher.UniverseLiftedNerve.identityComparisonNatIso
 #print axioms Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonNatIso
 #print axioms Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonHomotopy
@@ -945,6 +951,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.markedVertex_mapsToEquivalence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.twoCell_edge_mapsExactly
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.twoCell_twoSimplex_mapsExactly
+#print axioms Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCell_compositionGlue
+#print axioms Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCell_compositorSquare
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.associatorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.leftUnitorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence
@@ -970,6 +978,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_eq
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_diagonal
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoSimplexGlue
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositeVertex_outerComposition
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_horizontalTwoCellGlue
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.outerComparison
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence

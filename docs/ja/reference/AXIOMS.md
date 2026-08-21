@@ -851,6 +851,12 @@
 | `Ript.Higher.UniverseLiftedNerve.commonLocalMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.horizontalCompositionSquare` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.horizontalCompositionSquare` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonComposeThenMap_edge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonMapThenCompose_edge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonHorizontalCompositionSquare` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonHorizontalCompositionGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.identityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
@@ -864,6 +870,8 @@
 | `Ript.Higher.CostExactZigzagNerveComparison.markedVertex_mapsToEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.twoCell_edge_mapsExactly` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.twoCell_twoSimplex_mapsExactly` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCell_compositionGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.horizontalTwoCell_compositorSquare` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.associatorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.leftUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
@@ -889,6 +897,8 @@
 | `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_diagonal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoSimplexGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedCompositeVertex_outerComposition` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_horizontalTwoCellGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.outerComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |

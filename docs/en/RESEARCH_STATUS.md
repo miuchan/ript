@@ -296,8 +296,12 @@ For each possibly noninvertible 2-cell, both relative outer endpoints and its
 exact mapped target-local edge are bundled in one one-skeleton witness.
 Vertically composable pairs now map to exact target local 2-simplices; the two
 one-skeleton witnesses, full triangle, and dependent composite diagonal are
-bundled together. Remaining work is mixed horizontal and higher simplicial
-coherence and the global Dwyer--Kan/Rezk weak-equivalence theorem.
+bundled together. Simultaneous horizontal pairs of arbitrary 2-cells now map
+exactly through both sides of the compositor homotopy; their horizontally
+composed one-skeleton, outer composite endpoints, and commuting naturality
+square are bundled together. Remaining work is higher mixed simplicial
+coherence beyond this degree-one square and the global Dwyer--Kan/Rezk
+weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

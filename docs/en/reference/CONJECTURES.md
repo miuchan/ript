@@ -376,9 +376,12 @@ decode exactly. For every possibly noninvertible 2-cell, its two relative
 outer endpoints and exact target local edge are packaged in one one-skeleton
 gluing witness. Vertically composable pairs now map to exact target local
 2-simplices, with both one-skeletons and the dependent composite diagonal
-packaged together. The remaining problem is mixed horizontal and higher
-simplicial coherence and the resulting Dwyer--Kan/Rezk weak-equivalence
-theorem.
+packaged together. Simultaneous horizontal pairs of arbitrary 2-cells now map
+exactly through both sides of the common-universe compositor homotopy; the
+horizontally composed one-skeleton, both outer composite endpoints, and the
+commuting compositor naturality square are packaged together. The remaining
+problem is higher mixed simplicial coherence beyond this degree-one square and
+the resulting Dwyer--Kan/Rezk weak-equivalence theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -439,8 +442,10 @@ word-presentation local nerves are now replaced by equivalent common-universe
 `CostExactZigzagNerveComparison.core`. The outer Rezk direction induced by the
 same actual higher localization is packaged with it in
 `CostExactZigzagGlobalComparison.core`, with exact vertex, identity, and
-horizontal-composition gluing plus associator and unitor gluing. What remains
-is higher simplicial coherence and the complete-Segal/Rezk weak equivalence.
+horizontal-composition gluing plus associator and unitor gluing. Its
+degree-one horizontal action now also contains the exact two-sided compositor
+edge maps and naturality square for arbitrary 2-cells. What remains is higher
+mixed simplicial coherence and the complete-Segal/Rezk weak equivalence.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

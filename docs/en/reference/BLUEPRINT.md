@@ -369,8 +369,9 @@ Every node in this graph is an existing compiled module.
 | 12 (relative Rezk outer comparison) | Relative outer degree `n` consists of all source strings and pointwise cost-exact vertical transformations; functors inverting the marking induce an all-dimensional bisimplicial map into the target Rezk core; the actual marked-zigzag localization instantiates it with exact action on represented arrow vertices | PROVED |
 | 12 (relative/local one-skeleton gluing) | Actual source local zero-simplices and arbitrary 2-cell edges are mapped by the common-universe local nerve map and decoded without replacement data; relative outer arrow vertices agree strictly with the decoded mapped local vertices; both endpoints and the exact local edge are packaged for every possibly noninvertible 2-cell | PROVED |
 | 12 (relative/local vertical two-simplex gluing) | Canonical local 2-simplices of vertically composable arbitrary 2-cells map exactly in ordinary and common universes; both one-skeleton witnesses, the full target triangle, and the dependent long diagonal representing the mapped vertical composite are packaged together | PROVED |
+| 12 (relative/local horizontal 2-cell square gluing) | Simultaneous horizontal composition of arbitrary 2-cells maps exactly through both sides of the common-universe compositor homotopy; its naturality square commutes, the horizontally composed one-skeleton is retained, and both composite endpoints decode to the corresponding outer compositions | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled relative/local one-skeleton and vertical-two-simplex glue through mixed horizontal and higher simplicial coherence, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled one-skeleton, vertical-two-simplex, and horizontal-2-cell-square glue through higher mixed simplicial coherence, then prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6096,9 +6097,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   outer endpoints and its exact mapped local edge are packaged as one
   one-skeleton gluing witness. Vertically composable pairs now map to exact
   target local 2-simplices; both one-skeletons, the full triangle, and its
-  dependent composite diagonal are packaged together. The remaining boundary
-  is extending this glue through mixed horizontal and higher simplicial
-  coherence and proving the
+  dependent composite diagonal are packaged together. Simultaneous horizontal
+  pairs now map exactly through both sides of the compositor homotopy; their
+  common-universe naturality square, horizontally composed one-skeleton, and
+  outer composite endpoints are packaged together. The remaining boundary is
+  higher mixed simplicial coherence beyond this degree-one square and proving the
   Dwyer--Kan/Rezk weak-equivalence statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
