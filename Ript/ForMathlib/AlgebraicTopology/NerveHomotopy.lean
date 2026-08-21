@@ -165,6 +165,225 @@ noncomputable def ofNatTrans (alpha : F ⟶ G) :
 
 end NerveHomotopy
 
+namespace SimplicialObject.Homotopy
+
+universe u'
+
+variable {X Y : SSet.{u'}} {f g : X ⟶ Y}
+
+/-- The simplex in the target of a combinatorial simplicial homotopy indexed
+by one nondegenerate simplex in the standard prism triangulation. -/
+noncomputable def prismSimplex
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (x : X.obj (op ⦋n⦌)) (i : Fin (n + 1)) :
+    Y.obj (op ⦋n + 1⦌) :=
+  (H.h i).hom' x
+
+/-- The first face of the first prism simplex is the target map. -/
+@[simp]
+theorem prismSimplex_zero_face_zero
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (x : X.obj (op ⦋n⦌)) :
+    (Y.δ 0).hom' (prismSimplex H x 0) =
+      (g.app (op ⦋n⦌)).hom' x := by
+  exact ConcreteCategory.congr_hom (H.h_zero_comp_δ_zero n) x
+
+/-- The last face of the last prism simplex is the source map. -/
+@[simp]
+theorem prismSimplex_last_face_last
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (x : X.obj (op ⦋n⦌)) :
+    (Y.δ (Fin.last (n + 1))).hom'
+        (prismSimplex H x (Fin.last n)) =
+      (f.app (op ⦋n⦌)).hom' x := by
+  exact ConcreteCategory.congr_hom (H.h_last_comp_δ_last n) x
+
+/-- Faces before the switching vertex are the corresponding prism simplices
+on source faces. -/
+@[simp]
+theorem prismSimplex_succ_face_castSucc_of_le
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    (hij : i ≤ j.castSucc) (x : X.obj (op ⦋n + 1⦌)) :
+    (Y.δ i.castSucc).hom' (prismSimplex H x j.succ) =
+      prismSimplex H ((X.δ i).hom' x) j := by
+  exact ConcreteCategory.congr_hom
+    (H.h_succ_comp_δ_castSucc_of_lt i j hij) x
+
+/-- Adjacent prism simplices share their switching face exactly. -/
+@[simp]
+theorem prismSimplex_succ_face_middle
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (j : Fin (n + 1)) (x : X.obj (op ⦋n + 1⦌)) :
+    (Y.δ j.castSucc.succ).hom' (prismSimplex H x j.succ) =
+      (Y.δ j.castSucc.succ).hom'
+        (prismSimplex H x j.castSucc) := by
+  exact ConcreteCategory.congr_hom
+    (H.h_succ_comp_δ_castSucc_succ j) x
+
+/-- Faces after the switching vertex are the corresponding prism simplices
+on source faces. -/
+@[simp]
+theorem prismSimplex_castSucc_face_succ_of_lt
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    (hji : j.castSucc < i) (x : X.obj (op ⦋n + 1⦌)) :
+    (Y.δ i.succ).hom' (prismSimplex H x j.castSucc) =
+      prismSimplex H ((X.δ i).hom' x) j := by
+  exact ConcreteCategory.congr_hom
+    (H.h_castSucc_comp_δ_succ_of_lt i j hji) x
+
+/-- Degeneracies at or before the switching vertex move to the successor
+prism index. -/
+@[simp]
+theorem prismSimplex_degeneracy_castSucc_of_le
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j)
+    (x : X.obj (op ⦋n⦌)) :
+    (Y.σ i.castSucc).hom' (prismSimplex H x j) =
+      prismSimplex H ((X.σ i).hom' x) j.succ := by
+  exact ConcreteCategory.congr_hom
+    (H.h_comp_σ_castSucc_of_le i j hij) x
+
+/-- Degeneracies at or after the switching vertex retain the cast prism
+index. -/
+@[simp]
+theorem prismSimplex_degeneracy_succ_of_le
+    (H : SimplicialObject.Homotopy f g)
+    {n : ℕ} (i j : Fin (n + 1)) (hji : j ≤ i)
+    (x : X.obj (op ⦋n⦌)) :
+    (Y.σ i.succ).hom' (prismSimplex H x j) =
+      prismSimplex H ((X.σ i).hom' x) j.castSucc := by
+  exact ConcreteCategory.congr_hom
+    (H.h_comp_σ_succ_of_lt i j hji) x
+
+end SimplicialObject.Homotopy
+
+end CategoryTheory
+
+open CategoryTheory Simplicial Opposite
+
+namespace SSet.Homotopy
+
+universe u'
+
+variable {X Y : SSet.{u'}} {f g : X ⟶ Y}
+
+/-- A simplex of an `SSet.Homotopy` in the standard simplicial prism
+triangulation. -/
+noncomputable def prismSimplex (H : SSet.Homotopy f g)
+    {n : ℕ} (x : X.obj (op ⦋n⦌)) (i : Fin (n + 1)) :
+    Y.obj (op ⦋n + 1⦌) :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex
+    H.toSimplicialObjectHomotopy x i
+
+@[simp]
+theorem prismSimplex_zero_face_zero (H : SSet.Homotopy f g)
+    {n : ℕ} (x : X.obj (op ⦋n⦌)) :
+    (Y.δ 0).hom' (prismSimplex H x 0) =
+      (g.app (op ⦋n⦌)).hom' x :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_zero_face_zero
+    H.toSimplicialObjectHomotopy x
+
+@[simp]
+theorem prismSimplex_last_face_last (H : SSet.Homotopy f g)
+    {n : ℕ} (x : X.obj (op ⦋n⦌)) :
+    (Y.δ (Fin.last (n + 1))).hom'
+        (prismSimplex H x (Fin.last n)) =
+      (f.app (op ⦋n⦌)).hom' x :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_last_face_last
+    H.toSimplicialObjectHomotopy x
+
+@[simp]
+theorem prismSimplex_succ_face_castSucc_of_le
+    (H : SSet.Homotopy f g)
+    {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    (hij : i ≤ j.castSucc) (x : X.obj (op ⦋n + 1⦌)) :
+    (Y.δ i.castSucc).hom' (prismSimplex H x j.succ) =
+      prismSimplex H ((X.δ i).hom' x) j :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_succ_face_castSucc_of_le
+    H.toSimplicialObjectHomotopy i j hij x
+
+@[simp]
+theorem prismSimplex_succ_face_middle
+    (H : SSet.Homotopy f g)
+    {n : ℕ} (j : Fin (n + 1)) (x : X.obj (op ⦋n + 1⦌)) :
+    (Y.δ j.castSucc.succ).hom' (prismSimplex H x j.succ) =
+      (Y.δ j.castSucc.succ).hom'
+        (prismSimplex H x j.castSucc) :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_succ_face_middle
+    H.toSimplicialObjectHomotopy j x
+
+@[simp]
+theorem prismSimplex_castSucc_face_succ_of_lt
+    (H : SSet.Homotopy f g)
+    {n : ℕ} (i : Fin (n + 2)) (j : Fin (n + 1))
+    (hji : j.castSucc < i) (x : X.obj (op ⦋n + 1⦌)) :
+    (Y.δ i.succ).hom' (prismSimplex H x j.castSucc) =
+      prismSimplex H ((X.δ i).hom' x) j :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_castSucc_face_succ_of_lt
+    H.toSimplicialObjectHomotopy i j hji x
+
+@[simp]
+theorem prismSimplex_degeneracy_castSucc_of_le
+    (H : SSet.Homotopy f g)
+    {n : ℕ} (i j : Fin (n + 1)) (hij : i ≤ j)
+    (x : X.obj (op ⦋n⦌)) :
+    (Y.σ i.castSucc).hom' (prismSimplex H x j) =
+      prismSimplex H ((X.σ i).hom' x) j.succ :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_degeneracy_castSucc_of_le
+    H.toSimplicialObjectHomotopy i j hij x
+
+@[simp]
+theorem prismSimplex_degeneracy_succ_of_le
+    (H : SSet.Homotopy f g)
+    {n : ℕ} (i j : Fin (n + 1)) (hji : j ≤ i)
+    (x : X.obj (op ⦋n⦌)) :
+    (Y.σ i.succ).hom' (prismSimplex H x j) =
+      prismSimplex H ((X.σ i).hom' x) j.castSucc :=
+  CategoryTheory.SimplicialObject.Homotopy.prismSimplex_degeneracy_succ_of_le
+    H.toSimplicialObjectHomotopy i j hji x
+
+/-- Complete face package for the three tetrahedra triangulating a
+degree-two simplicial homotopy prism. -/
+def DegreeTwoPrismFaces (H : SSet.Homotopy f g)
+    (x : X.obj (op ⦋2⦌)) : Prop :=
+  (Y.δ 0).hom' (prismSimplex H x 0) =
+      (g.app (op ⦋2⦌)).hom' x ∧
+  (Y.δ (Fin.last 3)).hom'
+      (prismSimplex H x (Fin.last 2)) =
+      (f.app (op ⦋2⦌)).hom' x ∧
+  (∀ j : Fin 2,
+    (Y.δ j.castSucc.succ).hom' (prismSimplex H x j.succ) =
+      (Y.δ j.castSucc.succ).hom'
+        (prismSimplex H x j.castSucc)) ∧
+  (∀ (i : Fin 3) (j : Fin 2) (_hij : i ≤ j.castSucc),
+    (Y.δ i.castSucc).hom' (prismSimplex H x j.succ) =
+      prismSimplex H ((X.δ i).hom' x) j) ∧
+  (∀ (i : Fin 3) (j : Fin 2) (_hji : j.castSucc < i),
+    (Y.δ i.succ).hom' (prismSimplex H x j.castSucc) =
+      prismSimplex H ((X.δ i).hom' x) j)
+
+/-- Every degree-two simplex has an explicit three-tetrahedron prism whose
+twelve faces are identified by the standard homotopy equations. -/
+theorem degreeTwoPrismFaces (H : SSet.Homotopy f g)
+    (x : X.obj (op ⦋2⦌)) :
+    DegreeTwoPrismFaces H x := by
+  refine ⟨prismSimplex_zero_face_zero H x,
+    prismSimplex_last_face_last H x, ?_, ?_, ?_⟩
+  · intro j
+    exact prismSimplex_succ_face_middle H j x
+  · intro i j hij
+    exact prismSimplex_succ_face_castSucc_of_le H i j hij x
+  · intro i j hji
+    exact prismSimplex_castSucc_face_succ_of_lt H i j hji x
+
+end SSet.Homotopy
+
+namespace CategoryTheory
+
+universe u v
+
 /-- A categorical nerve map sends a canonical composable-pair 2-simplex to
 the canonical 2-simplex of the two mapped arrows. -/
 @[simp]

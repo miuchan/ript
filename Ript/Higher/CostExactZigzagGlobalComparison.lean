@@ -620,6 +620,41 @@ theorem relativeLocal_horizontalPastingGlue
     CostExactZigzagNerveComparison.horizontalTwoCell_pastingGlue
       α₀ α₁ β₀ β₁⟩
 
+/-- One of the three actual target-local 3-simplices in the global
+cost-exact compositor prism. -/
+noncomputable def mappedCompositionPrismSimplex
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂)
+    (i : Fin 3) :=
+  CostExactZigzagNerveComparison.horizontalTwoCellCompositionPrismSimplex
+    α₀ α₁ β₀ β₁ i
+
+/-- Full relative/local compositor-prism proposition. It combines the
+degree-two factor and pasting boundary with the three genuine target-local
+3-simplices and their complete twelve-face identification. -/
+def RelativeLocalHorizontalPrismGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  RelativeLocalHorizontalPastingGlue α₀ α₁ β₀ β₁ ∧
+  CommonCompositionPrismGlue
+    (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁
+
+/-- Every vertically composable horizontal source pair admits the complete
+relative/local three-tetrahedron compositor prism. -/
+theorem relativeLocal_horizontalPrismGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    RelativeLocalHorizontalPrismGlue α₀ α₁ β₀ β₁ :=
+  ⟨relativeLocal_horizontalPastingGlue α₀ α₁ β₀ β₁,
+    CostExactZigzagNerveComparison.horizontalTwoCell_compositionPrismGlue
+      α₀ α₁ β₀ β₁⟩
+
 /-- The target bicategorical associator becomes strict equality after local
 vertices are decoded into the outer homotopy category. -/
 theorem localAssociator_outerArrow
@@ -910,6 +945,14 @@ structure GlobalComparisonCore where
     (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
     (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
     RelativeLocalHorizontalPastingGlue α₀ α₁ β₀ β₁
+  /-- Three genuine target-local compositor-prism 3-simplices with their
+  complete relative/local boundary package. -/
+  relativeLocalHorizontalPrismGlue : ∀
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
+    RelativeLocalHorizontalPrismGlue α₀ α₁ β₀ β₁
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -1035,6 +1078,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeLocalTwoSimplexGlue := relativeLocal_twoSimplexGlue
   relativeLocalHorizontalTwoCellGlue := relativeLocal_horizontalTwoCellGlue
   relativeLocalHorizontalPastingGlue := relativeLocal_horizontalPastingGlue
+  relativeLocalHorizontalPrismGlue := relativeLocal_horizontalPrismGlue
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

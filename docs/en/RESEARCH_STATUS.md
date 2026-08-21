@@ -302,9 +302,11 @@ composed one-skeleton, outer composite endpoints, and commuting naturality
 square are bundled together. For two vertically composable horizontal pairs,
 source and target interchange are exact, both common-universe pair
 2-simplices map exactly, and the two squares paste to a commuting rectangle
-with all factor/composite local witnesses. Remaining work is the explicit
-simplicial compositor prism, arbitrary-degree face/degeneracy coherence, and
-the global Dwyer--Kan/Rezk weak-equivalence theorem.
+with all factor/composite local witnesses. The actual compositor homotopy now
+also gives the three target-local 3-simplices triangulating the degree-two
+prism; all twelve faces are identified and both outer faces normalize to the
+exact pair 2-simplices. Remaining work is arbitrary-degree face/degeneracy
+packaging and the global Dwyer--Kan/Rezk weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

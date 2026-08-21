@@ -271,8 +271,11 @@ finpunktoj kaj la komuta natureca kvadrato estas pakitaj kune. Por du
 vertikale kunmeteblaj horizontalaj paroj, la fonta kaj cela interŝanĝoj estas
 ekzaktaj, ambaŭ komun-universaj paraj 2-simplaĵoj bildiĝas ekzakte, kaj la du
 kvadratoj gluiĝas al komuta rektangulo kun ĉiuj faktoraj kaj kunmetaj lokaj
-atestoj. Restas la eksplicita simplicia compositor-prismo, arbitra-grada
-vizaĝa/degeneriga kohereco kaj la Dwyer–Kan/Rezk malforta ekvivalento.
+atestoj. La fakta compositor-homotopio nun ankaŭ donas la tri celajn lokajn
+3-simplaĵojn kiuj triangulas la duagradan prismon; ĉiuj dek du edroj estas
+identigitaj kaj ambaŭ eksteraj edroj normaliĝas al la ekzaktaj paraj
+2-simplaĵoj. Restas arbitra-grada pakado de vizaĝoj/degenerigoj kaj la
+Dwyer–Kan/Rezk malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
