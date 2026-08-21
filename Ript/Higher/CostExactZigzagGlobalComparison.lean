@@ -1,14 +1,15 @@
 import Ript.ForMathlib.CategoryTheory.Bicategory.PseudofunctorHomotopy
 import Ript.Higher.CostExactZigzagNerveComparison
+import Ript.Higher.RelativeRezk
 
 /-!
 # Global two-layer comparison for the cost-exact higher localization
 
-The actual marked-zigzag localization induces an outer Rezk map on its source
-and target homotopy categories and a full non-groupoidal local nerve map that
-retains arbitrary 2-cells. This module packages both directions from the same
-canonical bicategorical localization, together with exact marked-arrow
-factorization through the target equivalence subspace.
+The actual marked-zigzag localization induces a localization-aware relative
+Rezk map whose vertical source transformations are pointwise cost-exact. It
+also induces an auxiliary ordinary outer map on homotopy categories and a
+full non-groupoidal local nerve map retaining arbitrary 2-cells. This module
+packages all three layers from the same canonical bicategorical localization.
 -/
 
 set_option autoImplicit false
@@ -51,7 +52,64 @@ noncomputable def smallHomotopyLocalizationFunctor :
     (Pseudofunctor.homotopyFunctor
       (CostExactZigzag.inclusion (R := R)))
 
-/-- Outer Rezk comparison induced by the actual higher localization target. -/
+/-- The actual higher localization's induced homotopy functor inverts the
+ordinary cost-exact marking descended from cost-reflecting arrows. -/
+theorem homotopyLocalizationFunctor_invertsCostExactMorphisms :
+    (costExactMorphisms R).IsInvertedBy
+      (Pseudofunctor.homotopyFunctor
+        (CostExactZigzag.inclusion (R := R))) :=
+  Pseudofunctor.homotopyFunctor_inverts_toHomotopy
+    (CostExactZigzag.inclusion (R := R))
+    (costReflectingArrows R) (by
+      intro M N f hf
+      exact CostExactZigzag.inclusion_inverts f
+        (costReflectingArrows_le_costExactArrows f hf))
+
+/-- The exact cost marking transported to the common-universe source
+homotopy category. -/
+def relativeSmallMarking : MorphismProperty
+    (SmallSource.{u, v, w} (R := R)) :=
+  (costExactMorphisms R).inverseImage AsSmall.down
+
+instance relativeSmallMarking_isMultiplicative :
+    (relativeSmallMarking.{u, v, w} (R := R)).IsMultiplicative := by
+  change ((costExactMorphisms R).inverseImage AsSmall.down).IsMultiplicative
+  infer_instance
+
+/-- The common-universe homotopy localization functor inverts the transported
+cost-exact marking. -/
+theorem smallHomotopyLocalization_invertsRelativeMarking :
+    (relativeSmallMarking.{u, v, w} (R := R)).IsInvertedBy
+      (smallHomotopyLocalizationFunctor (R := R)) := by
+  intro X Y f hf
+  change IsIso (AsSmall.up.map
+    ((Pseudofunctor.homotopyFunctor
+      (CostExactZigzag.inclusion (R := R))).map (AsSmall.down.map f)))
+  haveI : IsIso
+      ((Pseudofunctor.homotopyFunctor
+        (CostExactZigzag.inclusion (R := R))).map (AsSmall.down.map f)) :=
+    homotopyLocalizationFunctor_invertsCostExactMorphisms
+      (R := R) (AsSmall.down.map f) hf
+  infer_instance
+
+/-- Correct relative Rezk source: outer strings in the source homotopy
+category with vertical transformations pointwise cost-exact. -/
+abbrev RelativeOuterSource :=
+  RelativeRezk.diagram (relativeSmallMarking.{u, v, w} (R := R))
+
+/-- All-dimensional relative outer comparison into the actual marked-zigzag
+target Rezk core diagram. -/
+noncomputable def relativeOuterComparison :
+    RelativeOuterSource.{u, v, w} (R := R) ⟶
+      RezkCore.diagram (SmallTarget.{u, v, w} (R := R)) :=
+  RelativeRezk.comparison
+    (relativeSmallMarking.{u, v, w} (R := R))
+    (smallHomotopyLocalizationFunctor (R := R))
+    (smallHomotopyLocalization_invertsRelativeMarking (R := R))
+
+/-- Ordinary auxiliary outer Rezk comparison induced by the actual higher
+localization target. The relative comparison above is the localization-aware
+source. -/
 noncomputable def outerComparison :
     RezkCore.diagram (SmallSource.{u, v, w} (R := R)) ⟶
       RezkCore.diagram (SmallTarget.{u, v, w} (R := R)) :=
@@ -96,6 +154,24 @@ def sourceArrow {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
     sourceObject M ⟶ sourceObject N :=
   (AsSmall.up : SourceHomotopy.{u, v, w} (R := R) ⥤
     SmallSource.{u, v, w} (R := R)).map (HomotopyCategory.homMk f)
+
+/-- The relative outer comparison acts exactly on every represented source
+arrow vertex. -/
+theorem relativeOuterComparison_sourceArrow
+    {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N) :
+    ((relativeOuterComparison (R := R)).app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.arrowVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f)) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        ((smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow f)) :=
+  RelativeRezk.comparison_arrowVertex
+    (relativeSmallMarking.{u, v, w} (R := R))
+    (smallHomotopyLocalizationFunctor (R := R))
+    (smallHomotopyLocalization_invertsRelativeMarking (R := R))
+    (sourceArrow f)
 
 /-- Decode a lifted local target 1-cell vertex as an arrow of the lifted
 target homotopy category used by the outer Rezk direction. -/
@@ -392,11 +468,17 @@ abbrev LocalNerveCore :=
     CostExactZigzag.inclusion_isBicategoricalLocalization
 
 
-/-- Machine-facing two-layer global comparison. The outer Rezk direction is
-induced by the homotopy functor of the actual bicategorical localization, and
-the local direction retains all 2-cells through the common-universe nerve
-comparison. -/
+/-- Machine-facing global comparison. The canonical outer direction uses the
+relative Rezk source, the auxiliary ordinary direction records the induced
+homotopy functor, and the local direction retains all 2-cells through the
+common-universe nerve comparison. -/
 structure GlobalComparisonCore where
+  /-- Localization-aware all-dimensional relative Rezk comparison. -/
+  relativeOuter : RelativeOuterSource.{u, v, w} (R := R) ⟶
+    RezkCore.diagram (SmallTarget.{u, v, w} (R := R))
+  /-- The relative map is the canonical comparison induced by the actual
+  inverting functor. -/
+  relativeOuter_eq : relativeOuter = relativeOuterComparison (R := R)
   /-- Outer Rezk comparison on common-universe homotopy categories. -/
   outer : RezkCore.diagram (SmallSource.{u, v, w} (R := R)) ⟶
     RezkCore.diagram (SmallTarget.{u, v, w} (R := R))
@@ -416,6 +498,17 @@ structure GlobalComparisonCore where
   targetCompleteness : SSet.HomotopyEquivalenceWitness
     (RezkCore.actualCompletenessMap
       (SmallTarget.{u, v, w} (R := R)))
+  /-- Exact action of the relative outer comparison on represented source
+  arrow vertices. -/
+  relativeArrowGlue : ∀ {M N : ProcessModel.{u, v, w} R} (f : M ⟶ N),
+    ((relativeOuter.app
+      (Opposite.op (SimplexCategory.mk 1))).app
+        (Opposite.op (SimplexCategory.mk 0))
+        (RelativeRezk.arrowVertex
+          (relativeSmallMarking.{u, v, w} (R := R)) (sourceArrow f))) =
+      RezkCore.arrowVertex (SmallTarget.{u, v, w} (R := R))
+        ((smallHomotopyLocalizationFunctor (R := R)).map
+          (sourceArrow f))
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -527,11 +620,14 @@ structure GlobalComparisonCore where
 /-- Package the outer and full-local comparisons induced by the same actual
 cost-exact bicategorical localization. -/
 noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
+  relativeOuter := relativeOuterComparison (R := R)
+  relativeOuter_eq := rfl
   outer := outerComparison (R := R)
   outer_eq := rfl
   localNerve := CostExactZigzagNerveComparison.core (R := R)
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
+  relativeArrowGlue := relativeOuterComparison_sourceArrow
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

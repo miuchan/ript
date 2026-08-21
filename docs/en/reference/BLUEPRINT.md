@@ -366,8 +366,9 @@ Every node in this graph is an existing compiled module.
 | 12 (cost-exact presented localization construction) | Executable binary typed zigzags; quotient local categories retaining source 2-cells; horizontal coherence and marked adjunction triangles; canonical source pseudofunctor; inversion of every saturated cost-exact arrow; universal lifts and adjoint-equivalence factorizations; mate-recursive extension of strong transformations and modifications; local precomposition equivalence; concrete inversion of the non-equivalent zero-cost embedding | PROVED |
 | 12 (higher-localization local universal property) | The presented cost-exact zigzag inclusion satisfies all three fields of `IsCostExactBicategoricalLocalization`: marked inversion, biessential factorization, and local equivalence on strong transformations/modifications | PROVED |
 | 12 (cost-exact higher-nerve comparison) | Common-universe `AsSmall` replacement of the source and larger word-presentation local hom-categories; exact lifted action on arbitrary 1-/2-cells; marked vertices landing at adjoint equivalences; unit and compositor natural isomorphisms with genuine simplicial homotopies; exact lifted associator and left/right-unitor edge equations; complete cost-exact instantiation | PROVED |
-| 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; common-universe outer Rezk map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Assemble the compiled local 2-cell and coherence data into all-dimensional simplicial gluing and prove the intended weak-equivalence/completeness theorem | OPEN_RESEARCH |
+| 12 (relative Rezk outer comparison) | Relative outer degree `n` consists of all source strings and pointwise cost-exact vertical transformations; functors inverting the marking induce an all-dimensional bisimplicial map into the target Rezk core; the actual marked-zigzag localization instantiates it with exact action on represented arrow vertices | PROVED |
+| 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Glue the all-dimensional relative outer map to the compiled non-groupoidal local 2-cell/coherence data and prove the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6074,8 +6075,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   records their exact associator/unitor edge compatibility. The
   pseudofunctor also descends to an ordinary functor on homotopy categories;
   `CostExactZigzagGlobalComparison.core` uses it for the outer Rezk map into
-  the actual presented target, proves marked outer arrows factor through the
-  target actual-equivalence space, and packages this outer direction with the
+  the actual presented target. Its canonical outer source is now the relative
+  Rezk diagram: outer objects are arbitrary source strings and vertical
+  transformations are pointwise cost-exact. The resulting comparison is a
+  genuine bisimplicial map in all outer and inner degrees and acts exactly on
+  represented arrow vertices. The earlier ordinary Rezk map remains an
+  auxiliary comparison. Marked outer arrows factor through the target
+  actual-equivalence space, and both outer directions are packaged with the
   full local comparison. Both source and target outer completeness maps carry
   explicit simplicial homotopy inverses. Local vertices decode exactly to
   outer arrows; every
@@ -6083,8 +6089,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   identity, horizontal composition, associators, and both unitors agree across
   both layers. The two decoded associator pastings satisfy the bicategorical
   pentagon, while the decoded associator/unitor pastings satisfy the triangle.
-  The remaining boundary is their all-dimensional simplicial assembly and the
-  Complete-Segal/Rezk weak-equivalence statement.
+  The remaining boundary is gluing the relative outer map to the complete
+  non-groupoidal local layer and proving the Dwyer--Kan/Rezk
+  weak-equivalence statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`

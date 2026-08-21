@@ -130,6 +130,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 源与实际目标的外层 completeness 映射现都有显式单纯同伦逆；`HomotopyEquivalenceWitness` 同时记录两个复合到恒等映射的真实 `SSet.Homotopy`。
 
+正确的相对 Rezk 源现已编译：其外层 `n` 级包含全部源串，纵向变换必须逐点 cost-exact。实际局部化函子在所有内外单纯次数上自然地把它映入目标 Rezk core，并精确作用于每个表示箭头顶点。剩余问题是将这个全外维比较与非群胚局部层胶合，并证明 Dwyer–Kan/Rezk 弱等价。
+
 该实际构造现已有可计算的呈示语法。`MarkedZigzag.Word` 由端点索引，任意源 1-胞腔可正向出现，只有携带标记证明的箭头才可反向出现。二叉弱复合使解释严格保持复合，而结合性保留为真实 2-胞腔。关系闭包现包含 whiskering、interchange、五边形、双范畴三角形以及标记 unit/counit 的两条伴随三角式。`InversionData.lift` 构造任意反演目标的提升，`InversionData.factorization` 给出伴随等价因子分解。`LocalExtension.extension` 对正向生成元保留自然性约束，对形式逆元取 mate，并递归处理空词与复合；modification 同样沿恒等、逆元和复合延拓。因此预复合忠实、满且本质满，`CostExactZigzag.inclusion_isBicategoricalLocalization` 已证明完整高阶局部化普遍性。
 
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源

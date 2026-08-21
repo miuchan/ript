@@ -277,17 +277,22 @@ genuine simplicial homotopies; the lifted associator and unitor edges equal
 their prescribed compositor/unit/target-coherence pastings. The canonical
 pseudofunctor now also descends to a
 functor on homotopy categories. `CostExactZigzagGlobalComparison.core` uses
-that functor to construct the outer Rezk map into the actual presented target,
-proves marked outer arrows factor through its actual-equivalence space, and
-packages the outer and full-local directions. The source and actual target
+that functor to construct the localization-aware relative Rezk map into the
+actual presented target. In every outer degree its source contains all source
+strings and only pointwise cost-exact vertical transformations; the induced
+map is bisimplicially natural in every inner and outer degree and acts exactly
+on represented arrow vertices. The earlier ordinary outer map remains an
+auxiliary comparison. Marked outer arrows factor through the target's actual
+equivalence space, and both outer directions are packaged with the full-local
+layer. The source and actual target
 outer completeness maps both have explicit simplicial homotopy inverses.
 Local vertices decode exactly
 to outer arrows, every invertible local 2-cell decodes to its outer equality,
 and identity, horizontal composition, associators, and both unitors satisfy
 strict gluing laws. The decoded associator pastings satisfy the pentagon and
 the decoded associator/unitor pastings satisfy the triangle. Remaining work is
-the all-dimensional simplicial assembly and the global Complete-Segal/Rezk
-weak-equivalence theorem.
+gluing the all-dimensional relative outer comparison to the non-groupoidal
+local layer and proving the global Dwyer--Kan/Rezk weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

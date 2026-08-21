@@ -948,9 +948,17 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.compositionHomotopy
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk
+#print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_inverts_toHomotopy
+#print axioms Ript.Higher.RelativeRezk.diagramCat
+#print axioms Ript.Higher.RelativeRezk.comparison
+#print axioms Ript.Higher.RelativeRezk.comparison_arrowVertex
 #print axioms Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap
 #print axioms Ript.Higher.UniverseLiftedNerve.commonRezkDiagramMap_arrowVertex
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_invertsCostExactMorphisms
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceArrow
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.outerComparison
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence

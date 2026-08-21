@@ -137,6 +137,8 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 
 始域と実際の終域の外側 completeness 写像は、どちらも明示的な単体ホモトピー逆と両方向の逆律ホモトピーを持ちます。
 
+正しい相対 Rezk 始域もコンパイル済みです。外側 `n` 次はすべての始域列を含み、垂直変換は成分ごとに cost-exact です。実際の局所化関手は、すべての内外単体次数でこれを終域 Rezk core へ自然に写し、表示された矢印頂点上で厳密に計算します。残るのはこの全外次比較と非群胴局所層の接着、および Dwyer–Kan/Rezk 弱同値です。
+
 その実構成には可計算な表示構文があります。`MarkedZigzag.Word` は二分弱合成を使い、関係商は五角形・双圏三角形と marked unit/counit の両随伴三角式を含む `Presented.localizationBicategory` を形成します。`InversionData.lift` と `InversionData.factorization` は任意の marking 反転擬関手の持ち上げと随伴同値因子分解を与えます。`LocalExtension.extension` は形式逆射上で mate を用いて strong transformation を再帰的に延長し、modification も恒等・逆射・合成に沿って延長します。したがって前合成は忠実、充満、本質的全射であり、`CostExactZigzag.inclusion_isBicategoricalLocalization` が完全な高次局所化普遍性を証明します。
 
 異なる資源代数のモデルは順序付き加法準同型で比較できます。直列、並列、構造、予算則が再添字
