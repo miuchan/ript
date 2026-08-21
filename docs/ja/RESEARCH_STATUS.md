@@ -141,6 +141,8 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 
 その実構成には可計算な表示構文があります。`MarkedZigzag.Word` は二分弱合成を使い、関係商は五角形・双圏三角形と marked unit/counit の両随伴三角式を含む `Presented.localizationBicategory` を形成します。`InversionData.lift` と `InversionData.factorization` は任意の marking 反転擬関手の持ち上げと随伴同値因子分解を与えます。`LocalExtension.extension` は形式逆射上で mate を用いて strong transformation を再帰的に延長し、modification も恒等・逆射・合成に沿って延長します。したがって前合成は忠実、充満、本質的全射であり、`CostExactZigzag.inclusion_isBicategoricalLocalization` が完全な高次局所化普遍性を証明します。
 
+さらに、始域 pair の復号は各水平積単体に対する任意の単体圏制限の下で厳密に自然であり、各制限後の頂点には完全な two-arrow glue が再び与えられます。したがって、全次数の面と退化を一つの定理で統一的に扱えます。未解決なのは、実際の対象プリズム面射影の接着、relative-zigzag mapping-space 比較、Dwyer–Kan/Rezk 弱同値です。
+
 異なる資源代数のモデルは順序付き加法準同型で比較できます。直列、並列、構造、予算則が再添字
 付けされ、異種強モデル射は資源写像とともに合成します。これらは、資源代数とモデルを対象、
 資源変換と強モデル射を 1-セル、資源変換の等号とモノイダル自然変換を 2-セルとする全双圏を

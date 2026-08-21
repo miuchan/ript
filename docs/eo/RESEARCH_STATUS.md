@@ -285,8 +285,12 @@ verticoj; celaj mezaj edroj malkodiĝas el faktaj bildigitaj lokaj kunmetaĵoj.
 Arbitraj eksteraj ĉenverticoj nun restriktiĝas ekzakte laŭ ĉiu simplicia mapo
 kaj estas konservataj de la relativa komparo; ĉiu fonta vertico de ĉiu
 tutgrada loka prismo malkodiĝas al fonta 1-ĉela paro kun plena du-saga gluado.
-Restas gluado de ĉiuj prismaj edroprojekcioj kaj la Dwyer–Kan/Rezk malforta
-ekvivalento.
+La malkodo de fontaj paroj estas nun strikte natura sub ĉiu simplicia-
+kategoria restrikto de ĉiu horizontal-produkta simplaĵo, kaj ĉiu restriktita
+vertico denove portas la plenan gluadon; tiel unu teoremo unuforme kovras ĉiujn
+edrojn kaj degenerigojn en ĉiu grado. Restas gluado de la faktaj celaj prismaj
+edroprojekcioj, la relativa-zigzaga komparo de map-spacoj, kaj la
+Dwyer–Kan/Rezk malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
