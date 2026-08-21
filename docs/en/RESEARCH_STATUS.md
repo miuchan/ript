@@ -299,9 +299,12 @@ one-skeleton witnesses, full triangle, and dependent composite diagonal are
 bundled together. Simultaneous horizontal pairs of arbitrary 2-cells now map
 exactly through both sides of the compositor homotopy; their horizontally
 composed one-skeleton, outer composite endpoints, and commuting naturality
-square are bundled together. Remaining work is higher mixed simplicial
-coherence beyond this degree-one square and the global Dwyer--Kan/Rezk
-weak-equivalence theorem.
+square are bundled together. For two vertically composable horizontal pairs,
+source and target interchange are exact, both common-universe pair
+2-simplices map exactly, and the two squares paste to a commuting rectangle
+with all factor/composite local witnesses. Remaining work is the explicit
+simplicial compositor prism, arbitrary-degree face/degeneracy coherence, and
+the global Dwyer--Kan/Rezk weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

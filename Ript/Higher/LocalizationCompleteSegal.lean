@@ -192,6 +192,20 @@ def horizontalTwoCell
     f₀ ≫ g₀ ⟶ f₁ ≫ g₁ :=
   f₀ ◁ β ≫ α ▷ g₁
 
+/-- Interchange for simultaneous horizontal composition: composing the two
+input 2-cell pairs vertically agrees with vertically composing their two
+horizontal composites. -/
+theorem horizontalTwoCell_comp
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    horizontalTwoCell (α₀ ≫ α₁) (β₀ ≫ β₁) =
+      horizontalTwoCell α₀ β₀ ≫ horizontalTwoCell α₁ β₁ := by
+  exact (horizontalCompositionFunctor X Y Z).map_comp
+    (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α₀, β₀⟩)
+    (show (f₁, g₁) ⟶ (f₂, g₂) from ⟨α₁, β₁⟩)
+
 variable (Q : B ⥤ᵖ C)
 
 /-- The full local mapping nerve of an arbitrary bicategory.  Its vertices
@@ -302,6 +316,65 @@ theorem horizontalCompositionSquare
     HorizontalCompositionSquare Q α β := by
   exact (compositionComparisonNatIso Q X Y Z).hom.naturality
     (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α, β⟩)
+
+/-- The vertical pasting of two compositor naturality squares. Its left path
+is the vertical composite of the two mapped horizontal source 2-cells; its
+right path is the vertical composite of the two horizontal target images. -/
+def HorizontalCompositionPastedSquare
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  (Q.map₂ (horizontalTwoCell α₀ β₀) ≫
+      Q.map₂ (horizontalTwoCell α₁ β₁)) ≫
+      (Q.mapComp f₂ g₂).hom =
+    (Q.mapComp f₀ g₀).hom ≫
+      (horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀) ≫
+        horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁))
+
+/-- Two vertically adjacent compositor squares paste to a commuting outer
+rectangle. -/
+theorem horizontalCompositionPastedSquare
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    HorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁ := by
+  unfold HorizontalCompositionPastedSquare
+  rw [Category.assoc]
+  rw [horizontalCompositionSquare Q α₁ β₁]
+  rw [← Category.assoc]
+  rw [horizontalCompositionSquare Q α₀ β₀]
+  simp only [Category.assoc]
+
+/-- Complete ordinary-universe vertical-pasting coherence: both long edges
+normalize to the square for the vertically composed input pair, and the
+pasted rectangle commutes. -/
+def HorizontalCompositionPastingCoherence
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  Q.map₂ (horizontalTwoCell (α₀ ≫ α₁) (β₀ ≫ β₁)) =
+      Q.map₂ (horizontalTwoCell α₀ β₀) ≫
+        Q.map₂ (horizontalTwoCell α₁ β₁) ∧
+  horizontalTwoCell (Q.map₂ (α₀ ≫ α₁)) (Q.map₂ (β₀ ≫ β₁)) =
+      horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀) ≫
+        horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁) ∧
+  HorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁
+
+/-- Every pair of vertically composable horizontal 2-cell pairs satisfies
+the complete interchange-and-pasting coherence package. -/
+theorem horizontalCompositionPastingCoherence
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    HorizontalCompositionPastingCoherence Q α₀ α₁ β₀ β₁ := by
+  refine ⟨?_, ?_, horizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁⟩
+  · rw [horizontalTwoCell_comp, PrelaxFunctor.map₂_comp]
+  · rw [PrelaxFunctor.map₂_comp, PrelaxFunctor.map₂_comp,
+      horizontalTwoCell_comp]
 
 /-- The compositor natural isomorphism induces an actual simplicial homotopy
 between the two full-local-nerve composition maps. -/

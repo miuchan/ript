@@ -233,6 +233,19 @@ def horizontalTwoCell
     f₀ ≫ g₀ ⟶ f₁ ≫ g₁ :=
   f₀ ◁ β ≫ α ▷ g₁
 
+/-- Interchange for simultaneous horizontal composition of vertically
+composable 2-cell pairs. -/
+theorem horizontalTwoCell_comp
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    horizontalTwoCell (α₀ ≫ α₁) (β₀ ≫ β₁) =
+      horizontalTwoCell α₀ β₀ ≫ horizontalTwoCell α₁ β₁ := by
+  exact (horizontalCompositionFunctor X Y Z).map_comp
+    (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α₀, β₀⟩)
+    (show (f₁, g₁) ⟶ (f₂, g₂) from ⟨α₁, β₁⟩)
+
 /-- First compose in the source bicategory and then apply the
 pseudofunctor. -/
 def composeThenMapFunctor (X Y Z : B) :
@@ -281,6 +294,61 @@ theorem horizontalCompositionSquare
   exact (compositionComparisonNatIso Q X Y Z).hom.naturality
     (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α, β⟩)
 
+/-- Vertical pasting of two adjacent compositor naturality squares. -/
+def HorizontalCompositionPastedSquare
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  (Q.map₂ (horizontalTwoCell α₀ β₀) ≫
+      Q.map₂ (horizontalTwoCell α₁ β₁)) ≫
+      (Q.mapComp f₂ g₂).hom =
+    (Q.mapComp f₀ g₀).hom ≫
+      (horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀) ≫
+        horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁))
+
+/-- The vertically pasted compositor rectangle commutes. -/
+theorem horizontalCompositionPastedSquare
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    HorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁ := by
+  unfold HorizontalCompositionPastedSquare
+  rw [Category.assoc]
+  rw [horizontalCompositionSquare Q α₁ β₁]
+  rw [← Category.assoc]
+  rw [horizontalCompositionSquare Q α₀ β₀]
+  simp only [Category.assoc]
+
+/-- Interchange and vertical-pasting coherence before common-universe
+replacement. -/
+def HorizontalCompositionPastingCoherence
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  Q.map₂ (horizontalTwoCell (α₀ ≫ α₁) (β₀ ≫ β₁)) =
+      Q.map₂ (horizontalTwoCell α₀ β₀) ≫
+        Q.map₂ (horizontalTwoCell α₁ β₁) ∧
+  horizontalTwoCell (Q.map₂ (α₀ ≫ α₁)) (Q.map₂ (β₀ ≫ β₁)) =
+      horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀) ≫
+        horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁) ∧
+  HorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁
+
+/-- Every vertically composable horizontal pair satisfies the complete
+interchange-and-pasting package. -/
+theorem horizontalCompositionPastingCoherence
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    HorizontalCompositionPastingCoherence Q α₀ α₁ β₀ β₁ := by
+  refine ⟨?_, ?_, horizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁⟩
+  · rw [horizontalTwoCell_comp, PrelaxFunctor.map₂_comp]
+  · rw [PrelaxFunctor.map₂_comp, PrelaxFunctor.map₂_comp,
+      horizontalTwoCell_comp]
+
 /-- Common-universe form of the compositor natural isomorphism. -/
 noncomputable def commonCompositionComparisonNatIso (X Y Z : B) :
     commonAsSmallFunctor (composeThenMapFunctor Q X Y Z) ≅
@@ -307,6 +375,25 @@ def commonHorizontalPairEdge
       ((X ⟶ Y) × (Y ⟶ Z)) ⥤
         CommonHorizontalSource (_Q := Q) X Y Z).map
       (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α, β⟩))
+
+/-- Two vertically composable pairs of source 2-cells as the canonical
+degree-two simplex of the common-universe product local nerve. -/
+def commonHorizontalPairTwoSimplex
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    (CategoryTheory.nerve
+      (CommonHorizontalSource (_Q := Q) X Y Z)).obj (op ⦋2⦌) :=
+  ComposableArrows.mk₂
+    ((AsSmall.up :
+      ((X ⟶ Y) × (Y ⟶ Z)) ⥤
+        CommonHorizontalSource (_Q := Q) X Y Z).map
+      (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α₀, β₀⟩))
+    ((AsSmall.up :
+      ((X ⟶ Y) × (Y ⟶ Z)) ⥤
+        CommonHorizontalSource (_Q := Q) X Y Z).map
+      (show (f₁, g₁) ⟶ (f₂, g₂) from ⟨α₁, β₁⟩))
 
 /-- The compose-then-map nerve sends a horizontal pair edge to the exact
 lifted image of the horizontally composed source 2-cell. -/
@@ -338,6 +425,50 @@ theorem commonMapThenCompose_edge
             (horizontalTwoCell (Q.map₂ α) (Q.map₂ β))) := by
   unfold commonHorizontalPairEdge
   rw [commonNerveMap_edge]
+  rfl
+
+/-- The compose-then-map nerve sends the canonical horizontal pair
+2-simplex to the two exact mapped horizontal source 2-cells. -/
+@[simp]
+theorem commonComposeThenMap_twoSimplex
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    (commonNerveMap (composeThenMapFunctor Q X Y Z)).app
+        (op ⦋2⦌)
+        (commonHorizontalPairTwoSimplex Q α₀ α₁ β₀ β₁) =
+      ComposableArrows.mk₂
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+          (Q.map₂ (horizontalTwoCell α₀ β₀)))
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+          (Q.map₂ (horizontalTwoCell α₁ β₁))) := by
+  unfold commonHorizontalPairTwoSimplex
+  rw [commonNerveMap_twoSimplex]
+  rfl
+
+/-- The map-then-compose nerve sends the same horizontal pair 2-simplex to
+the two exact horizontal composites of mapped 2-cells. -/
+@[simp]
+theorem commonMapThenCompose_twoSimplex
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    (commonNerveMap (mapThenComposeFunctor Q X Y Z)).app
+        (op ⦋2⦌)
+        (commonHorizontalPairTwoSimplex Q α₀ α₁ β₀ β₁) =
+      ComposableArrows.mk₂
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+          (horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀)))
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+          (horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁))) := by
+  unfold commonHorizontalPairTwoSimplex
+  rw [commonNerveMap_twoSimplex]
   rfl
 
 /-- Common-universe edge equality expressing the exact diagonal of the
@@ -392,6 +523,81 @@ theorem commonHorizontalCompositionGlue
   ⟨commonComposeThenMap_edge Q α β,
     commonMapThenCompose_edge Q α β,
     commonHorizontalCompositionSquare Q α β⟩
+
+/-- Common-universe equality of the two composite edges around the vertically
+pasted compositor rectangle. -/
+def CommonHorizontalCompositionPastedSquare
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  ComposableArrows.mk₁
+      ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+        (((Q.map₂ (horizontalTwoCell α₀ β₀)) ≫
+            Q.map₂ (horizontalTwoCell α₁ β₁)) ≫
+          (Q.mapComp f₂ g₂).hom)) =
+    ComposableArrows.mk₁
+      ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+        ((Q.mapComp f₀ g₀).hom ≫
+          (horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀) ≫
+            horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁))))
+
+/-- The common-universe long edges of the vertically pasted compositor
+rectangle agree exactly. -/
+theorem commonHorizontalCompositionPastedSquare
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    CommonHorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁ := by
+  unfold CommonHorizontalCompositionPastedSquare
+  rw [horizontalCompositionPastedSquare]
+
+/-- Degree-two mixed horizontal/vertical gluing package. It records exact
+action on the two horizontal pair 2-simplices, source and target interchange,
+and the vertically pasted common-universe compositor rectangle. -/
+def CommonHorizontalCompositionPastingGlue
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) : Prop :=
+  (commonNerveMap (composeThenMapFunctor Q X Y Z)).app
+      (op ⦋2⦌)
+      (commonHorizontalPairTwoSimplex Q α₀ α₁ β₀ β₁) =
+    ComposableArrows.mk₂
+      ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+        (Q.map₂ (horizontalTwoCell α₀ β₀)))
+      ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+        (Q.map₂ (horizontalTwoCell α₁ β₁))) ∧
+  (commonNerveMap (mapThenComposeFunctor Q X Y Z)).app
+      (op ⦋2⦌)
+      (commonHorizontalPairTwoSimplex Q α₀ α₁ β₀ β₁) =
+    ComposableArrows.mk₂
+      ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+        (horizontalTwoCell (Q.map₂ α₀) (Q.map₂ β₀)))
+      ((AsSmall.up :
+        (Q.obj X ⟶ Q.obj Z) ⥤ CommonTargetHom (Q := Q) X Z).map
+        (horizontalTwoCell (Q.map₂ α₁) (Q.map₂ β₁))) ∧
+  HorizontalCompositionPastingCoherence Q α₀ α₁ β₀ β₁ ∧
+  CommonHorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁
+
+/-- Every vertically composable pair of horizontal 2-cell pairs satisfies
+the complete common-universe degree-two pasting package. -/
+theorem commonHorizontalCompositionPastingGlue
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    CommonHorizontalCompositionPastingGlue Q α₀ α₁ β₀ β₁ :=
+  ⟨commonComposeThenMap_twoSimplex Q α₀ α₁ β₀ β₁,
+    commonMapThenCompose_twoSimplex Q α₀ α₁ β₀ β₁,
+    horizontalCompositionPastingCoherence Q α₀ α₁ β₀ β₁,
+    commonHorizontalCompositionPastedSquare Q α₀ α₁ β₀ β₁⟩
 
 /-- Genuine simplicial homotopy between the common-universe horizontal
 composition maps. -/
@@ -532,6 +738,14 @@ structure PseudofunctorNerveCore where
     {X Y Z : B} {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z}
     (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁),
     CommonHorizontalCompositionGlue Q α β
+  /-- Exact degree-two action and vertical-pasting coherence for two
+  composable horizontal 2-cell pairs. -/
+  horizontalCompositionPastingGlue : ∀
+    {X Y Z : B}
+    {f₀ f₁ f₂ : X ⟶ Y} {g₀ g₁ g₂ : Y ⟶ Z}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂),
+    CommonHorizontalCompositionPastingGlue Q α₀ α₁ β₀ β₁
   /-- Common-universe compositor natural isomorphism. -/
   compositionIso : ∀ X Y Z : B,
     commonAsSmallFunctor (composeThenMapFunctor Q X Y Z) ≅
@@ -573,6 +787,8 @@ noncomputable def pseudofunctorNerveCore : PseudofunctorNerveCore Q where
   mapsTwoCell := commonLocalMap_twoCell Q
   mapsTwoSimplex := commonLocalMap_twoSimplex Q
   horizontalCompositionGlue := commonHorizontalCompositionGlue Q
+  horizontalCompositionPastingGlue :=
+    commonHorizontalCompositionPastingGlue Q
   compositionIso := commonCompositionComparisonNatIso Q
   identityIso := commonIdentityComparisonNatIso Q
   identityHomotopy := commonIdentityComparisonHomotopy Q

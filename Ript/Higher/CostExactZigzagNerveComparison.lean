@@ -110,6 +110,30 @@ theorem horizontalTwoCell_compositorSquare
       (CostExactZigzag.inclusion (R := R)) α β :=
   (horizontalTwoCell_compositionGlue α β).2.2
 
+/-- The cost-exact comparison maps both sides of a vertically composable
+horizontal pair 2-simplex exactly and satisfies interchange plus compositor
+rectangle pasting. -/
+theorem horizontalTwoCell_pastingGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    CommonHorizontalCompositionPastingGlue
+      (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁ :=
+  (core (R := R)).toPseudofunctorNerveCore.horizontalCompositionPastingGlue
+    α₀ α₁ β₀ β₁
+
+/-- The lifted long edges of the cost-exact vertically pasted compositor
+rectangle agree exactly. -/
+theorem horizontalTwoCell_pastedCompositorSquare
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ f₂ : M ⟶ N} {g₀ g₁ g₂ : N ⟶ P}
+    (α₀ : f₀ ⟶ f₁) (α₁ : f₁ ⟶ f₂)
+    (β₀ : g₀ ⟶ g₁) (β₁ : g₁ ⟶ g₂) :
+    CommonHorizontalCompositionPastedSquare
+      (CostExactZigzag.inclusion (R := R)) α₀ α₁ β₀ β₁ :=
+  (horizontalTwoCell_pastingGlue α₀ α₁ β₀ β₁).2.2.2
+
 /-- The cost-exact comparison satisfies the exact lifted associator-edge
 coherence law. -/
 theorem associatorEdgeCoherence
