@@ -184,6 +184,14 @@ def horizontalCompositionFunctor (X Y Z : B) :
     rw [← whisker_exchange_assoc firstTransformation.1 secondTransformation.2,
       ← whiskerLeft_comp_assoc, ← comp_whiskerRight]
 
+/-- Simultaneous horizontal composition of two 2-cells, with the same
+orientation as `horizontalCompositionFunctor`. -/
+def horizontalTwoCell
+    {X Y Z : B} {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) :
+    f₀ ≫ g₀ ⟶ f₁ ≫ g₁ :=
+  f₀ ◁ β ≫ α ▷ g₁
+
 variable (Q : B ⥤ᵖ C)
 
 /-- The full local mapping nerve of an arbitrary bicategory.  Its vertices
@@ -273,6 +281,27 @@ noncomputable def compositionComparisonNatIso (X Y Z : B) :
       simp only [PrelaxFunctor.map₂_comp, Category.assoc,
         Q.map₂_whisker_left, Q.map₂_whisker_right]
       simp)
+
+/-- Naturality square of the pseudofunctor compositor at a simultaneous
+horizontal pair of 2-cells. The left path maps the horizontally composed
+source 2-cell and then applies the endpoint compositor; the right path first
+applies the initial compositor and then horizontally composes the mapped
+2-cells. -/
+def HorizontalCompositionSquare
+    {X Y Z : B} {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) : Prop :=
+  Q.map₂ (horizontalTwoCell α β) ≫ (Q.mapComp f₁ g₁).hom =
+    (Q.mapComp f₀ g₀).hom ≫
+      horizontalTwoCell (Q.map₂ α) (Q.map₂ β)
+
+/-- The compositor naturality square commutes for every pair of arbitrary,
+possibly noninvertible, 2-cells. -/
+theorem horizontalCompositionSquare
+    {X Y Z : B} {f₀ f₁ : X ⟶ Y} {g₀ g₁ : Y ⟶ Z}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) :
+    HorizontalCompositionSquare Q α β := by
+  exact (compositionComparisonNatIso Q X Y Z).hom.naturality
+    (show (f₀, g₀) ⟶ (f₁, g₁) from ⟨α, β⟩)
 
 /-- The compositor natural isomorphism induces an actual simplicial homotopy
 between the two full-local-nerve composition maps. -/

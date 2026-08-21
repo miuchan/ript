@@ -459,6 +459,14 @@ theorem relativeLocal_twoSimplexGlue
     mappedLocalTwoSimplex_eq α β,
     mappedLocalTwoSimplex_diagonal α β⟩
 
+/-- Simultaneous horizontal composition of two source 2-cells. -/
+def sourceHorizontalTwoCell
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) :
+    f₀ ≫ g₀ ⟶ f₁ ≫ g₁ :=
+  UniverseLiftedNerve.horizontalTwoCell α β
+
 /-- **Horizontal outer/local gluing.** Decoding the local composite of two
 mapped 1-cells agrees exactly with composition of their outer homotopy-category
 arrows. -/
@@ -509,6 +517,53 @@ theorem outerComposition_sourceComposite
         (sourceArrow (f ≫ g)) := by
   rw [← Functor.map_comp]
   rfl
+
+/-- The local vertex obtained by mapping a source composite decodes to the
+outer composite of the two mapped factors. The pseudofunctor compositor is
+the exact invertible local 2-cell connecting these presentations. -/
+theorem mappedCompositeVertex_outerComposition
+    {M N P : ProcessModel.{u, v, w} R}
+    (f : M ⟶ N) (g : N ⟶ P) :
+    localVertexToOuterArrow (mappedLocalVertexObject (f ≫ g)) =
+      (smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow f) ≫
+        (smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow g) := by
+  rw [mappedLocalVertexObject_eq, localVertex_outerArrow]
+  exact (outerComposition_sourceComposite f g).symm
+
+/-- Mixed horizontal relative/local gluing proposition for two arbitrary,
+possibly noninvertible, 2-cells. It packages the two factor one-skeletons,
+their horizontally composed one-skeleton, both outer composite endpoints,
+the exact degree-one actions of the two compositor-homotopy maps, and the
+commuting compositor naturality square. -/
+def RelativeLocalHorizontalTwoCellGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) : Prop :=
+  RelativeLocalTwoCellOneSkeleton α ∧
+  RelativeLocalTwoCellOneSkeleton β ∧
+  RelativeLocalTwoCellOneSkeleton (sourceHorizontalTwoCell α β) ∧
+  localVertexToOuterArrow (mappedLocalVertexObject (f₀ ≫ g₀)) =
+    (smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow f₀) ≫
+      (smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow g₀) ∧
+  localVertexToOuterArrow (mappedLocalVertexObject (f₁ ≫ g₁)) =
+    (smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow f₁) ≫
+      (smallHomotopyLocalizationFunctor (R := R)).map (sourceArrow g₁) ∧
+  CommonHorizontalCompositionGlue
+    (CostExactZigzag.inclusion (R := R)) α β
+
+/-- Every horizontal pair of source 2-cells satisfies the complete mixed
+relative/local degree-one gluing interface. -/
+theorem relativeLocal_horizontalTwoCellGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) :
+    RelativeLocalHorizontalTwoCellGlue α β :=
+  ⟨relativeLocal_twoCellOneSkeleton α,
+    relativeLocal_twoCellOneSkeleton β,
+    relativeLocal_twoCellOneSkeleton (sourceHorizontalTwoCell α β),
+    mappedCompositeVertex_outerComposition f₀ g₀,
+    mappedCompositeVertex_outerComposition f₁ g₁,
+    CostExactZigzagNerveComparison.horizontalTwoCell_compositionGlue α β⟩
 
 /-- The target bicategorical associator becomes strict equality after local
 vertices are decoded into the outer homotopy category. -/
@@ -785,6 +840,13 @@ structure GlobalComparisonCore where
   relativeLocalTwoSimplexGlue : ∀ {M N : ProcessModel.{u, v, w} R}
     {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h),
     RelativeLocalTwoSimplexGlue α β
+  /-- Mixed relative/local horizontal gluing for every pair of arbitrary
+  source 2-cells. -/
+  relativeLocalHorizontalTwoCellGlue : ∀
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁),
+    RelativeLocalHorizontalTwoCellGlue α β
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -908,6 +970,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeLocalVertexGlue := relativeOuter_mappedLocalVertex
   relativeLocalTwoCellGlue := relativeLocal_twoCellOneSkeleton
   relativeLocalTwoSimplexGlue := relativeLocal_twoSimplexGlue
+  relativeLocalHorizontalTwoCellGlue := relativeLocal_horizontalTwoCellGlue
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

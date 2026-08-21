@@ -261,11 +261,15 @@ La fakta lokaliza funktoro donas naturan mapon al la cela Rezk-kerno en ĉiu
 interna kaj ekstera simplicia grado kaj kalkulas ekzakte reprezentitajn
 sagverticojn. La bildo kaj malkodo de faktaj lokaj nul-simplaĵoj kaj arbitraj
 2-ĉelaj eĝoj nun estas ekzaktaj; por ĉiu eble neinversigebla 2-ĉelo, ambaŭ
-relativaj eksteraj finpunktoj kaj la cela loka eĝo estas pakitaj kune. Restas
+relativaj eksteraj finpunktoj kaj la cela loka eĝo estas pakitaj kune.
 Vertikale kunmeteblaj arbitraj 2-ĉelaj paroj nun bildiĝas ekzakte al celaj
 lokaj 2-simplaĵoj; la du unu-skeletaj atestoj, plena triangulo kaj dependa
-kunmeta diagonalo estas pakitaj kune. Restas miksita horizontala kaj pli alta
-simplicia kohereco kaj la Dwyer–Kan/Rezk malforta ekvivalento.
+kunmeta diagonalo estas pakitaj kune. Samtempa horizontala kunmeto de du
+arbitraj 2-ĉeloj nun bildiĝas ekzakte laŭ ambaŭ flankoj de la compositor-a
+homotopio; la horizontale kunmetita unu-skeleto, ambaŭ eksteraj kunmetaj
+finpunktoj kaj la komuta natureca kvadrato estas pakitaj kune. Restas pli alta
+miksita simplicia kohereco preter ĉi tiu unuagrada kvadrato kaj la
+Dwyer–Kan/Rezk malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

@@ -89,6 +89,27 @@ theorem twoCell_twoSimplex_mapsExactly
             (CostExactZigzag.inclusion.map₂ β)) :=
   core.toPseudofunctorNerveCore.mapsTwoSimplex α β
 
+/-- The cost-exact comparison maps both sides of simultaneous horizontal
+2-cell composition exactly and satisfies the lifted compositor naturality
+square. -/
+theorem horizontalTwoCell_compositionGlue
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) :
+    CommonHorizontalCompositionGlue
+      (CostExactZigzag.inclusion (R := R)) α β :=
+  (core (R := R)).toPseudofunctorNerveCore.horizontalCompositionGlue α β
+
+/-- In particular, the two common-universe local-nerve paths around the
+cost-exact compositor square have the same composite edge. -/
+theorem horizontalTwoCell_compositorSquare
+    {M N P : ProcessModel.{u, v, w} R}
+    {f₀ f₁ : M ⟶ N} {g₀ g₁ : N ⟶ P}
+    (α : f₀ ⟶ f₁) (β : g₀ ⟶ g₁) :
+    CommonHorizontalCompositionSquare
+      (CostExactZigzag.inclusion (R := R)) α β :=
+  (horizontalTwoCell_compositionGlue α β).2.2
+
 /-- The cost-exact comparison satisfies the exact lifted associator-edge
 coherence law. -/
 theorem associatorEdgeCoherence
