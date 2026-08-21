@@ -259,8 +259,10 @@ La ĝusta relativa Rezk-fonto nun kompiliĝas: ĝia ekstera grado `n` enhavas
 ĉiujn fontajn ĉenojn, dum vertikalaj transformoj estas punkte kost-ekzaktaj.
 La fakta lokaliza funktoro donas naturan mapon al la cela Rezk-kerno en ĉiu
 interna kaj ekstera simplicia grado kaj kalkulas ekzakte reprezentitajn
-sagverticojn. Restas kunglui tiun tut-eksterdimensian mapon kun la negrupoida
-loka tavolo kaj pruvi la Dwyer–Kan/Rezk malfortan ekvivalenton.
+sagverticojn. La bildo kaj malkodo de faktaj lokaj nul-simplaĵoj kaj arbitraj
+2-ĉelaj eĝoj nun estas ekzaktaj; por ĉiu eble neinversigebla 2-ĉelo, ambaŭ
+relativaj eksteraj finpunktoj kaj la cela loka eĝo estas pakitaj kune. Restas
+la dudimensia kaj pli alta kungluo kaj la Dwyer–Kan/Rezk malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

@@ -290,9 +290,12 @@ Local vertices decode exactly
 to outer arrows, every invertible local 2-cell decodes to its outer equality,
 and identity, horizontal composition, associators, and both unitors satisfy
 strict gluing laws. The decoded associator pastings satisfy the pentagon and
-the decoded associator/unitor pastings satisfy the triangle. Remaining work is
-gluing the all-dimensional relative outer comparison to the non-groupoidal
-local layer and proving the global Dwyer--Kan/Rezk weak-equivalence theorem.
+the decoded associator/unitor pastings satisfy the triangle. Actual source
+local zero-simplices and arbitrary 2-cell edges now map and decode exactly.
+For each possibly noninvertible 2-cell, both relative outer endpoints and its
+exact mapped target-local edge are bundled in one one-skeleton witness.
+Remaining work is extending this glue through two and higher simplicial
+coherence and proving the global Dwyer--Kan/Rezk weak-equivalence theorem.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

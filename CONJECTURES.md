@@ -371,8 +371,11 @@ with the full local layer; marked arrows factor through the target equivalence
 space, while source and target outer completeness maps have explicit
 simplicial homotopy inverses. Local vertices, identities, horizontal
 composites, associators, and both unitors satisfy exact outer/local gluing
-laws. The remaining problem is gluing the all-dimensional relative outer map
-to the non-groupoidal local layer and proving the resulting Dwyer--Kan/Rezk
+laws. Actual local zero-simplices and arbitrary local 2-cell edges now map and
+decode exactly. For every possibly noninvertible 2-cell, its two relative
+outer endpoints and exact target local edge are packaged in one one-skeleton
+gluing witness. The remaining problem is extending that glue through two and
+higher simplicial coherence and proving the resulting Dwyer--Kan/Rezk
 weak-equivalence theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.

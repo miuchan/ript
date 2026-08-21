@@ -878,6 +878,10 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison_sourceArrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalVertexObject_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalEdge_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuter_mappedLocalVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoCellOneSkeleton` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.outerComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
