@@ -374,9 +374,11 @@ composites, associators, and both unitors satisfy exact outer/local gluing
 laws. Actual local zero-simplices and arbitrary local 2-cell edges now map and
 decode exactly. For every possibly noninvertible 2-cell, its two relative
 outer endpoints and exact target local edge are packaged in one one-skeleton
-gluing witness. The remaining problem is extending that glue through two and
-higher simplicial coherence and proving the resulting Dwyer--Kan/Rezk
-weak-equivalence theorem.
+gluing witness. Vertically composable pairs now map to exact target local
+2-simplices, with both one-skeletons and the dependent composite diagonal
+packaged together. The remaining problem is mixed horizontal and higher
+simplicial coherence and the resulting Dwyer--Kan/Rezk weak-equivalence
+theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while

@@ -926,9 +926,12 @@ set_option autoImplicit false
 #print axioms Ript.Higher.UniverseLiftedNerve.commonNerveMap
 #print axioms Ript.Higher.UniverseLiftedNerve.commonNerveMap_vertex
 #print axioms Ript.Higher.UniverseLiftedNerve.commonNerveMap_edge
+#print axioms CategoryTheory.nerveMap_app_mk₂
+#print axioms Ript.Higher.UniverseLiftedNerve.commonNerveMap_twoSimplex
 #print axioms Ript.Higher.UniverseLiftedNerve.commonNerveHomotopy
 #print axioms Ript.Higher.UniverseLiftedNerve.commonLocalMap
 #print axioms Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoCell
+#print axioms Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoSimplex
 #print axioms Ript.Higher.UniverseLiftedNerve.identityComparisonNatIso
 #print axioms Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonNatIso
 #print axioms Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonHomotopy
@@ -941,6 +944,7 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.core
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.markedVertex_mapsToEquivalence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.twoCell_edge_mapsExactly
+#print axioms Ript.Higher.CostExactZigzagNerveComparison.twoCell_twoSimplex_mapsExactly
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.associatorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.leftUnitorEdgeCoherence
 #print axioms Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence
@@ -963,6 +967,9 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalEdge_eq
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuter_mappedLocalVertex
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoCellOneSkeleton
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_eq
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_diagonal
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoSimplexGlue
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.outerComparison
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence
@@ -989,6 +996,7 @@ set_option autoImplicit false
 #print axioms Ript.Examples.CostExactFormalInverse.formalReverse_exists_beyond_sourceEquivalence
 #print axioms Ript.Higher.BicategoricalNerveComparison.horizontalCompositionFunctor
 #print axioms Ript.Higher.BicategoricalNerveComparison.localMap_twoCell
+#print axioms Ript.Higher.BicategoricalNerveComparison.localMap_twoSimplex
 #print axioms Ript.Higher.BicategoricalNerveComparison.identityComparisonNatIso
 #print axioms Ript.Higher.BicategoricalNerveComparison.identityComparisonNerveHomotopy
 #print axioms Ript.Higher.BicategoricalNerveComparison.compositionComparisonNatIso

@@ -65,6 +65,30 @@ theorem twoCell_edge_mapsExactly
         (CostExactZigzag.inclusion.map₂ α)) :=
   core.toPseudofunctorNerveCore.mapsTwoCell α
 
+/-- The comparison maps every vertically composable pair of source 2-cells
+to the canonical 2-simplex of their lifted exact images. -/
+theorem twoCell_twoSimplex_mapsExactly
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) :
+    (core.toPseudofunctorNerveCore.localMap M N).app (op ⦋2⦌)
+        (ComposableArrows.mk₂
+          ((AsSmall.up :
+            (M ⟶ N) ⥤ CommonSourceHom CostExactZigzag.inclusion M N).map α)
+          ((AsSmall.up :
+            (M ⟶ N) ⥤ CommonSourceHom CostExactZigzag.inclusion M N).map β)) =
+      ComposableArrows.mk₂
+        ((AsSmall.up :
+          (CostExactZigzag.inclusion.obj M ⟶
+            CostExactZigzag.inclusion.obj N) ⥤
+              CommonTargetHom CostExactZigzag.inclusion M N).map
+            (CostExactZigzag.inclusion.map₂ α))
+        ((AsSmall.up :
+          (CostExactZigzag.inclusion.obj M ⟶
+            CostExactZigzag.inclusion.obj N) ⥤
+              CommonTargetHom CostExactZigzag.inclusion M N).map
+            (CostExactZigzag.inclusion.map₂ β)) :=
+  core.toPseudofunctorNerveCore.mapsTwoSimplex α β
+
 /-- The cost-exact comparison satisfies the exact lifted associator-edge
 coherence law. -/
 theorem associatorEdgeCoherence

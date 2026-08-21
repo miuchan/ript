@@ -165,4 +165,22 @@ noncomputable def ofNatTrans (alpha : F ⟶ G) :
 
 end NerveHomotopy
 
+/-- A categorical nerve map sends a canonical composable-pair 2-simplex to
+the canonical 2-simplex of the two mapped arrows. -/
+@[simp]
+theorem nerveMap_app_mk₂
+    {C D : Type max u v} [Category.{v} C] [Category.{v} D]
+    (F : C ⥤ D) {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    (nerveMap F).app (Opposite.op ⦋2⦌) (ComposableArrows.mk₂ f g) =
+      ComposableArrows.mk₂ (F.map f) (F.map g) := by
+  change (F.mapComposableArrows 2).obj (ComposableArrows.mk₂ f g) = _
+  refine ComposableArrows.ext₂
+    (f := (F.mapComposableArrows 2).obj (ComposableArrows.mk₂ f g))
+    (g := ComposableArrows.mk₂ (F.map f) (F.map g))
+    rfl rfl rfl ?_ ?_
+  · change F.map f = 𝟙 _ ≫ F.map f ≫ 𝟙 _
+    simp
+  · change F.map g = 𝟙 _ ≫ F.map g ≫ 𝟙 _
+    simp
+
 end CategoryTheory

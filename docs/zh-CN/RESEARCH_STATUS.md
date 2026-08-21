@@ -130,7 +130,7 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 源与实际目标的外层 completeness 映射现都有显式单纯同伦逆；`HomotopyEquivalenceWitness` 同时记录两个复合到恒等映射的真实 `SSet.Homotopy`。
 
-正确的相对 Rezk 源现已编译：其外层 `n` 级包含全部源串，纵向变换必须逐点 cost-exact。实际局部化函子在所有内外单纯次数上自然地把它映入目标 Rezk core，并精确作用于每个表示箭头顶点。实际局部零单形和任意 2-胞腔边的映射/解码现也精确；每个可能不可逆的 2-胞腔都同时封装两个相对外层端点与目标局部边。剩余问题是二维及以上的胶合和 Dwyer–Kan/Rezk 弱等价。
+正确的相对 Rezk 源现已编译：其外层 `n` 级包含全部源串，纵向变换必须逐点 cost-exact。实际局部化函子在所有内外单纯次数上自然地把它映入目标 Rezk core，并精确作用于每个表示箭头顶点。实际局部零单形和任意 2-胞腔边的映射/解码现也精确；每个可能不可逆的 2-胞腔都同时封装两个相对外层端点与目标局部边。纵向可复合的任意 2-胞腔对现又精确映为目标局部 2-单形，两条一骨架证书、完整三角形和依赖复合对角线被统一封装。剩余问题是混合水平及更高单纯相干和 Dwyer–Kan/Rezk 弱等价。
 
 该实际构造现已有可计算的呈示语法。`MarkedZigzag.Word` 由端点索引，任意源 1-胞腔可正向出现，只有携带标记证明的箭头才可反向出现。二叉弱复合使解释严格保持复合，而结合性保留为真实 2-胞腔。关系闭包现包含 whiskering、interchange、五边形、双范畴三角形以及标记 unit/counit 的两条伴随三角式。`InversionData.lift` 构造任意反演目标的提升，`InversionData.factorization` 给出伴随等价因子分解。`LocalExtension.extension` 对正向生成元保留自然性约束，对形式逆元取 mate，并递归处理空词与复合；modification 同样沿恒等、逆元和复合延拓。因此预复合忠实、满且本质满，`CostExactZigzag.inclusion_isBicategoricalLocalization` 已证明完整高阶局部化普遍性。
 
