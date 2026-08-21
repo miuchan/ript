@@ -212,6 +212,15 @@ theorem localMap_twoCell {X Y : B} {f g : X ⟶ Y} (α : f ⟶ g) :
       ComposableArrows.mk₁ (Q.map₂ α) :=
   CategoryTheory.nerveMap_app_mk₁ _ _
 
+/-- The local nerve comparison sends a vertically composable pair of
+2-cells to the canonical 2-simplex of their exact images. -/
+@[simp]
+theorem localMap_twoSimplex {X Y : B} {f g h : X ⟶ Y}
+    (α : f ⟶ g) (β : g ⟶ h) :
+    (localMap Q X Y).app (op ⦋2⦌) (ComposableArrows.mk₂ α β) =
+      ComposableArrows.mk₂ (Q.map₂ α) (Q.map₂ β) :=
+  CategoryTheory.nerveMap_app_mk₂ _ _ _
+
 /-- The constant diagram selecting the image of a source identity. -/
 def mappedIdentityFunctor (X : B) :
     (X ⟶ X) ⥤ (Q.obj X ⟶ Q.obj X) :=
@@ -356,6 +365,12 @@ structure PseudofunctorNerveCore where
   mapsTwoCell : ∀ {X Y : B} {f g : X ⟶ Y} (α : f ⟶ g),
     (localMap X Y).app (op ⦋1⦌) (ComposableArrows.mk₁ α) =
       ComposableArrows.mk₁ (Q.map₂ α)
+  /-- Exact action on canonical 2-simplices of vertically composable
+  2-cells. -/
+  mapsTwoSimplex : ∀ {X Y : B} {f g h : X ⟶ Y}
+    (α : f ⟶ g) (β : g ⟶ h),
+    (localMap X Y).app (op ⦋2⦌) (ComposableArrows.mk₂ α β) =
+      ComposableArrows.mk₂ (Q.map₂ α) (Q.map₂ β)
   /-- Natural compositor isomorphism on local categories. -/
   compositionIso : ∀ X Y Z : B,
     composeThenMapFunctor Q X Y Z ≅ mapThenComposeFunctor Q X Y Z
@@ -401,6 +416,7 @@ noncomputable def pseudofunctorNerveCore : PseudofunctorNerveCore Q where
   localMap_eq := rfl
   mapsVertex := localMap_vertex Q
   mapsTwoCell := localMap_twoCell Q
+  mapsTwoSimplex := localMap_twoSimplex Q
   compositionIso := compositionComparisonNatIso Q
   identityIso := identityComparisonNatIso Q
   identityHomotopy := identityComparisonNerveHomotopy Q

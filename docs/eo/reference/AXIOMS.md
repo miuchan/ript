@@ -847,9 +847,12 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.UniverseLiftedNerve.commonNerveMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonNerveMap_vertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonNerveMap_edge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `CategoryTheory.nerveMap_app_mk₂` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/AlgebraicTopology/NerveHomotopy.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonNerveMap_twoSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonLocalMap` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
+| `Ript.Higher.UniverseLiftedNerve.commonLocalMap_twoSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.identityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
 | `Ript.Higher.UniverseLiftedNerve.commonIdentityComparisonHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/UniverseLiftedLocalizationCompleteSegal.lean` |
@@ -862,6 +865,7 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.CostExactZigzagNerveComparison.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.markedVertex_mapsToEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.twoCell_edge_mapsExactly` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
+| `Ript.Higher.CostExactZigzagNerveComparison.twoCell_twoSimplex_mapsExactly` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.associatorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.leftUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
 | `Ript.Higher.CostExactZigzagNerveComparison.rightUnitorEdgeCoherence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagNerveComparison.lean` |
@@ -884,6 +888,9 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalEdge_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeOuter_mappedLocalVertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoCellOneSkeleton` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_eq` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.mappedLocalTwoSimplex_diagonal` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
+| `Ript.Higher.CostExactZigzagGlobalComparison.relativeLocal_twoSimplexGlue` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.outerComparison` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.sourceCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
 | `Ript.Higher.CostExactZigzagGlobalComparison.targetCompletenessHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagGlobalComparison.lean` |
@@ -910,6 +917,7 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Examples.CostExactFormalInverse.formalReverse_exists_beyond_sourceEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Examples/CostExactFormalInverse.lean` |
 | `Ript.Higher.BicategoricalNerveComparison.horizontalCompositionFunctor` | `[propext, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
 | `Ript.Higher.BicategoricalNerveComparison.localMap_twoCell` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
+| `Ript.Higher.BicategoricalNerveComparison.localMap_twoSimplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
 | `Ript.Higher.BicategoricalNerveComparison.identityComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
 | `Ript.Higher.BicategoricalNerveComparison.identityComparisonNerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |
 | `Ript.Higher.BicategoricalNerveComparison.compositionComparisonNatIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/LocalizationCompleteSegal.lean` |

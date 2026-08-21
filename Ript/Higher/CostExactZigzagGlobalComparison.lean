@@ -236,6 +236,81 @@ theorem mappedLocalEdge_eq
         (CostExactZigzag.inclusion.map₂ α)) :=
   CostExactZigzagNerveComparison.twoCell_edge_mapsExactly α
 
+/-- Two vertically composable source 2-cells as the canonical degree-two
+simplex of the common-universe full local mapping nerve. -/
+def sourceLocalTwoSimplex
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) :
+    (UniverseLiftedNerve.CommonLocalMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj
+        (Opposite.op (SimplexCategory.mk 2)) :=
+  ComposableArrows.mk₂
+    ((AsSmall.up :
+      (M ⟶ N) ⥤ UniverseLiftedNerve.CommonSourceHom
+        (CostExactZigzag.inclusion (R := R)) M N).map α)
+    ((AsSmall.up :
+      (M ⟶ N) ⥤ UniverseLiftedNerve.CommonSourceHom
+        (CostExactZigzag.inclusion (R := R)) M N).map β)
+
+/-- The actual local-nerve image of a vertically composable pair of source
+2-cells. -/
+noncomputable def mappedLocalTwoSimplex
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) :
+    (UniverseLiftedNerve.CommonTargetMappingNerve
+      (CostExactZigzag.inclusion (R := R)) M N).obj
+        (Opposite.op (SimplexCategory.mk 2)) :=
+  ((CostExactZigzagNerveComparison.core
+    (R := R)).toPseudofunctorNerveCore.localMap M N).app
+      (Opposite.op (SimplexCategory.mk 2)) (sourceLocalTwoSimplex α β)
+
+/-- The mapped local 2-simplex is exactly the canonical simplex of the two
+lifted `map₂` images. -/
+theorem mappedLocalTwoSimplex_eq
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) :
+    mappedLocalTwoSimplex α β =
+      ComposableArrows.mk₂
+        ((AsSmall.up :
+          (CostExactZigzag.inclusion.obj M ⟶
+            CostExactZigzag.inclusion.obj N) ⥤
+              UniverseLiftedNerve.CommonTargetHom
+                (CostExactZigzag.inclusion (R := R)) M N).map
+            (CostExactZigzag.inclusion.map₂ α))
+        ((AsSmall.up :
+          (CostExactZigzag.inclusion.obj M ⟶
+            CostExactZigzag.inclusion.obj N) ⥤
+              UniverseLiftedNerve.CommonTargetHom
+                (CostExactZigzag.inclusion (R := R)) M N).map
+            (CostExactZigzag.inclusion.map₂ β)) :=
+  CostExactZigzagNerveComparison.twoCell_twoSimplex_mapsExactly α β
+
+/-- Proposition that the long diagonal of the mapped local 2-simplex is the
+exact lifted image of the vertical composite source 2-cell. `HEq` records the
+necessary dependent endpoint transport. -/
+def MappedLocalTwoSimplexDiagonal
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) : Prop :=
+  HEq ((mappedLocalTwoSimplex α β).map' 0 2)
+      ((AsSmall.up :
+        (CostExactZigzag.inclusion.obj M ⟶
+          CostExactZigzag.inclusion.obj N) ⥤
+            UniverseLiftedNerve.CommonTargetHom
+              (CostExactZigzag.inclusion (R := R)) M N).map
+        (CostExactZigzag.inclusion.map₂ (α ≫ β)))
+
+/-- The mapped local 2-simplex has the exact lifted composite diagonal. -/
+theorem mappedLocalTwoSimplex_diagonal
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) :
+    MappedLocalTwoSimplexDiagonal α β := by
+  unfold MappedLocalTwoSimplexDiagonal
+  rw [mappedLocalTwoSimplex_eq]
+  apply heq_of_eq
+  change _ ≫ _ = _
+  simp
+  rfl
+
 /-- The relative outer comparison acts exactly on every represented source
 arrow vertex. -/
 theorem relativeOuterComparison_sourceArrow
@@ -347,6 +422,42 @@ theorem relativeLocal_twoCellOneSkeleton
     RelativeLocalTwoCellOneSkeleton α :=
   ⟨relativeOuter_mappedLocalVertex f,
     relativeOuter_mappedLocalVertex g, mappedLocalEdge_eq α⟩
+
+/-- Full relative/local two-simplex gluing proposition for two vertically
+composable, possibly noninvertible, source 2-cells. It contains both
+one-skeleton witnesses, the exact mapped triangle, and its composite
+diagonal. -/
+def RelativeLocalTwoSimplexGlue
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) : Prop :=
+  RelativeLocalTwoCellOneSkeleton α ∧
+  RelativeLocalTwoCellOneSkeleton β ∧
+  mappedLocalTwoSimplex α β =
+    ComposableArrows.mk₂
+      ((AsSmall.up :
+        (CostExactZigzag.inclusion.obj M ⟶
+          CostExactZigzag.inclusion.obj N) ⥤
+            UniverseLiftedNerve.CommonTargetHom
+              (CostExactZigzag.inclusion (R := R)) M N).map
+          (CostExactZigzag.inclusion.map₂ α))
+      ((AsSmall.up :
+        (CostExactZigzag.inclusion.obj M ⟶
+          CostExactZigzag.inclusion.obj N) ⥤
+            UniverseLiftedNerve.CommonTargetHom
+              (CostExactZigzag.inclusion (R := R)) M N).map
+          (CostExactZigzag.inclusion.map₂ β)) ∧
+  MappedLocalTwoSimplexDiagonal α β
+
+/-- Every vertically composable pair of source 2-cells satisfies the complete
+relative/local two-simplex gluing interface. -/
+theorem relativeLocal_twoSimplexGlue
+    {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h) :
+    RelativeLocalTwoSimplexGlue α β :=
+  ⟨relativeLocal_twoCellOneSkeleton α,
+    relativeLocal_twoCellOneSkeleton β,
+    mappedLocalTwoSimplex_eq α β,
+    mappedLocalTwoSimplex_diagonal α β⟩
 
 /-- **Horizontal outer/local gluing.** Decoding the local composite of two
 mapped 1-cells agrees exactly with composition of their outer homotopy-category
@@ -669,6 +780,11 @@ structure GlobalComparisonCore where
   relativeLocalTwoCellGlue : ∀ {M N : ProcessModel.{u, v, w} R}
     {f g : M ⟶ N} (α : f ⟶ g),
     RelativeLocalTwoCellOneSkeleton α
+  /-- Relative/local two-simplex gluing for every vertically composable pair
+  of source 2-cells. -/
+  relativeLocalTwoSimplexGlue : ∀ {M N : ProcessModel.{u, v, w} R}
+    {f g h : M ⟶ N} (α : f ⟶ g) (β : g ⟶ h),
+    RelativeLocalTwoSimplexGlue α β
   /-- Exact gluing of mapped local 1-cell vertices to outer Rezk arrows. -/
   vertexGlue : ∀ (M N : ProcessModel.{u, v, w} R) (f : M ⟶ N),
     localVertexToOuterArrow
@@ -791,6 +907,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   mappedLocalVertexExact := mappedLocalVertexObject_eq
   relativeLocalVertexGlue := relativeOuter_mappedLocalVertex
   relativeLocalTwoCellGlue := relativeLocal_twoCellOneSkeleton
+  relativeLocalTwoSimplexGlue := relativeLocal_twoSimplexGlue
   vertexGlue := localVertex_outerArrow
   compositionGlue := localComposite_outerComposition
   identityGlue := localIdentity_outerIdentity

@@ -262,7 +262,10 @@ interna kaj ekstera simplicia grado kaj kalkulas ekzakte reprezentitajn
 sagverticojn. La bildo kaj malkodo de faktaj lokaj nul-simplaĵoj kaj arbitraj
 2-ĉelaj eĝoj nun estas ekzaktaj; por ĉiu eble neinversigebla 2-ĉelo, ambaŭ
 relativaj eksteraj finpunktoj kaj la cela loka eĝo estas pakitaj kune. Restas
-la dudimensia kaj pli alta kungluo kaj la Dwyer–Kan/Rezk malforta ekvivalento.
+Vertikale kunmeteblaj arbitraj 2-ĉelaj paroj nun bildiĝas ekzakte al celaj
+lokaj 2-simplaĵoj; la du unu-skeletaj atestoj, plena triangulo kaj dependa
+kunmeta diagonalo estas pakitaj kune. Restas miksita horizontala kaj pli alta
+simplicia kohereco kaj la Dwyer–Kan/Rezk malforta ekvivalento.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

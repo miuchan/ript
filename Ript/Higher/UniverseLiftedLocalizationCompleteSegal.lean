@@ -66,6 +66,20 @@ theorem commonNerveMap_edge (F : C ⥤ D) {X Y : C} (f : X ⟶ Y) :
   rw [CategoryTheory.nerveMap_app_mk₁]
   rfl
 
+/-- Exact action of a common-universe nerve map on a canonical
+2-simplex of two composable arrows. -/
+@[simp]
+theorem commonNerveMap_twoSimplex (F : C ⥤ D)
+    {X Y Z : C} (f : X ⟶ Y) (g : Y ⟶ Z) :
+    (commonNerveMap F).app (op ⦋2⦌)
+        (ComposableArrows.mk₂
+          ((AsSmall.up : C ⥤ AsSmall.{max u₂ v₂} C).map f)
+          ((AsSmall.up : C ⥤ AsSmall.{max u₂ v₂} C).map g)) =
+      ComposableArrows.mk₂
+        ((AsSmall.up : D ⥤ AsSmall.{max u₁ v₁} D).map (F.map f))
+        ((AsSmall.up : D ⥤ AsSmall.{max u₁ v₁} D).map (F.map g)) := by
+  apply CategoryTheory.nerveMap_app_mk₂
+
 variable {F G : C ⥤ D}
 
 /-- A natural transformation transported to the common-universe small
@@ -131,6 +145,26 @@ theorem commonLocalMap_twoCell {X Y : B} {f g : X ⟶ Y} (α : f ⟶ g) :
         (Q.obj X ⟶ Q.obj Y) ⥤
           CommonTargetHom (Q := Q) X Y).map (Q.map₂ α)) :=
   commonNerveMap_edge (Q.mapFunctor X Y) α
+
+/-- Exact action of the lifted local comparison on the canonical 2-simplex
+of two vertically composable source 2-cells. -/
+@[simp]
+theorem commonLocalMap_twoSimplex
+    {X Y : B} {f g h : X ⟶ Y} (α : f ⟶ g) (β : g ⟶ h) :
+    (commonLocalMap Q X Y).app (op ⦋2⦌)
+        (ComposableArrows.mk₂
+          ((AsSmall.up :
+            (X ⟶ Y) ⥤ CommonSourceHom (_Q := Q) X Y).map α)
+          ((AsSmall.up :
+            (X ⟶ Y) ⥤ CommonSourceHom (_Q := Q) X Y).map β)) =
+      ComposableArrows.mk₂
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom (Q := Q) X Y).map
+            (Q.map₂ α))
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom (Q := Q) X Y).map
+            (Q.map₂ β)) :=
+  commonNerveMap_twoSimplex (Q.mapFunctor X Y) α β
 
 /-- Arbitrary-universe constant diagram selecting the image of a source
 identity. -/
@@ -350,6 +384,19 @@ structure PseudofunctorNerveCore where
           (X ⟶ Y) ⥤ CommonSourceHom Q X Y).map α)) =
       ComposableArrows.mk₁ ((AsSmall.up :
         (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom Q X Y).map (Q.map₂ α))
+  /-- Exact lifted action on canonical 2-simplices of vertically composable
+  2-cells. -/
+  mapsTwoSimplex : ∀ {X Y : B} {f g h : X ⟶ Y}
+    (α : f ⟶ g) (β : g ⟶ h),
+    (localMap X Y).app (op ⦋2⦌)
+        (ComposableArrows.mk₂
+          ((AsSmall.up : (X ⟶ Y) ⥤ CommonSourceHom Q X Y).map α)
+          ((AsSmall.up : (X ⟶ Y) ⥤ CommonSourceHom Q X Y).map β)) =
+      ComposableArrows.mk₂
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom Q X Y).map (Q.map₂ α))
+        ((AsSmall.up :
+          (Q.obj X ⟶ Q.obj Y) ⥤ CommonTargetHom Q X Y).map (Q.map₂ β))
   /-- Common-universe compositor natural isomorphism. -/
   compositionIso : ∀ X Y Z : B,
     commonAsSmallFunctor (composeThenMapFunctor Q X Y Z) ≅
@@ -389,6 +436,7 @@ noncomputable def pseudofunctorNerveCore : PseudofunctorNerveCore Q where
   localMap_eq := rfl
   mapsVertex := commonLocalMap_vertex Q
   mapsTwoCell := commonLocalMap_twoCell Q
+  mapsTwoSimplex := commonLocalMap_twoSimplex Q
   compositionIso := commonCompositionComparisonNatIso Q
   identityIso := commonIdentityComparisonNatIso Q
   identityHomotopy := commonIdentityComparisonHomotopy Q
