@@ -83,6 +83,13 @@ def bind (p : FinDist X) (f : X → FinDist Y) : FinDist Y where
 theorem pure_apply (x y : X) : (pure x).prob y = if x = y then 1 else 0 :=
   rfl
 
+/-- Point distributions faithfully encode their supporting outcomes. -/
+theorem pure_injective : Function.Injective (pure : X → FinDist X) := by
+  intro x y equal
+  by_contra different
+  have atX := congrArg (fun distribution ↦ distribution.prob x) equal
+  simp [pure_apply, Ne.symm different] at atX
+
 /-- Entrywise formula for monadic substitution. -/
 @[simp]
 theorem bind_apply (p : FinDist X) (f : X → FinDist Y) (y : Y) :
@@ -148,6 +155,14 @@ def push (p : FinDist X) (channel : FinStoch X Y) : FinDist Y :=
 theorem push_apply (p : FinDist X) (channel : FinStoch X Y) (y : Y) :
     (p.push channel).prob y = ∑ x, p.prob x * channel.prob x y :=
   rfl
+
+/-- Pushing through a deterministic equivalence reindexes the distribution
+without changing any probability mass. -/
+theorem push_diracEquiv_apply (p : FinDist X) (equivalence : X ≃ Y)
+    (output : Y) :
+    (p.push (FinStoch.dirac equivalence)).prob output =
+      p.prob (equivalence.symm output) := by
+  simp [FinStoch.dirac, ← equivalence.eq_symm_apply]
 
 /-- Evolving through the identity channel leaves a distribution unchanged. -/
 @[simp]

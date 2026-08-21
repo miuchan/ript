@@ -1,4 +1,5 @@
 import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.FinCases
 import Ript.Models.Causal.FinStoch
 
 /-!
@@ -9,6 +10,11 @@ parent.  Observationally only equal pairs occur.  After `do(effect = true)`,
 the cause remains fair while the effect is forced to `true`; this executable
 difference is the characteristic mechanism-replacement semantics of an
 intervention rather than ordinary conditioning.
+
+The same model also witnesses a genuine stochastic intervention: replacing
+the child mechanism by an independent fair coin gives four exact quarter-mass
+assignments. A subsequent explicit reinstall of the original child mechanism
+normalizes to the empty soft-intervention program and returns the base model.
 -/
 
 set_option autoImplicit false
@@ -154,7 +160,7 @@ theorem observational_copy :
     rw [chainModel.observational_factorization]
     norm_num [chainModel, chainDAG, fairBitDistribution, cause, effect,
       FinDist.pure]
-    rfl
+  all_goals decide
 
 /-- After `do(effect = true)`, the root stays fair and the effect is forced. -/
 theorem intervention_replaces_child_mechanism :
@@ -169,10 +175,108 @@ theorem intervention_replaces_child_mechanism :
     norm_num [FiniteCausalModel.intervene, forceEffectTrue,
       Intervention.doAt, chainModel, chainDAG, fairBitDistribution, cause,
       effect, FinDist.pure]
-    first
-    | rfl
-    | intro h
-      exact Bool.false_ne_true h.symm
+  all_goals decide
+
+/-! ## Soft and stochastic intervention witness -/
+
+/-- Parent-independent fair replacement mechanism for the child. -/
+def fairEffectMechanism : Mechanism chainModel.dag Bool effect where
+  run _ := fairBitDistribution
+
+/-- A genuine stochastic intervention replacing the child copy mechanism by
+an independent fair coin. -/
+def randomizeEffect : SoftIntervention chainModel.dag Bool :=
+  SoftIntervention.replaceAt effect fairEffectMechanism
+
+@[simp]
+theorem randomizeEffect_cause : randomizeEffect.setting cause = none := by
+  rfl
+
+@[simp]
+theorem randomizeEffect_effect :
+    randomizeEffect.setting effect = some fairEffectMechanism :=
+  SoftIntervention.replaceAt_same effect fairEffectMechanism
+
+@[simp]
+theorem randomizeEffect_zero : randomizeEffect.setting (0 : Fin 2) = none := by
+  simpa [cause] using randomizeEffect_cause
+
+@[simp]
+theorem randomizeEffect_one :
+    randomizeEffect.setting (1 : Fin 2) = some fairEffectMechanism := by
+  simpa [effect] using randomizeEffect_effect
+
+/-- Read one joint probability after the stochastic child intervention. -/
+def randomizedEffectProbability (causeValue effectValue : Bool) : ℚ≥0 :=
+  (chainModel.softInterventionalChannel randomizeEffect).prob PUnit.unit
+    ![causeValue, effectValue]
+
+/-- Randomizing the child makes it independent of the still-fair root, so all
+four assignments have exact mass `1/4`. -/
+theorem stochastic_intervention_independent_fair :
+    randomizedEffectProbability false false = (1 : ℚ≥0) / 4 ∧
+    randomizedEffectProbability false true = (1 : ℚ≥0) / 4 ∧
+    randomizedEffectProbability true false = (1 : ℚ≥0) / 4 ∧
+    randomizedEffectProbability true true = (1 : ℚ≥0) / 4 := by
+  refine ⟨?_, ?_, ?_, ?_⟩
+  all_goals
+    unfold randomizedEffectProbability
+    rw [chainModel.softInterventional_factorization randomizeEffect]
+    norm_num [randomizeEffect_zero, randomizeEffect_one,
+      fairEffectMechanism, chainModel, chainDAG, fairBitDistribution,
+      cause, effect]
+
+/-- Explicitly reinstall the original child mechanism. This write is
+semantically meaningful after `randomizeEffect`, but redundant in the final
+normal form relative to the original base model. -/
+def restoreEffect : SoftIntervention chainModel.dag Bool :=
+  SoftIntervention.replaceAt effect (chainModel.mechanism effect)
+
+/-- A two-step stochastic/soft intervention program that randomizes and then
+restores the child. -/
+def randomizeThenRestore :
+    SoftInterventionProgram.Program chainModel.dag Bool :=
+  [randomizeEffect, restoreEffect]
+
+/-- Canonical reduction erases the final explicit write of the original
+mechanism, yielding the empty intervention. -/
+theorem randomizeThenRestore_normalize :
+    SoftInterventionProgram.normalize chainModel randomizeThenRestore =
+      SoftIntervention.empty := by
+  have rawEqual :
+      SoftInterventionProgram.rawNormalize randomizeThenRestore =
+        restoreEffect := by
+    apply SoftIntervention.ext
+    intro node
+    fin_cases node <;>
+      simp [SoftInterventionProgram.rawNormalize, randomizeThenRestore,
+        randomizeEffect, restoreEffect, SoftIntervention.thenReplace,
+        SoftIntervention.replaceAt,
+        SoftIntervention.empty, effect]
+  rw [SoftInterventionProgram.normalize, rawEqual]
+  apply SoftIntervention.ext
+  intro node
+  fin_cases node <;>
+    simp [restoreEffect, SoftIntervention.reduceAgainst,
+      SoftIntervention.replaceAt, SoftIntervention.empty,
+      Mechanism.EntrywiseEqual, effect]
+
+/-- The two-step program executes back to the original causal model. -/
+theorem randomizeThenRestore_run :
+    SoftInterventionProgram.run chainModel randomizeThenRestore = chainModel := by
+  rw [SoftInterventionProgram.run_eq_softIntervene_normalize,
+    randomizeThenRestore_normalize,
+    FiniteCausalModel.softIntervene_empty]
+
+/-- Program completeness recognizes the randomize--restore program as
+semantically equal to the empty program exactly through their shared reduced
+normal form. -/
+theorem randomizeThenRestore_semantically_empty :
+    SoftInterventionProgram.SemanticallyEquivalent chainModel
+      randomizeThenRestore [] := by
+  rw [SoftInterventionProgram.semanticallyEquivalent_iff_normalize_eq,
+    randomizeThenRestore_normalize]
+  rfl
 
 -- The observational joint is normalized exactly.
 #eval decide
@@ -192,5 +296,17 @@ theorem intervention_replaces_child_mechanism :
 #eval decide
   (interventionalProbability false true =
     interventionalProbability true true)
+
+-- A stochastic child intervention yields the exact independent fair joint.
+#eval decide
+  (randomizedEffectProbability false false = (1 : ℚ≥0) / 4 ∧
+    randomizedEffectProbability false true = (1 : ℚ≥0) / 4 ∧
+    randomizedEffectProbability true false = (1 : ℚ≥0) / 4 ∧
+    randomizedEffectProbability true true = (1 : ℚ≥0) / 4)
+
+-- The reduced last-write-wins program has no targeted child node.
+#eval decide
+  ((SoftInterventionProgram.normalize chainModel randomizeThenRestore).setting
+    effect).isNone
 
 end Ript.Examples.SimpleCausalModel

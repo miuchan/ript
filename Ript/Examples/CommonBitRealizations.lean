@@ -197,29 +197,27 @@ def semanticInterpretation :
   mapGen_cost
     | .flip => Nat.zero_le 1
 
+/-- Two reversible observation relabelings recover perfect observation. -/
+theorem semanticFlip_involutive :
+    FinStoch.comp semanticFlipExperiment semanticFlipExperiment =
+      Ript.Examples.SimpleDecision.perfectExperiment := by
+  apply FinStoch.ext
+  intro input output
+  change Bool at input output
+  change (∑ middle : Bool,
+    (if (!input) = middle then (1 : ℚ≥0) else 0) *
+      (if (!middle) = output then 1 else 0)) =
+    if input = output then 1 else 0
+  cases input <;> cases output <;>
+    rw [Fintype.sum_bool] <;> norm_num
+
 /-- Flipped observation and perfect observation are Blackwell equivalent. -/
 theorem semanticFlip_blackwellEquivalent_perfect :
     BlackwellEquivalent semanticFlipExperiment
       Ript.Examples.SimpleDecision.perfectExperiment := by
   constructor
   · refine ⟨semanticFlipExperiment, ?_⟩
-    change FinStoch.comp
-        (FinStoch.dirac
-          (X := Ript.Examples.SimpleDecision.decisionBit)
-          (Y := Ript.Examples.SimpleDecision.decisionBit) Bool.not)
-        (FinStoch.dirac
-          (X := Ript.Examples.SimpleDecision.decisionBit)
-          (Y := Ript.Examples.SimpleDecision.decisionBit) Bool.not) =
-      FinStoch.identity Ript.Examples.SimpleDecision.decisionBit
-    apply FinStoch.ext
-    intro input output
-    change Bool at input output
-    change (∑ middle : Bool,
-      (if (!input) = middle then (1 : ℚ≥0) else 0) *
-        (if (!middle) = output then 1 else 0)) =
-      if input = output then 1 else 0
-    cases input <;> cases output <;>
-      rw [Fintype.sum_bool] <;> norm_num
+    exact semanticFlip_involutive
   · refine ⟨semanticFlipExperiment, ?_⟩
     change FinStoch.comp
       (FinStoch.identity Ript.Examples.SimpleDecision.decisionBit)
@@ -274,7 +272,6 @@ theorem probability_flip (value : Bool) :
     Expr.mapCost, flipExpr,
     probabilityInterpretation, Ript.Examples.StochasticBits.deterministicNot,
     FinStoch.dirac]
-  rfl
 
 /-- Pauli-X implements the same action on computational-basis states. -/
 theorem quantum_flip (value : Bool) :
@@ -293,8 +290,6 @@ theorem causal_flip (value : Bool) :
     Expr.mapCost, flipExpr,
     causalInterpretation, causalFlipMechanism, causalParentInput,
     Mechanism.toFinStoch, FinDist.pure]
-  change (if (!value : Bool) = !value then (1 : ℚ≥0) else 0) = 1
-  simp
 
 /-- The total computation executes Boolean negation. -/
 theorem computation_flip (value : Bool) :
@@ -319,7 +314,6 @@ theorem semantic_flip (value : Bool) :
     ResourceChangingInterpretation.toMappedCost, Ript.Semantics.eval,
     Expr.mapCost, flipExpr,
     semanticInterpretation, semanticFlipExperiment, FinStoch.dirac]
-  rfl
 
 /-- The Gibbs-preserving process implements the same deterministic Boolean
 action on the exact operational channel. -/
@@ -331,7 +325,6 @@ theorem thermal_flip (value : Bool) :
     Expr.mapCost, flipExpr,
     thermalInterpretation, Ript.Examples.SimpleThermalModel.thermalFlip,
     Ript.Examples.SimpleThermalModel.flipChannel, FinStoch.dirac]
-  rfl
 
 /-- One proposition packages the shared observable contract while retaining
 the quantum state equation, causal mechanism, semantic value, thermodynamic

@@ -69,10 +69,16 @@ Ript 的组织原则是：可执行有限模型不依赖商类型、测度论、
 - `FiniteDistribution` 提供有限分布单子及 Kleisli 表示；
 - 概率模块把有限精确通道连接到 Mathlib 的 `Stoch`；
 - 决策模块实现 Blackwell 比较、精确风险、资源界与分离证书；
-- 计算模块区分形式步数/查询/存储/门计数与真实运行时间；
+- 计算模块区分形式步数/查询/存储/门计数与真实运行时间；随机化计算把精确有限核与同一四维资源代数结合；
 - 因果模块使用有限拓扑排序 DAG 与硬干预；
 - 热模块区分精确操作通道和实值解析热力学；
-- 量子模块使用有限 Kraus 族，并在封装通道前证明正性与保迹性。
+- 量子模块使用有限 Kraus 族，并在封装通道前证明正性与保迹性；完整对称单子 Kraus 范畴之上有仪器、结果控反馈和依赖 bind；`InstrumentTree` 是归纳规范形与可计算预算层。
+- `NoisyBitRealizations` 是首个六模型共享噪声语法，包含保留相干的随机单位量子和随机化计算目标。
+- `Syntax.Branching` 计算定深自适应二叉历史、正分支表规范形、精确路径成本、最坏情形预算、记录随机表示与观察完备性；`AdaptiveNoiseRealizations` 给出六个原生模型实现。
+- `Syntax.DependentBranching` 推广到变深、生成元依赖有限结果、显式历史等价及保守二叉嵌入；`Examples.DependentBranching` 是异构结果的可执行见证。
+- `Syntax.DependentBranching.Free` 把分支代数组织成范畴，证明树代数初始性、等式健全/完备性和顺序嫁接幺半群，并把高度与预算表示为数值 fold。
+- `Syntax.DependentBranching.Monoidal` 为模型代数范畴提供选定有限积、笛卡尔对称单子协调、逐分量乘积 fold 表示和联合模型完备性。
+- `Syntax.DependentBranching.Parallel` 封装显式异构通道、精确独立随机分解、通道对称、资源相加、共享阶段嫁接和严格张量—顺序交换律。
 
 [模型能力矩阵](reference/MODEL_MATRIX.md)是各模型可选结构的权威记录。
 

@@ -20,7 +20,7 @@ open Ript.Semantics
 open Ript.Syntax
 
 /-- The one-bit finite stochastic object. -/
-def bit : Object :=
+abbrev bit : Object :=
   Object.of Bool
 
 /-- An exact fair coin channel from the tensor unit to one bit. -/

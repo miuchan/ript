@@ -76,6 +76,206 @@ obtained by turning the density colimit into a matching limit. -/
 abbrev BoundaryMatchingIndex (n : ℕ) :=
   (((boundary.{u} n : SSet.{u}).Elements)ᵒᵖ)ᵒᵖ
 
+/-- Forget a boundary simplex to the outer simplex degree on which it lives.
+The two explicit `unop`s remove the double-opposite indexing wrapper without
+relying on definitional equality of category instances. -/
+def boundaryMatchingIndexProjection (n : ℕ) :
+    BoundaryMatchingIndex.{u} n ⥤ SimplexCategoryᵒᵖ where
+  obj j := (CategoryOfElements.π
+    (boundary.{u} n : SSet.{u})).obj j.unop.unop
+  map f := (CategoryOfElements.π
+    (boundary.{u} n : SSet.{u})).map f.unop.unop
+  map_id _ := rfl
+  map_comp _ _ := rfl
+
+/-- The canonical morphism of boundary elements induced by applying one
+simplicial structure map to a boundary simplex. -/
+def boundaryMatchingIndexMap (n : ℕ)
+    {Δ Γ : SimplexCategoryᵒᵖ} (f : Δ ⟶ Γ)
+    (s : (boundary.{u} n : SSet.{u}).obj Δ) :
+    (Opposite.op (Opposite.op
+      (⟨Δ, s⟩ : (boundary.{u} n : SSet.{u}).Elements)) :
+        BoundaryMatchingIndex.{u} n) ⟶
+      (Opposite.op (Opposite.op
+        (⟨Γ, (boundary.{u} n : SSet.{u}).map f s⟩ :
+          (boundary.{u} n : SSet.{u}).Elements)) :
+            BoundaryMatchingIndex.{u} n) :=
+  (CategoryOfElements.homMk
+    (⟨Δ, s⟩ : (boundary.{u} n : SSet.{u}).Elements)
+    (⟨Γ, (boundary.{u} n : SSet.{u}).map f s⟩ :
+      (boundary.{u} n : SSet.{u}).Elements) f rfl).op.op
+
+@[simp]
+theorem boundaryMatchingIndexMap_val (n : ℕ)
+    {Δ Γ : SimplexCategoryᵒᵖ} (f : Δ ⟶ Γ)
+    (s : (boundary.{u} n : SSet.{u}).obj Δ) :
+    (boundaryMatchingIndexMap n f s).unop.unop.val = f :=
+  rfl
+
+/-- The simplex of `Δ[n]` represented by an object of the boundary matching
+index, obtained by forgetting the proof that it lies in `∂Δ[n]`. -/
+def boundaryMatchingSimplex (n : ℕ) (j : BoundaryMatchingIndex.{u} n) :
+    j.unop.unop.fst.unop ⟶ SimplexCategory.mk n :=
+  SSet.stdSimplex.objEquiv
+    ((boundary.{u} n).ι.app j.unop.unop.fst j.unop.unop.snd)
+
+/-- A simplex represented by the boundary matching index is non-surjective. -/
+theorem boundaryMatchingSimplex_not_surjective (n : ℕ)
+    (j : BoundaryMatchingIndex.{u} n) :
+    ¬ Function.Surjective (boundaryMatchingSimplex n j) := by
+  exact j.unop.unop.snd.property
+
+/-- The object of the degree-two boundary matching index represented by the
+`i`th nondegenerate edge `δ i : Δ[1] → Δ[2]`. -/
+def degreeTwoBoundaryFaceElement (i : Fin 3) :
+    BoundaryMatchingIndex.{u} 2 :=
+  Opposite.op (Opposite.op
+    ⟨Opposite.op (SimplexCategory.mk 1),
+      ⟨SSet.stdSimplex.objEquiv.symm (SimplexCategory.δ i), by
+        rw [SSet.boundary_obj_eq_univ 1 2]
+        simp⟩⟩)
+
+/-- Forgetting the boundary-membership proof of the canonical face element
+recovers the corresponding coface map. -/
+@[simp]
+theorem boundaryMatchingSimplex_degreeTwoBoundaryFaceElement (i : Fin 3) :
+    boundaryMatchingSimplex 2 (degreeTwoBoundaryFaceElement.{u} i) =
+      SimplexCategory.δ i := by
+  change SSet.stdSimplex.objEquiv.{u}
+    (SSet.stdSimplex.objEquiv.{u}.symm (SimplexCategory.δ i)) = _
+  exact Equiv.apply_symm_apply _ _
+
+/-- The object of the degree-two boundary matching index represented by the
+vertex `r : Fin 3`. -/
+def degreeTwoBoundaryVertexElement (r : Fin 3) :
+    BoundaryMatchingIndex.{u} 2 :=
+  Opposite.op (Opposite.op
+    ⟨Opposite.op (SimplexCategory.mk 0),
+      ⟨SSet.stdSimplex.objEquiv.symm
+          (SimplexCategory.const (SimplexCategory.mk 0)
+            (SimplexCategory.mk 2) r), by
+        rw [SSet.boundary_obj_eq_univ 0 2]
+        simp⟩⟩)
+
+/-- Forgetting the boundary-membership proof of a canonical vertex recovers
+the corresponding constant simplex. -/
+@[simp]
+theorem boundaryMatchingSimplex_degreeTwoBoundaryVertexElement (r : Fin 3) :
+    boundaryMatchingSimplex 2 (degreeTwoBoundaryVertexElement.{u} r) =
+      SimplexCategory.const (SimplexCategory.mk 0)
+        (SimplexCategory.mk 2) r := by
+  change SSet.stdSimplex.objEquiv.{u}
+    (SSet.stdSimplex.objEquiv.{u}.symm
+      (SimplexCategory.const (SimplexCategory.mk 0)
+        (SimplexCategory.mk 2) r)) = _
+  exact Equiv.apply_symm_apply _ _
+
+/-- Incidence morphism from a canonical edge of the degree-two boundary to
+one of its two endpoints. -/
+def degreeTwoBoundaryFaceToVertex (i : Fin 3) (t : Fin 2) :
+    degreeTwoBoundaryFaceElement.{u} i ⟶
+      degreeTwoBoundaryVertexElement.{u} ((SimplexCategory.δ i) t) := by
+  let face := (degreeTwoBoundaryFaceElement.{u} i).unop.unop
+  let vertex :=
+    (degreeTwoBoundaryVertexElement.{u} ((SimplexCategory.δ i) t)).unop.unop
+  let g : face.fst ⟶ vertex.fst :=
+    (SimplexCategory.const (SimplexCategory.mk 0)
+      (SimplexCategory.mk 1) t).op
+  let e : face ⟶ vertex := CategoryOfElements.homMk face vertex g (by
+    apply Subtype.ext
+    change (SSet.stdSimplex.obj (SimplexCategory.mk 2)).map g
+        (SSet.stdSimplex.objEquiv.{u}.symm (SimplexCategory.δ i)) =
+      SSet.stdSimplex.objEquiv.{u}.symm
+        (SimplexCategory.const (SimplexCategory.mk 0)
+          (SimplexCategory.mk 2) ((SimplexCategory.δ i) t))
+    rw [SSet.stdSimplex.map_apply]
+    apply SSet.stdSimplex.objEquiv.{u}.injective
+    apply SimplexCategory.Hom.ext
+    ext x
+    fin_cases x
+    rfl)
+  exact e.op.op
+
+/-- Morphisms in the boundary element category express precomposition of the
+represented boundary simplices. -/
+theorem boundaryMatchingSimplex_naturality (n : ℕ)
+    {j k : BoundaryMatchingIndex.{u} n} (f : j ⟶ k) :
+    f.unop.unop.val.unop ≫ boundaryMatchingSimplex n j =
+      boundaryMatchingSimplex n k := by
+  apply SSet.stdSimplex.objEquiv.symm.injective
+  dsimp [boundaryMatchingSimplex]
+  rw [Equiv.symm_apply_apply, ← SSet.stdSimplex.map_apply]
+  rw [← NatTrans.naturality_apply (boundary.{u} n).ι
+    f.unop.unop.val j.unop.unop.snd]
+  rw [CategoryOfElements.map_snd f.unop.unop]
+
+/-- The abstract Reedy boundary-matching diagram of an arbitrary simplicial
+space.  An object is a simplex of `∂Δ[n]`; its underlying simplex degree
+selects the corresponding outer level of `W`.  The double opposite gives the
+covariant orientation required for a matching limit. -/
+def simplicialSpaceBoundaryMatchingDiagram
+    (W : SimplicialObject SSet.{u}) (n : ℕ) :
+    BoundaryMatchingIndex.{u} n ⥤ SSet.{u} :=
+  boundaryMatchingIndexProjection n ⋙ W
+
+/-- The abstract degree-`n` Reedy matching object of an arbitrary simplicial
+space, defined as the limit over all simplices of the standard boundary. -/
+noncomputable abbrev SimplicialSpaceBoundaryMatchingObject
+    (W : SimplicialObject SSet.{u}) (n : ℕ) : SSet.{u} :=
+  limit (simplicialSpaceBoundaryMatchingDiagram W n)
+
+/-- The selected limiting cone defining the abstract Reedy matching object. -/
+noncomputable def simplicialSpaceBoundaryMatchingCone
+    (W : SimplicialObject SSet.{u}) (n : ℕ) :
+    Cone (simplicialSpaceBoundaryMatchingDiagram W n) :=
+  limit.cone _
+
+/-- The abstract boundary-matching cone satisfies its genuine categorical
+limit universal property. -/
+noncomputable def simplicialSpaceBoundaryMatchingConeIsLimit
+    (W : SimplicialObject SSet.{u}) (n : ℕ) :
+    IsLimit (simplicialSpaceBoundaryMatchingCone W n) :=
+  limit.isLimit _
+
+/-- The cone obtained by restricting an outer `n`-simplex along every simplex
+of `∂Δ[n]`. -/
+def simplicialSpaceBoundaryRestrictionCone
+    (W : SimplicialObject SSet.{u}) (n : ℕ) :
+    Cone (simplicialSpaceBoundaryMatchingDiagram W n) where
+  pt := W.obj (Opposite.op (SimplexCategory.mk n))
+  π := {
+    app j := W.map (boundaryMatchingSimplex n j).op
+    naturality := by
+      intro j k f
+      dsimp [simplicialSpaceBoundaryMatchingDiagram,
+        boundaryMatchingIndexProjection]
+      change 𝟙 _ ≫ W.map (boundaryMatchingSimplex n k).op =
+        W.map (boundaryMatchingSimplex n j).op ≫
+          W.map f.unop.unop.val
+      rw [Category.id_comp, ← W.map_comp]
+      apply congrArg W.map
+      have h := congrArg Quiver.Hom.op
+        (boundaryMatchingSimplex_naturality n f)
+      simpa using h.symm }
+
+/-- The genuine abstract Reedy matching map of an arbitrary simplicial space,
+defined as the universal lift of its boundary restriction cone. -/
+noncomputable def simplicialSpaceBoundaryMatchingMap
+    (W : SimplicialObject SSet.{u}) (n : ℕ) :
+    W.obj (Opposite.op (SimplexCategory.mk n)) ⟶
+      SimplicialSpaceBoundaryMatchingObject W n :=
+  (simplicialSpaceBoundaryMatchingConeIsLimit W n).lift
+    (simplicialSpaceBoundaryRestrictionCone W n)
+
+/-- The abstract matching map is definitionally the universal map into the
+selected boundary matching limit. -/
+theorem simplicialSpaceBoundaryMatchingMap_eq_limitLift
+    (W : SimplicialObject SSet.{u}) (n : ℕ) :
+    (simplicialSpaceBoundaryMatchingConeIsLimit W n).lift
+        (simplicialSpaceBoundaryRestrictionCone W n) =
+      simplicialSpaceBoundaryMatchingMap W n :=
+  rfl
+
 /-- The genuine boundary matching diagram, indexed by all simplices of the
 boundary and valued in their represented mapping spaces. -/
 def boundaryMatchingDiagram (X : SSet.{u}) (n : ℕ) :

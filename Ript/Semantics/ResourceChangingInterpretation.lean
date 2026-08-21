@@ -191,6 +191,58 @@ theorem syntaxCost_mapCost (φ : R →+o S) {X Y : signature.Obj}
 
 end Expr
 
+namespace Derives
+
+variable {R S : Type w} [AddCommMonoid R] [Preorder R]
+variable [AddCommMonoid S] [Preorder S]
+variable {signature : Signature.{u, w} R}
+
+/-- Resource translation preserves every formal sequential derivation. -/
+theorem mapCost (φ : R →+o S) {X Y : signature.Obj}
+    {f g : Expr signature X Y} (derivation : Derives f g) :
+    Derives (Expr.mapCost φ f) (Expr.mapCost φ g) := by
+  induction derivation with
+  | refl f => exact .refl _
+  | symm _ ih => exact .symm ih
+  | trans _ _ ih₁ ih₂ => exact .trans ih₁ ih₂
+  | comp_congr _ _ ih₁ ih₂ => exact .comp_congr ih₁ ih₂
+  | id_comp f => exact .id_comp (Expr.mapCost φ f)
+  | comp_id f => exact .comp_id (Expr.mapCost φ f)
+  | assoc f g h =>
+      simpa [Expr.mapCost] using
+        (Derives.assoc (Expr.mapCost φ f) (Expr.mapCost φ g)
+          (Expr.mapCost φ h))
+
+/-- Forgetting a resource translation preserves every formal derivation. -/
+theorem unmapCost (φ : R →+o S)
+    {X Y : (signature.mapCost φ).Obj}
+    {f g : Expr (signature.mapCost φ) X Y} (derivation : Derives f g) :
+    Derives (Expr.unmapCost φ f) (Expr.unmapCost φ g) := by
+  induction derivation with
+  | refl f => exact .refl _
+  | symm _ ih => exact .symm ih
+  | trans _ _ ih₁ ih₂ => exact .trans ih₁ ih₂
+  | comp_congr _ _ ih₁ ih₂ => exact .comp_congr ih₁ ih₂
+  | id_comp f => exact .id_comp (Expr.unmapCost φ f)
+  | comp_id f => exact .comp_id (Expr.unmapCost φ f)
+  | assoc f g h =>
+      simpa [Expr.unmapCost] using
+        (Derives.assoc (Expr.unmapCost φ f) (Expr.unmapCost φ g)
+          (Expr.unmapCost φ h))
+
+/-- **Proof-theoretic conservativity of resource translation.** Two original
+expressions are formally equal exactly when their cost-translated expressions
+are formally equal. -/
+theorem mapCost_iff (φ : R →+o S) {X Y : signature.Obj}
+    {f g : Expr signature X Y} :
+    Derives (Expr.mapCost φ f) (Expr.mapCost φ g) ↔ Derives f g := by
+  constructor
+  · intro derivation
+    simpa using derivation.unmapCost φ
+  · exact fun derivation ↦ derivation.mapCost φ
+
+end Derives
+
 namespace MonoidalExpr
 
 variable {R : Type w} [AddCommMonoid R] [Preorder R]
@@ -273,6 +325,208 @@ theorem syntaxCost_mapCost (φ : R →+o S) {X Y : signature.Obj}
 
 end MonoidalExpr
 
+namespace MonoidalDerives
+
+variable {R : Type w} [AddCommMonoid R] [Preorder R]
+variable {S : Type w} [AddCommMonoid S] [Preorder S]
+variable {signature : MonoidalSignature.{u, w} R}
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Resource translation preserves every formal symmetric monoidal
+derivation, including coherence and braiding laws. -/
+theorem mapCost (φ : R →+o S) {X Y : signature.Obj}
+    {f g : MonoidalExpr signature X Y} (derivation : MonoidalDerives f g) :
+    MonoidalDerives (MonoidalExpr.mapCost φ f)
+      (MonoidalExpr.mapCost φ g) := by
+  induction derivation with
+  | refl f => exact .refl _
+  | symm _ ih => exact .symm ih
+  | trans _ _ ih₁ ih₂ => exact .trans ih₁ ih₂
+  | comp_congr _ _ ih₁ ih₂ => exact .comp_congr ih₁ ih₂
+  | tensor_congr _ _ ih₁ ih₂ => exact .tensor_congr ih₁ ih₂
+  | id_comp f => exact .id_comp (MonoidalExpr.mapCost φ f)
+  | comp_id f => exact .comp_id (MonoidalExpr.mapCost φ f)
+  | assoc f g h =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.assoc (MonoidalExpr.mapCost φ f)
+          (MonoidalExpr.mapCost φ g) (MonoidalExpr.mapCost φ h))
+  | tensor_id X Y =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.tensor_id (signature := signature.mapCost φ) X Y)
+  | interchange f₁ f₂ g₁ g₂ =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.interchange (MonoidalExpr.mapCost φ f₁)
+          (MonoidalExpr.mapCost φ f₂) (MonoidalExpr.mapCost φ g₁)
+          (MonoidalExpr.mapCost φ g₂))
+  | associator_hom_inv X Y Z =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.associator_hom_inv
+          (signature := signature.mapCost φ) X Y Z)
+  | associator_inv_hom X Y Z =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.associator_inv_hom
+          (signature := signature.mapCost φ) X Y Z)
+  | leftUnitor_hom_inv X =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.leftUnitor_hom_inv
+          (signature := signature.mapCost φ) X)
+  | leftUnitor_inv_hom X =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.leftUnitor_inv_hom
+          (signature := signature.mapCost φ) X)
+  | rightUnitor_hom_inv X =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.rightUnitor_hom_inv
+          (signature := signature.mapCost φ) X)
+  | rightUnitor_inv_hom X =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.rightUnitor_inv_hom
+          (signature := signature.mapCost φ) X)
+  | associator_naturality f₁ f₂ f₃ =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.associator_naturality
+          (MonoidalExpr.mapCost φ f₁) (MonoidalExpr.mapCost φ f₂)
+          (MonoidalExpr.mapCost φ f₃))
+  | leftUnitor_naturality f =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.leftUnitor_naturality
+          (MonoidalExpr.mapCost φ f))
+  | rightUnitor_naturality f =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.rightUnitor_naturality
+          (MonoidalExpr.mapCost φ f))
+  | pentagon W X Y Z =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.pentagon (signature := signature.mapCost φ) W X Y Z)
+  | triangle X Y =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.triangle (signature := signature.mapCost φ) X Y)
+  | braid_symmetry X Y =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_symmetry
+          (signature := signature.mapCost φ) X Y)
+  | braid_naturality f g =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_naturality (MonoidalExpr.mapCost φ f)
+          (MonoidalExpr.mapCost φ g))
+  | braid_naturality_right X f =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_naturality_right X
+          (signature := signature.mapCost φ) (MonoidalExpr.mapCost φ f))
+  | braid_naturality_left f Z =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_naturality_left
+          (MonoidalExpr.mapCost φ f) Z)
+  | hexagon_forward X Y Z =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.hexagon_forward
+          (signature := signature.mapCost φ) X Y Z)
+  | hexagon_reverse X Y Z =>
+      simpa [MonoidalExpr.mapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.hexagon_reverse
+          (signature := signature.mapCost φ) X Y Z)
+
+set_option backward.isDefEq.respectTransparency false in
+/-- Forgetting a resource translation also preserves every formal symmetric
+monoidal derivation. -/
+theorem unmapCost (φ : R →+o S)
+    {X Y : (signature.mapCost φ).Obj}
+    {f g : MonoidalExpr (signature.mapCost φ) X Y}
+    (derivation : MonoidalDerives f g) :
+    MonoidalDerives (MonoidalExpr.unmapCost φ f)
+      (MonoidalExpr.unmapCost φ g) := by
+  induction derivation with
+  | refl f => exact .refl _
+  | symm _ ih => exact .symm ih
+  | trans _ _ ih₁ ih₂ => exact .trans ih₁ ih₂
+  | comp_congr _ _ ih₁ ih₂ => exact .comp_congr ih₁ ih₂
+  | tensor_congr _ _ ih₁ ih₂ => exact .tensor_congr ih₁ ih₂
+  | id_comp f => exact .id_comp (MonoidalExpr.unmapCost φ f)
+  | comp_id f => exact .comp_id (MonoidalExpr.unmapCost φ f)
+  | assoc f g h =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.assoc (MonoidalExpr.unmapCost φ f)
+          (MonoidalExpr.unmapCost φ g) (MonoidalExpr.unmapCost φ h))
+  | tensor_id X Y =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.tensor_id (signature := signature) X Y)
+  | interchange f₁ f₂ g₁ g₂ =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.interchange (MonoidalExpr.unmapCost φ f₁)
+          (MonoidalExpr.unmapCost φ f₂) (MonoidalExpr.unmapCost φ g₁)
+          (MonoidalExpr.unmapCost φ g₂))
+  | associator_hom_inv X Y Z =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.associator_hom_inv (signature := signature) X Y Z)
+  | associator_inv_hom X Y Z =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.associator_inv_hom (signature := signature) X Y Z)
+  | leftUnitor_hom_inv X =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.leftUnitor_hom_inv (signature := signature) X)
+  | leftUnitor_inv_hom X =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.leftUnitor_inv_hom (signature := signature) X)
+  | rightUnitor_hom_inv X =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.rightUnitor_hom_inv (signature := signature) X)
+  | rightUnitor_inv_hom X =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.rightUnitor_inv_hom (signature := signature) X)
+  | associator_naturality f₁ f₂ f₃ =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.associator_naturality
+          (MonoidalExpr.unmapCost φ f₁) (MonoidalExpr.unmapCost φ f₂)
+          (MonoidalExpr.unmapCost φ f₃))
+  | leftUnitor_naturality f =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.leftUnitor_naturality
+          (MonoidalExpr.unmapCost φ f))
+  | rightUnitor_naturality f =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.rightUnitor_naturality
+          (MonoidalExpr.unmapCost φ f))
+  | pentagon W X Y Z =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.pentagon (signature := signature) W X Y Z)
+  | triangle X Y =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.triangle (signature := signature) X Y)
+  | braid_symmetry X Y =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_symmetry (signature := signature) X Y)
+  | braid_naturality f g =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_naturality (MonoidalExpr.unmapCost φ f)
+          (MonoidalExpr.unmapCost φ g))
+  | braid_naturality_right X f =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_naturality_right X
+          (signature := signature) (MonoidalExpr.unmapCost φ f))
+  | braid_naturality_left f Z =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.braid_naturality_left
+          (MonoidalExpr.unmapCost φ f) Z)
+  | hexagon_forward X Y Z =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.hexagon_forward (signature := signature) X Y Z)
+  | hexagon_reverse X Y Z =>
+      simpa [MonoidalExpr.unmapCost, MonoidalSignature.mapCost] using
+        (MonoidalDerives.hexagon_reverse (signature := signature) X Y Z)
+
+/-- **Monoidal proof-theoretic conservativity of resource translation.** -/
+theorem mapCost_iff (φ : R →+o S) {X Y : signature.Obj}
+    {f g : MonoidalExpr signature X Y} :
+    MonoidalDerives (MonoidalExpr.mapCost φ f)
+        (MonoidalExpr.mapCost φ g) ↔
+      MonoidalDerives f g := by
+  constructor
+  · intro derivation
+    simpa using derivation.unmapCost φ
+  · exact fun derivation ↦ derivation.mapCost φ
+
+end MonoidalDerives
+
 end Ript.Syntax
 
 namespace Ript.Semantics
@@ -314,6 +568,17 @@ theorem eval_cost_le
   rw [← Expr.syntaxCost_mapCost φ expression]
   exact Ript.Semantics.eval_cost_le (toMappedCost φ interpretation)
     (Expr.mapCost φ expression)
+
+omit [ResourceAlgebra S] in
+/-- Every heterogeneous sequential interpretation respects the original
+formal equational theory. -/
+theorem soundness
+    (interpretation : Interpretation (signature := signature) (C := C) φ)
+    {X Y : signature.Obj} {f g : Expr signature X Y}
+    (derivation : Derives f g) :
+    eval interpretation f = eval interpretation g :=
+  Ript.Semantics.soundness (toMappedCost φ interpretation)
+    (derivation.mapCost φ)
 
 end ResourceChangingInterpretation
 
@@ -392,6 +657,18 @@ theorem eval_cost_le
   rw [← MonoidalExpr.syntaxCost_mapCost φ expression]
   exact monoidalEval_cost_le (toMappedCost φ interpretation)
     (MonoidalExpr.mapCost φ expression)
+
+omit [ResourceAlgebra S] [HasParallelProcessCost C S]
+  [HasFreeStructuralCost C S] in
+/-- Every heterogeneous symmetric monoidal interpretation respects the
+original formal equational theory before resource translation. -/
+theorem soundness
+    (interpretation : Interpretation (signature := signature) (C := C) φ)
+    {X Y : signature.Obj} {f g : MonoidalExpr signature X Y}
+    (derivation : MonoidalDerives f g) :
+    eval interpretation f = eval interpretation g :=
+  monoidal_soundness (toMappedCost φ interpretation)
+    (derivation.mapCost φ)
 
 end ResourceChangingMonoidalInterpretation
 

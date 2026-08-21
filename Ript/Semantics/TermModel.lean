@@ -19,8 +19,9 @@ open Ript.Syntax
 
 universe u w
 
-/-- The object type of the term model for a signature. -/
-def TermModel {R : Type w} (signature : Signature.{u, w} R) :=
+/-- The object type of the term model for a signature.  It is a transparent
+alias so typed syntax indices and term-model objects elaborate interchangeably. -/
+abbrev TermModel {R : Type w} (signature : Signature.{u, w} R) :=
   signature.Obj
 
 namespace TermModel
@@ -42,6 +43,23 @@ instance category : Category.{u} (TermModel signature) where
   assoc := by
     rintro W X Y Z ⟨f⟩ ⟨g⟩ ⟨h⟩
     exact Quotient.sound (Derives.assoc f g h)
+
+/-- Embed a raw expression into the quotient term model. -/
+def quote {X Y : TermModel signature} (expression : Expr signature X Y) :
+    X ⟶ Y :=
+  Quotient.mk _ expression
+
+@[simp]
+theorem quote_id (X : TermModel signature) :
+    quote signature (.id X) = 𝟙 X :=
+  rfl
+
+@[simp]
+theorem quote_comp {X Y Z : TermModel signature}
+    (left : Expr signature X Y) (right : Expr signature Y Z) :
+    quote signature (.comp left right) =
+      quote signature left ≫ quote signature right :=
+  rfl
 
 variable [AddCommMonoid R] [Preorder R]
 
@@ -68,7 +86,7 @@ def interpretation : Interpretation signature (TermModel signature) where
 /-- Evaluating into the term model returns the derivation class of the original
 expression. -/
 theorem eval_interpretation {X Y : signature.Obj} (expression : Expr signature X Y) :
-    eval (interpretation signature) expression = Quotient.mk _ expression := by
+    eval (interpretation signature) expression = quote signature expression := by
   induction expression with
   | gen _ => rfl
   | id _ => rfl
@@ -80,7 +98,7 @@ theorem eval_interpretation {X Y : signature.Obj} (expression : Expr signature X
 omit [Preorder R] in
 /-- Term-model cost agrees exactly with the syntax cost of a representative. -/
 theorem cost_mk {X Y : TermModel signature} (expression : Expr signature X Y) :
-    cost signature (Quotient.mk _ expression : X ⟶ Y) = expression.syntaxCost :=
+    cost signature (quote signature expression : X ⟶ Y) = expression.syntaxCost :=
   rfl
 
 end TermModel

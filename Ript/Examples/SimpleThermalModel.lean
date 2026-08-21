@@ -22,7 +22,7 @@ open Ript.Models.Probability.FiniteKL
 open Ript.Models.Thermal
 
 /-- Executable two-state carrier. -/
-def bitSystem : Object :=
+abbrev bitSystem : Object :=
   Object.of Bool
 
 /-- Exact uniform equilibrium state of the Boolean system. -/

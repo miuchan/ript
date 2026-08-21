@@ -96,7 +96,7 @@ if [[ "$computation_output" != "$expected_computation_output" ]]; then
 fi
 
 causal_output="$(lake env lean Ript/Examples/SimpleCausalModel.lean)"
-expected_causal_output=$'true\ntrue\ntrue\ntrue\ntrue'
+expected_causal_output=$'true\ntrue\ntrue\ntrue\ntrue\ntrue\ntrue'
 
 if [[ "$causal_output" != "$expected_causal_output" ]]; then
   printf 'Finite-causal example output changed.\nExpected:\n%s\nActual:\n%s\n' \
@@ -155,6 +155,24 @@ expected_rational_gibbs_output=$'true\ntrue\ntrue'
 if [[ "$rational_gibbs_output" != "$expected_rational_gibbs_output" ]]; then
   printf 'Rational Gibbs-spectrum example output changed.\nExpected:\n%s\nActual:\n%s\n' \
     "$expected_rational_gibbs_output" "$rational_gibbs_output" >&2
+  exit 1
+fi
+
+adaptive_noise_output="$(lake env lean Ript/Examples/AdaptiveNoiseRealizations.lean)"
+expected_adaptive_noise_output=$'true\ntrue\ntrue\ntrue'
+
+if [[ "$adaptive_noise_output" != "$expected_adaptive_noise_output" ]]; then
+  printf 'Adaptive-noise example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_adaptive_noise_output" "$adaptive_noise_output" >&2
+  exit 1
+fi
+
+dependent_branching_output="$(lake env lean Ript/Examples/DependentBranching.lean)"
+expected_dependent_branching_output=$'true\n3\n4\ntrue\ntrue\n5\n6\n8\n5\n4\ntrue\n8\ntrue\n16\ntrue\n12\ntrue\n24'
+
+if [[ "$dependent_branching_output" != "$expected_dependent_branching_output" ]]; then
+  printf 'Dependent-branching example output changed.\nExpected:\n%s\nActual:\n%s\n' \
+    "$expected_dependent_branching_output" "$dependent_branching_output" >&2
   exit 1
 fi
 

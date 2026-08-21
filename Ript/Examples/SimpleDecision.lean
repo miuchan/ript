@@ -79,8 +79,6 @@ theorem perfect_actionRisk (observation action : decisionBit) :
     change (∑ state : Bool, _) = _
     rw [Fintype.sum_bool]
     simp
-    norm_num
-  all_goals rfl
 
 /-- Under an independent observation, every action at every observation has
 loss mass exactly `1/4`. -/
@@ -95,7 +93,6 @@ theorem uninformative_actionRisk (observation action : decisionBit) :
     change (∑ state : Bool, _) = _
     rw [Fintype.sum_bool]
     simp
-  all_goals rfl
 
 /-- Acting on a perfect observation by the identity rule has zero risk. -/
 theorem perfect_identity_decision_zero :
@@ -236,6 +233,34 @@ theorem perfect_irrelevant_semantic_value :
     semanticValue irrelevantTask uninformativeExperiment perfectExperiment =
       0 :=
   semanticValue_eq_zero_of_loss_eq_zero _ _ _ (fun _ _ ↦ rfl)
+
+/-- The uninformative experiment cannot Blackwell-dominate perfect
+observation; the guessing problem gives an exact risk contradiction. -/
+theorem not_uninformative_dominates_perfect :
+    ¬BlackwellDominates uninformativeExperiment perfectExperiment := by
+  intro dominates
+  have riskOrder := finiteBayesRisk_mono dominates bitGuessing
+  rw [uninformative_information_half_risk,
+    perfect_information_zero_risk] at riskOrder
+  norm_num at riskOrder
+
+/-- Perfect and uninformative observation are not Blackwell equivalent. -/
+theorem perfect_not_blackwellEquivalent_uninformative :
+    ¬BlackwellEquivalent perfectExperiment uninformativeExperiment := by
+  intro equivalent
+  exact not_uninformative_dominates_perfect equivalent.2
+
+/-- One task-relative numeric value is not a complete experiment invariant:
+the irrelevant task assigns the same zero value to two Blackwell-inequivalent
+experiments.  Completeness requires the universal task profile. -/
+theorem singleSemanticValue_not_complete :
+    semanticValue irrelevantTask uninformativeExperiment perfectExperiment =
+        semanticValue irrelevantTask uninformativeExperiment
+          uninformativeExperiment ∧
+      ¬BlackwellEquivalent perfectExperiment uninformativeExperiment := by
+  constructor
+  · rw [perfect_irrelevant_semantic_value, semanticValue_baseline]
+  · exact perfect_not_blackwellEquivalent_uninformative
 
 /-- Zero budget gives zero task value relative to the no-observation risk. -/
 theorem zero_budget_zero_semantic_value :
