@@ -1,5 +1,6 @@
 import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
 import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
+import Ript.ForMathlib.AlgebraicTopology.SSetHomotopyEquivalence
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 
 /-!
@@ -11,13 +12,14 @@ the Quillen model structure.  Consequently the standard complete-Segal-space
 predicate cannot honestly be stated with Mathlib's `WeakEquivalence` class.
 
 This file records the strongest exact substitute needed by groupoidal
-classifying diagrams.  A completeness map has a `NerveEquivalenceWitness` when
+classifying diagrams. A completeness map has a `NerveEquivalenceWitness` when
 it is, up to displayed isomorphisms, literally the nerve of an equivalence of
-categories.  `GroupoidalCompleteSegal` combines that witness with genuine
-boundary matching limits and fibrations, Kan vertical levels, and strict
-Segal/Kan horizontal rows.  For nerves of groupoids these data imply the usual
-weak-equivalence conditions once the missing simplicial weak-equivalence API
-is supplied; no such upstream instance is assumed here.
+categories. Every such presentation now yields an explicit simplicial inverse
+and genuine homotopies for both inverse laws.
+
+`GroupoidalCompleteSegal` combines that evidence with genuine boundary
+matching limits and fibrations, Kan vertical levels, and strict Segal/Kan
+horizontal rows. No upstream weak-equivalence instance is assumed.
 -/
 
 set_option autoImplicit false
@@ -68,6 +70,15 @@ def ofEquivalence {C D : Type u} [Category.{u} C] [Category.{u} D]
       𝟙 _ ≫ CategoryTheory.nerveMap e.functor
     rw [Category.comp_id, Category.id_comp]
 
+/-- Every categorical nerve-equivalence presentation supplies an explicit
+simplicial homotopy inverse, including both inverse laws as genuine
+`SSet.Homotopy` values. -/
+def homotopyEquivalence {X Y : SSet.{u}} {f : X ⟶ Y}
+    (h : NerveEquivalenceWitness f) : HomotopyEquivalenceWitness f :=
+  HomotopyEquivalenceWitness.transportIso
+    (HomotopyEquivalenceWitness.ofCategoryEquivalence h.equivalence)
+    h.sourceIso h.targetIso f h.square
+
 end NerveEquivalenceWitness
 
 /-- The horizontal simplicial set obtained from a simplicial space by fixing
@@ -83,10 +94,11 @@ theorem KanComplex.ofIso {X Y : SSet.{u}} (e : X ≅ Y) [KanComplex Y] :
   simpa using this
 
 /-- Exact groupoidal complete-Segal data available without a simplicial weak
-equivalence API.  Boundary matching maps are genuine universal maps and
+equivalence API. Boundary matching maps are genuine universal maps and
 fibrations; every vertical level and horizontal row is a Kan complex; every
 horizontal row is strict Segal; and the actual completeness map is presented
-as the nerve of a category equivalence. -/
+as the nerve of a category equivalence and hence has an explicit simplicial
+homotopy inverse. -/
 structure GroupoidalCompleteSegal (W : SimplicialObject SSet.{u}) where
   /-- Project-local Reedy fibrancy through genuine boundary matching limits. -/
   reedyFibrant : BoundaryReedyFibrant W
@@ -116,6 +128,12 @@ fibration. -/
 theorem matchingMap_fibration (n : ℕ) :
     Fibration (h.reedyFibrant.matchingMap n) :=
   h.reedyFibrant.matchingMap_fibration n
+
+/-- The displayed completeness map is not merely presented by a category
+equivalence: it has an explicit simplicial homotopy inverse. -/
+def completenessHomotopyEquivalence :
+    HomotopyEquivalenceWitness (W.σ (0 : Fin 1)) :=
+  h.completeness.homotopyEquivalence
 
 end GroupoidalCompleteSegal
 

@@ -128,6 +128,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 完整局部层现也有机器化高阶比较接口。伪函子的单位约束与复合器约束都已提升为所有单纯次数上的真实 nerve 同伦；支配这些同伦的结合子与左右单位子方程也已成为 common-universe 局部 nerve 中的精确 1-单形等式。`CostExactZigzagGlobalComparison.core` 由同一高阶局部化构造外层 Rezk 映射与完整局部层；局部顶点、恒等、水平复合、结合子与左右单位子都已满足严格外层/局部层粘合律，任意可逆局部 2-胞腔都解码为相应的外层等式。解码后的结合子粘贴显式满足五边形律，结合子/单位子粘贴满足三角形律。现剩将这些证书组装成全维单纯相容性，并证明 Complete-Segal/Rezk 弱等价定理。
 
+源与实际目标的外层 completeness 映射现都有显式单纯同伦逆；`HomotopyEquivalenceWitness` 同时记录两个复合到恒等映射的真实 `SSet.Homotopy`。
+
 该实际构造现已有可计算的呈示语法。`MarkedZigzag.Word` 由端点索引，任意源 1-胞腔可正向出现，只有携带标记证明的箭头才可反向出现。二叉弱复合使解释严格保持复合，而结合性保留为真实 2-胞腔。关系闭包现包含 whiskering、interchange、五边形、双范畴三角形以及标记 unit/counit 的两条伴随三角式。`InversionData.lift` 构造任意反演目标的提升，`InversionData.factorization` 给出伴随等价因子分解。`LocalExtension.extension` 对正向生成元保留自然性约束，对形式逆元取 mate，并递归处理空词与复合；modification 同样沿恒等、逆元和复合延拓。因此预复合忠实、满且本质满，`CostExactZigzag.inclusion_isBicategoricalLocalization` 已证明完整高阶局部化普遍性。
 
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
@@ -144,6 +146,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 退化层现也已原生实现：`n`-单形是从局部离散有限序 `[n]` 到总资源模型双范畴的严格保单位 lax 函子。每个保序序数映射通过预复合统一给出面和退化，并严格满足恒等/复合律。首个退化产生恒等边，lax 结合律暴露四面体方程，而一个自然变换把完整神经沿全部面映射解码到坐标半单纯神经。
 逆向现有一个与 `Fin (n + 1)` 显式范畴等价的构造子正规有限序；`fromFin` 与 finite-to-normal lax 核心不再选择伪逆。恒等/严格边和左/右单位或严格比较胞腔都按构造子计算；八种构造子模式的异质四面体相干、源单位子、恒等运输与结合子均已适配到严格保单位 lax 函子核心。坐标与原生 normal-lax 单形的两条完整结构回转都已证明并组成逐维等价。沿此等价运输原生作用得到含全部面与退化的坐标单纯神经，且它与原生 Duskin 神经自然同构。尚待 complete-Segal 2-空间组装与高阶局部化比较。
 complete-Segal 组装的第一层也已编译：总模型同伦范畴的 Rezk core 图在每个外层维度取有限串范畴的 maximal core，因而所有纵向层均为 Kan；外层对象空间与既有对象 core 范畴等价；选定的 Kan 等价箭头空间具有把对象送到恒等箭头的 `NerveEquivalenceWitness`。该 completeness 等价现已改用定义透明的恒等箭头函子，旧复合前向函子与之自然同构，且 selected core 到实际外层一阶空间的 inclusion 已编译。该复合显式自然同构于真实零退化，并与等价、inclusion、退化一起封装为可复用的范畴因子化。新的通用圆柱构造进一步把每个自然变换提升为 nerve 映射之间的 `SSet.Homotopy`；应用于此即证明中介 completeness 映射与真实零退化单纯同伦。每条横向行现还自然同构于纵向等价串范畴的普通 nerve，因而真实外层 spine 在每个双次数都是等价；`SegalCompletenessCore` 把这些字段与纵向 Kan 和 completeness 数据一起封装。选定等价范畴现又与真实外层可逆箭头的满子范畴显式等价；直接 completeness 映射仍是范畴等价的 nerve，且其 inclusion 与真实零退化单纯同伦。仍需完成高阶 Reedy matching 纤维化、非可逆局部 mapping nerves 接入及高阶局部化比较。
+
+所有上述由范畴等价展示的 completeness 映射现都自动获得 `HomotopyEquivalenceWitness`。
 Reedy 基础设施现已有严格 `Functor.IsIsofibration` 提升对象、恒等与 core inclusion 实例及正反向同构提升方程。全维 horn 定理也已完成：二维由群胚消去保证唯一，高维由范畴 nerve horn 唯一性恢复，`Functor.nerveMap_fibration` 因而给出 Kan fibration。
 degree 1 matching 现已在字面 outer-zero 坐标中编译：`degreeOneMatchingFunctor` 是从 `Core(ComposableArrows C 1)` 到两个 `Core(ComposableArrows C 0)` 的真实 `d₁,d₀` 面映射对。端点共轭给出严格 isofibration，其 nerve 是 Kan fibration，且两个 nerve 投影分别证明等于真实外向面。显式的范畴积极限同构和 nerve 保积同构把它运输到 Mathlib 选定的单纯集合二元积；标准 matching map 严格等于 `⟨d₁,d₀⟩`，并仍是 Kan fibration。`DegreeOneReedyCore` 已把这些事实接入 `SegalCompletenessCore`。degree 2 现有显式 `TriangleBoundary C` 范畴，独立记录三条边；其严格像表示定理证明边界可扩张为 `ComposableArrows C 2` 当且仅当长边等于两短边复合。maximal core 上的限制是严格 isofibration，其 nerve 为 Kan fibration，并封装为 `DegreeTwoMatchingCore`。尚待把该边界 nerve 认同为抽象 degree-2 Reedy matching 极限及处理三维以上 matching restriction。
 

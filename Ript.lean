@@ -60,6 +60,7 @@ import Ript.ForMathlib.AlgebraicTopology.GroupoidNerve
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
 import Ript.ForMathlib.AlgebraicTopology.NerveHomotopy
 import Ript.ForMathlib.AlgebraicTopology.ReedyMatching
+import Ript.ForMathlib.AlgebraicTopology.SSetHomotopyEquivalence
 import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
 import Ript.ForMathlib.CategoryTheory.Bicategory.Localization

@@ -360,12 +360,13 @@ Every node in this graph is an existing compiled module.
 | 12 (groupoidal localization foundation) | Identity, skeletal-completion, and restricted-Yoneda localization models at all internal identities, with Mathlib functor-category universal properties | PROVED |
 | 12 (simplicial foundation) | Categorical nerve, complete Kan horn filling, exact strict Segal reconstruction, quasicategory and 2-coskeletal structure, and homotopy-category recovery | PROVED |
 | 12 (classifying-diagram foundation) | Rezk classifying diagram as a simplicial object in simplicial sets, vertical and horizontal groupoid/Kan structure, strict outer Segal equivalences, exact project-local groupoidal complete-Segal packaging, natural simplex-mapping presentation, genuine boundary matching limits, and matching-map fibrations | PROVED |
+| 12 (simplicial homotopy-equivalence foundation) | Explicit simplicial inverse witnesses with genuine homotopies for both inverse laws; closure under displayed source/target isomorphisms; every categorical nerve-equivalence presentation and every groupoidal completeness map upgraded to this stronger evidence | PROVED |
 | 12 (higher-localization specification) | Mark inversion into adjoint equivalences, pseudofunctor precomposition, local equivalence on strong transformations/modifications, identity and walking-arrow base cases, and a non-locally-discrete parameterized inverse-adjoining construction with retained-, localized-, separable mixed-coordinate, and replete-equivalence-closure lift families plus local full faithfulness | PROVED |
 | 12 (higher-localization nerve comparison) | Full local-nerve action of every universe-balanced bicategorical localization, exact action on arbitrary 2-cells, unit and compositor simplicial homotopies, exact associator and left/right-unitor compatibility, marked-vertex inversion, and a complete nontrivial walking-localization instance retaining Boolean discard | PROVED |
 | 12 (cost-exact presented localization construction) | Executable binary typed zigzags; quotient local categories retaining source 2-cells; horizontal coherence and marked adjunction triangles; canonical source pseudofunctor; inversion of every saturated cost-exact arrow; universal lifts and adjoint-equivalence factorizations; mate-recursive extension of strong transformations and modifications; local precomposition equivalence; concrete inversion of the non-equivalent zero-cost embedding | PROVED |
 | 12 (higher-localization local universal property) | The presented cost-exact zigzag inclusion satisfies all three fields of `IsCostExactBicategoricalLocalization`: marked inversion, biessential factorization, and local equivalence on strong transformations/modifications | PROVED |
 | 12 (cost-exact higher-nerve comparison) | Common-universe `AsSmall` replacement of the source and larger word-presentation local hom-categories; exact lifted action on arbitrary 1-/2-cells; marked vertices landing at adjoint equivalences; unit and compositor natural isomorphisms with genuine simplicial homotopies; exact lifted associator and left/right-unitor edge equations; complete cost-exact instantiation | PROVED |
-| 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; common-universe outer Rezk map into the actual marked-zigzag target; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
+| 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; common-universe outer Rezk map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
 | 12 (global cost-exact complete-Segal/Rezk equivalence) | Assemble the compiled local 2-cell and coherence data into all-dimensional simplicial gluing and prove the intended weak-equivalence/completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
@@ -6075,7 +6076,9 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `CostExactZigzagGlobalComparison.core` uses it for the outer Rezk map into
   the actual presented target, proves marked outer arrows factor through the
   target actual-equivalence space, and packages this outer direction with the
-  full local comparison. Local vertices decode exactly to outer arrows; every
+  full local comparison. Both source and target outer completeness maps carry
+  explicit simplicial homotopy inverses. Local vertices decode exactly to
+  outer arrows; every
   invertible local 2-cell decodes to the corresponding outer equality; and
   identity, horizontal composition, associators, and both unitors agree across
   both layers. The two decoded associator pastings satisfy the bicategorical
@@ -6989,10 +6992,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - Status: `PROVED`. This discharges the completeness comparison for this
   groupoidal classifying diagram at nerve-of-category-equivalence strength.
   Project-local boundary Reedy fibrancy is proved separately and then bundled
-  in the exact project-local groupoidal complete-Segal witness below. A
-  Mathlib-native weak-equivalence/standard complete-Segal-space instance and
-  the localization universal property for the full resource-process
-  bicategory are open obligations.
+  in the exact project-local groupoidal complete-Segal witness below. The
+  completeness map now also has a displayed simplicial inverse and genuine
+  homotopies for both inverse laws. A Mathlib-native
+  weak-equivalence/standard complete-Segal-space instance and the global
+  relative Rezk comparison remain open obligations.
 - Computable: semantic proof layer. The outer degeneracy is explicit; the
   displayed categorical equivalence is noncomputable and remains downstream
   of all executable models.
@@ -7012,6 +7016,11 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   ```lean
   structure SSet.NerveEquivalenceWitness {X Y : SSet} (f : X ⟶ Y)
 
+  structure SSet.HomotopyEquivalenceWitness {X Y : SSet} (f : X ⟶ Y)
+
+  def SSet.NerveEquivalenceWitness.homotopyEquivalence :
+      SSet.HomotopyEquivalenceWitness f
+
   structure SSet.GroupoidalCompleteSegal
       (W : SimplicialObject SSet)
 
@@ -7029,18 +7038,19 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
 - Strength: the completeness field is not an opaque proposition. Its source
   and target are explicitly identified with categorical nerves, a displayed
   category equivalence is supplied, and a commuting square identifies the
-  real outer degeneracy with that nerve map. Horizontal Kan fibrancy proves
-  that every strict-Segal horizontal row is groupoidal.
+  real outer degeneracy with that nerve map. The presentation constructs an
+  explicit simplicial inverse and actual `SSet.Homotopy` values for both
+  inverse laws. Horizontal Kan fibrancy proves that every strict-Segal
+  horizontal row is groupoidal.
 - Library boundary: the pinned Mathlib file defining simplicial-set
   cofibrations and Kan fibrations explicitly leaves the Quillen model
   structure unfinished and supplies no `CategoryWithWeakEquivalences SSet`.
   Ript therefore cannot honestly instantiate a Mathlib-native standard
-  complete-Segal predicate. `GroupoidalCompleteSegal` records the strongest
-  exact data available; it is not a replacement definition of weak
-  equivalence.
+  complete-Segal predicate. `HomotopyEquivalenceWitness` is stronger concrete
+  evidence than merely asserting a weak-equivalence class, but it is not a
+  replacement definition of the missing model structure.
 - Status: `PROVED`. A future bridge to an upstream weak-equivalence interface
-  and a localization universal property for the full resource-process
-  bicategory remain open.
+  and the global relative Rezk comparison remain open.
 - Computable: noncomputable semantic proof layer; no chosen value enters any
   executable model.
 - Kernel assumptions: exactly `[propext, Classical.choice, Quot.sound]` for
@@ -7095,15 +7105,15 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   localization universal property.
 - The Rezk classifying diagram is now constructed as a genuine bisimplicial
   object, its vertical levels are controlled, and its actual outer Segal maps
-  are equivalences in every bidegree. Its actual completeness map is the nerve
-  of a category equivalence. Its natural simplex-mapping presentation,
+  are equivalences in every bidegree. Its actual completeness map has an
+  explicit simplicial homotopy inverse. Its natural simplex-mapping presentation,
   genuine boundary matching limits, and matching fibrations provide a
   project-local Reedy-fibrancy witness. Its horizontal rows are Kan, and these
   facts are now bundled in an exact project-local groupoidal complete-Segal
   witness. Because the pinned library has no simplicial weak-equivalence
   interface, the object is not advertised as a Mathlib-native standard
-  complete Segal space or as a localization of the resource-process
-  bicategory.
+  complete Segal space. The full cost-exact bicategorical localization is
+  proved separately; its global relative Rezk equivalence remains open.
 - None of the completion, envelope, nerve, or classifying-diagram layers is a
   full presheaf model or proved localization of the resource-process
   bicategory.
@@ -7346,9 +7356,10 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
     actual completeness map is the nerve of a category equivalence. Its
     boundary matching limits and fibrations are also proved and are bundled
     with horizontal Kan structure in an exact project-local groupoidal
-    complete-Segal witness. A Mathlib-native standard complete Segal space
-    claim still requires the missing simplicial weak-equivalence API; a
-    higher localization claim requires a separate universal property. The object
+    complete-Segal witness. The completeness comparison has an explicit
+    simplicial homotopy inverse. A Mathlib-native standard complete Segal space
+    claim still requires the missing simplicial weak-equivalence API; the
+    global relative Rezk comparison remains separate. The object
     and skeletal completions remain only the compiled 0/1-truncated
     foundation.
 43. The presheaf route begins with Mathlib's existing Yoneda embedding rather

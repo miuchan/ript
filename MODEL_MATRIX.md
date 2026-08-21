@@ -564,7 +564,7 @@ or the executable cores.
 | Presheaf universe | Type-valued presheaves on the internal groupoid | Yoneda is fully faithful; representable transformations/isomorphisms correspond to internal identity/equivalence | Semantic proof layer; Mathlib Yoneda audits with classical choice |
 | Yoneda envelope | Essential image of representables in the presheaf universe | Groupoid equivalent to the internal groupoid; inclusion factors Yoneda; the restricted Yoneda functor is a Mathlib localization at all internal identities | Noncomputable essential-image witnesses; exact ordinary localization of an already-groupoidal source, not a Rezk completion |
 | Simplicial interface nerve | Ordinary categorical nerve of the internal groupoid | Complete Kan horn filling, strict Segal, quasicategory, 2-coskeletal; vertices/edges/2-simplices encode interfaces, identities, and composition; homotopy category recovers the groupoid | Semantic proof layer; chosen fillers audit with classical choice; no complete-Segal or Rezk claim |
-| Rezk classifying diagram | Outer simplicial category of composable interface strings, followed levelwise by the ordinary nerve | Every vertical level and horizontal row is a groupoid nerve and Kan; every horizontal row is strict Segal; the whole outer diagram is naturally `n ↦ Map(Δ[n], N(M.Object))`; `Map(∂Δ[n], N(M.Object))` is the genuine matching limit; every matching map is a fibration; the actual completeness map is presented as the nerve of a category equivalence | Semantic proof layer; exact project-local `GroupoidalCompleteSegal` witness proved; the full cost-exact localization, common-universe local comparison, actual-target outer Rezk map, and vertex/identity/composition gluing are proved; Mathlib-native weak-equivalence/standard complete-Segal packaging and higher outer/local coherence remain open |
+| Rezk classifying diagram | Outer simplicial category of composable interface strings, followed levelwise by the ordinary nerve | Every vertical level and horizontal row is a groupoid nerve and Kan; every horizontal row is strict Segal; the whole outer diagram is naturally `n ↦ Map(Δ[n], N(M.Object))`; `Map(∂Δ[n], N(M.Object))` is the genuine matching limit; every matching map is a fibration; the actual completeness map has an explicit simplicial homotopy inverse | Semantic proof layer; exact project-local `GroupoidalCompleteSegal` and `HomotopyEquivalenceWitness` evidence proved; the full cost-exact localization, common-universe local comparison, actual-target outer Rezk map, source/target completeness witnesses, and low-dimensional gluing are proved; Mathlib-native weak-equivalence packaging and the global relative Rezk comparison remain open |
 
 The concrete Boolean model proves that `bit tensor unit` and `unit tensor bit`
 are unequal syntax trees in Lean while tensor symmetry makes them internally
@@ -605,7 +605,8 @@ matching fibrations form a compiled project-local Reedy-fibrancy witness.
 The identity, skeletal-completion, and restricted-Yoneda functors satisfy the
 ordinary Mathlib localization universal property at all morphisms of the
 already-groupoidal interface category. An exact project-local groupoidal
-complete-Segal witness is also proved. A
+complete-Segal witness is also proved. Its completeness map now carries an
+explicit simplicial inverse and genuine homotopies for both inverse laws. A
 Mathlib-native standard complete-Segal instance remains unavailable because
 the pinned library has no simplicial weak-equivalence API. The full
 resource-process bicategory's cost-exact higher localization is now proved by

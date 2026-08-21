@@ -344,7 +344,9 @@ map is a fibration. These facts are bundled in the project-local
 `SSet.BoundaryReedyFibrant` interface. Ript now also proves every horizontal
 row is the Kan nerve of a groupoid and packages both directions, strict outer
 Segal data, genuine matching fibrations, and the actual completeness map's
-`SSet.NerveEquivalenceWitness` in `SSet.GroupoidalCompleteSegal`. Remaining
+`SSet.NerveEquivalenceWitness` in `SSet.GroupoidalCompleteSegal`. Every such
+witness now constructs an explicit simplicial inverse and genuine homotopies
+for both inverse laws through `SSet.HomotopyEquivalenceWitness`. Remaining
 work is broader infrastructure: the pinned Mathlib release has neither a
 simplicial-set weak-equivalence class nor a completed Quillen model structure,
 so a Mathlib-native standard complete-Segal instance cannot yet be stated.
@@ -357,14 +359,16 @@ transformations and modifications. Its Ript specialization is
 `CostExactZigzag.inclusion_isBicategoricalLocalization` now supplies the
 previously open existence theorem for the full resource-process bicategory.
 `CostExactZigzagNerveComparison.core` now supplies its common-universe full
-local-nerve action, including exact arbitrary 2-cell images and a compositor
-simplicial homotopy. `CostExactZigzagGlobalComparison.core` additionally
+local-nerve action, including exact arbitrary 2-cell images, unit/compositor
+simplicial homotopies, and associator/unitor compatibility.
+`CostExactZigzagGlobalComparison.core` additionally
 constructs the outer Rezk map from the actual higher localization's induced
 homotopy functor and packages both layers; marked outer arrows factor through
-the target equivalence space. Local vertices, identities, horizontal
+the target equivalence space, while both source and target outer completeness
+maps have explicit simplicial homotopy inverses. Local vertices, identities, horizontal
 composites, associators, and both unitors satisfy exact outer/local gluing
-laws. The remaining higher comparison problem is higher simplicial gluing and
-the complete-Segal/Rezk weak-equivalence theorem.
+laws. The remaining higher comparison problem is the relative all-dimensional
+simplicial gluing and its complete-Segal/Rezk weak-equivalence theorem.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
