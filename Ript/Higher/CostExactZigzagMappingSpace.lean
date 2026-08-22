@@ -23,9 +23,10 @@ quotient and nerve interpretation.  Elementary executable identity/composite
 column refinements and marked unit/counit pair refinements now have exact
 signed width and semantic round trips. Common-refinement spans now generate a
 row quotient whose equality is sound for semantic isomorphism. A quotient
-mapping category/nerve, competing-move coherence, and reduced-hammock
-invariance are still absent, so these results are not by themselves the final
-Dwyer--Kan theorem.
+thin groupoid/nerve is now equivalent to the discrete quotient with an explicit
+simplicial homotopy inverse. A non-thin refinement-path nerve, competing-move
+coherence, and reduced-hammock invariance are still absent, so these results
+are not by themselves the final Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -645,6 +646,86 @@ theorem commonRefinementCore (M N : ProcessModel.{u, v, w} R) :
     Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_semanticIso
       (costExactArrows R)
 
+/-! ## Zero-truncated common-refinement nerve -/
+
+/-- Equivalence from the thin common-refinement groupoid to the discrete
+category of row-quotient classes. -/
+noncomputable def thinRefinementEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    Bicategory.MarkedZigzag.CommonRefinement.RowObject
+        (costExactArrows R) M N ≌
+      Discrete (HammockRowQuotient M N) :=
+  Bicategory.MarkedZigzag.CommonRefinement.quotientEquivalence
+    (costExactArrows R) M N
+
+/-- Nerve comparison from the thin common-refinement groupoid to the discrete
+row-quotient nerve. -/
+noncomputable def thinRefinementComparison
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerveMap (thinRefinementEquivalence M N).functor
+
+/-- Categorical-nerve equivalence evidence for the zero-truncated common-
+refinement comparison. -/
+noncomputable def thinRefinementNerveEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (thinRefinementComparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence
+    (thinRefinementEquivalence M N)
+
+/-- Explicit simplicial inverse and both homotopies for the zero-truncated
+common-refinement comparison. -/
+noncomputable def thinRefinementHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (thinRefinementComparison M N) :=
+  SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+    (thinRefinementEquivalence M N)
+
+/-- Exact vertex action: a represented row maps to its common-refinement
+quotient class. -/
+theorem thinRefinementComparison_vertex
+    {M N : ProcessModel.{u, v, w} R}
+    (row : LinearHammock M N) :
+    (thinRefinementComparison M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀
+          (⟨row⟩ : Bicategory.MarkedZigzag.CommonRefinement.RowObject
+            (costExactArrows R) M N)) =
+      ComposableArrows.mk₀
+        (Discrete.mk
+          (Bicategory.MarkedZigzag.CommonRefinement.quotientMk
+            (costExactArrows R) row)) := by
+  exact CategoryTheory.nerveMap_app_mk₀ _ _
+
+/-- Machine-facing zero-truncated common-refinement mapping-nerve core. -/
+structure ThinRefinementNerveCore
+    (M N : ProcessModel.{u, v, w} R) : Prop where
+  /-- The thin refinement nerve is categorically equivalent to the discrete
+  row-quotient nerve. -/
+  nerve_equivalence :
+    Nonempty (SSet.NerveEquivalenceWitness
+      (thinRefinementComparison M N))
+  /-- The comparison has an explicit simplicial inverse and both homotopies. -/
+  homotopy_equivalence :
+    Nonempty (SSet.HomotopyEquivalenceWitness
+      (thinRefinementComparison M N))
+  /-- Exact action on every raw row vertex. -/
+  maps_vertex : ∀ row,
+    (thinRefinementComparison M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀
+          (⟨row⟩ : Bicategory.MarkedZigzag.CommonRefinement.RowObject
+            (costExactArrows R) M N)) =
+      ComposableArrows.mk₀
+        (Discrete.mk
+          (Bicategory.MarkedZigzag.CommonRefinement.quotientMk
+            (costExactArrows R) row))
+
+/-- Every cost-exact model pair satisfies the zero-truncated common-refinement
+nerve comparison. -/
+theorem thinRefinementNerveCore (M N : ProcessModel.{u, v, w} R) :
+    ThinRefinementNerveCore M N where
+  nerve_equivalence := ⟨thinRefinementNerveEquivalence M N⟩
+  homotopy_equivalence := ⟨thinRefinementHomotopyEquivalence M N⟩
+  maps_vertex := thinRefinementComparison_vertex
+
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
 underlying categories are definitionally the same presentation, but this
@@ -874,6 +955,9 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   columnRefinement : ColumnRefinementCore M N
   /-- Common-refinement row quotient with sound semantic isomorphisms. -/
   commonRefinement : CommonRefinementCore M N
+  /-- Zero-truncated common-refinement groupoid nerve and its discrete-
+  quotient equivalence. -/
+  thinRefinementNerve : ThinRefinementNerveCore M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -948,6 +1032,7 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
   alignedHammock := alignedHammockCore M N
   columnRefinement := columnRefinementCore M N
   commonRefinement := commonRefinementCore M N
+  thinRefinementNerve := thinRefinementNerveCore M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N

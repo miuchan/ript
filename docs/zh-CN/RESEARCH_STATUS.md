@@ -144,7 +144,7 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 现已有受限但真正独立的右结合 linear hammock 对象模型：typed step 列表与二叉 words 相互转换和扁平化，精确保留长度，并给出等价 mapping category、nerve 显式同伦逆以及到实际 target local nerve 的直接比较。`LinearHammockDwyerKanCore` 将其与 outer essential surjectivity 组合。尚缺与经典任意网格 hammock 或其他认可 derived 构造的比较。
 
-任意高度的纵向 grid 现也已显式化：`n`-grid 包含 `n + 1` 行 linear hammocks、`n` 条相邻商 2-胞腔边和全部端点方程，strict-Segal 重构将其与 linear hammock nerve 的 `n`-simplices 等价，并精确证明行、边、解码和双向 round trip。固定形状的横向多列片段也已形式化：等形行的每个公共列含一个原始原子 2-胞腔，宽度与可执行横向拼接精确，商解释通过 interchange 保持逐列恒等和纵向合成，任意高度 aligned grid 重构为具有精确行和解释边的真实 simplex。基本前向列细化也已可执行：恒等列可插入/删除，复合列可展开/收缩，move 可在任意公共前缀下提升并传递复合；带符号宽度变化精确，两个生成器对在商语义中双向抵消。marked reverse 结构现在也包含可执行的 unit pair `f ; f⁻¹` 与 counit pair `f⁻¹ ; f` 插入/删除，其带符号宽度为 `±2`，语义同构、双向 round trip 和任意前缀稳定性均已证明。每个 refinement 现有可执行逆向和统一语义同构；双腿 common-refinement span 构成等价关系及行商，商相等精确等价于可共同细化，并只推出语义同构而非对象相等。仍缺商 mapping category/nerve、竞争 move 协调、约化 hammock 不变性及标准弱等价封装。
+任意高度的纵向 grid 现也已显式化：`n`-grid 包含 `n + 1` 行 linear hammocks、`n` 条相邻商 2-胞腔边和全部端点方程，strict-Segal 重构将其与 linear hammock nerve 的 `n`-simplices 等价，并精确证明行、边、解码和双向 round trip。固定形状的横向多列片段也已形式化：等形行的每个公共列含一个原始原子 2-胞腔，宽度与可执行横向拼接精确，商解释通过 interchange 保持逐列恒等和纵向合成，任意高度 aligned grid 重构为具有精确行和解释边的真实 simplex。基本前向列细化也已可执行：恒等列可插入/删除，复合列可展开/收缩，move 可在任意公共前缀下提升并传递复合；带符号宽度变化精确，两个生成器对在商语义中双向抵消。marked reverse 结构现在也包含可执行的 unit pair `f ; f⁻¹` 与 counit pair `f⁻¹ ; f` 插入/删除，其带符号宽度为 `±2`，语义同构、双向 round trip 和任意前缀稳定性均已证明。每个 refinement 现有可执行逆向和统一语义同构；双腿 common-refinement span 构成等价关系及行商，商相等精确等价于可共同细化，并只推出语义同构而非对象相等。0-截断 mapping 层也已完成：包装行构成薄 common-refinement 群胚，并与离散行商范畴等价；nerve 比较具有显式单纯逆和双向同伦。仍缺保留竞争 refinement paths 的非薄 nerve、critical-pair 协调、约化 hammock 不变性及标准弱等价封装。
 
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算

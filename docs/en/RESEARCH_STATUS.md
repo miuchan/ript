@@ -372,9 +372,12 @@ isomorphisms, both round trips, and arbitrary-prefix stability. Every
 refinement now has an executable reverse and one unified semantic isomorphism.
 Two-leg common-refinement spans form an equivalence relation and row quotient;
 quotient equality is exactly common-refinability and yields a semantic
-isomorphism without object equality. A quotient mapping category/nerve,
-competing-move coherence, reduced-hammock invariance, standard weak-equivalence
-packaging, and the global Dwyer--Kan/Rezk theorem remain.
+isomorphism without object equality. The zero-truncated mapping layer is also
+complete: wrapped rows form a thin common-refinement groupoid categorically
+equivalent to the discrete row quotient, and the nerve comparison has an
+explicit simplicial inverse and both homotopies. A non-thin refinement-path
+nerve, competing-move coherence, reduced-hammock invariance, standard weak-
+equivalence packaging, and the global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,
