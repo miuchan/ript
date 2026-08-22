@@ -921,6 +921,10 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveMap_rawCellEdge
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveHomotopy
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveIsoHomotopies
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.length_flatten
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.normalizationIso
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.equivalence
 #print axioms Ript.Higher.CostExactZigzag.backwardCostReflecting
 #print axioms Ript.Higher.CostExactZigzag.unitCellCostReflecting
 #print axioms Ript.Higher.CostExactZigzag.counitCellCostReflecting
@@ -1004,6 +1008,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.localMap_factorization
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.identityInterpretation
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.localPresentationCore
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.linearComparisonNerveEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.linearTargetHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk
@@ -1026,6 +1032,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalizationFunctor_essSurj
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.PresentedDwyerKanCore
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.presentedDwyerKanCore
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.LinearHammockDwyerKanCore
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.linearHammockDwyerKanCore
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_invertsCostExactMorphisms
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison

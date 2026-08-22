@@ -149,6 +149,8 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 
 `PresentedDwyerKanCore` は outer essential surjectivity と全 presented mapping-space 条件を一つの監査済み命題に統合します。そこには nerve 同値、明示的ホモトピー逆、代数的/単体的表示普遍性、厳密因子化、全次数の厳密作用が含まれます。`Presented` という限定は不可欠であり、独立した hammock 定理ではありません。
 
+制限付きながら真に独立した右結合 linear hammock 対象モデルもできました。typed step 列は二分 words と相互変換・平坦化され、長さを厳密に保存し、同値な mapping category、nerve の明示的ホモトピー逆、実際の対象 local nerve への直接比較を与えます。`LinearHammockDwyerKanCore` はこれを outer essential surjectivity と統合します。古典的な任意グリッド hammock または他の受理された derived 構成との比較は未解決です。
+
 異なる資源代数のモデルは順序付き加法準同型で比較できます。直列、並列、構造、予算則が再添字
 付けされ、異種強モデル射は資源写像とともに合成します。これらは、資源代数とモデルを対象、
 資源変換と強モデル射を 1-セル、資源変換の等号とモノイダル自然変換を 2-セルとする全双圏を

@@ -1504,6 +1504,30 @@ theorem presentedDwyerKanCore : PresentedDwyerKanCore.{u, v, w} (R := R) := by
     CostExactZigzagMappingSpace.localMap_factorization M N,
     CostExactZigzagMappingSpace.comparison_simplex M N⟩
 
+/-- Project-local linear-hammock Dwyer--Kan criterion. Its source mapping
+spaces are independently defined right-associated typed step lists, and each
+maps directly to the actual target local nerve by a categorical-nerve
+equivalence with an explicit simplicial homotopy inverse.
+
+This still does not identify the linear model with the classical arbitrary-
+grid hammock localization, so it is not yet the standard Dwyer--Kan theorem. -/
+def LinearHammockDwyerKanCore : Prop :=
+  (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
+  ∀ (M N : ProcessModel.{u, v, w} R),
+    Nonempty (SSet.NerveEquivalenceWitness
+      (CostExactZigzagMappingSpace.linearTargetComparison M N)) ∧
+    Nonempty (SSet.HomotopyEquivalenceWitness
+      (CostExactZigzagMappingSpace.linearTargetComparison M N))
+
+/-- The actual cost-exact localization satisfies the project-local linear-
+hammock Dwyer--Kan criterion. -/
+theorem linearHammockDwyerKanCore :
+    LinearHammockDwyerKanCore.{u, v, w} (R := R) := by
+  refine ⟨smallHomotopyLocalizationFunctor_essSurj (R := R), ?_⟩
+  intro M N
+  exact ⟨⟨CostExactZigzagMappingSpace.linearTargetNerveEquivalence M N⟩,
+    ⟨CostExactZigzagMappingSpace.linearTargetHomotopyEquivalence M N⟩⟩
+
 
 /-- Machine-facing global comparison. The canonical outer direction uses the
 relative Rezk source, the auxiliary ordinary direction records the induced
@@ -1539,6 +1563,10 @@ structure GlobalComparisonCore where
   surjectivity plus the complete presented mapping-space condition for every
   model pair. -/
   presentedDwyerKan : PresentedDwyerKanCore.{u, v, w} (R := R)
+  /-- Project-local Dwyer--Kan evidence using the independently defined
+  linear hammock mapping nerves. -/
+  linearHammockDwyerKan :
+    LinearHammockDwyerKanCore.{u, v, w} (R := R)
   /-- Explicit simplicial homotopy-equivalence witness for source outer
   completeness. -/
   sourceCompleteness : SSet.HomotopyEquivalenceWitness
@@ -1779,6 +1807,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   localNerve := CostExactZigzagNerveComparison.core (R := R)
   relativeZigzagMappingSpace := CostExactZigzagMappingSpace.core
   presentedDwyerKan := presentedDwyerKanCore (R := R)
+  linearHammockDwyerKan := linearHammockDwyerKanCore (R := R)
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   relativeArrowGlue := relativeOuterComparison_sourceArrow

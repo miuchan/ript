@@ -319,7 +319,12 @@ eksteran esencan surĵetecon kun ĉiuj prezentitaj map-spacaj kondiĉoj en unu
 reviziita aserto: nerva ekvivalento, eksplicita homotopia inversilo, algebra
 kaj simplicia prezenta universaleco, strikta faktorizo kaj ekzakta tutgrada
 ago. La kvalifiko “presented” estas esenca; tio ne estas sendependa hammock-a
-teoremo.
+teoremo. Sendependa dekstre-asocia lineara hammock-sintakso nun tamen ekzistas:
+ĝiaj tajpitaj paŝlistoj konvertiĝas al kaj platigas binarajn vortojn, konservas
+longon kaj donas ekvivalentan map-kategorion kaj nervon kun eksplicita
+homotopia inversilo, inkluzive rektan komparon al la fakta cela loka nervo.
+`LinearHammockDwyerKanCore` kunigas tion kun ekstera esenca surĵeteco. Restas
+komparo kun la klasika arbitra-krada hammock aŭ alia akceptita derivita modelo.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

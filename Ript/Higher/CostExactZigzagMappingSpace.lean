@@ -1,5 +1,6 @@
 import Ript.Higher.CostExactZigzagNerveComparison
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
+import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagLinearHammock
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingNervePresentation
 
 /-!
@@ -111,6 +112,21 @@ abbrev RelativeZigzagMappingNerve
     (M N : ProcessModel.{u, v, w} R) :=
   CategoryTheory.nerve (RelativeZigzagMappingCategory M N)
 
+/-- Independently defined right-associated linear hammock words for the
+cost-exact marking. -/
+abbrev LinearHammock (M N : ProcessModel.{u, v, w} R) :=
+  Bicategory.MarkedZigzag.LinearWord (costExactArrows R) M N
+
+/-- Common-universe linear hammock mapping category. -/
+abbrev LinearHammockMappingCategory
+    (M N : ProcessModel.{u, v, w} R) :=
+  AsSmall.{max (max w (v + 1)) (u + 1)} (LinearHammock M N)
+
+/-- Categorical nerve of the independent linear hammock mapping category. -/
+abbrev LinearHammockMappingNerve
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerve (LinearHammockMappingCategory M N)
+
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
 underlying categories are definitionally the same presentation, but this
@@ -141,6 +157,71 @@ noncomputable def comparisonHomotopyEquivalence
     SSet.HomotopyEquivalenceWitness (comparison M N) :=
   SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
     (comparisonEquivalence M N)
+
+/-- Common-universe equivalence from independently defined linear hammock
+words to the presented binary word/quotient-2-cell mapping category. -/
+noncomputable def linearHammockEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    LinearHammockMappingCategory M N ≌
+      RelativeZigzagMappingCategory M N :=
+  AsSmall.equiv.symm.trans
+    ((Bicategory.MarkedZigzag.LinearWord.equivalence
+      (costExactArrows R) M N).trans AsSmall.equiv)
+
+/-- Simplicial comparison from the independent linear hammock nerve to the
+presented relative-zigzag mapping nerve. -/
+noncomputable def linearComparison (M N : ProcessModel.{u, v, w} R) :
+    LinearHammockMappingNerve M N ⟶
+      RelativeZigzagMappingNerve M N :=
+  CategoryTheory.nerveMap (linearHammockEquivalence M N).functor
+
+/-- Categorical-nerve equivalence evidence for the linear-to-presented
+mapping-space comparison. -/
+noncomputable def linearComparisonNerveEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (linearComparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence
+    (linearHammockEquivalence M N)
+
+/-- Explicit inverse and both simplicial homotopies for the linear-to-
+presented mapping comparison. -/
+noncomputable def linearComparisonHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (linearComparison M N) :=
+  SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+    (linearHammockEquivalence M N)
+
+/-- Direct category equivalence from independent linear hammocks to the
+actual localization-target local hom-category. -/
+noncomputable def linearTargetEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    LinearHammockMappingCategory M N ≌
+      CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N :=
+  (linearHammockEquivalence M N).trans (comparisonEquivalence M N)
+
+/-- Direct simplicial comparison from independent linear hammocks to the
+actual target local mapping nerve. -/
+noncomputable def linearTargetComparison
+    (M N : ProcessModel.{u, v, w} R) :
+    LinearHammockMappingNerve M N ⟶
+      CommonTargetMappingNerve
+        (CostExactZigzag.inclusion (R := R)) M N :=
+  CategoryTheory.nerveMap (linearTargetEquivalence M N).functor
+
+/-- Categorical-nerve equivalence evidence for the direct linear-hammock-to-
+target comparison. -/
+noncomputable def linearTargetNerveEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (linearTargetComparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence (linearTargetEquivalence M N)
+
+/-- Explicit inverse and both simplicial homotopies for the direct linear-
+hammock-to-target comparison. -/
+noncomputable def linearTargetHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (linearTargetComparison M N) :=
+  SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+    (linearTargetEquivalence M N)
 
 /-- Common-universe functor embedding every source 1-cell and 2-cell into the
 relative-zigzag mapping category as a forward word and original quotient
@@ -267,6 +348,22 @@ pair of process models. -/
 structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Source-defined quotient-presentation universal property. -/
   localPresentation : LocalPresentationCore M N
+  /-- Independent linear hammock nerve is categorically equivalent to the
+  presented relative mapping nerve. -/
+  linearNerveEquivalence :
+    SSet.NerveEquivalenceWitness (linearComparison M N)
+  /-- Explicit simplicial homotopy inverse for the linear-to-presented
+  comparison. -/
+  linearHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness (linearComparison M N)
+  /-- Independent linear hammock nerve is categorically equivalent directly
+  to the actual target local nerve. -/
+  linearTargetNerveEquivalence :
+    SSet.NerveEquivalenceWitness (linearTargetComparison M N)
+  /-- Explicit simplicial homotopy inverse for the direct linear-to-target
+  comparison. -/
+  linearTargetHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness (linearTargetComparison M N)
   /-- Categorical equivalence between the source-presented zigzag category
   and the actual target local hom-category. -/
   categoricalEquivalence : RelativeZigzagMappingCategory M N ≌
@@ -317,6 +414,10 @@ zigzag mapping-space comparison. -/
 noncomputable def core (M N : ProcessModel.{u, v, w} R) :
     MappingSpaceCore M N where
   localPresentation := localPresentationCore M N
+  linearNerveEquivalence := linearComparisonNerveEquivalence M N
+  linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N
+  linearTargetNerveEquivalence := linearTargetNerveEquivalence M N
+  linearTargetHomotopyEquivalence := linearTargetHomotopyEquivalence M N
   categoricalEquivalence := comparisonEquivalence M N
   nerveEquivalence := comparisonNerveEquivalence M N
   homotopyEquivalence := comparisonHomotopyEquivalence M N
