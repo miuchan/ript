@@ -1122,6 +1122,11 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso_nil
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.leftUnitor_conjugation
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.leftUnitor_inv_conjugation
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso_cons
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.rightUnit_step_coherence
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.rightUnitor_conjugation
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.rightUnitor_inv_conjugation
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.rightUnit_inv_step_coherence
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.ofEq
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.toHom_ofEq
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_eq_of_rel
@@ -1129,6 +1134,13 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_leftUnitorInv
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.leftUnitor_normalizable
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.leftUnitorInv_normalizable
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.toHom_rightUnitPath
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.toHom_rightUnitPathInv
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.rightUnitPath_hom_inv
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_rightUnitor
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_rightUnitorInv
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.rightUnitor_normalizable
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.rightUnitorInv_normalizable
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore

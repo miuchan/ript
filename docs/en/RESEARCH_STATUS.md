@@ -402,9 +402,10 @@ coherence formula. Generic empty/two-atom formulas now normalize marked
 unit/counit and inverses exactly to pair insertion/deletion. These structural
 obligations are further reduced: computable linear append
 right-unit/associativity equalities and equality paths are available, and left
-unitor/inverse normalize to identity by arbitrary-iso conjugation. The
-remaining four associator/right-unitor obligations already imply all-cell
-normalization conditionally,
+unitor/inverse normalize to identity by arbitrary-iso conjugation. Recursive
+terminal-empty-row paths now normalize right unitor/inverse exactly, with
+mutually inverse quotient semantics. The remaining two associator/inverse
+obligations already imply all-cell normalization conditionally,
 but are not assumed unconditionally. Semantic fullness, competing-move
 coherence, reduced-hammock invariance, standard weak-equivalence packaging, and
 the global Dwyer--Kan/Rezk theorem remain.

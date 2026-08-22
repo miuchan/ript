@@ -1447,6 +1447,20 @@ structure HammockRawCellNormalizationCore : Prop where
       (costExactArrows R)
       (Bicategory.MarkedZigzag.Cell.leftUnitorInv
         (W := costExactArrows R) word)
+  /-- Right unitor is normalizable. -/
+  rightUnitor : ∀ {M N : ProcessModel.{u, v, w} R}
+      (word : CostExactZigzag.Word (R := R) M N),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.rightUnitor
+        (W := costExactArrows R) word)
+  /-- Inverse right unitor is normalizable. -/
+  rightUnitorInv : ∀ {M N : ProcessModel.{u, v, w} R}
+      (word : CostExactZigzag.Word (R := R) M N),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.rightUnitorInv
+        (W := costExactArrows R) word)
   /-- Raw left whiskering preserves normalizability. -/
   whiskerLeft : ∀ (M N P : ProcessModel.{u, v, w} R)
       (pre : CostExactZigzag.Word (R := R) M N)
@@ -1535,6 +1549,12 @@ theorem hammockRawCellNormalizationCore :
       (costExactArrows R) word
   leftUnitorInv := fun word =>
     Bicategory.MarkedZigzag.HammockPath.leftUnitorInv_normalizable
+      (costExactArrows R) word
+  rightUnitor := fun word =>
+    Bicategory.MarkedZigzag.HammockPath.rightUnitor_normalizable
+      (costExactArrows R) word
+  rightUnitorInv := fun word =>
+    Bicategory.MarkedZigzag.HammockPath.rightUnitorInv_normalizable
       (costExactArrows R) word
   whiskerLeft := fun _ _ _ pre {_ _} {_} member =>
     Bicategory.MarkedZigzag.HammockPath.whiskerLeft_normalizable
