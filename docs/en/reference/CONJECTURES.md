@@ -464,10 +464,15 @@ semantic image has now been internalized as the subgroupoid of actual quotient
 2-cells carrying an executable-refinement witness: paths are equivalent to
 this image, the image inclusion is faithful, the nerve equivalence has an
 explicit simplicial homotopy inverse, and semantic interpretation factors
-through it strictly. The remaining classical gap is proving that this exact
-image covers the required derived/hammock core (or adding the missing linear
-quotient 2-cells), together with coherence for competing forward/marked moves,
-reduced-hammock moves, and their homotopical invariance.
+through it strictly. A larger non-groupoidal path category now alternates
+refinements with arbitrary aligned raw 2-cells. Its semantics is faithful, the
+refinement subsystem embeds faithfully and factors strictly, and every source
+2-cell has a canonical one-column representative whose quotient semantics is
+the original 2-cell conjugated by right-unitors. The remaining classical gap
+is normalizing every presented quotient 2-cell into these alternating paths
+(or identifying the missing generators), together with coherence for
+competing forward/marked moves, reduced-hammock moves, and their homotopical
+invariance.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -570,9 +575,11 @@ groupoid/discrete-quotient nerve equivalence. A non-thin refinement-path nerve,
 with faithful exact semantic action, is now proved too. It is categorically
 and simplicially equivalent to the exact subgroupoid of refinement-generated
 quotient 2-cells, which includes faithfully in the full linear mapping
-category and strictly factors the semantic nerve map. Coverage of the required
-derived/hammock mapping core by this exact image, critical-pair coherence, and
-reduced-hammock invariance remain open.
+category and strictly factors the semantic nerve map. The aligned-cell-
+augmented path category now adds arbitrary pointwise raw cells, contains every
+source 2-cell in one-column form, and strictly extends refinement paths.
+Normalization of all presented quotient 2-cells into this generated category,
+critical-pair coherence, and reduced-hammock invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

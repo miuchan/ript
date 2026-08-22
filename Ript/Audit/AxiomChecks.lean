@@ -1051,6 +1051,15 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathFunctor_essSurj
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathEquivalence
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.semanticFunctor_factorization
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.rel_vcomp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.semanticFunctor_faithful
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.refinementFunctor_faithful
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.refinementSemanticFunctor_factorization
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.inSemanticImage_iff_exists_map
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.refinement_mem_semanticImage
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.aligned_mem_semanticImage
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.originalAlignedCell_toHom
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.originalCell_mem_semanticImage
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore
@@ -1066,6 +1075,10 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_factorization
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathImageComparison_edge
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementImageNerveCore
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockPathSemanticComparison_alignedEdge
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockPathSemanticComparison_originalEdge
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_hammockFactorization
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockPathNerveCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk

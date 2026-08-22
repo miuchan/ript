@@ -356,10 +356,14 @@ surĵeta. Faktaj kvocientaj 2-ĉeloj kun ekzista atestilo de plenumebla rafinado
 nun formas la ekzaktan semantikan bildgrupoidon. La voja grupoido estas
 kategorie ekvivalenta al ĝi; la nerva komparo havas eksplicitan simplician
 homotopian inverson, la bildinkludo en la plenan linearan mapkategorion estas
-fidela, kaj la origina semantika nervomapo strikte faktoriĝas tra ĝi. Restas
-pruvi ke tiu ekzakta bildo kovras la bezonatan derivitan/hammock-an mapkernon
-(aŭ aldoni la mankantajn linearajn kvocientajn 2-ĉelojn), kohereco de kritikaj
-paroj, reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
+fidela, kaj la origina semantika nervomapo strikte faktoriĝas tra ĝi. Pli granda
+negrupoida generita vojkategorio nun alternas rafinadojn kun arbitraj vicigitaj
+krudaj 2-ĉeloj. Ĝiaj semantiko kaj rafinada enmeto estas fidelaj, la malnova
+nervomapo strikte faktoriĝas tra ĝi, kaj ĉiu fonta 2-ĉelo havas kanonan
+unukolumnan eĝon egalan al la origina kvocienta ĉelo konjugita per dekstraj
+unuigiloj. Restas normaligi ĉiun prezentitan kvocientan 2-ĉelon en tiajn vojojn
+(aŭ identigi mankantajn generatorojn), kohereco de kritikaj paroj,
+reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
