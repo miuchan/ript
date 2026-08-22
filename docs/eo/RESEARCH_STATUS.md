@@ -361,9 +361,13 @@ negrupoida generita vojkategorio nun alternas rafinadojn kun arbitraj vicigitaj
 krudaj 2-ĉeloj. Ĝiaj semantiko kaj rafinada enmeto estas fidelaj, la malnova
 nervomapo strikte faktoriĝas tra ĝi, kaj ĉiu fonta 2-ĉelo havas kanonan
 unukolumnan eĝon egalan al la origina kvocienta ĉelo konjugita per dekstraj
-unuigiloj. Restas normaligi ĉiun prezentitan kvocientan 2-ĉelon en tiajn vojojn
-(aŭ identigi mankantajn generatorojn), kohereco de kritikaj paroj,
-reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
+unuigiloj. Normaligitaj maldekstra/dekstra whiskering kaj horizontala append
+nun konservas semantikan egalecon kaj bildanecon, kun ekzaktaj tri-modelaj
+nervaj formuloj. Krudaj identecaj kaj originalaj ĉeloj estas normaligeblaj,
+kaj vertikala kunmeto konservas normaligeblecon. Restas pruvi naturecon de la
+normaligaj izomorfioj rilate al kruda whiskering, normaligi la aliajn
+strukturajn generatorojn, koherecon de kritikaj paroj, reduktita-hammock
+invariant econ kaj norman malfort-ekvivalentan pakon.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
