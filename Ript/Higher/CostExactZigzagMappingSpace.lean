@@ -24,7 +24,9 @@ column refinements and marked unit/counit pair refinements now have exact
 signed width and semantic round trips. Common-refinement spans now generate a
 row quotient whose equality is sound for semantic isomorphism. A quotient
 thin groupoid/nerve is now equivalent to the discrete quotient with an explicit
-simplicial homotopy inverse. A non-thin refinement-path nerve, competing-move
+simplicial homotopy inverse. A non-thin semantic refinement-path groupoid nerve
+now maps faithfully and object-essentially-surjectively into the linear mapping
+nerve with exact edge action. Fullness/image characterization, competing-move
 coherence, and reduced-hammock invariance are still absent, so these results
 are not by themselves the final Dwyer--Kan theorem.
 -/
@@ -726,6 +728,96 @@ theorem thinRefinementNerveCore (M N : ProcessModel.{u, v, w} R) :
   homotopy_equivalence := ⟨thinRefinementHomotopyEquivalence M N⟩
   maps_vertex := thinRefinementComparison_vertex
 
+/-! ## Non-thin semantic refinement-path nerve -/
+
+/-- Nerve map from the non-thin semantic refinement-path groupoid into the
+existing linear hammock mapping nerve. -/
+def refinementPathSemanticComparison
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerveMap
+    (Bicategory.MarkedZigzag.RefinementPath.semanticFunctor
+      (costExactArrows R) M N)
+
+/-- Nerve map implementing zero-truncation from semantic refinement paths to
+the thin common-refinement groupoid. -/
+def refinementPathToThinComparison
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerveMap
+    (Bicategory.MarkedZigzag.RefinementPath.toThinFunctor
+      (costExactArrows R) M N)
+
+/-- Exact object action of the semantic refinement-path nerve map. -/
+theorem refinementPathSemanticComparison_vertex
+    {M N : ProcessModel.{u, v, w} R}
+    (row : LinearHammock M N) :
+    (refinementPathSemanticComparison M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀
+          (⟨row⟩ : Bicategory.MarkedZigzag.RefinementPathObject
+            (costExactArrows R) M N)) =
+      ComposableArrows.mk₀ row := by
+  exact CategoryTheory.nerveMap_app_mk₀ _ _
+
+/-- Exact edge action: a represented refinement path maps to its quotient-
+cell interpretation. -/
+theorem refinementPathSemanticComparison_edge
+    {M N : ProcessModel.{u, v, w} R}
+    {first second : LinearHammock M N}
+    (refinement : HammockColumnRefinement first second) :
+    (refinementPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.RefinementPath.setoid
+              (costExactArrows R) first second) refinement)) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) refinement) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Machine-facing non-thin semantic refinement-path nerve core.  It records
+faithful semantic action without claiming fullness or weak equivalence. -/
+structure RefinementPathNerveCore
+    (M N : ProcessModel.{u, v, w} R) : Prop where
+  /-- The semantic refinement-path source is a groupoid. -/
+  source_groupoid : IsGroupoid
+    (Bicategory.MarkedZigzag.RefinementPathObject
+      (costExactArrows R) M N)
+  /-- Semantic interpretation is faithful on refinement-path morphisms. -/
+  semantic_faithful :
+    (Bicategory.MarkedZigzag.RefinementPath.semanticFunctor
+      (costExactArrows R) M N).Faithful
+  /-- Every linear row object is in the semantic functor's essential image. -/
+  semantic_essSurj :
+    (Bicategory.MarkedZigzag.RefinementPath.semanticFunctor
+      (costExactArrows R) M N).EssSurj
+  /-- Exact vertex action. -/
+  maps_vertex : ∀ row,
+    (refinementPathSemanticComparison M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀
+          (⟨row⟩ : Bicategory.MarkedZigzag.RefinementPathObject
+            (costExactArrows R) M N)) =
+      ComposableArrows.mk₀ row
+  /-- Exact generator/refinement edge action. -/
+  maps_edge : ∀ {first second : LinearHammock M N}
+      (refinement : HammockColumnRefinement first second),
+    (refinementPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.RefinementPath.setoid
+              (costExactArrows R) first second) refinement)) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) refinement)
+
+/-- Every cost-exact model pair satisfies the non-thin semantic refinement-
+path nerve core. -/
+theorem refinementPathNerveCore (M N : ProcessModel.{u, v, w} R) :
+    RefinementPathNerveCore M N where
+  source_groupoid := inferInstance
+  semantic_faithful := inferInstance
+  semantic_essSurj := inferInstance
+  maps_vertex := refinementPathSemanticComparison_vertex
+  maps_edge := refinementPathSemanticComparison_edge
+
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
 underlying categories are definitionally the same presentation, but this
@@ -958,6 +1050,9 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Zero-truncated common-refinement groupoid nerve and its discrete-
   quotient equivalence. -/
   thinRefinementNerve : ThinRefinementNerveCore M N
+  /-- Non-thin semantic refinement-path groupoid nerve with faithful exact
+  edge interpretation. -/
+  refinementPathNerve : RefinementPathNerveCore M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -1033,6 +1128,7 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
   columnRefinement := columnRefinementCore M N
   commonRefinement := commonRefinementCore M N
   thinRefinementNerve := thinRefinementNerveCore M N
+  refinementPathNerve := refinementPathNerveCore M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N

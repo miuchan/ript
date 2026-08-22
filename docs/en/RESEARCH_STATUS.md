@@ -375,9 +375,15 @@ quotient equality is exactly common-refinability and yields a semantic
 isomorphism without object equality. The zero-truncated mapping layer is also
 complete: wrapped rows form a thin common-refinement groupoid categorically
 equivalent to the discrete row quotient, and the nerve comparison has an
-explicit simplicial inverse and both homotopies. A non-thin refinement-path
-nerve, competing-move coherence, reduced-hammock invariance, standard weak-
-equivalence packaging, and the global Dwyer--Kan/Rezk theorem remain.
+explicit simplicial inverse and both homotopies. A non-thin semantic
+refinement-path groupoid now retains paths modulo equality of quotient-cell
+interpretations. Its semantic nerve map into the linear mapping nerve is
+faithful and essentially surjective on row objects, maps every path to an
+isomorphism, and has exact vertex/edge action; its zero-truncation to the thin
+groupoid is full and essentially surjective. Fullness or an exact semantic
+image characterization, competing-move coherence, reduced-hammock invariance,
+standard weak-equivalence packaging, and the global Dwyer--Kan/Rezk theorem
+remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

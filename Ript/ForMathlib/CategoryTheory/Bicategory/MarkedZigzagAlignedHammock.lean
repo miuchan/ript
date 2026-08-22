@@ -19,10 +19,12 @@ semantically. Every refinement now has an executable reverse and one unified
 semantic isomorphism. Explicit common-refinement spans form an equivalence
 relation and a row quotient, whose equality is sound for semantic isomorphism
 without assuming object equality. The induced thin refinement groupoid is
-equivalent to the discrete row quotient. A non-thin refinement-path mapping
-category retaining competing paths, critical-pair coherence, and reduced-
-hammock invariance are still absent, so this is not by itself the classical
-Dwyer--Kan hammock localization.
+equivalent to the discrete row quotient. A non-thin semantic refinement-path
+groupoid now retains paths up to equality of their quotient-cell semantics and
+embeds faithfully into the linear mapping category. Fullness/image
+characterization, critical-pair coherence, and reduced-hammock invariance are
+still absent, so this is not by itself the classical Dwyer--Kan hammock
+localization.
 -/
 
 set_option autoImplicit false
@@ -1090,6 +1092,13 @@ instance rowObjectCategory (X Y : B) : Category (RowObject W X Y) where
   comp_id _ := Subsingleton.elim _ _
   assoc _ _ _ := Subsingleton.elim _ _
 
+instance rowObjectHomSubsingleton (X Y : B)
+    (first second : RowObject W X Y) : Subsingleton (first ⟶ second) where
+  allEq left right := by
+    rcases left with ⟨⟨left⟩⟩
+    rcases right with ⟨⟨right⟩⟩
+    rfl
+
 /-- Projection from the thin common-refinement category to the discrete row
 quotient. -/
 def quotientFunctor (X Y : B) :
@@ -1139,5 +1148,214 @@ instance rowObjectIsGroupoid (X Y : B) : IsGroupoid (RowObject W X Y) :=
   isGroupoid_of_reflects_iso (quotientFunctor W X Y)
 
 end CommonRefinement
+
+/-! ## Non-thin refinement-path category -/
+
+/-- Wrapper for a linear row regarded as an object of the non-thin
+refinement-path category. -/
+structure RefinementPathObject (X Y : B) where
+  /-- Underlying row. -/
+  row : LinearWord W X Y
+
+namespace RefinementPath
+
+/-- Two executable refinement paths are equivalent exactly when their
+quotient-cell interpretations agree. -/
+def Rel {X Y : B} {first second : LinearWord W X Y}
+    (alpha beta : ColumnRefinement W first second) : Prop :=
+  ColumnRefinement.toHom W alpha = ColumnRefinement.toHom W beta
+
+/-- Semantic path equality is an equivalence relation. -/
+def setoid {X Y : B} (first second : LinearWord W X Y) :
+    Setoid (ColumnRefinement W first second) where
+  r := Rel W
+  iseqv := ⟨fun _ => rfl, fun h => h.symm, fun h₁ h₂ => h₁.trans h₂⟩
+
+/-- Morphisms are executable refinement paths modulo equality of their
+quotient-cell semantics. -/
+abbrev Hom {X Y : B} (first second : LinearWord W X Y) :=
+  Quotient (setoid W first second)
+
+/-- Vertical composition respects semantic path equality. -/
+theorem rel_vcomp {X Y : B}
+    {first middle last : LinearWord W X Y}
+    {alpha alpha' : ColumnRefinement W first middle}
+    {beta beta' : ColumnRefinement W middle last}
+    (hAlpha : Rel W alpha alpha') (hBeta : Rel W beta beta') :
+    Rel W (.vcomp alpha beta) (.vcomp alpha' beta') := by
+  dsimp [Rel] at hAlpha hBeta ⊢
+  rw [hAlpha, hBeta]
+
+/-- Non-thin category of semantic refinement paths. -/
+instance category (X Y : B) : Category (RefinementPathObject W X Y) where
+  Hom first second := Hom W first.row second.row
+  id first := Quotient.mk (setoid W first.row first.row) (.identity first.row)
+  comp := Quotient.map₂ ColumnRefinement.vcomp
+    (fun alpha alpha' hAlpha beta beta' hBeta => by
+      change Rel W alpha alpha' at hAlpha
+      change Rel W beta beta' at hBeta
+      exact rel_vcomp W hAlpha hBeta)
+  id_comp := by
+    rintro first second ⟨refinement⟩
+    apply Quotient.sound
+    change Rel W (.vcomp (.identity first.row) refinement) refinement
+    unfold Rel
+    rw [ColumnRefinement.toHom_vcomp,
+      ColumnRefinement.toHom_identity]
+    exact Category.id_comp _
+  comp_id := by
+    rintro first second ⟨refinement⟩
+    apply Quotient.sound
+    change Rel W (.vcomp refinement (.identity second.row)) refinement
+    unfold Rel
+    rw [ColumnRefinement.toHom_vcomp,
+      ColumnRefinement.toHom_identity]
+    exact Category.comp_id _
+  assoc := by
+    rintro first second third fourth ⟨alpha⟩ ⟨beta⟩ ⟨gamma⟩
+    apply Quotient.sound
+    change Rel W (.vcomp (.vcomp alpha beta) gamma)
+      (.vcomp alpha (.vcomp beta gamma))
+    unfold Rel
+    rw [ColumnRefinement.toHom_vcomp, ColumnRefinement.toHom_vcomp,
+      ColumnRefinement.toHom_vcomp, ColumnRefinement.toHom_vcomp]
+    exact Category.assoc _ _ _
+
+/-- Semantic path equality is preserved by executable reversal. -/
+theorem rel_reverse {X Y : B}
+    {first second : LinearWord W X Y}
+    {alpha beta : ColumnRefinement W first second}
+    (equality : Rel W alpha beta) :
+    Rel W (ColumnRefinement.reverse W alpha)
+      (ColumnRefinement.reverse W beta) := by
+  unfold Rel at equality ⊢
+  rw [ColumnRefinement.toHom_eq_toIso_hom,
+    ColumnRefinement.toIso_reverse,
+    ColumnRefinement.toHom_eq_toIso_hom,
+    ColumnRefinement.toIso_reverse]
+  have isoEquality : ColumnRefinement.toIso W alpha =
+      ColumnRefinement.toIso W beta := by
+    apply Iso.ext
+    rw [← ColumnRefinement.toHom_eq_toIso_hom,
+      ← ColumnRefinement.toHom_eq_toIso_hom]
+    exact equality
+  rw [isoEquality]
+
+/-- Reverse a semantic refinement-path morphism. -/
+def reverseHom {X Y : B}
+    {first second : RefinementPathObject W X Y} :
+    (first ⟶ second) → (second ⟶ first) :=
+  Quotient.map (ColumnRefinement.reverse W)
+    (fun alpha beta equality => by
+      change Rel W alpha beta at equality
+      exact rel_reverse W equality)
+
+/-- A refinement path followed by its reverse is the identity. -/
+theorem comp_reverseHom {X Y : B}
+    {first second : RefinementPathObject W X Y}
+    (path : first ⟶ second) : path ≫ reverseHom W path = 𝟙 first := by
+  rcases path with ⟨refinement⟩
+  apply Quotient.sound
+  change Rel W (.vcomp refinement (ColumnRefinement.reverse W refinement))
+    (.identity first.row)
+  unfold Rel
+  rw [ColumnRefinement.toHom_vcomp, ColumnRefinement.toHom_identity,
+    ColumnRefinement.toHom_eq_toIso_hom,
+    ColumnRefinement.toHom_eq_toIso_hom,
+    ColumnRefinement.toIso_reverse]
+  exact (ColumnRefinement.toIso W refinement).hom_inv_id
+
+/-- A reversed refinement path followed by the original is the identity. -/
+theorem reverseHom_comp {X Y : B}
+    {first second : RefinementPathObject W X Y}
+    (path : first ⟶ second) : reverseHom W path ≫ path = 𝟙 second := by
+  rcases path with ⟨refinement⟩
+  apply Quotient.sound
+  change Rel W (.vcomp (ColumnRefinement.reverse W refinement) refinement)
+    (.identity second.row)
+  unfold Rel
+  rw [ColumnRefinement.toHom_vcomp, ColumnRefinement.toHom_identity,
+    ColumnRefinement.toHom_eq_toIso_hom,
+    ColumnRefinement.toIso_reverse,
+    ColumnRefinement.toHom_eq_toIso_hom]
+  exact (ColumnRefinement.toIso W refinement).inv_hom_id
+
+/-- The non-thin semantic refinement-path category is a groupoid. -/
+instance isGroupoid (X Y : B) : IsGroupoid (RefinementPathObject W X Y) where
+  all_isIso path := ⟨⟨reverseHom W path,
+    comp_reverseHom W path, reverseHom_comp W path⟩⟩
+
+/-- Faithful semantic functor from refinement paths into the existing linear
+mapping category. -/
+def semanticFunctor (X Y : B) :
+    RefinementPathObject W X Y ⥤ LinearWord W X Y where
+  obj row := row.row
+  map := Quotient.lift (ColumnRefinement.toHom W)
+    (fun alpha beta equality => by
+      change Rel W alpha beta at equality
+      exact equality)
+  map_id row := ColumnRefinement.toHom_identity W row.row
+  map_comp alpha beta := by
+    rcases alpha with ⟨alpha⟩
+    rcases beta with ⟨beta⟩
+    exact ColumnRefinement.toHom_vcomp W alpha beta
+
+instance semanticFunctor_faithful (X Y : B) :
+    (semanticFunctor W X Y).Faithful where
+  map_injective {first second} alpha beta equality := by
+    rcases alpha with ⟨alpha⟩
+    rcases beta with ⟨beta⟩
+    apply Quotient.sound
+    change Rel W alpha beta
+    exact equality
+
+instance semanticFunctor_essSurj (X Y : B) :
+    (semanticFunctor W X Y).EssSurj where
+  mem_essImage row := ⟨⟨row⟩, ⟨Iso.refl _⟩⟩
+
+/-- Every semantic image of a refinement path is invertible. -/
+theorem semanticFunctor_map_isIso {X Y : B}
+    {first second : RefinementPathObject W X Y}
+    (path : first ⟶ second) :
+    IsIso ((semanticFunctor W X Y).map path) := by
+  infer_instance
+
+/-- Send one semantic refinement path to the unique thin common-refinement
+morphism between the same rows. -/
+def toThinHom {X Y : B}
+    {first second : RefinementPathObject W X Y} :
+    (first ⟶ second) →
+      ((⟨first.row⟩ : CommonRefinement.RowObject W X Y) ⟶
+        (⟨second.row⟩ : CommonRefinement.RowObject W X Y)) :=
+  Quotient.lift
+    (fun refinement => ⟨⟨⟨{
+      apex := second.row
+      firstLeg := refinement
+      secondLeg := .identity second.row }⟩⟩⟩)
+    (fun _ _ _ => Subsingleton.elim _ _)
+
+/-- Zero-truncation functor from semantic refinement paths to the thin
+common-refinement groupoid. -/
+def toThinFunctor (X Y : B) :
+    RefinementPathObject W X Y ⥤ CommonRefinement.RowObject W X Y where
+  obj row := ⟨row.row⟩
+  map := toThinHom W
+  map_id _ := Subsingleton.elim _ _
+  map_comp _ _ := Subsingleton.elim _ _
+
+instance toThinFunctor_full (X Y : B) :
+    (toThinFunctor W X Y).Full where
+  map_surjective {first second} morphism := by
+    rcases morphism.down.down with ⟨span⟩
+    let refinement : ColumnRefinement W first.row second.row :=
+      .vcomp span.firstLeg (ColumnRefinement.reverse W span.secondLeg)
+    refine ⟨Quotient.mk (setoid W first.row second.row) refinement, ?_⟩
+    exact Subsingleton.elim _ _
+
+instance toThinFunctor_essSurj (X Y : B) :
+    (toThinFunctor W X Y).EssSurj where
+  mem_essImage row := ⟨⟨row.row⟩, ⟨Iso.refl _⟩⟩
+
+end RefinementPath
 
 end CategoryTheory.Bicategory.MarkedZigzag
