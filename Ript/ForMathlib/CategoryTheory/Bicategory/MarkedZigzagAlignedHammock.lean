@@ -11,11 +11,12 @@ quotient 2-cell in the existing linear mapping category.
 
 The file also gives executable elementary column refinements: forward identity
 columns can be inserted/deleted, forward composite columns can be
-expanded/contracted, and moves lift beneath arbitrary prefixes and compose.
-Their signed width changes and quotient interpretations are exact, and inverse
-generator moves cancel semantically.  The syntax is not yet quotiented by
-general common refinements or reduced-hammock moves, so it is not by itself the
-classical Dwyer--Kan hammock localization.
+expanded/contracted, marked unit/counit pairs can be inserted/deleted, and
+moves lift beneath arbitrary prefixes and compose. Their signed width changes
+and quotient interpretations are exact, and inverse generator moves cancel
+semantically. The syntax is not yet quotiented by general common refinements or
+reduced-hammock moves, so it is not by itself the classical Dwyer--Kan hammock
+localization.
 -/
 
 set_option autoImplicit false
@@ -344,9 +345,10 @@ end AlignedCell
 /-! ## Executable column refinements -/
 
 /-- Executable column-refinement moves between linear hammock rows.  The
-generators insert/delete a forward identity column or expand/contract one
-forward composite column.  `under` performs a move beneath any common prefix,
-and `vcomp` closes the moves under transitive composition. -/
+generators insert/delete a forward identity column, expand/contract one
+forward composite column, or insert/delete a marked unit/counit pair. `under`
+performs a move beneath any common prefix, and `vcomp` closes the moves under
+transitive composition. -/
 inductive ColumnRefinement : ∀ {X Y : B},
     LinearWord W X Y → LinearWord W X Y → Type max u v where
   /-- Reflexive refinement. -/
@@ -378,6 +380,30 @@ inductive ColumnRefinement : ∀ {X Y : B},
         (.cons (Step.forward (W := W) f)
           (.cons (Step.forward (W := W) g) rest))
         (.cons (Step.forward (W := W) (f ≫ g)) rest)
+  /-- Delete a leading marked unit pair `f ; f⁻¹`. -/
+  | deleteMarkedUnitPair {X Y T : B} (f : X ⟶ Y) (hf : W f)
+      (rest : LinearWord W X T) :
+      ColumnRefinement
+        (.cons (Step.forward (W := W) f)
+          (.cons (Step.backward (W := W) f hf) rest)) rest
+  /-- Insert a leading marked unit pair `f ; f⁻¹`. -/
+  | insertMarkedUnitPair {X Y T : B} (f : X ⟶ Y) (hf : W f)
+      (rest : LinearWord W X T) :
+      ColumnRefinement rest
+        (.cons (Step.forward (W := W) f)
+          (.cons (Step.backward (W := W) f hf) rest))
+  /-- Delete a leading marked counit pair `f⁻¹ ; f`. -/
+  | deleteMarkedCounitPair {X Y T : B} (f : X ⟶ Y) (hf : W f)
+      (rest : LinearWord W Y T) :
+      ColumnRefinement
+        (.cons (Step.backward (W := W) f hf)
+          (.cons (Step.forward (W := W) f) rest)) rest
+  /-- Insert a leading marked counit pair `f⁻¹ ; f`. -/
+  | insertMarkedCounitPair {X Y T : B} (f : X ⟶ Y) (hf : W f)
+      (rest : LinearWord W Y T) :
+      ColumnRefinement rest
+        (.cons (Step.backward (W := W) f hf)
+          (.cons (Step.forward (W := W) f) rest))
   /-- Perform a refinement beneath one common oriented prefix column. -/
   | under {X Y Z : B} (step : Step W X Y)
       {first last : LinearWord W Y Z}
@@ -396,6 +422,10 @@ def widthChange {X Y : B} {source target : LinearWord W X Y} :
   | .insertIdentity _ => 1
   | .expandForward _ _ _ => 1
   | .contractForward _ _ _ => -1
+  | .deleteMarkedUnitPair _ _ _ => -2
+  | .insertMarkedUnitPair _ _ _ => 2
+  | .deleteMarkedCounitPair _ _ _ => -2
+  | .insertMarkedCounitPair _ _ _ => 2
   | .under _ refinement => widthChange refinement
 
 /-- The signed refinement counter is exactly the target width minus the
@@ -437,6 +467,38 @@ def toCell {X Y : B} {source target : LinearWord W X Y} :
           (LinearWord.toWord W rest))
         (Cell.whiskerRight (Cell.sourceCompInv (W := W) f g)
           (LinearWord.toWord W rest))
+  | .deleteMarkedUnitPair f hf rest =>
+      Cell.vcomp
+        (Cell.associatorInv (W := W) (Word.forward W f)
+          (Word.backward W f hf) (LinearWord.toWord W rest))
+        (Cell.vcomp
+          (Cell.whiskerRight (Cell.markedUnitInv (W := W) f hf)
+            (LinearWord.toWord W rest))
+          (Cell.leftUnitor (W := W) (LinearWord.toWord W rest)))
+  | .insertMarkedUnitPair f hf rest =>
+      Cell.vcomp
+        (Cell.leftUnitorInv (W := W) (LinearWord.toWord W rest))
+        (Cell.vcomp
+          (Cell.whiskerRight (Cell.markedUnit (W := W) f hf)
+            (LinearWord.toWord W rest))
+          (Cell.associator (W := W) (Word.forward W f)
+            (Word.backward W f hf) (LinearWord.toWord W rest)))
+  | .deleteMarkedCounitPair f hf rest =>
+      Cell.vcomp
+        (Cell.associatorInv (W := W) (Word.backward W f hf)
+          (Word.forward W f) (LinearWord.toWord W rest))
+        (Cell.vcomp
+          (Cell.whiskerRight (Cell.markedCounit (W := W) f hf)
+            (LinearWord.toWord W rest))
+          (Cell.leftUnitor (W := W) (LinearWord.toWord W rest)))
+  | .insertMarkedCounitPair f hf rest =>
+      Cell.vcomp
+        (Cell.leftUnitorInv (W := W) (LinearWord.toWord W rest))
+        (Cell.vcomp
+          (Cell.whiskerRight (Cell.markedCounitInv (W := W) f hf)
+            (LinearWord.toWord W rest))
+          (Cell.associator (W := W) (Word.backward W f hf)
+            (Word.forward W f) (LinearWord.toWord W rest)))
   | .under step refinement =>
       Cell.whiskerLeft (Word.atom step) (toCell refinement)
 
@@ -617,6 +679,146 @@ theorem contractForward_expandForward {X Y Z T : B}
           (.cons (Step.forward (W := W) g) rest))) := by
   rw [toHom_contractForward_eq_inv, toHom_expandForward_eq_hom]
   exact (compositeColumnIso W f g rest).inv_hom_id
+
+/-- The semantic isomorphism implemented by deletion/insertion of a marked
+unit pair `f ; f⁻¹`. -/
+noncomputable def markedUnitPairIso {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W X T) :
+    Word.append (W := W) (Word.forward W f)
+        (Word.append (W := W) (Word.backward W f hf)
+          (LinearWord.toWord W rest)) ≅
+      LinearWord.toWord W rest :=
+  (Presented.wordAssociatorIso W (Word.forward W f)
+      (Word.backward W f hf) (LinearWord.toWord W rest)).symm ≪≫
+    whiskerRightIso (B := Presented.Localization W)
+      (Presented.markedUnitIso W f hf).symm
+      (LinearWord.toWord W rest) ≪≫
+    Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)
+
+/-- Marked-unit-pair deletion is exactly the forward map of its semantic
+isomorphism. -/
+theorem toHom_deleteMarkedUnitPair_eq_hom {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W X T) :
+    toHom W (.deleteMarkedUnitPair f hf rest) =
+      (markedUnitPairIso W f hf rest).hom := by
+  rfl
+
+/-- Marked-unit-pair insertion is exactly the inverse map of its semantic
+isomorphism. -/
+theorem toHom_insertMarkedUnitPair_eq_inv {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W X T) :
+    toHom W (.insertMarkedUnitPair f hf rest) =
+      (markedUnitPairIso W f hf rest).inv := by
+  change
+    (Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)).inv ≫
+        ((whiskerRightIso (B := Presented.Localization W)
+          (Presented.markedUnitIso W f hf)
+          (LinearWord.toWord W rest)).hom ≫
+        (Presented.wordAssociatorIso W (Word.forward W f)
+          (Word.backward W f hf) (LinearWord.toWord W rest)).hom) =
+      ((Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)).inv ≫
+        (whiskerRightIso (B := Presented.Localization W)
+          (Presented.markedUnitIso W f hf)
+          (LinearWord.toWord W rest)).hom) ≫
+        (Presented.wordAssociatorIso W (Word.forward W f)
+          (Word.backward W f hf) (LinearWord.toWord W rest)).hom
+  exact (Category.assoc _ _ _).symm
+
+/-- Deleting and reinserting a marked unit pair is semantically the identity
+on the wider row. -/
+theorem deleteMarkedUnitPair_insertMarkedUnitPair {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W X T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.deleteMarkedUnitPair f hf rest))
+        (toHom W (.insertMarkedUnitPair f hf rest)) =
+      𝟙 (LinearWord.toWord W
+        (.cons (Step.forward (W := W) f)
+          (.cons (Step.backward (W := W) f hf) rest))) := by
+  rw [toHom_deleteMarkedUnitPair_eq_hom,
+    toHom_insertMarkedUnitPair_eq_inv]
+  exact (markedUnitPairIso W f hf rest).hom_inv_id
+
+/-- Inserting and deleting a marked unit pair is semantically the identity on
+the narrower row. -/
+theorem insertMarkedUnitPair_deleteMarkedUnitPair {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W X T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.insertMarkedUnitPair f hf rest))
+        (toHom W (.deleteMarkedUnitPair f hf rest)) =
+      𝟙 (LinearWord.toWord W rest) := by
+  rw [toHom_insertMarkedUnitPair_eq_inv,
+    toHom_deleteMarkedUnitPair_eq_hom]
+  exact (markedUnitPairIso W f hf rest).inv_hom_id
+
+/-- The semantic isomorphism implemented by deletion/insertion of a marked
+counit pair `f⁻¹ ; f`. -/
+noncomputable def markedCounitPairIso {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W Y T) :
+    Word.append (W := W) (Word.backward W f hf)
+        (Word.append (W := W) (Word.forward W f)
+          (LinearWord.toWord W rest)) ≅
+      LinearWord.toWord W rest :=
+  (Presented.wordAssociatorIso W (Word.backward W f hf)
+      (Word.forward W f) (LinearWord.toWord W rest)).symm ≪≫
+    whiskerRightIso (B := Presented.Localization W)
+      (Presented.markedCounitIso W f hf)
+      (LinearWord.toWord W rest) ≪≫
+    Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)
+
+/-- Marked-counit-pair deletion is exactly the forward map of its semantic
+isomorphism. -/
+theorem toHom_deleteMarkedCounitPair_eq_hom {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W Y T) :
+    toHom W (.deleteMarkedCounitPair f hf rest) =
+      (markedCounitPairIso W f hf rest).hom := by
+  rfl
+
+/-- Marked-counit-pair insertion is exactly the inverse map of its semantic
+isomorphism. -/
+theorem toHom_insertMarkedCounitPair_eq_inv {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W Y T) :
+    toHom W (.insertMarkedCounitPair f hf rest) =
+      (markedCounitPairIso W f hf rest).inv := by
+  change
+    (Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)).inv ≫
+        ((whiskerRightIso (B := Presented.Localization W)
+          (Presented.markedCounitIso W f hf).symm
+          (LinearWord.toWord W rest)).hom ≫
+        (Presented.wordAssociatorIso W (Word.backward W f hf)
+          (Word.forward W f) (LinearWord.toWord W rest)).hom) =
+      ((Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)).inv ≫
+        (whiskerRightIso (B := Presented.Localization W)
+          (Presented.markedCounitIso W f hf).symm
+          (LinearWord.toWord W rest)).hom) ≫
+        (Presented.wordAssociatorIso W (Word.backward W f hf)
+          (Word.forward W f) (LinearWord.toWord W rest)).hom
+  exact (Category.assoc _ _ _).symm
+
+/-- Deleting and reinserting a marked counit pair is semantically the identity
+on the wider row. -/
+theorem deleteMarkedCounitPair_insertMarkedCounitPair {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W Y T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.deleteMarkedCounitPair f hf rest))
+        (toHom W (.insertMarkedCounitPair f hf rest)) =
+      𝟙 (LinearWord.toWord W
+        (.cons (Step.backward (W := W) f hf)
+          (.cons (Step.forward (W := W) f) rest))) := by
+  rw [toHom_deleteMarkedCounitPair_eq_hom,
+    toHom_insertMarkedCounitPair_eq_inv]
+  exact (markedCounitPairIso W f hf rest).hom_inv_id
+
+/-- Inserting and deleting a marked counit pair is semantically the identity
+on the narrower row. -/
+theorem insertMarkedCounitPair_deleteMarkedCounitPair {X Y T : B}
+    (f : X ⟶ Y) (hf : W f) (rest : LinearWord W Y T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.insertMarkedCounitPair f hf rest))
+        (toHom W (.deleteMarkedCounitPair f hf rest)) =
+      𝟙 (LinearWord.toWord W rest) := by
+  rw [toHom_insertMarkedCounitPair_eq_inv,
+    toHom_deleteMarkedCounitPair_eq_hom]
+  exact (markedCounitPairIso W f hf rest).inv_hom_id
 
 /-- Any semantic inverse pair remains inverse after refinement beneath one
 common prefix column.  Iterating `under` therefore transports the generator

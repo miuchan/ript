@@ -1021,6 +1021,8 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_vcomp
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteIdentity_insertIdentity
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.expandForward_contractForward
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteMarkedUnitPair_insertMarkedUnitPair
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteMarkedCounitPair_insertMarkedCounitPair
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.under_inverse
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore

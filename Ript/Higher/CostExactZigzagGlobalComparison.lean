@@ -1510,9 +1510,10 @@ maps directly to the actual target local nerve by a categorical-nerve
 equivalence with an explicit simplicial homotopy inverse.
 
 The linear model now has a fixed-shape aligned multi-column fragment and
-elementary executable forward-column refinements, but not the general common-
-refinement quotient and reduced-hammock invariance of the classical arbitrary-
-grid localization, so this is not yet the standard Dwyer--Kan theorem. -/
+elementary executable forward and marked-pair refinements, but not the general
+common-refinement quotient and reduced-hammock invariance of the classical
+arbitrary-grid localization, so this is not yet the standard Dwyer--Kan
+theorem. -/
 def LinearHammockDwyerKanCore : Prop :=
   (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
   ∀ (M N : ProcessModel.{u, v, w} R),
