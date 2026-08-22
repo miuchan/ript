@@ -117,6 +117,17 @@ Lokalizado estas dividita laŭ forto:
 - aparta preciza predikato de la bikategoria universala eco;
 - neniu anstataŭigo de nepruvita kohereco aŭ esenca surĵeteco per aksiomoj.
 
+La nuna mapspaca stako havas tri eksplicitajn prezentojn: duumaj marked-
+zigzag-vortoj kun kvocientaj 2-ĉeloj, sendependaj dekstre-asociaj linearaj
+hammock-vicoj, kaj negrupoida generita hammock-vojaro kun plenumeblaj
+refinement-oj kaj arbitraj aligned krudaj ĉeloj. Ĉiuj estas kategorie
+ekvivalentaj al la faktaj lokaj hom-kategorioj de la lokaliza celo; la nervaj
+komparoj havas eksplicitajn homotopiajn inversojn, kaj la generita komparo
+strikte faktoriĝas tra la lineara. Finiĝanta administra redukto forigas unuojn
+kaj nestadon, kunfandas apudajn movojn kaj nuligas refinement-inversojn dum ĝi
+konservas kvocientan semantikon. Kruda critical-pair joinability, la plena
+klasika arbitra-krada movaro kaj norma malfort-ekvivalenta pako restas malfermaj.
+
 ## Interna univalenta interpreto
 
 `Ript/Univalent/` difinas profundajn interfackodojn, apartajn sintaksojn por
@@ -143,6 +154,8 @@ kaj matricaj pruvoj troviĝas en semantikaj tavoloj kaj povas esti nekomputeblaj
 - `reference/BLUEPRINT.md`: dependecoj kaj teoremnivela stato;
 - `reference/CONJECTURES.md`: nepruvitaj asertoj;
 - `reference/AXIOMS.md`: realaj kernaj supozoj.
+- `GOVERNANCE.md`: decida aŭtoritato kaj stabileca politiko;
+- `SECURITY.md`: privata raportado kaj la subtenata fidolimo.
 
 Se ili malkongruas, Lean-deklaroj kaj maŝine kontrolita audito superas. La sama
 tirpeto devas rekunordigi la dokumentaron.

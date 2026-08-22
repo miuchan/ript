@@ -1,0 +1,40 @@
+name: Research or formalization proposal
+description: Propose a theorem, model, representation result, or architectural research slice.
+title: "research: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: statement
+    attributes:
+      label: Mathematical objective
+      description: State the intended result and hypotheses precisely enough to review.
+    validations:
+      required: true
+  - type: textarea
+    id: alignment
+    attributes:
+      label: Alignment with the research goal
+      description: Explain which RESEARCH_GOAL, BLUEPRINT, MODEL_MATRIX, or CONJECTURES boundary this advances.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Existing evidence and dependencies
+      description: Link relevant Lean declarations, Mathlib APIs, papers, or known gaps.
+    validations:
+      required: true
+  - type: textarea
+    id: slice
+    attributes:
+      label: Proposed kernel-checkable slice
+      description: Identify definitions, theorems, examples, audits, and documentation expected in one PR.
+    validations:
+      required: true
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Non-goals and open directions
+    validations:
+      required: true

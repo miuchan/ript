@@ -107,6 +107,14 @@ Ript は、実行可能な有限モデルが商、測度論、高次圏、内部
 - 独立に定義された厳密な双圏的普遍性述語
 - 未証明の整合性や本質的全射性を公理で代用しない方針
 
+現在の mapping-space スタックには、二分 marked-zigzag word/商 2-cell、独立な右結合 linear
+hammock 行、実行可能 refinement と任意 aligned raw cell を組み合わせる非群胚 generated hammock
+path の三表示があります。すべて実際の局所化対象の local hom-category と圏同値で、nerve 比較は
+明示的単体ホモトピー逆を持ち、generated 比較は linear 比較を厳密に経由します。停止する
+administrative reduction は単位・入れ子を除去し、隣接 move を融合し、実行可能 refinement 正逆対を
+消去しながら商意味論を保存します。raw critical-pair joinability、完全な古典的任意 grid move、
+標準弱同値包装は未解決です。
+
 ## 内部ユニバレント解釈
 
 `Ript/Univalent/` は通常の過程理論の下流で、深いインターフェース符号、内部構造同値と恒等の
@@ -131,6 +139,8 @@ Ript は、実行可能な有限モデルが商、測度論、高次圏、内部
 - `reference/BLUEPRINT.md`：依存関係と定理単位の状態
 - `reference/CONJECTURES.md`：未証明命題
 - `reference/AXIOMS.md`：実際のカーネル仮定
+- `GOVERNANCE.md`：意思決定権限と安定性方針
+- `SECURITY.md`：非公開報告と対応する信頼境界
 
 不一致があれば Lean 宣言と機械監査を優先し、同じ PR で文書を整合させます。
 

@@ -3,8 +3,20 @@
 [English](../en/RESEARCH_STATUS.md) · [简体中文](RESEARCH_STATUS.md) ·
 [日本語](../ja/RESEARCH_STATUS.md) · [Esperanto](../eo/RESEARCH_STATUS.md)
 
-本页是简明研究地图，不是定理台账。精确定理类型、依赖、源文件与假设见
+本页是持续维护的叙述性研究地图，不是定理台账。精确定理类型、依赖、源文件与假设见
 [形式化蓝图](reference/BLUEPRINT.md)和[公理清单](reference/AXIOMS.md)。
+
+## 当前快照
+
+**已验证：** 可执行资源敏感语法与预算；可靠性、相对完备性和自由语义；六类具体模型切片；固定与
+变资源模型双范畴；内部单值与 complete-Segal 基础；到实际目标 nerve 直接等价的完整 generated-
+hammock mapping category；以及具有不可约 reduct 的终止、语义保持 administrative reduction。
+
+**仍开放：** raw critical-pair joinability 与局部合流、其余经典任意网格 hammock moves、reduced-
+hammock 同伦不变性、标准 derived 弱等价接口和最终全局 Dwyer--Kan/Rezk 定理。总研究目标仍然有效。
+
+能力问题查[模型矩阵](reference/MODEL_MATRIX.md)，定理证据查[蓝图](reference/BLUEPRINT.md)，未证方向查
+[猜想登记册](reference/CONJECTURES.md)。
 
 ## 状态词汇
 

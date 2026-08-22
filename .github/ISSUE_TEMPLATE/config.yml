@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security report
+    url: https://github.com/miuchan/ript/security
+    about: Use a private security report when available; do not publish exploit details.
+  - name: Documentation hub
+    url: https://github.com/miuchan/ript/blob/main/docs/README.md
+    about: Find setup, architecture, status, governance, and contribution guides.

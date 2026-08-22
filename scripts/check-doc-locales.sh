@@ -13,6 +13,8 @@ documents=(
   PROJECT_SCOPE.md
   RESEARCH_STATUS.md
   CONTRIBUTING.md
+  GOVERNANCE.md
+  SECURITY.md
   reference/MODEL_MATRIX.md
   reference/BLUEPRINT.md
   reference/AXIOMS.md
@@ -24,6 +26,14 @@ failed=0
 canonical_tail="$(mktemp)"
 english_tail="$(mktemp)"
 trap 'rm -f "$canonical_tail" "$english_tail"' EXIT
+
+for root_document in README.md CONTRIBUTING.md GOVERNANCE.md SECURITY.md \
+  RESEARCH_GOAL.md BLUEPRINT.md MODEL_MATRIX.md AXIOMS.md CONJECTURES.md; do
+  if [[ ! -f "$root_document" ]]; then
+    printf 'Missing canonical project document: %s\n' "$root_document" >&2
+    failed=1
+  fi
+done
 
 for document in "${documents[@]}"; do
   for locale in "${locales[@]}"; do
@@ -51,6 +61,8 @@ legacy_paths=(
   docs/ARCHITECTURE.md
   docs/PROJECT_SCOPE.md
   docs/RESEARCH_STATUS.md
+  docs/GOVERNANCE.md
+  docs/SECURITY.md
 )
 
 for legacy_path in "${legacy_paths[@]}"; do

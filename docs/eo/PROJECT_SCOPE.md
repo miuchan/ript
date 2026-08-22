@@ -46,6 +46,13 @@ identec-semantikon. Ordigitaj adiciaj rimedŝanĝoj ligas malsamajn rimedalgebro
 en totalan bikategorion. La [modelkapabla matrico](reference/MODEL_MATRIX.md)
 registras nur realigitajn kaj kompilitajn operaciojn.
 
+La plej alta kompilita lokaliza tavolo nun donas plenan generitan hammock-
+prezenton de ĉiu loka mapkategorio, rektajn kategoria-nervajn ekvivalentojn al
+la faktaj lokalizaj celoj, eksplicitajn simpliciajn homotopiajn inversojn kaj
+finiĝantan semantik-konservan administran redukton. Tio estas auditita
+projekta Dwyer--Kan-kerno, ne ankoraŭ komparo kun la klasika reduktita arbitra-
+krada hammock aŭ norma tutmonda Rezk-malforta ekvivalento.
+
 ## Fidmodelo
 
 Ript malpermesas:
@@ -85,3 +92,5 @@ ne donas permeson kopii, modifi aŭ redistribui ĝin. Formala permesilo anstata�
 - [Aksioma inventaro](reference/AXIOMS.md)
 - [Registro de konjektoj](reference/CONJECTURES.md)
 - [Kontribua gvidilo](CONTRIBUTING.md)
+- [Regado](GOVERNANCE.md)
+- [Sekureco](SECURITY.md)

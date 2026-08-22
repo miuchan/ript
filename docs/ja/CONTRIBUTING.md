@@ -3,34 +3,50 @@
 [English](../en/CONTRIBUTING.md) · [简体中文](../zh-CN/CONTRIBUTING.md) ·
 [日本語](CONTRIBUTING.md) · [Esperanto](../eo/CONTRIBUTING.md)
 
-Ript は証明の信頼性、明示的依存関係、再現可能な計算をレビュー慣習ではなくマージ要件とします。
+証明、モデル、例、文書、ツールの貢献を受け付けます。信頼性、明示的依存、再現性、正確な公開主張は
+マージ要件です。
 
-## 必須品質ゲート
+## 開始前
 
-リポジトリルートで実行してください。
+[範囲](PROJECT_SCOPE.md)、[アーキテクチャ](ARCHITECTURE.md)、[研究状況](RESEARCH_STATUS.md)、
+issue と[予想台帳](reference/CONJECTURES.md)を確認します。範囲、公開定理、構成、信頼依存、
+ガバナンス、セキュリティ、ライセンスの変更は先に議論してください。脆弱性は
+[セキュリティポリシー](SECURITY.md)に従います。
+
+## ワークフロー
 
 ```bash
+git switch -c <focused-branch>
+lake exe cache get
+lake build <affected.module>
 ./scripts/quality-gate.sh
 ```
 
-ゲートは証明穴、独自公理、unsafe 宣言、コンパイラ信頼回避、広すぎる `Mathlib` import、暗黙の
-Lean 識別子、古いルート import、宣言 lint エラー、実行動作の変化、ビルド警告、未文書化の仮定を
-拒否し、完全なカーネルビルドを行います。
+ブランチと commit を集中させ、PR に成果、検証、公理依存、互換性、残る境界を書きます。
+マージには CI 成功とメンテナ承認が必要です。
 
-CI の安定ジョブ名は `Lean quality gate` です。これが成功した変更だけをマージできます。
+## 証明・実装方針
 
-## 証明と依存関係の方針
+- 証明穴、独自公理、信頼回避、unsafe 宣言は禁止
+- `autoImplicit false` と狭い Mathlib import を維持
+- 汎用基盤は `Ript/ForMathlib/` へ配置
+- 実行データを商・選択代表の上流に保つ
+- 能力境界と分野に正確な定理名を維持
+- 未完了命題は `CONJECTURES.md` へ記録
+- 主要宣言を AxiomChecks と `AXIOMS.md` で監査
 
-- 未証明の研究命題は `CONJECTURES.md` に置き、定理や公理として宣言しない
-- 実用上もっとも狭い Mathlib モジュールを import する
-- 全実装モジュールで `set_option autoImplicit false` を維持する
-- 主要定理を `Ript/Audit/AxiomChecks.lean` と `AXIOMS.md` の両方に追加する
-- 実行動作を意図的に変更する場合、同じ変更で `scripts/check-examples.sh` の期待値を更新する
+## 文書と品質ゲート
 
-## ドキュメント方針
+保守ページを四言語で同じパスに置き、公開変更を同期します。公理表の変更後は
+`./scripts/sync-doc-reference-tables.sh` を実行します。必須の
+`./scripts/quality-gate.sh` は文書、根 import、全ビルド、lint、例、公理を検査します。
 
-- 全論理ページを同じ相対パスで `docs/en`、`docs/zh-CN`、`docs/ja`、`docs/eo` に配置する
-- 公開主張、コマンド、状態、信頼境界を変更したときは四言語すべてを更新する
-- ルートの `AXIOMS.md`、`BLUEPRINT.md`、`CONJECTURES.md`、`MODEL_MATRIX.md` を
-  機械的正本として維持する
-- 公理一覧の変更後は `./scripts/sync-doc-reference-tables.sh` を実行してから品質ゲートを実行する
+## PR チェック
+
+- [ ] 目的と残る境界が明確
+- [ ] 固定ツールチェーンで局所・全体ビルド成功
+- [ ] 主要仮定と実行変更を監査済み
+- [ ] 構成、状況、参照、全対象言語が最新
+- [ ] 無関係・生成・秘密・私有ファイルなし
+
+レビューは証明だけでなく定理文とモデル意図も確認します。[ガバナンス](GOVERNANCE.md)を参照してください。

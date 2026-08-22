@@ -174,3 +174,5 @@ import Ript.Models.FiniteStochastic
 - [架构](ARCHITECTURE.md)：模块与依赖边界；
 - [研究状态](RESEARCH_STATUS.md)：当前数学前沿；
 - [形式化蓝图](reference/BLUEPRINT.md)：定理级状态。
+- [贡献指南](CONTRIBUTING.md)：开发与审查流程；
+- [治理](GOVERNANCE.md)和[安全](SECURITY.md)：项目策略。

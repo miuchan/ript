@@ -35,6 +35,11 @@ Ript 是形式研究库，不是运行时估算器，也不是已经完成的物
 的单子 2-胞腔、异质水平复合、交换律以及五边形/三角形协调。
 [模型能力矩阵](reference/MODEL_MATRIX.md)只记录已经实现并编译的操作。
 
+当前最高局部化层已经为每个 local mapping category 给出完整 generated-hammock 呈示、到实际局部化
+目标的直接范畴 nerve 等价、显式单纯同伦逆，以及终止且保持语义的 administrative reduction。
+这是经审计的项目内 Dwyer--Kan core；它还不是与经典 reduced 任意网格 hammock 的比较，也不是
+标准全局 Rezk 弱等价定理。
+
 ## 信任模型
 
 Ript 禁止：
@@ -68,8 +73,10 @@ Ript 是早期研究软件：
 
 ## 权威记录
 
-- [研究状态](RESEARCH_STATUS.md)：简明的已证明/开放边界；
+- [研究状态](RESEARCH_STATUS.md)：当前叙述性已证明/开放边界；
 - [形式化蓝图](reference/BLUEPRINT.md)：定理类型与依赖台账；
 - [公理清单](reference/AXIOMS.md)：已审计内核假设；
 - [猜想登记册](reference/CONJECTURES.md)：开放研究陈述；
 - [贡献指南](CONTRIBUTING.md)：证明与合并策略。
+- [项目治理](GOVERNANCE.md)：决策权和稳定性；
+- [安全策略](SECURITY.md)：报告方式和支持的可信边界。

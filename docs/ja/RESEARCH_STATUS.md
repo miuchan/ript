@@ -3,8 +3,22 @@
 [English](../en/RESEARCH_STATUS.md) · [简体中文](../zh-CN/RESEARCH_STATUS.md) ·
 [日本語](RESEARCH_STATUS.md) · [Esperanto](../eo/RESEARCH_STATUS.md)
 
-これは簡潔な研究地図であり、定理台帳ではありません。正確な型、依存関係、ソース、仮定は
+これは保守される叙述的な研究地図であり、定理台帳ではありません。正確な型、依存関係、ソース、仮定は
 [形式化ブループリント](reference/BLUEPRINT.md)と[公理一覧](reference/AXIOMS.md)にあります。
+
+## 現在のスナップショット
+
+**検証済み：** 実行可能な資源感応構文と予算、健全性・相対完全性・自由意味論、六モデル族の
+具体スライス、固定/変資源モデル双圏、内部ユニヴァレンスと complete-Segal 基盤、実際の対象 nerve
+へ直接同値な完全 generated-hammock mapping category、既約 reduct を持つ停止・意味保存
+administrative reduction。
+
+**未解決：** raw critical-pair joinability と局所合流性、残る古典的任意 grid hammock move、
+reduced-hammock ホモトピー不変性、標準 derived 弱同値インターフェース、最終大域
+Dwyer--Kan/Rezk 定理。統一研究目標は継続中です。
+
+機能は[モデル行列](reference/MODEL_MATRIX.md)、定理証拠は[ブループリント](reference/BLUEPRINT.md)、
+未証明方向は[予想台帳](reference/CONJECTURES.md)を参照してください。
 
 ## 状態語彙
 

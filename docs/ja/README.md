@@ -1,58 +1,49 @@
-# Ript
-
-**資源添字付きプロセス理論のための、カーネル検証済み Lean 4 基盤。**
+# Ript ドキュメント
 
 [English](../en/README.md) · [简体中文](../zh-CN/README.md) ·
 [日本語](README.md) · [Esperanto](../eo/README.md)
 
-[![Quality Gate](https://github.com/miuchan/ript/actions/workflows/ci.yml/badge.svg)](https://github.com/miuchan/ript/actions/workflows/ci.yml)
-![Lean 4.33.0](https://img.shields.io/badge/Lean-4.33.0-0d6efd)
-![mathlib 4.33.0](https://img.shields.io/badge/mathlib-4.33.0-a42e2b)
-![研究状況](https://img.shields.io/badge/status-early--stage%20research-orange)
-
-Ript は、振る舞いと資源使用を合成できる型付きプロセスを形式化し、実行可能な有限モデルを
-資源上界・健全性・完全性・構造保存意味論のカーネル検証済み結果へ接続します。
-最初の六モデル共通スライスでは、同じ Boolean 過程シグネチャを確率、量子、因果、計算、意味、
-熱モデルで解釈します。
-
-Ript の中心的な研究目標は、計算可能・機械検証可能・ユニヴァレントかつ高次圏論的な
-資源制約付き情報プロセス理論を構築し、古典確率、量子プロセス、因果モデル、計算、
-意味情報、熱力学をその異なるモデルとして与え、それらを結ぶ表現定理と完全性定理を
-証明することです。本リポジトリにはこの目標へ向かうコンパイル済みの層がありますが、
-目標全体がすでに証明済みであるという意味ではありません。
+Ript は資源添字付き情報過程のための Lean 4 カーネル検証済み研究ライブラリです。実行可能な
+有限構文を、確率・量子・因果・計算・意味情報・意思決定・熱力学モデルへ接続し、任意能力を
+分離して扱います。
 
 > [!IMPORTANT]
-> Ript は初期段階の研究ソフトウェアです。コンパイル済み結果はカーネル検証されていますが、
-> 公開 API と研究の最前線は現在も変化しています。
+> 多くの実証済み基盤がありますが、初期研究段階です。最終大域定理と安定 API は未完成です。
 
-## クイックスタート
+## 現在のスナップショット
 
-[elan](https://github.com/leanprover/elan) をインストールし、固定された Lean と Mathlib の
-プロジェクトをビルドします。
+- 資源感応構文、予算、健全性、相対完全性、自由意味論がコンパイル済み
+- 六モデル族すべてに具体インスタンスと検査済み非自明例がある
+- モデルと資源変換射は検証済み双圏層を形成する
+- 内部ユニヴァレンスと complete-Segal 基盤は実行可能コアの下流にある
+- generated hammock mapping space は実際の局所化対象と同値で、明示的 nerve ホモトピー逆と
+  停止する簡約を持つ
+
+現在の最前線は critical-pair joinability、古典的 reduced-hammock 不変性、標準弱同値包装、
+大域 Rezk 定理です。
+
+## はじめに
 
 ```bash
 git clone https://github.com/miuchan/ript.git
 cd ript
 lake exe cache get
-lake build
+./scripts/quality-gate.sh
 ```
 
-要件、実行可能な例、依存利用、再現可能性、トラブルシューティングは
-[導入ガイド](GETTING_STARTED.md)を参照してください。
+続きは[導入ガイド](GETTING_STARTED.md)を参照してください。
 
-## 目的別ガイド
+## 目的別に読む
 
-- **何が実装済みか？** [モデル機能行列](reference/MODEL_MATRIX.md)
-- **何が証明済みで、何が未解決か？** [研究状況](RESEARCH_STATUS.md)
-- **ライブラリはどう構成されているか？** [アーキテクチャ](ARCHITECTURE.md)
-- **信頼境界と成熟度は？** [プロジェクトの範囲と信頼境界](PROJECT_SCOPE.md)
-- **正確な研究記録は？** [形式化ブループリント](reference/BLUEPRINT.md)、
-  [公理一覧](reference/AXIOMS.md)、[予想台帳](reference/CONJECTURES.md)
+- **プロジェクトを理解：** [範囲と信頼境界](PROJECT_SCOPE.md) · [アーキテクチャ](ARCHITECTURE.md)
+- **証明済み内容を見る：** [研究状況](RESEARCH_STATUS.md) · [モデル機能行列](reference/MODEL_MATRIX.md)
+- **厳密な証拠を監査：** [ブループリント](reference/BLUEPRINT.md) ·
+  [公理](reference/AXIOMS.md) · [予想](reference/CONJECTURES.md)
+- **参加する：** [コントリビューション](CONTRIBUTING.md) · [ガバナンス](GOVERNANCE.md) ·
+  [セキュリティ](SECURITY.md)
+- **言語を変更：** [多言語ドキュメントハブ](../README.md)
 
-## コントリビューション
+## 成熟度と再利用
 
-[コントリビューションガイド](CONTRIBUTING.md)を読み、PR の前に
-`./scripts/quality-gate.sh` を実行してください。
-
-Ript は [Lean 4](https://lean-lang.org/) と
-[Mathlib](https://github.com/leanprover-community/mathlib4) で構築されています。
+再現可能性には完全な commit SHA を固定してください。安定リリースや API 互換保証はありません。
+オープンソースライセンスは未選択で、公開表示だけでは複製・変更・再配布権を与えません。

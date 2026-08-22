@@ -175,3 +175,5 @@ API が不安定な間は、パッケージ版だけでは再現に不十分で�
 - [アーキテクチャ](ARCHITECTURE.md)
 - [研究状況](RESEARCH_STATUS.md)
 - [形式化ブループリント](reference/BLUEPRINT.md)
+- [コントリビューション](CONTRIBUTING.md)
+- [ガバナンス](GOVERNANCE.md)と[セキュリティ](SECURITY.md)

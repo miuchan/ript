@@ -37,6 +37,11 @@ Ript は形式研究ライブラリであり、実時間推定器でも完成済
 交換則、五角形・三角形整合性を持つ全双圏に束ねます。実装済み操作は
 [モデル能力行列](reference/MODEL_MATRIX.md)だけに記載します。
 
+最上位の局所化層は、各 local mapping category の完全な generated-hammock 表示、実際の局所化対象への
+直接 categorical-nerve 同値、明示的単体ホモトピー逆、停止して意味論を保存する administrative
+reduction を与えます。これは監査済みプロジェクト内 Dwyer--Kan core であり、古典的 reduced 任意
+grid hammock との比較や標準大域 Rezk 弱同値定理ではありません。
+
 ## 信頼モデル
 
 次を禁止します。
@@ -74,3 +79,5 @@ Ript は形式研究ライブラリであり、実時間推定器でも完成済
 - [公理一覧](reference/AXIOMS.md)
 - [予想台帳](reference/CONJECTURES.md)
 - [コントリビューションガイド](CONTRIBUTING.md)
+- [ガバナンス](GOVERNANCE.md)
+- [セキュリティ](SECURITY.md)
