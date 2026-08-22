@@ -1006,6 +1006,17 @@ abbrev GeneratedHammockPath
   Bicategory.MarkedZigzag.HammockPathObject
     (costExactArrows R) M N
 
+/-- Common-universe generated hammock-path mapping category. -/
+abbrev GeneratedHammockMappingCategory
+    (M N : ProcessModel.{u, v, w} R) :=
+  AsSmall.{max (max w (v + 1)) (u + 1)} (GeneratedHammockPath M N)
+
+/-- Categorical nerve of the common-universe generated hammock mapping
+category. -/
+abbrev GeneratedHammockMappingNerve
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerve (GeneratedHammockMappingCategory M N)
+
 /-- Nerve map from generated hammock paths into the full linear mapping
 nerve. -/
 noncomputable def hammockPathSemanticComparison
@@ -1702,6 +1713,79 @@ noncomputable def linearTargetHomotopyEquivalence
   SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
     (linearTargetEquivalence M N)
 
+/-- Common-universe equivalence from generated hammock paths to independent
+linear hammock rows. -/
+noncomputable def generatedLinearEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    GeneratedHammockMappingCategory M N ≌
+      LinearHammockMappingCategory M N :=
+  AsSmall.equiv.symm.trans
+    ((hammockPathSemanticEquivalence M N).trans AsSmall.equiv)
+
+/-- Simplicial comparison from generated hammock paths to the independent
+linear hammock mapping nerve. -/
+noncomputable def generatedLinearComparison
+    (M N : ProcessModel.{u, v, w} R) :
+    GeneratedHammockMappingNerve M N ⟶ LinearHammockMappingNerve M N :=
+  CategoryTheory.nerveMap (generatedLinearEquivalence M N).functor
+
+/-- Categorical-nerve equivalence evidence for generated-to-linear hammock
+semantics in the common universe. -/
+noncomputable def generatedLinearNerveEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (generatedLinearComparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence
+    (generatedLinearEquivalence M N)
+
+/-- Explicit simplicial inverse and both homotopies for the common-universe
+generated-to-linear comparison. -/
+noncomputable def generatedLinearHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (generatedLinearComparison M N) :=
+  SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+    (generatedLinearEquivalence M N)
+
+/-- Direct category equivalence from generated hammock paths to the actual
+local hom-category of the presented localization target. -/
+noncomputable def generatedTargetEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    GeneratedHammockMappingCategory M N ≌
+      CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N :=
+  (generatedLinearEquivalence M N).trans (linearTargetEquivalence M N)
+
+/-- Direct simplicial comparison from generated hammock paths to the actual
+target local mapping nerve. -/
+noncomputable def generatedTargetComparison
+    (M N : ProcessModel.{u, v, w} R) :
+    GeneratedHammockMappingNerve M N ⟶
+      CommonTargetMappingNerve
+        (CostExactZigzag.inclusion (R := R)) M N :=
+  CategoryTheory.nerveMap (generatedTargetEquivalence M N).functor
+
+/-- Categorical-nerve equivalence evidence for the direct generated-hammock-
+to-target comparison. -/
+noncomputable def generatedTargetNerveEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (generatedTargetComparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence
+    (generatedTargetEquivalence M N)
+
+/-- Explicit simplicial inverse and both homotopies for the direct generated-
+hammock-to-target comparison. -/
+noncomputable def generatedTargetHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (generatedTargetComparison M N) :=
+  SSet.HomotopyEquivalenceWitness.ofCategoryEquivalence
+    (generatedTargetEquivalence M N)
+
+/-- The direct generated-hammock target comparison factors strictly through
+the independent linear hammock nerve. -/
+theorem generatedTargetComparison_factorization
+    (M N : ProcessModel.{u, v, w} R) :
+    generatedTargetComparison M N =
+      generatedLinearComparison M N ≫ linearTargetComparison M N := by
+  rfl
+
 /-- Common-universe functor embedding every source 1-cell and 2-cell into the
 relative-zigzag mapping category as a forward word and original quotient
 2-cell. -/
@@ -1847,6 +1931,24 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Non-groupoidal generated hammock paths combining refinements with
   arbitrary aligned/source 2-cells and strictly extending refinement paths. -/
   hammockPathNerve : HammockPathNerveCore M N
+  /-- Common-universe generated hammock paths are categorically equivalent
+  directly to the actual localization-target local hom-category. -/
+  generatedTargetCategoricalEquivalence :
+    GeneratedHammockMappingCategory M N ≌
+      CommonTargetHom (CostExactZigzag.inclusion (R := R)) M N
+  /-- The direct generated-hammock target nerve map is a categorical-nerve
+  equivalence. -/
+  generatedTargetNerveEquivalence :
+    SSet.NerveEquivalenceWitness (generatedTargetComparison M N)
+  /-- The direct generated-hammock target comparison has an explicit
+  simplicial inverse and both homotopies. -/
+  generatedTargetHomotopyEquivalence :
+    SSet.HomotopyEquivalenceWitness (generatedTargetComparison M N)
+  /-- The direct target comparison factors strictly through the independent
+  linear hammock nerve. -/
+  generatedTargetFactorization :
+    generatedTargetComparison M N =
+      generatedLinearComparison M N ≫ linearTargetComparison M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -1925,6 +2027,12 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
   refinementPathNerve := refinementPathNerveCore M N
   refinementImageNerve := refinementImageNerveCore M N
   hammockPathNerve := hammockPathNerveCore M N
+  generatedTargetCategoricalEquivalence := generatedTargetEquivalence M N
+  generatedTargetNerveEquivalence := generatedTargetNerveEquivalence M N
+  generatedTargetHomotopyEquivalence :=
+    generatedTargetHomotopyEquivalence M N
+  generatedTargetFactorization :=
+    generatedTargetComparison_factorization M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N

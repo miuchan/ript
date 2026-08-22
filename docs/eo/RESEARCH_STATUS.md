@@ -383,6 +383,12 @@ nerva mapo havas eksplicitan homotopian inverson. Kohereco de kritikaj paroj,
 reduktita-hammock invariant eco, norma malfort-ekvivalenta pako kaj la fina
 tutmonda Dwyer--Kan/Rezk-teoremo restas malfermitaj.
 
+La komun-universa versio de la generita hammock-kategorio nun estas rekte
+kategorie ekvivalenta al la fakta loka hom-kategorio de la lokaliza celo. La
+nerva mapo havas eksplicitan homotopian inverson kaj strikte faktoriĝas tra la
+generita-al-lineara kaj lineara-al-cela komparoj. Kune kun ekstera esenca
+surĵeteco tio formas la kontrolitan `GeneratedHammockDwyerKanCore`.
+
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
 1-ĉelon antaŭen kaj nur markitan sagon malantaŭen. Kunmeto, longo, unuaj kaj

@@ -391,8 +391,9 @@ Every node in this graph is an existing compiled module.
 | 12 (non-thin semantic refinement-path nerve) | Refinement syntax modulo equality of quotient-cell interpretations forms a non-thin groupoid; executable reversal supplies inverses; its semantic functor into the linear mapping category is faithful and essentially surjective on row objects, maps every path to an isomorphism, and induces a nerve map with exact row-vertex and arbitrary-refinement-edge action; the zero-truncation functor to the thin groupoid is full and essentially surjective | PROVED |
 | 12 (exact refinement-generated semantic image) | Actual quotient 2-cells equipped with existence of an executable refinement generator form a non-thin image subgroupoid of the linear mapping category; inclusion is faithful, the semantic refinement-path functor is full, faithful, essentially surjective and hence an equivalence onto this exact image, and the induced nerve equivalence has an explicit simplicial homotopy inverse, exact generator-edge action, and strict factorization of the original semantic nerve map | PROVED |
 | 12 (aligned-cell-augmented hammock paths) | A non-groupoidal generated path syntax alternates executable refinements with arbitrary aligned raw 2-cells and vertical composition, then quotients only by equality of quotient-cell semantics; normalized left/right whiskering enters and leaves binary append through canonical linear-normal-form isomorphisms, horizontal append composes those operations, and semantic equality/image membership are closed under all three; explicit append-isomorphism exchange/cancellation proves normalization naturality for raw left/right whiskering; source structural and marked-pair generators normalize to executable refinements; both unitors and both associators normalize to explicit mutually inverse recursive paths; unconditional structural induction proves every raw cell normalizable; conjugating an arbitrary quotient representative yields a generated path for every linear quotient 2-cell, so the semantic functor is full, faithful, essentially surjective and a categorical equivalence, and its nerve comparison has an explicit simplicial homotopy inverse | PROVED |
+| 12 (generated hammock Dwyer--Kan core) | Common-universe generated hammock mapping categories are categorically equivalent first to the independent linear hammock categories and then directly to the actual localization-target local hom-categories; both nerve comparisons have categorical-equivalence witnesses and explicit simplicial homotopy inverses, the direct target map factors strictly through the linear comparison, and outer essential surjectivity packages these results as an audited `GeneratedHammockDwyerKanCore` | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Use the proved full generated-hammock mapping-space equivalence to establish critical-pair coherence and reduced-hammock homotopical invariance (or compare it to another accepted derived mapping-space construction), connect the resulting local comparison to a standard weak-equivalence interface, and finish the standard global Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Strengthen the proved project-local `GeneratedHammockDwyerKanCore` with critical-pair coherence and reduced-hammock homotopical invariance (or compare it to another accepted derived mapping-space construction), connect it to a standard weak-equivalence interface, and finish the standard global Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6172,10 +6173,16 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `LinearHammockDwyerKanCore`. Its arbitrary-height vertical grids are now
   explicit too: every `n`-simplex is equivalent to `n + 1` linear rows and
   `n` adjacent quotient-cell edges with endpoint equations, and all row/edge
-  projections and round trips compile. What remains is the classical
-  horizontal multi-column hammock moves and reductions (or comparison with
-  another accepted derived construction), standard weak-equivalence
-  packaging, and the final Dwyer--Kan/Rezk statement.
+  projections and round trips compile. The larger generated non-groupoidal
+  path category now represents every quotient 2-cell and is equivalent to the
+  full linear mapping category. After common-universe replacement it is
+  directly equivalent to the actual target local category, its nerve map has
+  an explicit homotopy inverse and factors strictly through the linear map;
+  outer essential surjectivity packages this as
+  `GeneratedHammockDwyerKanCore`. What remains is comparison with classical
+  reduced arbitrary-grid hammock moves (or another accepted derived
+  construction), standard weak-equivalence packaging, and the final global
+  Dwyer--Kan/Rezk statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`
