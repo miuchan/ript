@@ -390,10 +390,14 @@ non-groupoidal generated path category now alternates refinements with
 arbitrary aligned raw 2-cells. Its semantics and the refinement embedding are
 faithful, the old nerve map factors through it strictly, and every source
 2-cell has a canonical one-column edge equal to the original quotient cell
-conjugated by right-unitors. Normalization of every presented quotient 2-cell
-into these paths, competing-move coherence, reduced-hammock invariance,
-standard weak-equivalence packaging, and the global Dwyer--Kan/Rezk theorem
-remain.
+conjugated by right-unitors. Normalized left/right whiskering and horizontal
+append now preserve semantic equality and image membership and have exact
+cost-exact three-model nerve formulas. Raw identity/original cells are
+normalizable, and vertical composition preserves normalizability. The next
+missing induction law is naturality of normalization isomorphisms with raw
+whiskering; remaining structural generators, competing-move coherence,
+reduced-hammock invariance, standard weak-equivalence packaging, and the global
+Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

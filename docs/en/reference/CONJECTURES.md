@@ -468,11 +468,14 @@ through it strictly. A larger non-groupoidal path category now alternates
 refinements with arbitrary aligned raw 2-cells. Its semantics is faithful, the
 refinement subsystem embeds faithfully and factors strictly, and every source
 2-cell has a canonical one-column representative whose quotient semantics is
-the original 2-cell conjugated by right-unitors. The remaining classical gap
-is normalizing every presented quotient 2-cell into these alternating paths
-(or identifying the missing generators), together with coherence for
-competing forward/marked moves, reduced-hammock moves, and their homotopical
-invariance.
+the original 2-cell conjugated by right-unitors. The path calculus is now
+closed under normalized left/right whiskering and horizontal append, with
+exact cost-exact three-model nerve formulas. Raw identities and original cells
+are normalizable, and normalizability is closed under vertical composition.
+The next missing induction law is naturality of the chosen normalization
+isomorphisms with raw whiskering; after it, the remaining structural generators
+must be normalized before fullness can be claimed. Competing forward/marked
+moves, reduced-hammock moves, and their homotopical invariance remain open.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -577,9 +580,12 @@ and simplicially equivalent to the exact subgroupoid of refinement-generated
 quotient 2-cells, which includes faithfully in the full linear mapping
 category and strictly factors the semantic nerve map. The aligned-cell-
 augmented path category now adds arbitrary pointwise raw cells, contains every
-source 2-cell in one-column form, and strictly extends refinement paths.
-Normalization of all presented quotient 2-cells into this generated category,
-critical-pair coherence, and reduced-hammock invariance remain open.
+source 2-cell in one-column form, strictly extends refinement paths, and is
+closed under normalized left/right whiskering and horizontal append. Identity,
+vertical-composite, and original-cell normalization cases are proved.
+Normalization-isomorphism naturality for raw whiskering and the remaining
+structural generators, critical-pair coherence, and reduced-hammock invariance
+remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

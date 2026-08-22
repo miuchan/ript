@@ -23,10 +23,11 @@ equivalent to the discrete row quotient. A non-thin semantic refinement-path
 groupoid now retains paths up to equality of their quotient-cell semantics and
 embeds faithfully into the linear mapping category. Its exact generated image
 is internalized as a subgroupoid. A larger non-groupoidal hammock-path syntax
-now alternates arbitrary aligned cells with invertible refinements, retaining
-all source 2-cells in one-column form. Coverage of every presented quotient
-2-cell, critical-pair coherence, and reduced-hammock invariance are still
-absent, so this is not by itself the classical Dwyer--Kan hammock localization.
+now alternates arbitrary aligned cells with invertible refinements, retains
+all source 2-cells in one-column form, and is closed under normalized left/right
+whiskering and horizontal append. Coverage of every presented quotient 2-cell,
+critical-pair coherence, and reduced-hammock invariance are still absent, so
+this is not by itself the classical Dwyer--Kan hammock localization.
 -/
 
 set_option autoImplicit false
@@ -1548,8 +1549,57 @@ structure HammockPathObject (X Y : B) where
   /-- Underlying linear row. -/
   row : LinearWord W X Y
 
+namespace HammockPath
+
+/-- Left whiskering of a quotient 2-cell between linear normal forms. The
+canonical append isomorphisms enter the binary word presentation and return
+to the right-associated linear normal form. -/
+noncomputable def normalizedWhiskerLeftHom {X Y Z : B}
+    (pre : LinearWord W X Y) {first second : LinearWord W Y Z}
+    (alpha : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)) :
+    Presented.Hom W
+      (LinearWord.toWord W (LinearWord.append W pre first))
+      (LinearWord.toWord W (LinearWord.append W pre second)) :=
+  AlignedCell.quotientVcomp W
+    (LinearWord.toWordAppendIso W pre first).hom
+    (AlignedCell.quotientVcomp W
+      (Presented.whiskerLeftHom W (LinearWord.toWord W pre) alpha)
+      (LinearWord.toWordAppendIso W pre second).inv)
+
+/-- Right whiskering of a quotient 2-cell between linear normal forms, with
+canonical transport through binary word append. -/
+noncomputable def normalizedWhiskerRightHom {X Y Z : B}
+    {first second : LinearWord W X Y} (post : LinearWord W Y Z)
+    (alpha : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)) :
+    Presented.Hom W
+      (LinearWord.toWord W (LinearWord.append W first post))
+      (LinearWord.toWord W (LinearWord.append W second post)) :=
+  AlignedCell.quotientVcomp W
+    (LinearWord.toWordAppendIso W first post).hom
+    (AlignedCell.quotientVcomp W
+      (Presented.whiskerRightHom W (LinearWord.toWord W post) alpha)
+      (LinearWord.toWordAppendIso W second post).inv)
+
+/-- Transport an arbitrary raw presented cell to the linear normal forms of
+its two binary word endpoints. -/
+noncomputable def normalizedCellHom {X Y : B}
+    {first second : Word W X Y} (cell : Cell W first second) :
+    Presented.Hom W
+      (LinearWord.toWord W (LinearWord.flatten W first))
+      (LinearWord.toWord W (LinearWord.flatten W second)) :=
+  AlignedCell.quotientVcomp W
+    (LinearWord.normalizationIso W first).inv
+    (AlignedCell.quotientVcomp W
+      (Presented.mk W cell)
+      (LinearWord.normalizationIso W second).hom)
+
+end HammockPath
+
 /-- A generated hammock path may apply an invertible structural refinement,
-an arbitrary aligned raw 2-cell, or a vertical composite of such moves. -/
+an arbitrary aligned raw 2-cell, normalized whiskering, or a vertical
+composite of such moves. -/
 inductive HammockPath : ∀ {X Y : B},
     LinearWord W X Y → LinearWord W X Y → Type max u v w where
   /-- Empty vertical path. -/
@@ -1565,11 +1615,23 @@ inductive HammockPath : ∀ {X Y : B},
   /-- An arbitrary componentwise aligned raw 2-cell. -/
   | ofAligned {X Y : B} {first second : LinearWord W X Y}
       (cell : AlignedCell W first second) : HammockPath first second
+  /-- Whisker a generated path on the left by a fixed linear row. -/
+  | whiskerLeft {X Y Z : B} (pre : LinearWord W X Y)
+      {first second : LinearWord W Y Z}
+      (path : HammockPath first second) :
+      HammockPath (LinearWord.append W pre first)
+        (LinearWord.append W pre second)
+  /-- Whisker a generated path on the right by a fixed linear row. -/
+  | whiskerRight {X Y Z : B} {first second : LinearWord W X Y}
+      (path : HammockPath first second) (post : LinearWord W Y Z) :
+      HammockPath (LinearWord.append W first post)
+        (LinearWord.append W second post)
 
 namespace HammockPath
 
-/-- Interpret a generated hammock path as one quotient 2-cell. -/
-def toHom {X Y : B} {first second : LinearWord W X Y} :
+/-- Interpret a generated hammock path as one quotient 2-cell. Normalized
+whiskering is semantic and therefore intentionally noncomputable. -/
+noncomputable def toHom {X Y : B} {first second : LinearWord W X Y} :
     HammockPath W first second →
       Presented.Hom W (LinearWord.toWord W first)
         (LinearWord.toWord W second)
@@ -1578,6 +1640,8 @@ def toHom {X Y : B} {first second : LinearWord W X Y} :
       AlignedCell.quotientVcomp W (toHom alpha) (toHom beta)
   | .ofRefinement refinement => ColumnRefinement.toHom W refinement
   | .ofAligned cell => AlignedCell.toHom W cell
+  | .whiskerLeft pre path => normalizedWhiskerLeftHom W pre (toHom path)
+  | .whiskerRight path post => normalizedWhiskerRightHom W post (toHom path)
 
 @[simp]
 theorem toHom_identity {X Y : B} (row : LinearWord W X Y) :
@@ -1606,6 +1670,48 @@ theorem toHom_ofAligned {X Y : B}
     {first second : LinearWord W X Y}
     (cell : AlignedCell W first second) :
     toHom W (.ofAligned cell) = AlignedCell.toHom W cell :=
+  rfl
+
+@[simp]
+theorem toHom_whiskerLeft {X Y Z : B} (pre : LinearWord W X Y)
+    {first second : LinearWord W Y Z}
+    (path : HammockPath W first second) :
+    toHom W (.whiskerLeft pre path) =
+      normalizedWhiskerLeftHom W pre (toHom W path) :=
+  rfl
+
+@[simp]
+theorem toHom_whiskerRight {X Y Z : B}
+    {first second : LinearWord W X Y}
+    (path : HammockPath W first second) (post : LinearWord W Y Z) :
+    toHom W (.whiskerRight path post) =
+      normalizedWhiskerRightHom W post (toHom W path) :=
+  rfl
+
+/-- Horizontal append of two generated paths, implemented by right
+whiskering the first and left whiskering the second. -/
+def append {X Y Z : B}
+    {firstSource firstTarget : LinearWord W X Y}
+    {secondSource secondTarget : LinearWord W Y Z}
+    (first : HammockPath W firstSource firstTarget)
+    (second : HammockPath W secondSource secondTarget) :
+    HammockPath W
+      (LinearWord.append W firstSource secondSource)
+      (LinearWord.append W firstTarget secondTarget) :=
+  .vcomp (.whiskerRight first secondSource)
+    (.whiskerLeft firstTarget second)
+
+/-- Exact quotient interpretation of horizontal path append. -/
+@[simp]
+theorem toHom_append {X Y Z : B}
+    {firstSource firstTarget : LinearWord W X Y}
+    {secondSource secondTarget : LinearWord W Y Z}
+    (first : HammockPath W firstSource firstTarget)
+    (second : HammockPath W secondSource secondTarget) :
+    toHom W (append W first second) =
+      AlignedCell.quotientVcomp W
+        (normalizedWhiskerRightHom W secondSource (toHom W first))
+        (normalizedWhiskerLeftHom W firstTarget (toHom W second)) :=
   rfl
 
 /-- Generated paths are semantically equal when their quotient 2-cell
@@ -1637,6 +1743,40 @@ theorem rel_vcomp {X Y : B}
     AlignedCell.quotientVcomp W (toHom W alpha') (toHom W beta')
   rw [hAlpha, hBeta]
 
+/-- Semantic equality is stable under normalized left whiskering. -/
+theorem rel_whiskerLeft {X Y Z : B} (pre : LinearWord W X Y)
+    {first second : LinearWord W Y Z}
+    {alpha beta : HammockPath W first second}
+    (equality : Rel W alpha beta) :
+    Rel W (.whiskerLeft pre alpha) (.whiskerLeft pre beta) := by
+  unfold Rel at equality ⊢
+  change normalizedWhiskerLeftHom W pre (toHom W alpha) =
+    normalizedWhiskerLeftHom W pre (toHom W beta)
+  rw [equality]
+
+/-- Semantic equality is stable under normalized right whiskering. -/
+theorem rel_whiskerRight {X Y Z : B}
+    {first second : LinearWord W X Y} (post : LinearWord W Y Z)
+    {alpha beta : HammockPath W first second}
+    (equality : Rel W alpha beta) :
+    Rel W (.whiskerRight alpha post) (.whiskerRight beta post) := by
+  unfold Rel at equality ⊢
+  change normalizedWhiskerRightHom W post (toHom W alpha) =
+    normalizedWhiskerRightHom W post (toHom W beta)
+  rw [equality]
+
+/-- Semantic equality is stable under horizontal append. -/
+theorem rel_append {X Y Z : B}
+    {firstSource firstTarget : LinearWord W X Y}
+    {secondSource secondTarget : LinearWord W Y Z}
+    {first first' : HammockPath W firstSource firstTarget}
+    {second second' : HammockPath W secondSource secondTarget}
+    (hFirst : Rel W first first') (hSecond : Rel W second second') :
+    Rel W (append W first second) (append W first' second') := by
+  apply rel_vcomp W
+  · exact rel_whiskerRight W secondSource hFirst
+  · exact rel_whiskerLeft W firstTarget hSecond
+
 /-- Aligned-cell-augmented semantic paths form a category. -/
 instance category (X Y : B) : Category (HammockPathObject W X Y) where
   Hom first second := Hom W first.row second.row
@@ -1667,7 +1807,7 @@ instance category (X Y : B) : Category (HammockPathObject W X Y) where
     exact Category.assoc _ _ _
 
 /-- Faithful semantic interpretation into the full linear mapping category. -/
-def semanticFunctor (X Y : B) :
+noncomputable def semanticFunctor (X Y : B) :
     HammockPathObject W X Y ⥤ LinearWord W X Y where
   obj row := row.row
   map := Quotient.lift (toHom W)
@@ -1771,6 +1911,12 @@ def InSemanticImage {X Y : B} {first second : LinearWord W X Y}
       (LinearWord.toWord W second)) : Prop :=
   ∃ path : HammockPath W first second, toHom W path = morphism
 
+/-- A raw cell is hammock-normalizable when its transport between the linear
+normal forms of its endpoints lies in the generated semantic image. -/
+def Normalizable {X Y : B} {first second : Word W X Y}
+    (cell : Cell W first second) : Prop :=
+  InSemanticImage W (normalizedCellHom W cell)
+
 /-- Exact image characterization through morphisms of the semantic path
 category. -/
 theorem inSemanticImage_iff_exists_map {X Y : B}
@@ -1801,6 +1947,87 @@ theorem aligned_mem_semanticImage {X Y : B}
     (cell : AlignedCell W first second) :
     InSemanticImage W (AlignedCell.toHom W cell) :=
   ⟨.ofAligned cell, rfl⟩
+
+/-- The semantic image is closed under vertical composition. -/
+theorem vcomp_mem_semanticImage {X Y : B}
+    {first middle last : LinearWord W X Y}
+    {alpha : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W middle)}
+    {beta : Presented.Hom W (LinearWord.toWord W middle)
+      (LinearWord.toWord W last)}
+    (hAlpha : InSemanticImage W alpha)
+    (hBeta : InSemanticImage W beta) :
+    InSemanticImage W (AlignedCell.quotientVcomp W alpha beta) := by
+  rcases hAlpha with ⟨alphaPath, hAlpha⟩
+  rcases hBeta with ⟨betaPath, hBeta⟩
+  exact ⟨.vcomp alphaPath betaPath, by rw [toHom_vcomp, hAlpha, hBeta]⟩
+
+/-- The semantic image is closed under normalized left whiskering. -/
+theorem whiskerLeft_mem_semanticImage {X Y Z : B}
+    (pre : LinearWord W X Y) {first second : LinearWord W Y Z}
+    {morphism : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)}
+    (member : InSemanticImage W morphism) :
+    InSemanticImage W (normalizedWhiskerLeftHom W pre morphism) := by
+  rcases member with ⟨path, equality⟩
+  exact ⟨.whiskerLeft pre path, by rw [toHom_whiskerLeft, equality]⟩
+
+/-- The semantic image is closed under normalized right whiskering. -/
+theorem whiskerRight_mem_semanticImage {X Y Z : B}
+    {first second : LinearWord W X Y} (post : LinearWord W Y Z)
+    {morphism : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)}
+    (member : InSemanticImage W morphism) :
+    InSemanticImage W (normalizedWhiskerRightHom W post morphism) := by
+  rcases member with ⟨path, equality⟩
+  exact ⟨.whiskerRight path post, by rw [toHom_whiskerRight, equality]⟩
+
+/-- The semantic image is closed under horizontal append of represented
+quotient 2-cells. -/
+theorem append_mem_semanticImage {X Y Z : B}
+    {firstSource firstTarget : LinearWord W X Y}
+    {secondSource secondTarget : LinearWord W Y Z}
+    {first : Presented.Hom W (LinearWord.toWord W firstSource)
+      (LinearWord.toWord W firstTarget)}
+    {second : Presented.Hom W (LinearWord.toWord W secondSource)
+      (LinearWord.toWord W secondTarget)}
+    (hFirst : InSemanticImage W first)
+    (hSecond : InSemanticImage W second) :
+    InSemanticImage W
+      (AlignedCell.quotientVcomp W
+        (normalizedWhiskerRightHom W secondSource first)
+        (normalizedWhiskerLeftHom W firstTarget second)) := by
+  rcases hFirst with ⟨firstPath, firstEquality⟩
+  rcases hSecond with ⟨secondPath, secondEquality⟩
+  refine ⟨append W firstPath secondPath, ?_⟩
+  rw [toHom_append, firstEquality, secondEquality]
+
+/-- Normalizing a raw identity cell gives the identity of the linear normal
+form. -/
+@[simp]
+theorem normalizedCellHom_id {X Y : B} (word : Word W X Y) :
+    normalizedCellHom W (Cell.id word) =
+      𝟙 (LinearWord.toWord W (LinearWord.flatten W word)) := by
+  change (LinearWord.normalizationIso W word).inv ≫
+      (𝟙 word) ≫ (LinearWord.normalizationIso W word).hom = _
+  simp
+
+/-- Normalization preserves vertical composition of raw cells exactly. -/
+@[simp]
+theorem normalizedCellHom_vcomp {X Y : B}
+    {first middle last : Word W X Y}
+    (alpha : Cell W first middle) (beta : Cell W middle last) :
+    normalizedCellHom W (.vcomp alpha beta) =
+      AlignedCell.quotientVcomp W
+        (normalizedCellHom W alpha) (normalizedCellHom W beta) := by
+  change (LinearWord.normalizationIso W first).inv ≫
+      (Presented.mk W alpha ≫ Presented.mk W beta) ≫
+        (LinearWord.normalizationIso W last).hom =
+    ((LinearWord.normalizationIso W first).inv ≫
+      Presented.mk W alpha ≫ (LinearWord.normalizationIso W middle).hom) ≫
+    ((LinearWord.normalizationIso W middle).inv ≫
+      Presented.mk W beta ≫ (LinearWord.normalizationIso W last).hom)
+  simp [Category.assoc]
 
 /-- One-step linear row representing a source 1-cell. -/
 def forwardRow {X Y : B} (f : X ⟶ Y) : LinearWord W X Y :=
@@ -1855,6 +2082,42 @@ theorem originalCell_mem_semanticImage {X Y : B} {f g : X ⟶ Y}
     InSemanticImage W
       (AlignedCell.toHom W (originalAlignedCell W alpha)) :=
   aligned_mem_semanticImage W (originalAlignedCell W alpha)
+
+/-- Normalizing an original source 2-cell recovers its canonical aligned
+one-column interpretation. -/
+@[simp]
+theorem normalizedCellHom_original {X Y : B} {f g : X ⟶ Y}
+    (alpha : f ⟶ g) :
+    normalizedCellHom W (Cell.original (W := W) alpha) =
+      AlignedCell.toHom W (originalAlignedCell W alpha) := by
+  change AlignedCell.quotientVcomp W
+      (Presented.wordRightUnitorIso W (Word.forward W f)).hom
+      (AlignedCell.quotientVcomp W
+        (Presented.mk W (Cell.original (W := W) alpha))
+        (Presented.wordRightUnitorIso W (Word.forward W g)).inv) = _
+  exact (originalAlignedCell_toHom W alpha).symm
+
+/-- Raw identity cells are hammock-normalizable. -/
+theorem identity_normalizable {X Y : B} (word : Word W X Y) :
+    Normalizable W (Cell.id word) := by
+  rw [Normalizable, normalizedCellHom_id]
+  exact ⟨.identity (LinearWord.flatten W word), rfl⟩
+
+/-- Vertical composites of normalizable raw cells remain normalizable. -/
+theorem vcomp_normalizable {X Y : B}
+    {first middle last : Word W X Y}
+    {alpha : Cell W first middle} {beta : Cell W middle last}
+    (hAlpha : Normalizable W alpha) (hBeta : Normalizable W beta) :
+    Normalizable W (.vcomp alpha beta) := by
+  rw [Normalizable, normalizedCellHom_vcomp]
+  exact vcomp_mem_semanticImage W hAlpha hBeta
+
+/-- Original source 2-cells are hammock-normalizable. -/
+theorem original_normalizable {X Y : B} {f g : X ⟶ Y}
+    (alpha : f ⟶ g) :
+    Normalizable W (Cell.original (W := W) alpha) := by
+  rw [Normalizable, normalizedCellHom_original]
+  exact originalCell_mem_semanticImage W alpha
 
 end HammockPath
 

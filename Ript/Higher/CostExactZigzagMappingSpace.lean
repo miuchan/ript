@@ -31,9 +31,11 @@ original semantic nerve map factors through it strictly, and generator edges
 retain their literal quotient-2-cell interpretations. A larger non-groupoidal
 generated hammock-path nerve now adds arbitrary aligned raw cells, contains
 the refinement-path nerve faithfully, and covers every source 2-cell in its
-canonical one-column representation. Coverage of all presented quotient
-2-cells, competing-move coherence, and reduced-hammock invariance are still
-absent, so these results are not by themselves the final Dwyer--Kan theorem.
+canonical one-column representation. Generated paths are now also closed under
+normalized left/right whiskering and horizontal append, with exact three-model
+nerve formulas. Coverage of all presented quotient 2-cells, competing-move
+coherence, and reduced-hammock invariance are still absent, so these results
+are not by themselves the final Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -1001,7 +1003,7 @@ abbrev GeneratedHammockPath
 
 /-- Nerve map from generated hammock paths into the full linear mapping
 nerve. -/
-def hammockPathSemanticComparison
+noncomputable def hammockPathSemanticComparison
     (M N : ProcessModel.{u, v, w} R) :=
   CategoryTheory.nerveMap
     (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
@@ -1070,6 +1072,90 @@ theorem hammockPathSemanticComparison_alignedEdge
       ComposableArrows.mk₁
         (Bicategory.MarkedZigzag.AlignedCell.toHom
           (costExactArrows R) cell) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Exact semantic action on a generated path whiskered on the left by a
+fixed linear row. -/
+theorem hammockPathSemanticComparison_whiskerLeftEdge
+    {M N P : ProcessModel.{u, v, w} R}
+    (pre : LinearHammock M N)
+    {first second : LinearHammock N P}
+    (path : Bicategory.MarkedZigzag.HammockPath
+      (costExactArrows R) first second) :
+    (hammockPathSemanticComparison M P).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) pre first)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) pre second))
+            (Bicategory.MarkedZigzag.HammockPath.whiskerLeft pre path))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerLeftHom
+          (costExactArrows R) pre
+          (Bicategory.MarkedZigzag.HammockPath.toHom
+            (costExactArrows R) path)) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Exact semantic action on a generated path whiskered on the right by a
+fixed linear row. -/
+theorem hammockPathSemanticComparison_whiskerRightEdge
+    {M N P : ProcessModel.{u, v, w} R}
+    {first second : LinearHammock M N}
+    (path : Bicategory.MarkedZigzag.HammockPath
+      (costExactArrows R) first second)
+    (post : LinearHammock N P) :
+    (hammockPathSemanticComparison M P).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) first post)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) second post))
+            (Bicategory.MarkedZigzag.HammockPath.whiskerRight path post))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerRightHom
+          (costExactArrows R) post
+          (Bicategory.MarkedZigzag.HammockPath.toHom
+            (costExactArrows R) path)) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Exact semantic action on horizontal append of two generated hammock
+paths. -/
+theorem hammockPathSemanticComparison_appendEdge
+    {M N P : ProcessModel.{u, v, w} R}
+    {firstSource firstTarget : LinearHammock M N}
+    {secondSource secondTarget : LinearHammock N P}
+    (first : Bicategory.MarkedZigzag.HammockPath
+      (costExactArrows R) firstSource firstTarget)
+    (second : Bicategory.MarkedZigzag.HammockPath
+      (costExactArrows R) secondSource secondTarget) :
+    (hammockPathSemanticComparison M P).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) firstSource secondSource)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) firstTarget secondTarget))
+            (Bicategory.MarkedZigzag.HammockPath.append
+              (costExactArrows R) first second))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+          (costExactArrows R)
+          (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerRightHom
+            (costExactArrows R) secondSource
+            (Bicategory.MarkedZigzag.HammockPath.toHom
+              (costExactArrows R) first))
+          (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerLeftHom
+            (costExactArrows R) firstTarget
+            (Bicategory.MarkedZigzag.HammockPath.toHom
+              (costExactArrows R) second))) := by
   exact CategoryTheory.nerveMap_app_mk₁ _ _
 
 /-- Exact semantic action on a source 2-cell in its canonical one-column
@@ -1173,6 +1259,90 @@ theorem hammockPathNerveCore (M N : ProcessModel.{u, v, w} R) :
   maps_refinement := hammockPathSemanticComparison_refinementEdge
   maps_aligned := hammockPathSemanticComparison_alignedEdge
   maps_original := hammockPathSemanticComparison_originalEdge
+
+/-- Machine-facing exact three-model whiskering and append interface for the
+generated hammock-path nerves. -/
+structure HammockPathWhiskeringCore
+    (M N P : ProcessModel.{u, v, w} R) : Prop where
+  /-- Exact action on every left-whiskered generated path. -/
+  maps_whiskerLeft : ∀ (pre : LinearHammock M N)
+      {first second : LinearHammock N P}
+      (path : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second),
+    (hammockPathSemanticComparison M P).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) pre first)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) pre second))
+            (Bicategory.MarkedZigzag.HammockPath.whiskerLeft pre path))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerLeftHom
+          (costExactArrows R) pre
+          (Bicategory.MarkedZigzag.HammockPath.toHom
+            (costExactArrows R) path))
+  /-- Exact action on every right-whiskered generated path. -/
+  maps_whiskerRight : ∀ {first second : LinearHammock M N}
+      (path : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second)
+      (post : LinearHammock N P),
+    (hammockPathSemanticComparison M P).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) first post)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) second post))
+            (Bicategory.MarkedZigzag.HammockPath.whiskerRight path post))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerRightHom
+          (costExactArrows R) post
+          (Bicategory.MarkedZigzag.HammockPath.toHom
+            (costExactArrows R) path))
+  /-- Exact action on horizontal append. -/
+  maps_append : ∀
+      {firstSource firstTarget : LinearHammock M N}
+      {secondSource secondTarget : LinearHammock N P}
+      (first : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) firstSource firstTarget)
+      (second : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) secondSource secondTarget),
+    (hammockPathSemanticComparison M P).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) firstSource secondSource)
+              (Bicategory.MarkedZigzag.LinearWord.append
+                (costExactArrows R) firstTarget secondTarget))
+            (Bicategory.MarkedZigzag.HammockPath.append
+              (costExactArrows R) first second))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+          (costExactArrows R)
+          (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerRightHom
+            (costExactArrows R) secondSource
+            (Bicategory.MarkedZigzag.HammockPath.toHom
+              (costExactArrows R) first))
+          (Bicategory.MarkedZigzag.HammockPath.normalizedWhiskerLeftHom
+            (costExactArrows R) firstTarget
+            (Bicategory.MarkedZigzag.HammockPath.toHom
+              (costExactArrows R) second)))
+
+/-- Every cost-exact model triple satisfies the exact generated-path
+whiskering and append interface. -/
+theorem hammockPathWhiskeringCore
+    (M N P : ProcessModel.{u, v, w} R) :
+    HammockPathWhiskeringCore M N P where
+  maps_whiskerLeft := hammockPathSemanticComparison_whiskerLeftEdge
+  maps_whiskerRight := hammockPathSemanticComparison_whiskerRightEdge
+  maps_append := hammockPathSemanticComparison_appendEdge
 
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
