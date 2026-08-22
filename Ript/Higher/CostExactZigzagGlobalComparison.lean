@@ -1512,9 +1512,11 @@ equivalence with an explicit simplicial homotopy inverse.
 The linear model now has a fixed-shape aligned multi-column fragment and
 elementary executable forward and marked-pair refinements, plus an object-level
 common-refinement quotient and equivalent zero-truncated thin groupoid nerve.
-It does not yet have the non-thin refinement-path nerve, competing-move
-coherence, or reduced-hammock invariance of the classical arbitrary-grid
-localization, so this is not yet the standard Dwyer--Kan theorem. -/
+It now also has a non-thin semantic refinement-path groupoid nerve faithfully
+embedded in the linear mapping nerve, but not fullness/image characterization,
+competing-move coherence, or reduced-hammock invariance of the classical
+arbitrary-grid localization, so this is not yet the standard Dwyer--Kan
+theorem. -/
 def LinearHammockDwyerKanCore : Prop :=
   (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
   ∀ (M N : ProcessModel.{u, v, w} R),

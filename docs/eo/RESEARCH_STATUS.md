@@ -347,9 +347,13 @@ egaleco estas ekzakte komun-rafineblo kaj donas semantikan izomorfion sen
 objekta egaleco. La nul-tranĉita map-tavolo ankaŭ estas kompleta: envolvitaj
 vicoj formas maldikan komun-rafinadan grupoion, kategorie ekvivalentan al la
 diskreta vico-kvociento, kaj la nerva komparo havas eksplicitan simplican
-inversilon kaj ambaŭ homotopiojn. Restas nemaldika rafinad-voja nervo, kohereco
-de konkuraj movoj, reduktita-hammock invariant eco kaj norma
-malfort-ekvivalenta pako.
+inversilon kaj ambaŭ homotopiojn. Nemaldika semantika rafinad-voja grupoido
+nun konservas vojojn modulo egaleco de iliaj kvocient-ĉelaj interpretoj. Ĝia
+nerva mapo al la lineara map-nervo estas fidela kaj esence surĵeta je vicaj
+objektoj, sendas ĉiun vojon al izomorfio, kaj havas ekzaktajn verticajn/eĝajn
+formulojn; la nul-tranĉo al la maldika grupoido estas plena kaj esence
+surĵeta. Restas pleneco aŭ ekzakta bilda karakterizo, kohereco de kritikaj
+paroj, reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

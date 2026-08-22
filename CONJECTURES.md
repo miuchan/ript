@@ -455,9 +455,14 @@ both round trips, and arbitrary-prefix stability. Every composite refinement
 now has an executable reverse and unified semantic isomorphism. Two-leg
 common-refinement spans form an equivalence relation and a row quotient;
 quotient equality is exactly common-refinability and soundly yields a semantic
-isomorphism, not Lean object equality. The remaining classical gap is a
-non-thin refinement-path mapping category/nerve, coherence for competing
-forward/marked moves, reduced-hammock moves, and their homotopical invariance.
+isomorphism, not Lean object equality. A non-thin semantic refinement-path
+groupoid is now compiled as well: paths are quotiented only by equality of
+their quotient-cell interpretations, executable reversal gives inverses, and
+the semantic functor into the linear mapping category is faithful and
+essentially surjective on row objects with exact nerve edge action. The
+remaining classical gap is fullness or an exact image characterization,
+coherence for competing forward/marked moves, reduced-hammock moves, and their
+homotopical invariance.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -557,7 +562,9 @@ and semantic inverse laws. Their object-level common-refinement quotient and
 semantic-isomorphism soundness are now proved. A quotient mapping nerve,
 in the precise 0-truncated sense, is also proved via the thin refinement
 groupoid/discrete-quotient nerve equivalence. A non-thin refinement-path nerve,
-critical-pair coherence, and reduced-hammock invariance remain open.
+with faithful exact semantic action, is now proved too. Fullness/image
+characterization, critical-pair coherence, and reduced-hammock invariance
+remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

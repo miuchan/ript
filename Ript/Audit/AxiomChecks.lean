@@ -1035,6 +1035,15 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientFunctor_essSurj
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientEquivalence
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.rowObjectIsGroupoid
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.rel_vcomp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.comp_reverseHom
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.reverseHom_comp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.isGroupoid
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.semanticFunctor_faithful
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.semanticFunctor_essSurj
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.semanticFunctor_map_isIso
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.toThinFunctor_full
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.toThinFunctor_essSurj
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore
@@ -1042,6 +1051,9 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.thinRefinementNerveEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.thinRefinementHomotopyEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.thinRefinementNerveCore
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_vertex
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_edge
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathNerveCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk
