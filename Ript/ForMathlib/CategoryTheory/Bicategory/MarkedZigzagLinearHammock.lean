@@ -184,6 +184,16 @@ theorem toWordAppendIso_nil {X Y : B} (second : LinearWord W X Y) :
       (Presented.wordLeftUnitorIso W (toWord W second)).symm :=
   rfl
 
+/-- Recursive equation for the append comparison under one leading step. -/
+theorem toWordAppendIso_cons {X Y Z T : B} (step : Step W X Y)
+    (rest : LinearWord W Y Z) (second : LinearWord W Z T) :
+    toWordAppendIso W (.cons step rest) second =
+      whiskerLeftIso (B := Presented.Localization W) (Word.atom step)
+          (toWordAppendIso W rest second) ≪≫
+        (Presented.wordAssociatorIso W
+          (Word.atom step) (toWord W rest) (toWord W second)).symm :=
+  rfl
+
 /-- The append comparison for a singleton first row is the left-unitor
 comparison on the second row followed by inverse associativity. -/
 theorem toWordAppendIso_singleton {X Y Z : B} (step : Step W X Y)
@@ -285,6 +295,39 @@ theorem leftUnitor_inv_conjugation {C : Type u} [Bicategory.{w, v} C]
     {X Y : C} {first second : X ⟶ Y} (iso : first ≅ second) :
     iso.inv ≫ (λ_ first).inv ≫ (𝟙 X ◁ iso.hom) ≫
       (λ_ second).hom = 𝟙 second := by
+  simp
+
+/-- Coherence step for recursively transporting a right-unit comparison
+beneath one leading 1-morphism. -/
+theorem rightUnit_step_coherence {C : Type u} [Bicategory.{w, v} C]
+    {X Y Z : C} (first : X ⟶ Y) (second : Y ⟶ Z)
+    {source : Y ⟶ Z} (comparison : source ⟶ second ≫ 𝟙 Z) :
+    first ◁ (comparison ≫ (ρ_ second).hom) =
+      (first ◁ comparison ≫ (α_ first second (𝟙 Z)).inv) ≫
+        (ρ_ (first ≫ second)).hom := by
+  simp
+
+/-- Right-unitor naturality along an arbitrary isomorphism. -/
+theorem rightUnitor_conjugation {C : Type u} [Bicategory.{w, v} C]
+    {X Y : C} {first second : X ⟶ Y} (iso : first ≅ second) :
+    (iso.inv ▷ 𝟙 Y) ≫ (ρ_ first).hom ≫ iso.hom =
+      (ρ_ second).hom := by
+  simp
+
+/-- Inverse right-unitor naturality along an arbitrary isomorphism. -/
+theorem rightUnitor_inv_conjugation {C : Type u} [Bicategory.{w, v} C]
+    {X Y : C} {first second : X ⟶ Y} (iso : first ≅ second) :
+    iso.inv ≫ (ρ_ first).inv ≫ (iso.hom ▷ 𝟙 Y) =
+      (ρ_ second).inv := by
+  simp
+
+/-- Coherence step for the inverse recursive right-unit path. -/
+theorem rightUnit_inv_step_coherence {C : Type u} [Bicategory.{w, v} C]
+    {X Y Z : C} (first : X ⟶ Y) (second : Y ⟶ Z)
+    {target : Y ⟶ Z} (comparison : second ≫ 𝟙 Z ⟶ target) :
+    (ρ_ (first ≫ second)).inv ≫ (α_ first second (𝟙 Z)).hom ≫
+      (first ◁ comparison) =
+    first ◁ ((ρ_ second).inv ≫ comparison) := by
   simp
 
 /-- Normalizing a binary word of two atomic steps is exactly inverse right

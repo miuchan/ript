@@ -1882,6 +1882,12 @@ inductive HammockPath : ∀ {X Y : B},
       (path : HammockPath first second) (post : LinearWord W Y Z) :
       HammockPath (LinearWord.append W first post)
         (LinearWord.append W second post)
+  /-- Whisker beneath one common atomic prefix step without introducing
+  singleton-row normalization comparisons. -/
+  | under {X Y Z : B} (step : Step W X Y)
+      {first second : LinearWord W Y Z}
+      (path : HammockPath first second) :
+      HammockPath (.cons step first) (.cons step second)
 
 namespace HammockPath
 
@@ -1898,6 +1904,8 @@ noncomputable def toHom {X Y : B} {first second : LinearWord W X Y} :
   | .ofAligned cell => AlignedCell.toHom W cell
   | .whiskerLeft pre path => normalizedWhiskerLeftHom W pre (toHom path)
   | .whiskerRight path post => normalizedWhiskerRightHom W post (toHom path)
+  | .under step path =>
+      Presented.whiskerLeftHom W (Word.atom step) (toHom path)
 
 @[simp]
 theorem toHom_identity {X Y : B} (row : LinearWord W X Y) :
@@ -1944,6 +1952,14 @@ theorem toHom_whiskerRight {X Y Z : B}
       normalizedWhiskerRightHom W post (toHom W path) :=
   rfl
 
+@[simp]
+theorem toHom_under {X Y Z : B} (step : Step W X Y)
+    {first second : LinearWord W Y Z}
+    (path : HammockPath W first second) :
+    toHom W (.under step path) =
+      Presented.whiskerLeftHom W (Word.atom step) (toHom W path) :=
+  rfl
+
 /-- Horizontal append of two generated paths, implemented by right
 whiskering the first and left whiskering the second. -/
 def append {X Y Z : B}
@@ -1971,6 +1987,123 @@ theorem toHom_ofEq {X Y : B} {first second : LinearWord W X Y}
     toHom W (ofEq W equality) = equality ▸ 𝟙 (LinearWord.toWord W first) := by
   subst second
   rfl
+
+/-- Recursive generated path implementing the right-unit equation for a
+linear row. -/
+def rightUnitPath {X Y : B} :
+    (row : LinearWord W X Y) →
+      HammockPath W (LinearWord.append W row (.nil Y)) row
+  | .nil X => .identity (.nil X)
+  | .cons step rest => .under step (rightUnitPath rest)
+
+/-- Recursive inverse generated path for the right-unit equation. -/
+def rightUnitPathInv {X Y : B} :
+    (row : LinearWord W X Y) →
+      HammockPath W row (LinearWord.append W row (.nil Y))
+  | .nil X => .identity (.nil X)
+  | .cons step rest => .under step (rightUnitPathInv rest)
+
+/-- Recursive generated path implementing associativity of linear row
+append. -/
+def associatorPath {X Y Z T : B} :
+    (first : LinearWord W X Y) →
+    (second : LinearWord W Y Z) →
+    (third : LinearWord W Z T) →
+      HammockPath W
+        (LinearWord.append W (LinearWord.append W first second) third)
+        (LinearWord.append W first (LinearWord.append W second third))
+  | .nil _, second, third => .identity (LinearWord.append W second third)
+  | .cons step rest, second, third =>
+      .under step (associatorPath rest second third)
+
+/-- Exact semantic formula for the recursive right-unit path. -/
+theorem toHom_rightUnitPath {X Y : B} (row : LinearWord W X Y) :
+    toHom W (rightUnitPath W row) =
+      AlignedCell.quotientVcomp W
+        (LinearWord.toWordAppendIso W row (.nil Y)).hom
+        (Presented.wordRightUnitorIso W (LinearWord.toWord W row)).hom := by
+  induction row with
+  | nil X =>
+      change 𝟙 (Word.nil X) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordLeftUnitorIso W (.nil X)).inv
+          (Presented.wordRightUnitorIso W (.nil X)).hom
+      have unitors :
+          (Presented.wordLeftUnitorIso W (.nil X)).inv =
+            (Presented.wordRightUnitorIso W (.nil X)).inv := by
+        change (λ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv =
+          (ρ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv
+        exact unitors_inv_equal
+      rw [unitors]
+      exact (Presented.wordRightUnitorIso W (.nil X)).inv_hom_id.symm
+  | @cons X Y Z step rest ih =>
+      rw [LinearWord.toWordAppendIso_cons W step rest (.nil Z)]
+      simp only [rightUnitPath, LinearWord.append, toHom_under,
+        Iso.trans_hom, Bicategory.whiskerLeftIso, Iso.symm_hom]
+      rw [ih]
+      exact LinearWord.rightUnit_step_coherence
+        (C := Presented.Localization W) (Word.atom step)
+        (LinearWord.toWord W rest)
+        (LinearWord.toWordAppendIso W rest (.nil Z)).hom
+
+/-- Exact semantic formula for the inverse recursive right-unit path. -/
+theorem toHom_rightUnitPathInv {X Y : B} (row : LinearWord W X Y) :
+    toHom W (rightUnitPathInv W row) =
+      AlignedCell.quotientVcomp W
+        (Presented.wordRightUnitorIso W (LinearWord.toWord W row)).inv
+        (LinearWord.toWordAppendIso W row (.nil Y)).inv := by
+  induction row with
+  | nil X =>
+      change 𝟙 (Word.nil X) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (.nil X)).inv
+          (Presented.wordLeftUnitorIso W (.nil X)).hom
+      have unitors :
+          (Presented.wordRightUnitorIso W (.nil X)).inv =
+            (Presented.wordLeftUnitorIso W (.nil X)).inv := by
+        change (ρ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv =
+          (λ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv
+        exact unitors_inv_equal.symm
+      rw [unitors]
+      exact (Presented.wordLeftUnitorIso W (.nil X)).inv_hom_id.symm
+  | @cons X Y Z step rest ih =>
+      rw [LinearWord.toWordAppendIso_cons W step rest (.nil Z)]
+      simp only [rightUnitPathInv, LinearWord.append, toHom_under,
+        Iso.trans_inv, Bicategory.whiskerLeftIso, Iso.symm_inv]
+      rw [ih]
+      exact (LinearWord.rightUnit_inv_step_coherence
+        (C := Presented.Localization W) (Word.atom step)
+        (LinearWord.toWord W rest)
+        (LinearWord.toWordAppendIso W rest (.nil Z)).inv).symm
+
+/-- The recursive right-unit path followed by its recursive inverse denotes
+the identity on the row with a terminal empty suffix. -/
+theorem rightUnitPath_hom_inv {X Y : B} (row : LinearWord W X Y) :
+    AlignedCell.quotientVcomp W
+        (toHom W (rightUnitPath W row))
+        (toHom W (rightUnitPathInv W row)) =
+      𝟙 (LinearWord.toWord W
+        (LinearWord.append W row (.nil Y))) := by
+  induction row with
+  | nil X =>
+      change (𝟙 (Word.nil X)) ≫ 𝟙 (Word.nil X) = 𝟙 (Word.nil X)
+      exact Category.id_comp _
+  | @cons X Y Z step rest ih =>
+      simp only [rightUnitPath, rightUnitPathInv, LinearWord.append,
+        toHom_under]
+      change AlignedCell.quotientVcomp W
+          (Presented.whiskerLeftHom W (Word.atom step)
+            (toHom W (rightUnitPath W rest)))
+          (Presented.whiskerLeftHom W (Word.atom step)
+            (toHom W (rightUnitPathInv W rest))) =
+        𝟙 (Word.append (W := W) (Word.atom step)
+          (LinearWord.toWord W
+            (LinearWord.append W rest (.nil Z))))
+      rw [← AlignedCell.whiskerLeftHom_vcomp W (Word.atom step)]
+      rw [ih]
+      exact Quot.sound (Presented.Rel.whisker_left_id
+        (Word.atom step)
+        (LinearWord.toWord W (LinearWord.append W rest (.nil Z))))
 
 /-- Exact quotient interpretation of horizontal path append. -/
 @[simp]
@@ -2034,6 +2167,17 @@ theorem rel_whiskerRight {X Y Z : B}
   unfold Rel at equality ⊢
   change normalizedWhiskerRightHom W post (toHom W alpha) =
     normalizedWhiskerRightHom W post (toHom W beta)
+  rw [equality]
+
+/-- Semantic equality is stable beneath an atomic prefix step. -/
+theorem rel_under {X Y Z : B} (step : Step W X Y)
+    {first second : LinearWord W Y Z}
+    {alpha beta : HammockPath W first second}
+    (equality : Rel W alpha beta) :
+    Rel W (.under step alpha) (.under step beta) := by
+  unfold Rel at equality ⊢
+  change Presented.whiskerLeftHom W (Word.atom step) (toHom W alpha) =
+    Presented.whiskerLeftHom W (Word.atom step) (toHom W beta)
   rw [equality]
 
 /-- Semantic equality is stable under horizontal append. -/
@@ -2759,6 +2903,99 @@ theorem normalizedCellHom_leftUnitorInv {X Y : B} (word : Word W X Y) :
     normalizedCellHom_id] at relationEquality
   exact (AlignedCell.quotientVcomp_comp_id W _).symm.trans relationEquality
 
+/-- Raw right unitor normalizes to the recursive generated path deleting the
+terminal empty row. -/
+@[simp]
+theorem normalizedCellHom_rightUnitor {X Y : B} (word : Word W X Y) :
+    normalizedCellHom W (Cell.rightUnitor (W := W) word) =
+      toHom W (rightUnitPath W (LinearWord.flatten W word)) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append]
+  rw [LinearWord.normalizationIso_append W word (.nil Y)]
+  rw [LinearWord.normalizationIso_nil W Y]
+  simp only [LinearWord.flatten_nil, Iso.trans_inv, Iso.symm_inv]
+  unfold LinearWord.appendIso
+  simp only [Iso.trans_inv, Bicategory.whiskerLeftIso,
+    Bicategory.whiskerRightIso]
+  let iso := LinearWord.normalizationIso W word
+  let comparison := LinearWord.toWordAppendIso W
+    (LinearWord.flatten W word) (.nil Y)
+  change AlignedCell.quotientVcomp W
+      (AlignedCell.quotientVcomp W comparison.hom
+        (AlignedCell.quotientVcomp W
+          (Presented.whiskerLeftHom W
+            (LinearWord.toWord W (LinearWord.flatten W word))
+            (𝟙 (LinearWord.toWord W (.nil Y))))
+          (Presented.whiskerRightHom W
+            (LinearWord.toWord W (.nil Y)) iso.inv)))
+      (AlignedCell.quotientVcomp W
+        (Presented.wordRightUnitorIso W word).hom iso.hom) =
+    toHom W (rightUnitPath W (LinearWord.flatten W word))
+  have leftIdentity :
+      Presented.whiskerLeftHom W
+          (LinearWord.toWord W (LinearWord.flatten W word))
+          (𝟙 (LinearWord.toWord W (.nil Y))) =
+        𝟙 (Word.append (W := W)
+          (LinearWord.toWord W (LinearWord.flatten W word))
+          (LinearWord.toWord W (.nil Y))) :=
+    Quot.sound (Presented.Rel.whisker_left_id
+      (LinearWord.toWord W (LinearWord.flatten W word))
+      (LinearWord.toWord W (.nil Y)))
+  rw [leftIdentity, AlignedCell.quotientVcomp_id_comp]
+  simp only [AlignedCell.quotientVcomp_assoc]
+  have conjugation :
+      AlignedCell.quotientVcomp W
+          (Presented.whiskerRightHom W
+            (LinearWord.toWord W (.nil Y)) iso.inv)
+          (AlignedCell.quotientVcomp W
+            (Presented.wordRightUnitorIso W word).hom iso.hom) =
+        (Presented.wordRightUnitorIso W
+          (LinearWord.toWord W (LinearWord.flatten W word))).hom := by
+    change (iso.inv ▷ 𝟙 (⟨Y⟩ : Presented.Localization W)) ≫
+      (ρ_ word).hom ≫ iso.hom = _
+    exact LinearWord.rightUnitor_conjugation
+      (C := Presented.Localization W) iso
+  rw [conjugation]
+  exact (toHom_rightUnitPath W (LinearWord.flatten W word)).symm
+
+/-- Raw inverse right unitor normalizes to the inverse recursive generated
+path inserting a terminal empty row. -/
+@[simp]
+theorem normalizedCellHom_rightUnitorInv {X Y : B} (word : Word W X Y) :
+    normalizedCellHom W (Cell.rightUnitorInv (W := W) word) =
+      toHom W (rightUnitPathInv W (LinearWord.flatten W word)) := by
+  let row := LinearWord.flatten W word
+  let forward := toHom W (rightUnitPath W row)
+  let inverse := toHom W (rightUnitPathInv W row)
+  let candidate : Presented.Hom W
+      (LinearWord.toWord W row)
+      (LinearWord.toWord W (LinearWord.append W row (.nil Y))) :=
+    normalizedCellHom W (Cell.rightUnitorInv (W := W) word)
+  have forwardInverse :
+      forward ≫ inverse =
+        𝟙 (LinearWord.toWord W (LinearWord.append W row (.nil Y))) := by
+    exact rightUnitPath_hom_inv W row
+  have relationEquality :
+      candidate ≫ forward =
+        𝟙 (LinearWord.toWord W row) := by
+    have equality := normalizedCellHom_eq_of_rel W
+      (Presented.Rel.right_unitor_inv_hom (W := W) word)
+    rw [normalizedCellHom_vcomp, normalizedCellHom_rightUnitor,
+      normalizedCellHom_id] at equality
+    exact equality
+  change candidate = inverse
+  calc
+    candidate = candidate ≫
+        𝟙 (LinearWord.toWord W
+          (LinearWord.append W row (.nil Y))) := by
+      exact (AlignedCell.quotientVcomp_comp_id W candidate).symm
+    _ = candidate ≫ (forward ≫ inverse) := by
+      rw [forwardInverse]
+    _ = (candidate ≫ forward) ≫ inverse := (Category.assoc _ _ _).symm
+    _ = 𝟙 (LinearWord.toWord W row) ≫ inverse := by
+      rw [relationEquality]
+    _ = inverse := AlignedCell.quotientVcomp_id_comp W inverse
+
 /-- Equality transport does not change normalized quotient semantics. -/
 @[simp]
 theorem normalizedCellHom_transport {X Y : B}
@@ -2941,6 +3178,20 @@ theorem leftUnitorInv_normalizable {X Y : B} (word : Word W X Y) :
   rw [Normalizable, normalizedCellHom_leftUnitorInv]
   exact ⟨.identity (LinearWord.flatten W word), rfl⟩
 
+/-- Right unitor is hammock-normalizable by the recursive terminal-empty-row
+deletion path. -/
+theorem rightUnitor_normalizable {X Y : B} (word : Word W X Y) :
+    Normalizable W (Cell.rightUnitor (W := W) word) := by
+  rw [Normalizable, normalizedCellHom_rightUnitor]
+  exact ⟨rightUnitPath W (LinearWord.flatten W word), rfl⟩
+
+/-- Inverse right unitor is hammock-normalizable by the recursive
+terminal-empty-row insertion path. -/
+theorem rightUnitorInv_normalizable {X Y : B} (word : Word W X Y) :
+    Normalizable W (Cell.rightUnitorInv (W := W) word) := by
+  rw [Normalizable, normalizedCellHom_rightUnitorInv]
+  exact ⟨rightUnitPathInv W (LinearWord.flatten W word), rfl⟩
+
 /-- Equality transport preserves raw-cell normalizability. -/
 theorem transport_normalizable {X Y : B}
     {first second first' second' : Word W X Y}
@@ -2953,10 +3204,8 @@ theorem transport_normalizable {X Y : B}
   exact member
 
 /-- Exact remaining generator obligations for a complete raw-cell
-normalization induction. Identity, vertical composition, original cells,
-source identities, source composition, marked pairs, both whiskerings, and
-left unitors, plus equality transport are already
-discharged separately. -/
+normalization induction. Only the binary associator and its inverse remain;
+all other raw generators and closure operations are discharged separately. -/
 structure StructuralGeneratorNormalizable : Prop where
   /-- Binary associator. -/
   associator : ∀ {X Y Z T : B} (first : Word W X Y)
@@ -2966,12 +3215,6 @@ structure StructuralGeneratorNormalizable : Prop where
   associatorInv : ∀ {X Y Z T : B} (first : Word W X Y)
       (second : Word W Y Z) (third : Word W Z T),
     Normalizable W (Cell.associatorInv (W := W) first second third)
-  /-- Binary right unitor. -/
-  rightUnitor : ∀ {X Y : B} (word : Word W X Y),
-    Normalizable W (Cell.rightUnitor (W := W) word)
-  /-- Inverse binary right unitor. -/
-  rightUnitorInv : ∀ {X Y : B} (word : Word W X Y),
-    Normalizable W (Cell.rightUnitorInv (W := W) word)
 
 /-- Complete raw-cell normalization follows by structural induction from the
 remaining explicit structural-generator obligations. -/
@@ -3005,8 +3248,8 @@ theorem normalizable_of_structuralGenerators
       exact generators.associatorInv first second third
   | leftUnitor word => exact leftUnitor_normalizable W word
   | leftUnitorInv word => exact leftUnitorInv_normalizable W word
-  | rightUnitor word => exact generators.rightUnitor word
-  | rightUnitorInv word => exact generators.rightUnitorInv word
+  | rightUnitor word => exact rightUnitor_normalizable W word
+  | rightUnitorInv word => exact rightUnitorInv_normalizable W word
   | transport sourceEquality targetEquality cell member =>
       exact transport_normalizable W sourceEquality targetEquality member
 
