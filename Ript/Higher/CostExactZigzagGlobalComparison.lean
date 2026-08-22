@@ -1509,8 +1509,10 @@ spaces are independently defined right-associated typed step lists, and each
 maps directly to the actual target local nerve by a categorical-nerve
 equivalence with an explicit simplicial homotopy inverse.
 
-This still does not identify the linear model with the classical arbitrary-
-grid hammock localization, so it is not yet the standard Dwyer--Kan theorem. -/
+The linear model now has a fixed-shape aligned multi-column fragment, but not
+the general column refinements and reduced-hammock invariance of the classical
+arbitrary-grid localization, so this is not yet the standard Dwyer--Kan
+theorem. -/
 def LinearHammockDwyerKanCore : Prop :=
   (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
   ∀ (M N : ProcessModel.{u, v, w} R),

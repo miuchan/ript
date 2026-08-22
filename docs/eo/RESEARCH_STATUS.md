@@ -328,8 +328,14 @@ komparo kun la klasika arbitra-krada hammock aŭ alia akceptita derivita modelo.
 La arbitra-alteca vertikala parto nun estas eksplicita: `n`-krado enhavas
 `n + 1` linearajn hammock-vicojn, `n` apudajn kvocient-2-ĉelajn eĝojn kaj
 finpunktajn ekvaciojn, kaj strikta Segal-rekonstruo identigas ĝin kun la
-`n`-simplaĵoj de la lineara hammock-nervo. Restas la klasikaj horizontalaj
-plurkolumnaj movoj kaj reduktoj.
+`n`-simplaĵoj de la lineara hammock-nervo. La samforma horizontala
+plurkolumna fragmento nun ankaŭ estas eksplicita: ĉiu komuna kolumno inter
+samformaj vicoj portas unu krudan atoman 2-ĉelon; larĝoj kaj horizontala
+kunmeto estas ekzaktaj; la kvocienta interpreto konservas komponantajn
+identojn kaj vertikalan kunmeton per interŝanĝo; kaj ĉiu arbitra-alteca
+vicigita krado rekonstruas veran simplaĵon kun ekzaktaj vicoj kaj interpretitaj
+eĝoj. Restas kolumna enmeto/forigo, komunaj rafinadoj, reduktitaj hammock-movoj
+kaj ilia homotopia invariant eco.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

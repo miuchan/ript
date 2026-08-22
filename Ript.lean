@@ -65,6 +65,7 @@ import Ript.ForMathlib.AlgebraicTopology.StrictSegalIso
 import Ript.ForMathlib.CategoryTheory.Bicategory.HomotopyCategory
 import Ript.ForMathlib.CategoryTheory.Bicategory.Localization
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzag
+import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagAlignedHammock
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagLinearHammock
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagLocalization
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingNervePresentation

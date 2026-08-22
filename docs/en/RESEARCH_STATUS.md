@@ -356,9 +356,14 @@ arbitrary-grid hammock is now partially internalized: for every `n`, an
 explicit row grid has `n + 1` linear hammocks, `n` adjacent quotient-2-cell
 edges, and endpoint equations, and strict-Segal reconstruction identifies it
 with the `n`-simplices of the linear hammock nerve. Row, edge, decoding, and
-both round-trip formulas are exact. Classical horizontal multi-column hammock
-moves/reductions, standard weak-equivalence packaging, and the global
-Dwyer--Kan/Rezk theorem remain.
+both round-trip formulas are exact. The fixed-shape horizontal fragment is
+also explicit: equal-shape rows carry one raw atomic 2-cell per common column;
+widths and horizontal append are exact; quotient interpretation preserves
+componentwise identities and vertical composition by interchange; and every
+arbitrary-height aligned grid reconstructs a genuine simplex with exact rows
+and interpreted edges. Column insertion/deletion, common refinements,
+reduced-hammock moves and their homotopical invariance, standard weak-
+equivalence packaging, and the global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

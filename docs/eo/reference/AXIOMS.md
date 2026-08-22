@@ -935,6 +935,10 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv_vertex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv_arrow` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridRow_equiv` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.toHom_identity` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.toHom_vcomp` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
