@@ -429,7 +429,14 @@ homotopies. What is still absent is the comparison with an independently
 specified derived/hammock construction. Outer essential surjectivity and all
 presented mapping-space conditions are now combined in the audited
 `PresentedDwyerKanCore`; the qualifier is essential because its source
-mapping spaces are the compiled word/quotient nerves themselves.
+mapping spaces are the compiled word/quotient nerves themselves. An
+independent right-associated typed linear hammock object model is now also
+compiled. Conversion and flattening preserve length, every binary word is
+canonically isomorphic to its linear normal form, and the induced linear
+mapping category is equivalent to both the presented category and the actual
+target local nerve. `LinearHammockDwyerKanCore` combines this mapping condition
+with outer essential surjectivity. What remains is comparison with the
+classical arbitrary-grid hammock or another accepted derived construction.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -515,8 +522,10 @@ hammock/derived homotopical comparison has not yet been deduced from it. The
 all-dimensional nerve-map uniqueness and natural-transformation homotopy
 invariance are now proved and available for that comparison. A project-local
 presented Dwyer--Kan criterion is also proved; a standard Dwyer--Kan claim
-still requires an independent derived/hammock comparison and accepted weak-
-equivalence packaging.
+now has an independent linear hammock mapping model and direct target
+comparison, but still requires comparison with the classical arbitrary-grid
+hammock (or another accepted derived model) and standard weak-equivalence
+packaging.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

@@ -346,8 +346,14 @@ essential surjectivity with every presented mapping-space condition in one
 audited proposition: nerve equivalence, explicit homotopy inverse, algebraic
 and simplicial presentation universality, strict factorization, and exact
 all-degree action. Its qualifier is essential. An independent derived/
-hammock mapping-space characterization, accepted weak-equivalence packaging,
-and the standard global Dwyer--Kan/Rezk theorem remain.
+hammock mapping-space object model now exists in a restricted but genuine
+form: right-associated typed linear step lists convert to and flatten binary
+words, preserve length, and yield an equivalent mapping category and nerve
+with explicit homotopy inverse, including a direct comparison to the actual
+target local nerve. Together with outer essential surjectivity this is
+packaged as `LinearHammockDwyerKanCore`. Comparison with the classical
+arbitrary-grid hammock (or another accepted derived construction), standard
+weak-equivalence packaging, and the global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

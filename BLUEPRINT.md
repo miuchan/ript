@@ -381,8 +381,10 @@ Every node in this graph is an existing compiled module.
 | 12 (relative-zigzag local presentation universal property) | For every marked bicategory, source-object pair, target category, and assignment of target objects to words plus target morphisms to raw cells that respects all presentation relations, identities, and vertical composition, there exists a quotient-descended functor computing exactly on every raw representative; every compatible quotient lift and its functor are unique by quotient induction; the cost-exact mapping-space core carries the canonical specialization | PROVED |
 | 12 (relative-zigzag simplicial presentation universal property) | Every target-independent local interpretation induces a common-universe all-dimensional nerve map with exact word-vertex, raw-cell-edge, and arbitrary-simplex formulas; every compatible quotient lift induces exactly that nerve map; natural transformations and natural isomorphisms between descended interpretations induce genuine one-way and two-way `SSet.Homotopy` witnesses; the cost-exact local core records simplicial uniqueness | PROVED |
 | 12 (presented Dwyer--Kan core) | One audited proposition now packages outer essential surjectivity with, for every model pair, a categorical-nerve equivalence, explicit simplicial homotopy inverse, target-independent algebraic/simplicial presentation core, strict source-local-map factorization, and exact all-degree comparison action; this is a project-local criterion using the presented relative-zigzag nerves, not an independent hammock theorem | PROVED |
+| 12 (linear hammock mapping category) | Independently defined right-associated typed step lists have executable append, binary conversion and flattening, exact length preservation, canonical append coherence, and a normalization isomorphism from every binary word; pulling back quotient 2-cell hom-sets gives a linear hammock mapping category whose conversion functor to the binary word category is faithful, full, essentially surjective, and therefore a categorical equivalence | PROVED |
+| 12 (linear hammock Dwyer--Kan core) | For every model pair, the independent linear hammock nerve is categorically equivalent both to the presented relative-zigzag nerve and directly to the actual target local nerve, with explicit simplicial homotopy inverses; together with outer essential surjectivity this forms an audited project-local linear-hammock Dwyer--Kan criterion | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Compare the compiled presented Dwyer--Kan core with an independently defined derived or hammock mapping-space construction, connect that comparison to an accepted weak-equivalence interface, and finish the standard Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Compare the compiled right-associated linear hammock model with a classical arbitrary-grid hammock or another accepted derived mapping-space construction, connect that comparison to a standard weak-equivalence interface, and finish the standard Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6154,9 +6156,14 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   `PresentedDwyerKanCore`, including strict factorization and exact all-degree
   action for every model pair. This is deliberately project-local: its source
   mapping spaces are the presented relative-zigzag nerves. The remaining
-  boundary is comparison with an independently defined derived/hammock
-  construction, accepted weak-equivalence packaging, and the standard final
-  Dwyer--Kan/Rezk statement.
+  boundary is no longer the absence of an independent object model: a right-
+  associated typed linear hammock syntax now converts to/from binary words,
+  preserves length, and gives an equivalent mapping category and nerve with
+  explicit homotopy inverse, including a direct comparison to the actual
+  target local nerve. Together with outer essential surjectivity it forms
+  `LinearHammockDwyerKanCore`. What remains is comparison with the classical
+  arbitrary-grid hammock (or another accepted derived construction), standard
+  weak-equivalence packaging, and the final Dwyer--Kan/Rezk statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`
