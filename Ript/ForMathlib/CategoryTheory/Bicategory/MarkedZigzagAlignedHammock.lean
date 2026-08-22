@@ -28,7 +28,8 @@ all source 2-cells in one-column form, and is closed under normalized left/right
 whiskering and horizontal append. Normalization is natural for raw whiskering;
 identity, original, source-identity/inverse, composition-closure, whiskering,
 source-composition/inverse, and equality-transport induction branches are
-complete, while ten explicit
+complete; marked unit/counit pairs and inverses are complete too, while six
+explicit
 structural-generator obligations remain. Coverage of every presented quotient
 2-cell, critical-pair coherence, and reduced-hammock invariance are still
 absent, so this is not by itself the classical Dwyer--Kan hammock localization.
@@ -2495,6 +2496,200 @@ theorem normalizedCellHom_sourceCompInv {X Y Z : B}
       (Cell.sourceCompInv (W := W) f g))
   rw [whiskerEquality]
 
+/-- Generic normalization of a raw cell from the empty word to a closed
+two-atomic-step word. -/
+theorem normalizedCellHom_nil_twoAtoms {X Y : B}
+    (first : Step W X Y) (second : Step W Y X)
+    (cell : Cell W (.nil X)
+      (Word.append (W := W) (.atom first) (.atom second))) :
+    normalizedCellHom W cell =
+      AlignedCell.quotientVcomp W
+        (Presented.wordLeftUnitorIso W (.nil X)).inv
+        (AlignedCell.quotientVcomp W
+          (Presented.whiskerRightHom W (.nil X) (Presented.mk W cell))
+          (Presented.wordAssociatorIso W
+            (.atom first) (.atom second) (.nil X)).hom) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append,
+    LinearWord.flatten]
+  rw [LinearWord.normalizationIso_nil W X]
+  rw [LinearWord.normalizationIso_twoAtoms_hom W first second]
+  simp only [Iso.refl_inv]
+  change AlignedCell.quotientVcomp W (𝟙 (Word.nil X))
+      (AlignedCell.quotientVcomp W (Presented.mk W cell)
+        (AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W
+            (.comp (.atom first) (.atom second))).inv
+          (Presented.wordAssociatorIso W
+            (.atom first) (.atom second) (.nil X)).hom)) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordLeftUnitorIso W (.nil X)).inv
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (.nil X) (Presented.mk W cell))
+        (Presented.wordAssociatorIso W
+          (.atom first) (.atom second) (.nil X)).hom)
+  rw [AlignedCell.quotientVcomp_id_comp]
+  have whiskerEquality :
+      Presented.whiskerRightHom W (.nil X) (Presented.mk W cell) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (.nil X)).hom
+          (AlignedCell.quotientVcomp W (Presented.mk W cell)
+            (Presented.wordRightUnitorIso W
+              (Word.append (W := W) (.atom first) (.atom second))).inv) :=
+    Quot.sound (Presented.Rel.whisker_right_id_word cell)
+  rw [whiskerEquality]
+  simp only [AlignedCell.quotientVcomp_assoc]
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.wordLeftUnitorIso W (.nil X)).inv
+    (Presented.wordRightUnitorIso W (.nil X)).hom]
+  have unitCancellation :
+      AlignedCell.quotientVcomp W
+          (Presented.wordLeftUnitorIso W (.nil X)).inv
+          (Presented.wordRightUnitorIso W (.nil X)).hom =
+        𝟙 (Word.nil X) := by
+    change (λ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv ≫
+      (ρ_ (𝟙 (⟨X⟩ : Presented.Localization W))).hom = _
+    rw [unitors_inv_equal]
+    exact (Presented.wordRightUnitorIso W (.nil X)).inv_hom_id
+  rw [unitCancellation, AlignedCell.quotientVcomp_id_comp]
+  rfl
+
+/-- Generic normalization of a raw cell from a closed two-atomic-step word
+to the empty word. -/
+theorem normalizedCellHom_twoAtoms_nil {X Y : B}
+    (first : Step W X Y) (second : Step W Y X)
+    (cell : Cell W
+      (Word.append (W := W) (.atom first) (.atom second)) (.nil X)) :
+    normalizedCellHom W cell =
+      AlignedCell.quotientVcomp W
+        (Presented.wordAssociatorIso W
+          (.atom first) (.atom second) (.nil X)).inv
+        (AlignedCell.quotientVcomp W
+          (Presented.whiskerRightHom W (.nil X) (Presented.mk W cell))
+          (Presented.wordLeftUnitorIso W (.nil X)).hom) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append,
+    LinearWord.flatten]
+  rw [LinearWord.normalizationIso_twoAtoms_inv W first second]
+  rw [LinearWord.normalizationIso_nil W X]
+  simp only [Iso.refl_hom]
+  change AlignedCell.quotientVcomp W
+      (AlignedCell.quotientVcomp W
+        (Presented.wordAssociatorIso W
+          (.atom first) (.atom second) (.nil X)).inv
+        (Presented.wordRightUnitorIso W
+          (Word.append (W := W) (.atom first) (.atom second))).hom)
+      (AlignedCell.quotientVcomp W (Presented.mk W cell) (𝟙 (Word.nil X))) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordAssociatorIso W
+        (.atom first) (.atom second) (.nil X)).inv
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (.nil X) (Presented.mk W cell))
+        (Presented.wordLeftUnitorIso W (.nil X)).hom)
+  rw [AlignedCell.quotientVcomp_comp_id]
+  rw [AlignedCell.quotientVcomp_assoc]
+  have whiskerEquality :
+      Presented.whiskerRightHom W (.nil X) (Presented.mk W cell) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W
+            (Word.append (W := W) (.atom first) (.atom second))).hom
+          (AlignedCell.quotientVcomp W (Presented.mk W cell)
+            (Presented.wordRightUnitorIso W (.nil X)).inv) :=
+    Quot.sound (Presented.Rel.whisker_right_id_word cell)
+  rw [whiskerEquality]
+  rw [AlignedCell.quotientVcomp_assoc W
+    (Presented.wordRightUnitorIso W
+      (Word.append (W := W) (.atom first) (.atom second))).hom
+    (AlignedCell.quotientVcomp W (Presented.mk W cell)
+      (Presented.wordRightUnitorIso W (.nil X)).inv)
+    (Presented.wordLeftUnitorIso W (.nil X)).hom]
+  rw [AlignedCell.quotientVcomp_assoc W
+    (Presented.mk W cell)
+    (Presented.wordRightUnitorIso W (.nil X)).inv
+    (Presented.wordLeftUnitorIso W (.nil X)).hom]
+  have unitCancellation :
+      AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (.nil X)).inv
+          (Presented.wordLeftUnitorIso W (.nil X)).hom =
+        𝟙 (Word.nil X) := by
+    change (ρ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv ≫
+      (λ_ (𝟙 (⟨X⟩ : Presented.Localization W))).hom = _
+    rw [← unitors_inv_equal]
+    exact (Presented.wordLeftUnitorIso W (.nil X)).inv_hom_id
+  rw [unitCancellation, AlignedCell.quotientVcomp_comp_id]
+
+/-- Marked unit normalizes to executable insertion of its forward/reverse
+pair. -/
+@[simp]
+theorem normalizedCellHom_markedUnit {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    normalizedCellHom W (Cell.markedUnit (W := W) f hf) =
+      ColumnRefinement.toHom W (.insertMarkedUnitPair f hf (.nil X)) := by
+  change normalizedCellHom W (Cell.markedUnit (W := W) f hf) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordLeftUnitorIso W (.nil X)).inv
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (.nil X)
+          (Presented.mk W (Cell.markedUnit (W := W) f hf)))
+        (Presented.wordAssociatorIso W (Word.forward W f)
+          (Word.backward W f hf) (.nil X)).hom)
+  exact normalizedCellHom_nil_twoAtoms W
+    (.forward f) (.backward f hf) (.markedUnit f hf)
+
+/-- Inverse marked unit normalizes to executable deletion of its
+forward/reverse pair. -/
+@[simp]
+theorem normalizedCellHom_markedUnitInv {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    normalizedCellHom W (Cell.markedUnitInv (W := W) f hf) =
+      ColumnRefinement.toHom W (.deleteMarkedUnitPair f hf (.nil X)) := by
+  change normalizedCellHom W (Cell.markedUnitInv (W := W) f hf) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordAssociatorIso W (Word.forward W f)
+        (Word.backward W f hf) (.nil X)).inv
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (.nil X)
+          (Presented.mk W (Cell.markedUnitInv (W := W) f hf)))
+        (Presented.wordLeftUnitorIso W (.nil X)).hom)
+  exact normalizedCellHom_twoAtoms_nil W
+    (.forward f) (.backward f hf) (.markedUnitInv f hf)
+
+/-- Marked counit normalizes to executable deletion of its reverse/forward
+pair. -/
+@[simp]
+theorem normalizedCellHom_markedCounit {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    normalizedCellHom W (Cell.markedCounit (W := W) f hf) =
+      ColumnRefinement.toHom W (.deleteMarkedCounitPair f hf (.nil Y)) := by
+  change normalizedCellHom W (Cell.markedCounit (W := W) f hf) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordAssociatorIso W (Word.backward W f hf)
+        (Word.forward W f) (.nil Y)).inv
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (.nil Y)
+          (Presented.mk W (Cell.markedCounit (W := W) f hf)))
+        (Presented.wordLeftUnitorIso W (.nil Y)).hom)
+  exact normalizedCellHom_twoAtoms_nil W
+    (.backward f hf) (.forward f) (.markedCounit f hf)
+
+/-- Inverse marked counit normalizes to executable insertion of its
+reverse/forward pair. -/
+@[simp]
+theorem normalizedCellHom_markedCounitInv {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    normalizedCellHom W (Cell.markedCounitInv (W := W) f hf) =
+      ColumnRefinement.toHom W (.insertMarkedCounitPair f hf (.nil Y)) := by
+  change normalizedCellHom W (Cell.markedCounitInv (W := W) f hf) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordLeftUnitorIso W (.nil Y)).inv
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (.nil Y)
+          (Presented.mk W (Cell.markedCounitInv (W := W) f hf)))
+        (Presented.wordAssociatorIso W (Word.backward W f hf)
+          (Word.forward W f) (.nil Y)).hom)
+  exact normalizedCellHom_nil_twoAtoms W
+    (.backward f hf) (.forward f) (.markedCounitInv f hf)
+
 /-- Equality transport does not change normalized quotient semantics. -/
 @[simp]
 theorem normalizedCellHom_transport {X Y : B}
@@ -2637,6 +2832,34 @@ theorem sourceCompInv_normalizable {X Y Z : B}
   rw [Normalizable, normalizedCellHom_sourceCompInv]
   exact refinement_mem_semanticImage W (.contractForward f g (.nil Z))
 
+/-- Marked unit is hammock-normalizable. -/
+theorem markedUnit_normalizable {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    Normalizable W (Cell.markedUnit (W := W) f hf) := by
+  rw [Normalizable, normalizedCellHom_markedUnit]
+  exact refinement_mem_semanticImage W (.insertMarkedUnitPair f hf (.nil X))
+
+/-- Inverse marked unit is hammock-normalizable. -/
+theorem markedUnitInv_normalizable {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    Normalizable W (Cell.markedUnitInv (W := W) f hf) := by
+  rw [Normalizable, normalizedCellHom_markedUnitInv]
+  exact refinement_mem_semanticImage W (.deleteMarkedUnitPair f hf (.nil X))
+
+/-- Marked counit is hammock-normalizable. -/
+theorem markedCounit_normalizable {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    Normalizable W (Cell.markedCounit (W := W) f hf) := by
+  rw [Normalizable, normalizedCellHom_markedCounit]
+  exact refinement_mem_semanticImage W (.deleteMarkedCounitPair f hf (.nil Y))
+
+/-- Inverse marked counit is hammock-normalizable. -/
+theorem markedCounitInv_normalizable {X Y : B}
+    (f : X ⟶ Y) (hf : W f) :
+    Normalizable W (Cell.markedCounitInv (W := W) f hf) := by
+  rw [Normalizable, normalizedCellHom_markedCounitInv]
+  exact refinement_mem_semanticImage W (.insertMarkedCounitPair f hf (.nil Y))
+
 /-- Equality transport preserves raw-cell normalizability. -/
 theorem transport_normalizable {X Y : B}
     {first second first' second' : Word W X Y}
@@ -2650,22 +2873,10 @@ theorem transport_normalizable {X Y : B}
 
 /-- Exact remaining generator obligations for a complete raw-cell
 normalization induction. Identity, vertical composition, original cells,
-source identities, source composition, both whiskerings, and equality transport
-are already
+source identities, source composition, marked pairs, both whiskerings, and
+equality transport are already
 discharged separately. -/
 structure StructuralGeneratorNormalizable : Prop where
-  /-- Marked unit. -/
-  markedUnit : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
-    Normalizable W (Cell.markedUnit (W := W) f hf)
-  /-- Inverse marked unit. -/
-  markedUnitInv : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
-    Normalizable W (Cell.markedUnitInv (W := W) f hf)
-  /-- Marked counit. -/
-  markedCounit : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
-    Normalizable W (Cell.markedCounit (W := W) f hf)
-  /-- Inverse marked counit. -/
-  markedCounitInv : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
-    Normalizable W (Cell.markedCounitInv (W := W) f hf)
   /-- Binary associator. -/
   associator : ∀ {X Y Z T : B} (first : Word W X Y)
       (second : Word W Y Z) (third : Word W Z T),
@@ -2705,10 +2916,10 @@ theorem normalizable_of_structuralGenerators
   | sourceIdInv => exact sourceIdInv_normalizable W
   | sourceComp f g => exact sourceComp_normalizable W f g
   | sourceCompInv f g => exact sourceCompInv_normalizable W f g
-  | markedUnit f hf => exact generators.markedUnit f hf
-  | markedUnitInv f hf => exact generators.markedUnitInv f hf
-  | markedCounit f hf => exact generators.markedCounit f hf
-  | markedCounitInv f hf => exact generators.markedCounitInv f hf
+  | markedUnit f hf => exact markedUnit_normalizable W f hf
+  | markedUnitInv f hf => exact markedUnitInv_normalizable W f hf
+  | markedCounit f hf => exact markedCounit_normalizable W f hf
+  | markedCounitInv f hf => exact markedCounitInv_normalizable W f hf
   | whiskerLeft pre cell member =>
       exact whiskerLeft_normalizable W pre member
   | whiskerRight cell post member =>
