@@ -21,9 +21,11 @@ The file also supplies an independent linear-word model, arbitrary-height row
 paths, and a fixed-shape aligned multi-column hammock fragment with exact
 quotient and nerve interpretation.  Elementary executable identity/composite
 column refinements and marked unit/counit pair refinements now have exact
-signed width and semantic round trips. General common-refinement quotients and
-reduced-hammock invariance are still absent, so these results are not by
-themselves the final Dwyer--Kan theorem.
+signed width and semantic round trips. Common-refinement spans now generate a
+row quotient whose equality is sound for semantic isomorphism. A quotient
+mapping category/nerve, competing-move coherence, and reduced-hammock
+invariance are still absent, so these results are not by themselves the final
+Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -521,6 +523,63 @@ structure ColumnRefinementCore
       𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
         (.cons step first))
 
+/-- Common-refinement quotient of cost-exact linear hammock rows. -/
+abbrev HammockRowQuotient (M N : ProcessModel.{u, v, w} R) :=
+  Bicategory.MarkedZigzag.CommonRefinement.RowQuotient
+    (costExactArrows R) M N
+
+/-- Machine-facing common-refinement quotient and semantic soundness core. -/
+structure CommonRefinementCore
+    (M N : ProcessModel.{u, v, w} R) : Prop where
+  /-- Reversal negates the exact signed width change. -/
+  reverse_width : ∀ {first second : LinearHammock M N}
+      (refinement : HammockColumnRefinement first second),
+    Bicategory.MarkedZigzag.ColumnRefinement.widthChange
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.reverse
+          (costExactArrows R) refinement) =
+      -Bicategory.MarkedZigzag.ColumnRefinement.widthChange
+        (costExactArrows R) refinement
+  /-- Every refinement's quotient morphism is the forward map of its unified
+  semantic isomorphism. -/
+  refinement_iso : ∀ {first second : LinearHammock M N}
+      (refinement : HammockColumnRefinement first second),
+    Bicategory.MarkedZigzag.ColumnRefinement.toHom
+        (costExactArrows R) refinement =
+      (Bicategory.MarkedZigzag.ColumnRefinement.toIso
+        (costExactArrows R) refinement).hom
+  /-- Executable reversal maps to the inverse semantic isomorphism. -/
+  reverse_iso : ∀ {first second : LinearHammock M N}
+      (refinement : HammockColumnRefinement first second),
+    Bicategory.MarkedZigzag.ColumnRefinement.toIso
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.reverse
+          (costExactArrows R) refinement) =
+      (Bicategory.MarkedZigzag.ColumnRefinement.toIso
+        (costExactArrows R) refinement).symm
+  /-- Every executable refinement identifies its endpoints in the common-
+  refinement row quotient. -/
+  quotient_identifies : ∀ {first second : LinearHammock M N}
+      (_refinement : HammockColumnRefinement first second),
+    Bicategory.MarkedZigzag.CommonRefinement.quotientMk
+        (costExactArrows R) first =
+      Bicategory.MarkedZigzag.CommonRefinement.quotientMk
+        (costExactArrows R) second
+  /-- Equality in the row quotient yields a semantic isomorphism, without
+  assuming equality of the interpreted word objects. -/
+  quotient_sound : ∀ {first second : LinearHammock M N},
+    Bicategory.MarkedZigzag.CommonRefinement.quotientMk
+        (costExactArrows R) first =
+      Bicategory.MarkedZigzag.CommonRefinement.quotientMk
+        (costExactArrows R) second →
+    Nonempty (@Iso (CostExactZigzag.Word (R := R) M N)
+      (Bicategory.MarkedZigzag.Presented.wordCategory
+        (costExactArrows R) M N)
+      (Bicategory.MarkedZigzag.LinearWord.toWord
+        (costExactArrows R) first)
+      (Bicategory.MarkedZigzag.LinearWord.toWord
+        (costExactArrows R) second))
+
 /-- Every cost-exact model pair satisfies the aligned multi-column hammock
 core. -/
 theorem alignedHammockCore (M N : ProcessModel.{u, v, w} R) :
@@ -566,6 +625,25 @@ theorem columnRefinementCore (M N : ProcessModel.{u, v, w} R) :
         (costExactArrows R) f hf rest⟩
   prefix_inverse := Bicategory.MarkedZigzag.ColumnRefinement.under_inverse
     (costExactArrows R)
+
+/-- Every cost-exact model pair satisfies the common-refinement quotient and
+semantic-isomorphism soundness core. -/
+theorem commonRefinementCore (M N : ProcessModel.{u, v, w} R) :
+    CommonRefinementCore M N where
+  reverse_width :=
+    Bicategory.MarkedZigzag.ColumnRefinement.widthChange_reverse
+      (costExactArrows R)
+  refinement_iso :=
+    Bicategory.MarkedZigzag.ColumnRefinement.toHom_eq_toIso_hom
+      (costExactArrows R)
+  reverse_iso := Bicategory.MarkedZigzag.ColumnRefinement.toIso_reverse
+    (costExactArrows R)
+  quotient_identifies :=
+    Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_of_refinement
+      (costExactArrows R)
+  quotient_sound :=
+    Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_semanticIso
+      (costExactArrows R)
 
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
@@ -794,6 +872,8 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Executable column insertion/deletion and composite expansion/contraction
   with exact signed width and semantic round-trip laws. -/
   columnRefinement : ColumnRefinementCore M N
+  /-- Common-refinement row quotient with sound semantic isomorphisms. -/
+  commonRefinement : CommonRefinementCore M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -867,6 +947,7 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
   localPresentation := localPresentationCore M N
   alignedHammock := alignedHammockCore M N
   columnRefinement := columnRefinementCore M N
+  commonRefinement := commonRefinementCore M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N

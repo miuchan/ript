@@ -939,15 +939,22 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.toHom_vcomp` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.width_append` | `[propext]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.target_length_eq_source_length_add_widthChange` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.widthChange_reverse` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_vcomp` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteIdentity_insertIdentity` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.expandForward_contractForward` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteMarkedUnitPair_insertMarkedUnitPair` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteMarkedCounitPair_insertMarkedCounitPair` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.under_inverse` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_eq_toIso_hom` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toIso_reverse` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.related_trans` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_iff_related` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_semanticIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.commonRefinementCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
