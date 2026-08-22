@@ -144,7 +144,7 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 现已有受限但真正独立的右结合 linear hammock 对象模型：typed step 列表与二叉 words 相互转换和扁平化，精确保留长度，并给出等价 mapping category、nerve 显式同伦逆以及到实际 target local nerve 的直接比较。`LinearHammockDwyerKanCore` 将其与 outer essential surjectivity 组合。尚缺与经典任意网格 hammock 或其他认可 derived 构造的比较。
 
-任意高度的纵向 grid 现也已显式化：`n`-grid 包含 `n + 1` 行 linear hammocks、`n` 条相邻商 2-胞腔边和全部端点方程，strict-Segal 重构将其与 linear hammock nerve 的 `n`-simplices 等价，并精确证明行、边、解码和双向 round trip。仍缺经典横向多列 hammock moves/reductions。
+任意高度的纵向 grid 现也已显式化：`n`-grid 包含 `n + 1` 行 linear hammocks、`n` 条相邻商 2-胞腔边和全部端点方程，strict-Segal 重构将其与 linear hammock nerve 的 `n`-simplices 等价，并精确证明行、边、解码和双向 round trip。固定形状的横向多列片段也已形式化：等形行的每个公共列含一个原始原子 2-胞腔，宽度与横向拼接精确，商解释通过 interchange 保持逐列恒等和纵向合成，任意高度 aligned grid 重构为具有精确行和解释边的真实 simplex。仍缺列插入/删除、共同细化、约化 hammock moves 及其同伦不变性。
 
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算

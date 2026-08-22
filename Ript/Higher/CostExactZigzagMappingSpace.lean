@@ -1,6 +1,6 @@
 import Ript.Higher.CostExactZigzagNerveComparison
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
-import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagLinearHammock
+import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagAlignedHammock
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingNervePresentation
 
 /-!
@@ -17,10 +17,11 @@ localization target. The comparison has a `NerveEquivalenceWitness`, an
 explicit simplicial homotopy inverse, exact action in every degree, and the
 existing source-to-target local nerve map factors through it strictly.
 
-This is a representation theorem for the chosen marked-zigzag presentation.
-It does not yet identify the presentation with a separately defined hammock
-or other model-independent derived mapping space, and therefore is not by
-itself the final Dwyer--Kan theorem.
+The file also supplies an independent linear-word model, arbitrary-height row
+paths, and a fixed-shape aligned multi-column hammock fragment with exact
+quotient and nerve interpretation.  General column refinements and reduced-
+hammock invariance are still absent, so these results are not by themselves
+the final Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -212,6 +213,179 @@ theorem linearHammockGridRow_equiv
     linearHammockGridRow (linearHammockGridEquiv M N n simplex) i =
       AsSmall.down.obj (simplex.obj i) := by
   rfl
+
+/-- One horizontally column-aligned raw hammock cell between two cost-exact
+linear rows. -/
+abbrev AlignedHammockCell {M N : ProcessModel.{u, v, w} R}
+    (source target : LinearHammock M N) :=
+  Bicategory.MarkedZigzag.AlignedCell (costExactArrows R) source target
+
+/-- An explicit aligned multi-column hammock grid of height `n`.  Every row is
+a linear marked zigzag and every adjacent pair is connected by componentwise
+atomic column cells with the same intermediate objects. -/
+structure AlignedHammockGrid
+    (M N : ProcessModel.{u, v, w} R) (n : ℕ) where
+  /-- The `n + 1` horizontal rows. -/
+  row : Fin (n + 1) → LinearHammock M N
+  /-- The componentwise cells between adjacent rows. -/
+  cell : ∀ i : Fin n, AlignedHammockCell (row i.castSucc) (row i.succ)
+
+namespace AlignedHammockGrid
+
+/-- Horizontal width, measured on the first row. -/
+def width {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) : ℕ :=
+  Bicategory.MarkedZigzag.LinearWord.length (costExactArrows R) (grid.row 0)
+
+/-- Every adjacent aligned cell records exactly the length of its source row. -/
+theorem cell_width_source {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) (i : Fin n) :
+    Bicategory.MarkedZigzag.AlignedCell.width (costExactArrows R)
+        (grid.cell i) =
+      Bicategory.MarkedZigzag.LinearWord.length (costExactArrows R)
+        (grid.row i.castSucc) :=
+  Bicategory.MarkedZigzag.AlignedCell.width_eq_source_length
+    (costExactArrows R) (grid.cell i)
+
+/-- Every adjacent aligned cell records exactly the length of its target row. -/
+theorem cell_width_target {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) (i : Fin n) :
+    Bicategory.MarkedZigzag.AlignedCell.width (costExactArrows R)
+        (grid.cell i) =
+      Bicategory.MarkedZigzag.LinearWord.length (costExactArrows R)
+        (grid.row i.succ) :=
+  Bicategory.MarkedZigzag.AlignedCell.width_eq_target_length
+    (costExactArrows R) (grid.cell i)
+
+/-- Interpret one aligned row transition as an edge of the common-universe
+linear hammock nerve. -/
+def edge {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) (i : Fin n) :
+    (LinearHammockMappingNerve M N).Edge
+      (ComposableArrows.mk₀ ((AsSmall.up :
+        LinearHammock M N ⥤ LinearHammockMappingCategory M N).obj
+          (grid.row i.castSucc)))
+      (ComposableArrows.mk₀ ((AsSmall.up :
+        LinearHammock M N ⥤ LinearHammockMappingCategory M N).obj
+          (grid.row i.succ))) :=
+  CategoryTheory.nerve.edgeMk
+    ((AsSmall.up : LinearHammock M N ⥤
+      LinearHammockMappingCategory M N).map
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R) (grid.cell i)))
+
+/-- Forget the explicit column decomposition while retaining the represented
+rows and quotient edges as an ordinary linear hammock path. -/
+def toLinearGrid {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) : LinearHammockGrid M N n where
+  vertex i := ComposableArrows.mk₀ ((AsSmall.up :
+    LinearHammock M N ⥤ LinearHammockMappingCategory M N).obj (grid.row i))
+  arrow i := (edge grid i).edge
+  arrow_src i := (edge grid i).src_eq
+  arrow_tgt i := (edge grid i).tgt_eq
+
+/-- Forgetting columns preserves every row literally. -/
+@[simp]
+theorem toLinearGrid_vertex {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) (i : Fin (n + 1)) :
+    (toLinearGrid grid).vertex i =
+      ComposableArrows.mk₀ ((AsSmall.up :
+        LinearHammock M N ⥤ LinearHammockMappingCategory M N).obj
+          (grid.row i)) :=
+  rfl
+
+/-- Forgetting columns maps every adjacent cell by its exact quotient
+interpretation. -/
+@[simp]
+theorem toLinearGrid_arrow {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) (i : Fin n) :
+    (toLinearGrid grid).arrow i =
+      ComposableArrows.mk₁ ((AsSmall.up :
+        LinearHammock M N ⥤ LinearHammockMappingCategory M N).map
+          (Bicategory.MarkedZigzag.AlignedCell.toHom
+            (costExactArrows R) (grid.cell i))) :=
+  rfl
+
+/-- Decoding a forgotten aligned grid recovers its original row exactly. -/
+@[simp]
+theorem linearHammockGridRow_toLinearGrid
+    {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) (i : Fin (n + 1)) :
+    linearHammockGridRow (toLinearGrid grid) i = grid.row i := by
+  rfl
+
+/-- Strict-Segal reconstruction turns every aligned multi-column grid into a
+genuine simplex of the linear hammock nerve. -/
+def simplex {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) :
+    (LinearHammockMappingNerve M N).obj (op ⦋n⦌) :=
+  (linearHammockGridEquiv M N n).symm (toLinearGrid grid)
+
+/-- Re-extracting the row path of the reconstructed simplex forgets only the
+column decomposition and returns the exact underlying linear grid. -/
+@[simp]
+theorem linearHammockGridEquiv_simplex
+    {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : AlignedHammockGrid M N n) :
+    linearHammockGridEquiv M N n (simplex grid) = toLinearGrid grid :=
+  (linearHammockGridEquiv M N n).apply_symm_apply (toLinearGrid grid)
+
+end AlignedHammockGrid
+
+/-- Machine-facing core for the aligned multi-column hammock fragment.  It
+records identity and vertical-composition preservation together with exact
+row/edge formulas and strict-Segal reconstruction of every explicit grid. -/
+structure AlignedHammockCore
+    (M N : ProcessModel.{u, v, w} R) : Prop where
+  /-- Componentwise identity cells interpret as mapping-category identities. -/
+  identity : ∀ (word : LinearHammock M N),
+    Bicategory.MarkedZigzag.AlignedCell.toHom (costExactArrows R)
+        (Bicategory.MarkedZigzag.AlignedCell.identity
+          (costExactArrows R) word) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord
+        (costExactArrows R) word)
+  /-- Componentwise vertical composition is preserved exactly. -/
+  vcomp : ∀ {first middle last : LinearHammock M N}
+      (alpha : AlignedHammockCell first middle)
+      (beta : AlignedHammockCell middle last),
+    Bicategory.MarkedZigzag.AlignedCell.toHom (costExactArrows R)
+        (Bicategory.MarkedZigzag.AlignedCell.vcomp
+          (costExactArrows R) alpha beta) =
+      Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R) alpha)
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R) beta)
+  /-- Strict-Segal reconstruction returns the exact underlying row path. -/
+  simplex_path : ∀ {n : ℕ} (grid : AlignedHammockGrid M N n),
+    linearHammockGridEquiv M N n (AlignedHammockGrid.simplex grid) =
+      AlignedHammockGrid.toLinearGrid grid
+  /-- Every represented vertex decodes to its original aligned row. -/
+  row_exact : ∀ {n : ℕ} (grid : AlignedHammockGrid M N n)
+      (i : Fin (n + 1)),
+    linearHammockGridRow (AlignedHammockGrid.toLinearGrid grid) i =
+      grid.row i
+  /-- Every represented edge is the exact quotient interpretation of its
+  aligned columns. -/
+  edge_exact : ∀ {n : ℕ} (grid : AlignedHammockGrid M N n) (i : Fin n),
+    (AlignedHammockGrid.toLinearGrid grid).arrow i =
+      ComposableArrows.mk₁ ((AsSmall.up :
+        LinearHammock M N ⥤ LinearHammockMappingCategory M N).map
+          (Bicategory.MarkedZigzag.AlignedCell.toHom
+            (costExactArrows R) (grid.cell i)))
+
+/-- Every cost-exact model pair satisfies the aligned multi-column hammock
+core. -/
+theorem alignedHammockCore (M N : ProcessModel.{u, v, w} R) :
+    AlignedHammockCore M N where
+  identity := Bicategory.MarkedZigzag.AlignedCell.toHom_identity
+    (costExactArrows R)
+  vcomp := Bicategory.MarkedZigzag.AlignedCell.toHom_vcomp
+    (costExactArrows R)
+  simplex_path := AlignedHammockGrid.linearHammockGridEquiv_simplex
+  row_exact := AlignedHammockGrid.linearHammockGridRow_toLinearGrid
+  edge_exact := AlignedHammockGrid.toLinearGrid_arrow
 
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
@@ -434,6 +608,9 @@ pair of process models. -/
 structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Source-defined quotient-presentation universal property. -/
   localPresentation : LocalPresentationCore M N
+  /-- Explicit aligned multi-column hammock syntax and its exact row/edge
+  interpretation laws. -/
+  alignedHammock : AlignedHammockCore M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -505,6 +682,7 @@ zigzag mapping-space comparison. -/
 noncomputable def core (M N : ProcessModel.{u, v, w} R) :
     MappingSpaceCore M N where
   localPresentation := localPresentationCore M N
+  alignedHammock := alignedHammockCore M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N

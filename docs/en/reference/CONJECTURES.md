@@ -440,8 +440,13 @@ classical arbitrary-grid hammock or another accepted derived construction.
 The arbitrary-height vertical-grid part is now explicit: an `n`-grid consists
 of `n + 1` linear rows, `n` adjacent quotient-cell edges, and endpoint
 equations, and strict-Segal reconstruction identifies it with every
-linear-hammock `n`-simplex. The remaining classical gap is horizontal
-multi-column hammock moves/reductions and their homotopical invariance.
+linear-hammock `n`-simplex. The fixed-shape horizontal fragment is now also
+explicit: equal-shape rows carry one raw atomic 2-cell per common column,
+widths and horizontal append are exact, quotient interpretation preserves
+componentwise identities and vertical composition, and arbitrary-height
+aligned grids reconstruct genuine simplices with exact rows and interpreted
+edges. The remaining classical gap is column insertion/deletion, common
+refinement, reduced-hammock moves, and their homotopical invariance.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -531,7 +536,9 @@ now has an independent linear hammock mapping model and direct target
 comparison, but still requires comparison with the classical arbitrary-grid
 hammock (or another accepted derived model) and standard weak-equivalence
 packaging. Arbitrary-height row grids and their exact nerve representation are
-proved; multi-column hammock reductions remain open.
+proved. Fixed-shape aligned multi-column cells and grids now have exact
+quotient/nerve interpretation; general column refinements and reduced-hammock
+invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an
