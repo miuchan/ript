@@ -3,9 +3,27 @@
 [English](RESEARCH_STATUS.md) · [简体中文](../zh-CN/RESEARCH_STATUS.md) ·
 [日本語](../ja/RESEARCH_STATUS.md) · [Esperanto](../eo/RESEARCH_STATUS.md)
 
-This page is a concise research map, not the theorem ledger. Exact theorem
+This page is the maintained narrative research map, not the theorem ledger. Exact theorem
 types, dependencies, source files, and assumptions live in
 [`BLUEPRINT.md`](reference/BLUEPRINT.md) and [`AXIOMS.md`](reference/AXIOMS.md).
+
+## Current snapshot
+
+**Verified:** executable resource-sensitive syntax and budgets; soundness,
+relative completeness, and free semantics; concrete six-family model slices;
+fixed and changing-resource model bicategories; internal univalent and
+complete-Segal foundations; full generated-hammock mapping categories with
+direct target nerve equivalences; and a terminating semantics-preserving
+administrative reduction with irreducible reducts.
+
+**Open:** raw critical-pair joinability and local confluence, the remaining
+classical arbitrary-grid hammock moves, reduced-hammock homotopical invariance,
+a standard derived weak-equivalence interface, and the final global
+Dwyer--Kan/Rezk theorem. The governing objective remains active.
+
+Use the [model matrix](reference/MODEL_MATRIX.md) for capability-level answers,
+the [blueprint](reference/BLUEPRINT.md) for theorem-level evidence, and the
+[conjecture register](reference/CONJECTURES.md) for unproved directions.
 
 ## Status vocabulary
 

@@ -1,65 +1,54 @@
-# Ript
-
-**Kern-kontrolita Lean 4-fundamento por rimed-indeksitaj procezteorioj.**
+# Dokumentaro de Ript
 
 [English](../en/README.md) · [简体中文](../zh-CN/README.md) ·
 [日本語](../ja/README.md) · [Esperanto](README.md)
 
-[![Quality Gate](https://github.com/miuchan/ript/actions/workflows/ci.yml/badge.svg)](https://github.com/miuchan/ript/actions/workflows/ci.yml)
-![Lean 4.33.0](https://img.shields.io/badge/Lean-4.33.0-0d6efd)
-![mathlib 4.33.0](https://img.shields.io/badge/mathlib-4.33.0-a42e2b)
-![Esplora stato](https://img.shields.io/badge/status-early--stage%20research-orange)
-
-Ript formaligas tipizitajn procezojn, kies konduto kaj rimeduzo kunmetiĝas. Ĝi
-ligas ruleblajn finiajn modelojn al kern-kontrolitaj rezultoj pri rimedlimoj,
-valideco, kompleteco kaj struktur-konserva semantiko.
-La unua efektiva ses-modela tranĉo interpretas unu Bulean procezan signaturon
-en probablaj, kvantumaj, kaŭzaj, komputaj, semantikaj kaj termikaj modeloj.
-
-La centra esplorcelo de Ript estas konstrui komputeblan, maŝine kontroleblan,
-univalentan kaj pli-alt-kategorian teorion de rimed-limigitaj informprocezoj, en
-kiu klasika probablo, kvantumaj procezoj, kaŭzaj modeloj, komputado, semantika
-informo kaj termodinamiko aperas kiel malsamaj modeloj, kun reprezentaj kaj
-kompletecaj teoremoj kiuj ilin rilatigas. La deponejo enhavas la kompilitajn
-tavolojn direkte al tiu celo; la tuta celo ankoraŭ ne estas pruvita teoremo.
+Ript estas kern-kontrolita Lean 4-esplorbiblioteko por rimed-indeksitaj
+informprocezoj. Ĝi ligas ruleblan finian sintakson kun probablaj, kvantumaj,
+kaŭzaj, komputaj, semantik-informaj, decidaj kaj termodinamikaj modeloj, dum
+laŭvolaj kapabloj restas apartaj.
 
 > [!IMPORTANT]
-> Ript estas frufaza esplora programaro. La kompilitaj rezultoj estas
-> kern-kontrolitaj; la publika API kaj la esplora fronto ankoraŭ evoluas.
+> La deponejo enhavas multe da veraj pruvoj, sed restas frufaza esploro. La
+> fina tutmonda teoremo kaj stabila API ankoraŭ ne ekzistas.
 
-## Rapida komenco
+## Nuna stato
 
-Instalu [elan](https://github.com/leanprover/elan), poste konstruu la projekton
-kun ĝiaj fiksitaj versioj de Lean kaj Mathlib:
+- rimed-sentema sintakso, buĝetoj, valideco, relativa kompleteco kaj libera
+  semantiko kompiliĝas;
+- ĉiuj ses modelfamilioj havas konkretajn okazojn kaj kontrolitajn ekzemplojn;
+- modeloj kaj rimedŝanĝaj morfioj formas kontrolitajn bikategoriajn tavolojn;
+- interna univalento kaj complete-Segal-fundamentoj restas laŭflue de la
+  rulebla kerno;
+- generitaj hammock-mapspacoj ekvivalentas al la faktaj lokalizaj celoj kaj
+  havas eksplicitajn nervajn homotopiajn inversojn kaj finiĝantan redukton.
+
+La fronto estas critical-pair joinability, klasika reduced-hammock-invarianto,
+norma malfort-ekvivalenta pako kaj la tutmonda Rezk-teoremo.
+
+## Komencu ĉi tie
 
 ```bash
 git clone https://github.com/miuchan/ript.git
 cd ript
 lake exe cache get
-lake build
+./scripts/quality-gate.sh
 ```
 
-Por postuloj, ruleblaj ekzemploj, dependaĵa uzo, reproduktebleco kaj
-problemsolvado, sekvu la [komencan gvidilon](GETTING_STARTED.md).
+Daŭrigu per la [komenca gvidilo](GETTING_STARTED.md).
 
-## Trovu tion, kion vi bezonas
+## Legu laŭ tasko
 
-- **Kio estas realigita?** Vidu la [matricon de modelkapabloj](reference/MODEL_MATRIX.md).
-- **Kio estas pruvita aŭ ankoraŭ malferma?** Vidu la
-  [esploran staton](RESEARCH_STATUS.md).
-- **Kiel la biblioteko estas organizita?** Legu la
-  [arkitekturan gvidilon](ARCHITECTURE.md).
-- **Kiuj estas la fidaj kaj maturecaj limoj?** Legu
-  [projektan amplekson kaj fidon](PROJECT_SCOPE.md).
-- **Kie estas la precizaj esplorregistroj?** Uzu la
-  [formalan planon](reference/BLUEPRINT.md),
-  [aksioman inventaron](reference/AXIOMS.md) kaj
-  [registron de konjektoj](reference/CONJECTURES.md).
+- **Kompreni:** [Amplekso kaj fido](PROJECT_SCOPE.md) · [Arkitekturo](ARCHITECTURE.md)
+- **Vidi pruvojn:** [Esplora stato](RESEARCH_STATUS.md) · [Modelmatrico](reference/MODEL_MATRIX.md)
+- **Auditi:** [Plano](reference/BLUEPRINT.md) · [Aksiomoj](reference/AXIOMS.md) ·
+  [Konjektoj](reference/CONJECTURES.md)
+- **Partopreni:** [Kontribui](CONTRIBUTING.md) · [Regado](GOVERNANCE.md) ·
+  [Sekureco](SECURITY.md)
+- **Ŝanĝi lingvon:** [Plurlingva dokumentara nabo](../README.md)
 
-## Kontribuado
+## Matureco kaj reuzo
 
-Legu la [kontribuan gvidilon](CONTRIBUTING.md) kaj rulu
-`./scripts/quality-gate.sh` antaŭ ol malfermi tirpeton.
-
-Ript estas konstruita per [Lean 4](https://lean-lang.org/) kaj
-[Mathlib](https://github.com/leanprover-community/mathlib4).
+Fiksu plenan commit-SHA por reprodukteblo. Ne ekzistas stabila eldono aŭ API-
+garantio. Neniu malfermfonta permesilo estas elektita; publika videbleco ne
+donas rajton kopii, ŝanĝi aŭ redistribui.

@@ -1,6 +1,6 @@
 # Ript
 
-**A kernel-checked Lean 4 foundation for resource-indexed process theories.**
+**Kernel-checked foundations for resource-indexed information processes.**
 
 [English](docs/en/README.md) · [简体中文](docs/zh-CN/README.md) ·
 [日本語](docs/ja/README.md) · [Esperanto](docs/eo/README.md)
@@ -8,62 +8,64 @@
 [![Quality Gate](https://github.com/miuchan/ript/actions/workflows/ci.yml/badge.svg)](https://github.com/miuchan/ript/actions/workflows/ci.yml)
 ![Lean 4.33.0](https://img.shields.io/badge/Lean-4.33.0-0d6efd)
 ![mathlib 4.33.0](https://img.shields.io/badge/mathlib-4.33.0-a42e2b)
-![Research status](https://img.shields.io/badge/status-early--stage%20research-orange)
+![Status](https://img.shields.io/badge/status-early--stage%20research-orange)
+![License](https://img.shields.io/badge/license-not%20selected-lightgrey)
 
-Ript formalizes typed processes whose behavior and resource use compose. It
-connects executable finite models with kernel-checked results about resource
-bounds, soundness, completeness, and structure-preserving semantics.
-Its first literal six-model slice interprets one Boolean process signature in
-probabilistic, quantum, causal, computational, semantic, and thermal models.
-
-Its governing research objective is to construct a computable,
-machine-verifiable, univalent, higher-categorical theory of
-resource-constrained information processes in which classical probability,
-quantum processes, causal models, computation, semantic information, and
-thermodynamics arise as distinct models, together with representation and
-completeness theorems relating those models. The repository contains the
-compiled layers toward that objective; the objective as a whole is not yet a
-proved theorem.
+Ript is a Lean 4 research library for typed processes whose behavior and
+resource use compose. It keeps executable finite syntax separate from
+quotient-based semantic layers and connects classical probability, quantum
+processes, causal models, computation, task-relative semantic information,
+and thermodynamics through structure-preserving interpretations.
 
 > [!IMPORTANT]
-> Ript is early-stage research software. Compiled results are kernel checked;
-> the public API and research frontier are still evolving.
+> Ript is early-stage research software. Kernel-checked declarations are real
+> proofs, but the public API and the global research theorem are not complete.
 
-## Get started
+## Verified today
 
-Install [elan](https://github.com/leanprover/elan), then build the pinned Lean
-and Mathlib project:
+- executable sequential, monoidal, adaptive, dependent, and parallel syntax
+  with exact costs and budgets;
+- soundness, term-model relative completeness, free/initial semantics, and
+  several model-specific representation or completeness theorems;
+- concrete finite probabilistic, quantum, causal, computational, semantic,
+  decision, and thermodynamic models with nontrivial executable examples;
+- a total resource-model bicategory and internally interpreted univalent,
+  simplicial, and complete-Segal foundations;
+- a full generated-hammock mapping-space presentation, direct target nerve
+  equivalences, and a terminating semantics-preserving reduction layer.
+
+The active frontier is raw critical-pair joinability, classical reduced
+hammock invariance, a standard weak-equivalence interface, and the final global
+Dwyer--Kan/Rezk theorem. See [Research status](docs/en/RESEARCH_STATUS.md).
+
+## Quick start
 
 ```bash
 git clone https://github.com/miuchan/ript.git
 cd ript
 lake exe cache get
-lake build
+./scripts/quality-gate.sh
 ```
 
-For prerequisites, executable examples, dependency setup, reproducibility, and
-troubleshooting, follow [Getting started](docs/en/GETTING_STARTED.md).
+The repository pins Lean and Mathlib. Follow [Getting started](docs/en/GETTING_STARTED.md)
+for prerequisites, focused commands, examples, dependency use, and troubleshooting.
 
-## Find what you need
+## Documentation
 
-- **What is implemented?** See the
-  [model capability matrix](docs/en/reference/MODEL_MATRIX.md).
-- **What is proved or still open?** See the
-  [research status](docs/en/RESEARCH_STATUS.md).
-- **How is the library organized?** Read the
-  [architecture guide](docs/en/ARCHITECTURE.md).
-- **What are the trust and maturity boundaries?** Read
-  [project scope and trust](docs/en/PROJECT_SCOPE.md).
-- **Where are the exact research records?** Use the
-  [formal blueprint](docs/en/reference/BLUEPRINT.md),
-  [axiom inventory](docs/en/reference/AXIOMS.md), and
-  [conjecture register](docs/en/reference/CONJECTURES.md).
-- **Not sure where to begin?** Open the [documentation hub](docs/README.md).
+- **Learn the system:** [Project scope](docs/en/PROJECT_SCOPE.md) ·
+  [Architecture](docs/en/ARCHITECTURE.md)
+- **Inspect current evidence:** [Research status](docs/en/RESEARCH_STATUS.md) ·
+  [Model matrix](docs/en/reference/MODEL_MATRIX.md)
+- **Audit exact claims:** [Blueprint](docs/en/reference/BLUEPRINT.md) ·
+  [Axioms](docs/en/reference/AXIOMS.md) ·
+  [Conjectures](docs/en/reference/CONJECTURES.md)
+- **Work on Ript:** [Contributing](CONTRIBUTING.md) · [Governance](GOVERNANCE.md) ·
+  [Security](SECURITY.md)
+- **Choose another language:** [Documentation hub](docs/README.md)
 
-## Contributing
+## Reuse and citation
 
-Read the [contributing guide](docs/en/CONTRIBUTING.md), then run
-`./scripts/quality-gate.sh` before opening a pull request.
-
-Ript is built with [Lean 4](https://lean-lang.org/) and
-[Mathlib](https://github.com/leanprover-community/mathlib4).
+Pin a full commit SHA for reproducible research and record the audited theorem
+assumptions. No open-source license has been selected: public availability does
+not currently grant permission to copy, modify, or redistribute the code. See
+[Project scope and trust](docs/en/PROJECT_SCOPE.md) for the exact boundary.

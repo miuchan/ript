@@ -178,3 +178,5 @@ se la nova eliro estas intenca kaj pruvita de la koncerna ekzempla modulo.
 - [Arkitekturo](ARCHITECTURE.md)
 - [Esplora stato](RESEARCH_STATUS.md)
 - [Formala plano](reference/BLUEPRINT.md)
+- [Kontribua gvidilo](CONTRIBUTING.md)
+- [Regado](GOVERNANCE.md) kaj [Sekureco](SECURITY.md)

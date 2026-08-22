@@ -3,9 +3,27 @@
 [English](../en/RESEARCH_STATUS.md) · [简体中文](../zh-CN/RESEARCH_STATUS.md) ·
 [日本語](../ja/RESEARCH_STATUS.md) · [Esperanto](RESEARCH_STATUS.md)
 
-Ĉi tiu paĝo estas konciza esplormapo, ne la teorema registro. Ekzaktaj tipoj,
+Ĉi tiu paĝo estas prizorgata rakonta esplormapo, ne la teorema registro. Ekzaktaj tipoj,
 dependecoj, fontoj kaj supozoj troviĝas en la [formala plano](reference/BLUEPRINT.md)
 kaj la [aksioma inventaro](reference/AXIOMS.md).
+
+## Nuna resumo
+
+**Kontrolita:** rulebla rimed-sentema sintakso kaj buĝetoj; valideco, relativa
+kompleteco kaj libera semantiko; konkretaj ses-modelaj tranĉoj; fiks- kaj
+ŝanĝ-rimedaj modelaj bikategorioj; interna univalento kaj complete-Segal-
+fundamentoj; plenaj generitaj hammock-mapkategorioj kun rektaj celaj nervaj
+ekvivalentoj; kaj finiĝanta semantik-konserva administra redukto kun
+nereblaj reduktaĵoj.
+
+**Malferma:** kruda critical-pair joinability kaj loka kunflueco, ceteraj
+klasikaj arbitra-kradaj hammock-movoj, reduced-hammock homotopia invarianto,
+norma derivita malfort-ekvivalenta interfaco kaj la fina tutmonda
+Dwyer--Kan/Rezk-teoremo. La reganta esplorcelo restas aktiva.
+
+Uzu la [modelmatricon](reference/MODEL_MATRIX.md) por kapabloj, la
+[planon](reference/BLUEPRINT.md) por teoremaj pruvoj kaj la
+[konjektregistron](reference/CONJECTURES.md) por nepruvitaj direktoj.
 
 ## Statusvortoj
 

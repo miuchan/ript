@@ -181,3 +181,5 @@ the new output is intentional and proved by the corresponding example module.
 - [Architecture](ARCHITECTURE.md) for module and dependency boundaries.
 - [Research status](RESEARCH_STATUS.md) for the current mathematical frontier.
 - [Formal blueprint](reference/BLUEPRINT.md) for theorem-level status.
+- [Contributing](CONTRIBUTING.md) for the development and review workflow.
+- [Governance](GOVERNANCE.md) and [Security](SECURITY.md) for project policy.

@@ -1,0 +1,66 @@
+name: Bug report
+description: Report a reproducible Lean, build, documentation, or executable-example defect.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not include vulnerability details or secrets here. Follow `SECURITY.md` for security reports.
+  - type: input
+    id: commit
+    attributes:
+      label: Ript commit
+      description: Full commit SHA where the problem occurs.
+      placeholder: 40-character SHA
+    validations:
+      required: true
+  - type: input
+    id: module
+    attributes:
+      label: Module or document
+      placeholder: Ript/... or docs/...
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include the exact command and smallest source or documentation example.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and output
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Affected boundary
+      options:
+        - Lean theorem or type
+        - Executable example
+        - Build or CI
+        - Documentation
+        - Public API
+        - Unsure
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I used the pinned toolchain from `lean-toolchain`.
+          required: true
+        - label: I searched existing issues and the research/conjecture records.
+          required: true

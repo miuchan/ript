@@ -3,43 +3,67 @@
 [English](CONTRIBUTING.md) · [简体中文](../zh-CN/CONTRIBUTING.md) ·
 [日本語](../ja/CONTRIBUTING.md) · [Esperanto](../eo/CONTRIBUTING.md)
 
-Ript treats proof trust, explicit dependencies, and reproducible computation as
-merge requirements rather than review conventions.
+Ript accepts proof, model, example, documentation, and tooling contributions.
+Trust, explicit dependencies, reproducibility, and accurate claims are merge
+requirements.
 
-## Required quality gate
+## Before starting
 
-Run the complete gate from the repository root before opening a pull request:
+Read [Scope](PROJECT_SCOPE.md), [Architecture](ARCHITECTURE.md), and
+[Research status](RESEARCH_STATUS.md); search issues and the
+[Conjecture register](reference/CONJECTURES.md). Discuss changes to scope,
+public theorem statements, architecture, trusted dependencies, governance,
+security, or licensing before implementation. Security reports follow
+[Security policy](SECURITY.md).
+
+## Workflow
+
+```bash
+git switch -c <focused-branch>
+lake exe cache get
+lake build <affected.module>
+./scripts/quality-gate.sh
+```
+
+Keep branches and commits focused. PRs must state the outcome, verification,
+axiom footprint, compatibility impact, and remaining boundary. Drafts are
+welcome; merge requires green CI and maintainer approval.
+
+## Proof and implementation policy
+
+- No proof placeholders, project axioms, trust escapes, or unsafe declarations.
+- Keep `autoImplicit false`; use narrow Mathlib imports.
+- Put reusable missing infrastructure in `Ript/ForMathlib/`.
+- Keep executable data upstream from quotients and chosen representatives.
+- Preserve capability boundaries and use domain-accurate theorem names.
+- Put unfinished statements in `CONJECTURES.md`.
+- Audit flagship declarations in `Ript/Audit/AxiomChecks.lean` and `AXIOMS.md`.
+- Update executable assertions only for intentional, proved behavior changes.
+
+## Documentation policy
+
+Mirror maintained pages under all four locales. Update every affected language
+when a command, claim, status, or trust boundary changes. Canonical root
+blueprint, model, axiom, and conjecture records remain machine-facing sources.
+Run `./scripts/sync-doc-reference-tables.sh` after axiom-table changes.
+
+## Required gate
 
 ```bash
 ./scripts/quality-gate.sh
 ```
 
-The gate rejects proof placeholders, project-specific axioms, unsafe
-declarations, compiler-trust escapes, broad `Mathlib` imports, implicit Lean
-identifiers, stale root-module imports, declaration-linter failures, executable
-behavior changes, build warnings, and undocumented theorem assumptions. It then
-performs a full kernel build.
+The gate checks source and docs policy, root imports, the full kernel build,
+declaration lint, executable examples, and audited assumptions. Never weaken a
+check to make a change pass.
 
-CI exposes these checks as the stable `Lean quality gate` job. A change is ready
-to merge only when that job passes.
+## PR checklist
 
-## Proof and dependency policy
+- [ ] One clear purpose and an explicit remaining boundary.
+- [ ] Focused and full builds pass with the pinned toolchain.
+- [ ] Flagship assumptions and executable changes are audited.
+- [ ] Architecture, status, references, and all affected locales are current.
+- [ ] No unrelated, generated, secret, or private files are included.
 
-- Put unproved research statements in `CONJECTURES.md`; do not declare them as
-  theorems or axioms.
-- Import the narrowest practical Mathlib modules.
-- Keep `set_option autoImplicit false` in every implementation module.
-- Add flagship theorems to both `Ript/Audit/AxiomChecks.lean` and `AXIOMS.md`.
-- If executable behavior changes intentionally, update the example assertion in
-  `scripts/check-examples.sh` in the same change.
-
-## Documentation policy
-
-- Keep every logical page mirrored under `docs/en`, `docs/zh-CN`, `docs/ja`,
-  and `docs/eo` with the same relative path.
-- Update all four language versions when a public claim, command, status, or
-  trust boundary changes.
-- Keep root `AXIOMS.md`, `BLUEPRINT.md`, `CONJECTURES.md`, and
-  `MODEL_MATRIX.md` as the machine-facing canonical records.
-- After changing the axiom inventory, run
-  `./scripts/sync-doc-reference-tables.sh` before the quality gate.
+Review evaluates statements and modeling intent as well as proof terms. See
+[Governance](GOVERNANCE.md) for authority and stability policy.

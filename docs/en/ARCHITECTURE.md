@@ -152,6 +152,22 @@ Localization work is split by strength:
 - unproved coherence or essential-surjectivity fields are never replaced by
   axioms.
 
+The current mapping-space stack has three explicit presentations:
+
+1. binary marked-zigzag words with quotient 2-cells;
+2. independent right-associated linear hammock rows;
+3. generated non-groupoidal hammock paths combining executable refinements
+   with arbitrary aligned raw cells.
+
+All three are categorically equivalent to the actual localization-target local
+hom-categories. Their nerve comparisons have explicit simplicial homotopy
+inverses, and the generated comparison factors strictly through the linear
+one. A terminating administrative reduction removes units/nesting, fuses
+adjacent moves, and cancels executable refinement inverses while preserving
+quotient semantics. Raw critical-pair joinability, the full classical
+arbitrary-grid move system, and standard weak-equivalence packaging remain
+research boundaries.
+
 ## Internal univalent interpretation
 
 `Ript/Univalent/` is downstream from the ordinary process theory. It defines:
@@ -192,6 +208,8 @@ Ript separates project communication from formal status:
 - `BLUEPRINT.md` records dependencies and theorem-level status;
 - `CONJECTURES.md` contains statements not yet proved;
 - `AXIOMS.md` records actual kernel assumptions.
+- `GOVERNANCE.md` records decision authority and stability policy;
+- `SECURITY.md` records private reporting and the supported trust boundary.
 
 When these disagree, Lean declarations and machine-checked audit output take
 precedence. Documentation changes should reconcile the human-facing files in

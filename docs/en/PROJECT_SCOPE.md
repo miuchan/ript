@@ -53,6 +53,14 @@ interchange, and pentagon/triangle coherence. The
 [model capability matrix](reference/MODEL_MATRIX.md) records only implemented and
 compiled operations.
 
+The highest compiled localization layer now gives a full generated-hammock
+presentation of every local mapping category, direct categorical-nerve
+equivalences to the actual localization targets, explicit simplicial homotopy
+inverses, and a terminating semantics-preserving administrative reduction.
+This is an audited project-local Dwyer--Kan core. It is not yet a comparison
+with the classical reduced arbitrary-grid hammock construction or a standard
+global Rezk weak-equivalence theorem.
+
 ## Trust model
 
 Ript forbids:
@@ -92,8 +100,10 @@ will be replaced by the chosen license if the project adopts one.
 
 ## Authoritative records
 
-- [Research status](RESEARCH_STATUS.md): concise proved/open boundary.
+- [Research status](RESEARCH_STATUS.md): current narrative proved/open boundary.
 - [Formal blueprint](reference/BLUEPRINT.md): theorem types and dependency ledger.
 - [Axiom inventory](reference/AXIOMS.md): audited kernel assumptions.
 - [Conjecture register](reference/CONJECTURES.md): open research statements.
 - [Contributing guide](CONTRIBUTING.md): proof and merge policy.
+- [Governance](GOVERNANCE.md): decision authority and stability.
+- [Security](SECURITY.md): reporting and supported trust boundary.

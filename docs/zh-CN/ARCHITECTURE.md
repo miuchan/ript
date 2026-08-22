@@ -108,6 +108,13 @@ Ript 的组织原则是：可执行有限模型不依赖商类型、测度论、
 - 精确的双范畴泛性质谓词单独定义；
 - 尚未证明的协调或本质满性字段绝不会以公理代替。
 
+当前 mapping-space 栈具有三种显式呈示：二叉 marked-zigzag word/商 2-胞腔、独立右结合 linear
+hammock 行，以及把可执行 refinement 与任意 aligned raw cell 组合起来的非群胚 generated hammock
+path。三者均已与实际局部化目标的 local hom-category 建立范畴等价，nerve 比较具有显式单纯同伦逆，
+generated 比较严格经过 linear 比较。一个终止 administrative reduction 会消去单位/嵌套、融合相邻
+move 并抵消可执行 refinement 正逆对，同时保持商语义。raw critical-pair joinability、完整经典任意
+网格 move 系统与标准弱等价封装仍是研究边界。
+
 ## 内部单值解释
 
 `Ript/Univalent/` 位于普通过程理论下游，定义：
@@ -138,6 +145,8 @@ Ript 将项目沟通与形式状态分开：
 - `reference/BLUEPRINT.md` 记录依赖与定理级状态；
 - `reference/CONJECTURES.md` 记录未证明陈述；
 - `reference/AXIOMS.md` 记录实际内核假设。
+- `GOVERNANCE.md` 记录决策权与稳定性策略；
+- `SECURITY.md` 记录私密报告方式和支持的可信边界。
 
 若这些文件不一致，以 Lean 声明和机器检查的审计输出为准；文档变更必须在同一个 PR 中恢复一致。
 

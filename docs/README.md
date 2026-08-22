@@ -1,40 +1,41 @@
 # Ript documentation · Ript 文档 · Ript ドキュメント · Dokumentaro de Ript
 
-Every maintained document is available through the same mirrored path in four
-languages. Choose a language to enter the documentation set.
+The documentation is mirrored at the same paths in English, Simplified
+Chinese, Japanese, and Esperanto. Select a language, then navigate by task.
 
-所有维护中的文档都按相同路径提供四种语言版本，请选择语言进入文档集。
+文档按相同路径提供英语、简体中文、日语和世界语版本。请选择语言，再按任务阅读。
 
-保守対象の全ドキュメントは、同じパス構成で四言語版を提供します。言語を選択してください。
+ドキュメントは英語・簡体字中国語・日本語・エスペラントで同じパス構成です。言語を選び、
+目的別に進んでください。
 
-Ĉiu prizorgata dokumento disponeblas laŭ la sama spegulita vojo en kvar lingvoj.
-Elektu lingvon por eniri la dokumentaron.
+La sama dokumentstrukturo disponeblas en la angla, simpligita ĉina, japana kaj
+Esperanto. Elektu lingvon kaj poste taskon.
 
-## Languages · 语言 · 言語 · Lingvoj
+## Choose a language · 选择语言 · 言語を選択 · Elektu lingvon
 
 - [English](en/README.md)
 - [简体中文](zh-CN/README.md)
 - [日本語](ja/README.md)
 - [Esperanto](eo/README.md)
 
-## Mirrored structure · 镜像结构 · ミラー構成 · Spegulita strukturo
+## Documentation map
 
-Each locale contains `README.md`, `GETTING_STARTED.md`, `ARCHITECTURE.md`,
-`PROJECT_SCOPE.md`, `RESEARCH_STATUS.md`, `CONTRIBUTING.md`, and a `reference/`
-directory containing `MODEL_MATRIX.md`, `BLUEPRINT.md`, `AXIOMS.md`, and
-`CONJECTURES.md`.
+| Goal | English | 简体中文 | 日本語 | Esperanto |
+|---|---|---|---|---|
+| Build and run examples | [Guide](en/GETTING_STARTED.md) | [指南](zh-CN/GETTING_STARTED.md) | [ガイド](ja/GETTING_STARTED.md) | [Gvidilo](eo/GETTING_STARTED.md) |
+| Understand scope and trust | [Scope](en/PROJECT_SCOPE.md) | [范围](zh-CN/PROJECT_SCOPE.md) | [範囲](ja/PROJECT_SCOPE.md) | [Amplekso](eo/PROJECT_SCOPE.md) |
+| Understand the codebase | [Architecture](en/ARCHITECTURE.md) | [架构](zh-CN/ARCHITECTURE.md) | [構成](ja/ARCHITECTURE.md) | [Arkitekturo](eo/ARCHITECTURE.md) |
+| See the current frontier | [Status](en/RESEARCH_STATUS.md) | [状态](zh-CN/RESEARCH_STATUS.md) | [状況](ja/RESEARCH_STATUS.md) | [Stato](eo/RESEARCH_STATUS.md) |
+| Contribute | [Guide](en/CONTRIBUTING.md) | [指南](zh-CN/CONTRIBUTING.md) | [ガイド](ja/CONTRIBUTING.md) | [Gvidilo](eo/CONTRIBUTING.md) |
+| Understand decisions | [Governance](en/GOVERNANCE.md) | [治理](zh-CN/GOVERNANCE.md) | [ガバナンス](ja/GOVERNANCE.md) | [Regado](eo/GOVERNANCE.md) |
+| Report a vulnerability | [Security](en/SECURITY.md) | [安全](zh-CN/SECURITY.md) | [セキュリティ](ja/SECURITY.md) | [Sekureco](eo/SECURITY.md) |
 
-每个语言目录都包含上述六篇入口与指南，并在 `reference/` 中包含模型矩阵、形式化蓝图、公理清单和
-猜想登记册。各语言路径一一对应，页面顶部可以直接切换语言。
+## Authoritative records
 
-各言語ディレクトリには六つの入口・ガイドと、モデル行列、形式化ブループリント、公理一覧、
-予想台帳を収めた `reference/` があります。各ページ上部から同じ文書の言語を切り替えられます。
+The root [`BLUEPRINT.md`](../BLUEPRINT.md), [`MODEL_MATRIX.md`](../MODEL_MATRIX.md),
+[`AXIOMS.md`](../AXIOMS.md), and [`CONJECTURES.md`](../CONJECTURES.md) are
+machine-facing canonical records. English reference pages mirror their full
+content; localized references preserve identifiers and proved/open boundaries.
 
-Ĉiu lingva dosierujo enhavas la ses enirejajn kaj gvidajn paĝojn, plus
-`reference/` kun la modelmatrico, formala plano, aksioma inventaro kaj registro
-de konjektoj. La lingvoŝaltilo ĉe la supro konservas la saman dokumenton.
-
-The root `AXIOMS.md`, `BLUEPRINT.md`, `CONJECTURES.md`, and `MODEL_MATRIX.md`
-remain machine-facing canonical records used by validation scripts. Their
-English mirrors preserve the full canonical content; localized reference pages
-preserve the same status boundaries and formal identifiers.
+Lean declarations and audit output take precedence over prose. A public claim
+change must update all four maintained languages in the same pull request.
