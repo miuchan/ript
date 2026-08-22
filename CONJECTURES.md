@@ -472,10 +472,15 @@ the original 2-cell conjugated by right-unitors. The path calculus is now
 closed under normalized left/right whiskering and horizontal append, with
 exact cost-exact three-model nerve formulas. Raw identities and original cells
 are normalizable, and normalizability is closed under vertical composition.
-The next missing induction law is naturality of the chosen normalization
-isomorphisms with raw whiskering; after it, the remaining structural generators
-must be normalized before fullness can be claimed. Competing forward/marked
-moves, reduced-hammock moves, and their homotopical invariance remain open.
+Normalization naturality for both raw whiskerings is now proved by explicit
+append-isomorphism exchange and cancellation; source identity and inverse plus
+equality transport are normalizable too. The exact remaining induction basis
+is the twelve-field `StructuralGeneratorNormalizable` record: source composite
+and inverse, marked unit/counit and inverses, associator and inverse, and both
+unitors and inverses. That record already implies normalization of every raw
+cell by structural induction, but none of its unproved fields is assumed in an
+unconditional theorem. Competing forward/marked moves, reduced-hammock moves,
+and their homotopical invariance remain open.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -582,10 +587,11 @@ category and strictly factors the semantic nerve map. The aligned-cell-
 augmented path category now adds arbitrary pointwise raw cells, contains every
 source 2-cell in one-column form, strictly extends refinement paths, and is
 closed under normalized left/right whiskering and horizontal append. Identity,
-vertical-composite, and original-cell normalization cases are proved.
-Normalization-isomorphism naturality for raw whiskering and the remaining
-structural generators, critical-pair coherence, and reduced-hammock invariance
-remain open.
+vertical-composite, original-cell, both whiskering, source-identity/inverse,
+and equality-transport normalization cases are proved. The remaining twelve
+structural generator obligations are explicit and sufficient for the complete
+induction, but remain unproved; critical-pair coherence and reduced-hammock
+invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

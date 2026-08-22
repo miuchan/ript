@@ -33,7 +33,10 @@ generated hammock-path nerve now adds arbitrary aligned raw cells, contains
 the refinement-path nerve faithfully, and covers every source 2-cell in its
 canonical one-column representation. Generated paths are now also closed under
 normalized left/right whiskering and horizontal append, with exact three-model
-nerve formulas. Coverage of all presented quotient 2-cells, competing-move
+nerve formulas. A raw-cell normalization core records the completed identity,
+original, source-identity/inverse, vertical, whiskering, and transport branches
+and a conditional all-cell induction from twelve remaining structural
+generators. Coverage of all presented quotient 2-cells, competing-move
 coherence, and reduced-hammock invariance are still absent, so these results
 are not by themselves the final Dwyer--Kan theorem.
 -/
@@ -1343,6 +1346,126 @@ theorem hammockPathWhiskeringCore
   maps_whiskerLeft := hammockPathSemanticComparison_whiskerLeftEdge
   maps_whiskerRight := hammockPathSemanticComparison_whiskerRightEdge
   maps_append := hammockPathSemanticComparison_appendEdge
+
+/-- Machine-facing raw-cell normalization fragment for the cost-exact
+marking. It records the completed structural-induction cases without claiming
+normalization of every raw generator. -/
+structure HammockRawCellNormalizationCore : Prop where
+  /-- Every raw identity cell is normalizable. -/
+  identity : ∀ (M N : ProcessModel.{u, v, w} R)
+      (word : CostExactZigzag.Word (R := R) M N),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R) (Bicategory.MarkedZigzag.Cell.id word)
+  /-- Normalizability is closed under raw vertical composition. -/
+  vcomp : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first middle last : CostExactZigzag.Word (R := R) M N}
+      {alpha : Bicategory.MarkedZigzag.Cell
+        (costExactArrows R) first middle}
+      {beta : Bicategory.MarkedZigzag.Cell
+        (costExactArrows R) middle last},
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R) alpha →
+      Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R) beta →
+      Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.Cell.vcomp alpha beta)
+  /-- Every original source 2-cell is normalizable. -/
+  original : ∀ (M N : ProcessModel.{u, v, w} R)
+      {f g : M ⟶ N} (alpha : f ⟶ g),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.original
+        (W := costExactArrows R) alpha)
+  /-- The source-identity comparison is normalizable. -/
+  sourceId : ∀ (M : ProcessModel.{u, v, w} R),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.sourceId
+        (W := costExactArrows R) (X := M))
+  /-- The inverse source-identity comparison is normalizable. -/
+  sourceIdInv : ∀ (M : ProcessModel.{u, v, w} R),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.sourceIdInv
+        (W := costExactArrows R) (X := M))
+  /-- Raw left whiskering preserves normalizability. -/
+  whiskerLeft : ∀ (M N P : ProcessModel.{u, v, w} R)
+      (pre : CostExactZigzag.Word (R := R) M N)
+      {first second : CostExactZigzag.Word (R := R) N P}
+      {cell : Bicategory.MarkedZigzag.Cell
+        (costExactArrows R) first second},
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R) cell →
+      Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.Cell.whiskerLeft pre cell)
+  /-- Raw right whiskering preserves normalizability. -/
+  whiskerRight : ∀ (M N P : ProcessModel.{u, v, w} R)
+      {first second : CostExactZigzag.Word (R := R) M N}
+      {cell : Bicategory.MarkedZigzag.Cell
+        (costExactArrows R) first second}
+      (post : CostExactZigzag.Word (R := R) N P),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R) cell →
+      Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.Cell.whiskerRight cell post)
+  /-- Equality transport preserves normalizability. -/
+  transport : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first second first' second' : CostExactZigzag.Word (R := R) M N}
+      (sourceEquality : first = first')
+      (targetEquality : second = second')
+      {cell : Bicategory.MarkedZigzag.Cell
+        (costExactArrows R) first second},
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R) cell →
+      Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.Cell.transport
+          sourceEquality targetEquality cell)
+  /-- The remaining explicit structural-generator obligations suffice for
+  normalization of every cost-exact raw cell. -/
+  structural_induction : ∀ (M N : ProcessModel.{u, v, w} R),
+      (@Bicategory.MarkedZigzag.HammockPath.StructuralGeneratorNormalizable
+          (ProcessModel.{u, v, w} R) _ (costExactArrows R)) →
+      ∀ {first second : CostExactZigzag.Word (R := R) M N}
+        (cell : Bicategory.MarkedZigzag.Cell
+          (costExactArrows R) first second),
+      Bicategory.MarkedZigzag.HammockPath.Normalizable
+        (costExactArrows R) cell
+
+/-- The completed raw-cell induction branches hold uniformly for the
+cost-exact marking. -/
+theorem hammockRawCellNormalizationCore :
+    HammockRawCellNormalizationCore (R := R) where
+  identity := fun _ _ word =>
+    Bicategory.MarkedZigzag.HammockPath.identity_normalizable
+      (costExactArrows R) word
+  vcomp := fun _ _ {_ _ _} {_} {_} hAlpha hBeta =>
+    Bicategory.MarkedZigzag.HammockPath.vcomp_normalizable
+      (costExactArrows R) hAlpha hBeta
+  original := fun _ _ {_ _} alpha =>
+    Bicategory.MarkedZigzag.HammockPath.original_normalizable
+      (costExactArrows R) alpha
+  sourceId := fun _ =>
+    Bicategory.MarkedZigzag.HammockPath.sourceId_normalizable
+      (costExactArrows R)
+  sourceIdInv := fun _ =>
+    Bicategory.MarkedZigzag.HammockPath.sourceIdInv_normalizable
+      (costExactArrows R)
+  whiskerLeft := fun _ _ _ pre {_ _} {_} member =>
+    Bicategory.MarkedZigzag.HammockPath.whiskerLeft_normalizable
+      (costExactArrows R) pre member
+  whiskerRight := fun _ _ _ {_ _} {_} post member =>
+    Bicategory.MarkedZigzag.HammockPath.whiskerRight_normalizable
+      (costExactArrows R) member post
+  transport := fun _ _ {_ _ _ _} sourceEquality targetEquality {_} member =>
+    Bicategory.MarkedZigzag.HammockPath.transport_normalizable
+      (costExactArrows R) sourceEquality targetEquality member
+  structural_induction := fun _ _ generators {_ _} cell =>
+    Bicategory.MarkedZigzag.HammockPath.normalizable_of_structuralGenerators
+      (costExactArrows R) generators cell
 
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
