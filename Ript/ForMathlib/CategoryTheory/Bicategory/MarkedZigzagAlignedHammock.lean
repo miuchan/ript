@@ -14,9 +14,12 @@ columns can be inserted/deleted, forward composite columns can be
 expanded/contracted, marked unit/counit pairs can be inserted/deleted, and
 moves lift beneath arbitrary prefixes and compose. Their signed width changes
 and quotient interpretations are exact, and inverse generator moves cancel
-semantically. The syntax is not yet quotiented by general common refinements or
-reduced-hammock moves, so it is not by itself the classical Dwyer--Kan hammock
-localization.
+semantically. Every refinement now has an executable reverse and one unified
+semantic isomorphism. Explicit common-refinement spans form an equivalence
+relation and a row quotient, whose equality is sound for semantic isomorphism
+without assuming object equality. Critical-pair coherence, a quotient mapping
+category/nerve, and reduced-hammock invariance are still absent, so this is not
+by itself the classical Dwyer--Kan hammock localization.
 -/
 
 set_option autoImplicit false
@@ -428,6 +431,33 @@ def widthChange {X Y : B} {source target : LinearWord W X Y} :
   | .insertMarkedCounitPair _ _ _ => 2
   | .under _ refinement => widthChange refinement
 
+/-- Executable reversal of every elementary, prefixed, or composite column
+refinement. -/
+def reverse {X Y : B} {source target : LinearWord W X Y} :
+    ColumnRefinement W source target → ColumnRefinement W target source
+  | .identity word => .identity word
+  | .vcomp alpha beta => .vcomp (reverse beta) (reverse alpha)
+  | .deleteIdentity rest => .insertIdentity rest
+  | .insertIdentity rest => .deleteIdentity rest
+  | .expandForward f g rest => .contractForward f g rest
+  | .contractForward f g rest => .expandForward f g rest
+  | .deleteMarkedUnitPair f hf rest => .insertMarkedUnitPair f hf rest
+  | .insertMarkedUnitPair f hf rest => .deleteMarkedUnitPair f hf rest
+  | .deleteMarkedCounitPair f hf rest => .insertMarkedCounitPair f hf rest
+  | .insertMarkedCounitPair f hf rest => .deleteMarkedCounitPair f hf rest
+  | .under step refinement => .under step (reverse refinement)
+
+/-- Reversing a refinement negates its exact signed width change. -/
+theorem widthChange_reverse {X Y : B}
+    {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    widthChange W (reverse W refinement) = -widthChange W refinement := by
+  induction refinement
+  case vcomp alpha beta ihAlpha ihBeta =>
+    simp only [reverse, widthChange, ihAlpha, ihBeta]
+    omega
+  all_goals simp [reverse, widthChange, *]
+
 /-- The signed refinement counter is exactly the target width minus the
 source width, for every composite and prefixed refinement. -/
 theorem target_length_eq_source_length_add_widthChange
@@ -820,6 +850,64 @@ theorem insertMarkedCounitPair_deleteMarkedCounitPair {X Y T : B}
     toHom_deleteMarkedCounitPair_eq_hom]
   exact (markedCounitPairIso W f hf rest).inv_hom_id
 
+/-- Every executable column refinement denotes a semantic isomorphism in the
+presented linear mapping category. -/
+noncomputable def toIso {X Y : B}
+    {source target : LinearWord W X Y} :
+    ColumnRefinement W source target →
+      @Iso (Word W X Y) (Presented.wordCategory W X Y)
+        (LinearWord.toWord W source) (LinearWord.toWord W target)
+  | .identity word => Iso.refl (LinearWord.toWord W word)
+  | .vcomp alpha beta => toIso alpha ≪≫ toIso beta
+  | .deleteIdentity rest => identityColumnIso W rest
+  | .insertIdentity rest => (identityColumnIso W rest).symm
+  | .expandForward f g rest => compositeColumnIso W f g rest
+  | .contractForward f g rest => (compositeColumnIso W f g rest).symm
+  | .deleteMarkedUnitPair f hf rest => markedUnitPairIso W f hf rest
+  | .insertMarkedUnitPair f hf rest => (markedUnitPairIso W f hf rest).symm
+  | .deleteMarkedCounitPair f hf rest => markedCounitPairIso W f hf rest
+  | .insertMarkedCounitPair f hf rest =>
+      (markedCounitPairIso W f hf rest).symm
+  | .under step refinement =>
+      whiskerLeftIso (B := Presented.Localization W) (Word.atom step)
+        (toIso refinement)
+
+/-- The quotient-cell interpretation of every refinement is exactly the
+forward map of its unified semantic isomorphism. -/
+theorem toHom_eq_toIso_hom {X Y : B}
+    {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    toHom W refinement = (toIso W refinement).hom := by
+  induction refinement with
+  | identity => rfl
+  | vcomp alpha beta ihAlpha ihBeta =>
+      rw [toHom_vcomp, ihAlpha, ihBeta]
+      rfl
+  | deleteIdentity rest => exact toHom_deleteIdentity_eq_hom W rest
+  | insertIdentity rest => exact toHom_insertIdentity_eq_inv W rest
+  | expandForward f g rest => exact toHom_expandForward_eq_hom W f g rest
+  | contractForward f g rest => exact toHom_contractForward_eq_inv W f g rest
+  | deleteMarkedUnitPair f hf rest =>
+      exact toHom_deleteMarkedUnitPair_eq_hom W f hf rest
+  | insertMarkedUnitPair f hf rest =>
+      exact toHom_insertMarkedUnitPair_eq_inv W f hf rest
+  | deleteMarkedCounitPair f hf rest =>
+      exact toHom_deleteMarkedCounitPair_eq_hom W f hf rest
+  | insertMarkedCounitPair f hf rest =>
+      exact toHom_insertMarkedCounitPair_eq_inv W f hf rest
+  | under step refinement ih =>
+      rw [toHom_under, ih]
+      rfl
+
+/-- The unified semantic isomorphism of an executable reverse refinement is
+the inverse of the original semantic isomorphism. -/
+theorem toIso_reverse {X Y : B}
+    {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    toIso W (reverse W refinement) = (toIso W refinement).symm := by
+  induction refinement <;> simp [reverse, toIso, *]
+  all_goals (apply Iso.ext; rfl)
+
 /-- Any semantic inverse pair remains inverse after refinement beneath one
 common prefix column.  Iterating `under` therefore transports the generator
 round trips to an arbitrary executable prefix. -/
@@ -847,5 +935,138 @@ theorem under_inverse {X Y Z : B} (step : Step W X Y)
     (Word.atom step) (LinearWord.toWord W first))
 
 end ColumnRefinement
+
+/-! ## Common-refinement spans and quotient -/
+
+/-- A common-refinement span between two parallel linear hammock rows.  Both
+legs are executable refinements into one explicit apex row. -/
+structure CommonRefinement {X Y : B}
+    (first second : LinearWord W X Y) where
+  /-- The common apex row. -/
+  apex : LinearWord W X Y
+  /-- Refinement of the first row to the apex. -/
+  firstLeg : ColumnRefinement W first apex
+  /-- Refinement of the second row to the apex. -/
+  secondLeg : ColumnRefinement W second apex
+
+namespace CommonRefinement
+
+/-- Reflexive common refinement. -/
+def refl {X Y : B} (word : LinearWord W X Y) :
+    CommonRefinement W word word where
+  apex := word
+  firstLeg := .identity word
+  secondLeg := .identity word
+
+/-- Symmetry swaps the two legs without changing the apex. -/
+def symm {X Y : B} {first second : LinearWord W X Y}
+    (span : CommonRefinement W first second) :
+    CommonRefinement W second first where
+  apex := span.apex
+  firstLeg := span.secondLeg
+  secondLeg := span.firstLeg
+
+/-- Transitivity uses executable reversal of the middle leg to transport the
+first span into the apex of the second span. -/
+def trans {X Y : B} {first middle last : LinearWord W X Y}
+    (left : CommonRefinement W first middle)
+    (right : CommonRefinement W middle last) :
+    CommonRefinement W first last where
+  apex := right.apex
+  firstLeg := .vcomp left.firstLeg
+    (.vcomp (ColumnRefinement.reverse W left.secondLeg) right.firstLeg)
+  secondLeg := right.secondLeg
+
+/-- A common-refinement span induces an isomorphism between the two row
+interpretations through its apex. -/
+noncomputable def semanticIso {X Y : B}
+    {first second : LinearWord W X Y}
+    (span : CommonRefinement W first second) :
+    @Iso (Word W X Y) (Presented.wordCategory W X Y)
+      (LinearWord.toWord W first) (LinearWord.toWord W second) :=
+  ColumnRefinement.toIso W span.firstLeg ≪≫
+    (ColumnRefinement.toIso W span.secondLeg).symm
+
+/-- Common-refinability of two rows. -/
+def Related {X Y : B} (first second : LinearWord W X Y) : Prop :=
+  Nonempty (CommonRefinement W first second)
+
+/-- Common-refinability is reflexive. -/
+theorem related_refl {X Y : B} (word : LinearWord W X Y) :
+    Related W word word :=
+  ⟨refl W word⟩
+
+/-- Common-refinability is symmetric. -/
+theorem related_symm {X Y : B} {first second : LinearWord W X Y} :
+    Related W first second → Related W second first := by
+  rintro ⟨span⟩
+  exact ⟨symm W span⟩
+
+/-- Common-refinability is transitive. -/
+theorem related_trans {X Y : B}
+    {first middle last : LinearWord W X Y} :
+    Related W first middle → Related W middle last → Related W first last := by
+  rintro ⟨left⟩ ⟨right⟩
+  exact ⟨trans W left right⟩
+
+/-- The common-refinement equivalence relation on parallel rows. -/
+def setoid (X Y : B) : Setoid (LinearWord W X Y) where
+  r := Related W
+  iseqv := ⟨related_refl W, related_symm W, related_trans W⟩
+
+/-- Typeclass form of the common-refinement relation. -/
+instance rowSetoid (X Y : B) : Setoid (LinearWord W X Y) :=
+  setoid W X Y
+
+/-- Object quotient of linear hammock rows by executable common refinement. -/
+abbrev RowQuotient (X Y : B) := Quotient (setoid W X Y)
+
+/-- Canonical row in the common-refinement quotient. -/
+def quotientMk {X Y : B} (word : LinearWord W X Y) : RowQuotient W X Y :=
+  Quotient.mk' word
+
+/-- Every executable refinement identifies its endpoints in the row
+quotient. -/
+theorem quotientMk_eq_of_refinement {X Y : B}
+    {first second : LinearWord W X Y}
+    (refinement : ColumnRefinement W first second) :
+    quotientMk W first = quotientMk W second :=
+  Quotient.sound ⟨{
+    apex := second
+    firstLeg := refinement
+    secondLeg := .identity second }⟩
+
+/-- Equality of represented quotient rows is exactly common-refinability. -/
+theorem quotientMk_eq_iff_related {X Y : B}
+    (first second : LinearWord W X Y) :
+    quotientMk W first = quotientMk W second ↔ Related W first second :=
+  by
+    constructor
+    · intro equality
+      exact Quotient.exact equality
+    · intro related
+      apply Quotient.sound
+      exact related
+
+/-- Every common-refinement witness yields a semantic isomorphism between the
+two rows; no object equality or univalence principle is assumed. -/
+theorem related_semanticIso {X Y : B}
+    {first second : LinearWord W X Y} :
+    Related W first second →
+      Nonempty (@Iso (Word W X Y) (Presented.wordCategory W X Y)
+        (LinearWord.toWord W first) (LinearWord.toWord W second)) := by
+  rintro ⟨span⟩
+  exact ⟨semanticIso W span⟩
+
+/-- Equality in the common-refinement quotient is sound for semantic
+isomorphism in the presented mapping category. -/
+theorem quotientMk_eq_semanticIso {X Y : B}
+    {first second : LinearWord W X Y}
+    (equality : quotientMk W first = quotientMk W second) :
+    Nonempty (@Iso (Word W X Y) (Presented.wordCategory W X Y)
+      (LinearWord.toWord W first) (LinearWord.toWord W second)) :=
+  related_semanticIso W ((quotientMk_eq_iff_related W first second).mp equality)
+
+end CommonRefinement
 
 end CategoryTheory.Bicategory.MarkedZigzag

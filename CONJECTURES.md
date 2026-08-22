@@ -451,9 +451,13 @@ arbitrary prefixes and compose, their signed width change is exact, and both
 generator pairs cancel in the quotient semantics. Marked reverse structure is
 now present through executable insertion/deletion of both `f ; f⁻¹` unit pairs
 and `f⁻¹ ; f` counit pairs, with signed width `±2`, exact semantic isomorphisms,
-both round trips, and arbitrary-prefix stability. The remaining classical gap
-is a common-refinement quotient and coherence for competing forward/marked
-moves, reduced-hammock moves, and their homotopical invariance.
+both round trips, and arbitrary-prefix stability. Every composite refinement
+now has an executable reverse and unified semantic isomorphism. Two-leg
+common-refinement spans form an equivalence relation and a row quotient;
+quotient equality is exactly common-refinability and soundly yields a semantic
+isomorphism, not Lean object equality. The remaining classical gap is a
+quotient mapping category/nerve, coherence for competing forward/marked moves,
+reduced-hammock moves, and their homotopical invariance.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -546,8 +550,9 @@ packaging. Arbitrary-height row grids and their exact nerve representation are
 proved. Fixed-shape aligned multi-column cells and grids now have exact
 quotient/nerve interpretation, and elementary executable forward-column
 refinements plus marked unit/counit pair refinements have exact signed-width
-and semantic inverse laws. A general common-refinement quotient and reduced-
-hammock invariance remain open.
+and semantic inverse laws. Their object-level common-refinement quotient and
+semantic-isomorphism soundness are now proved. A quotient mapping nerve,
+critical-pair coherence, and reduced-hammock invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

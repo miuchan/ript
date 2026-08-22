@@ -340,9 +340,12 @@ leviĝas sub arbitraj komunaj prefiksoj kaj kunmetiĝas, la signita larĝoŝanĝ
 estas ekzakta, kaj ambaŭ generatoraj paroj semantike nuligas sin. La markita
 inversa strukturo nun ankaŭ havas plenumeblan enmeton/forigon de unit-paroj
 `f ; f⁻¹` kaj counit-paroj `f⁻¹ ; f`, kun signita larĝo `±2`, ekzaktaj semantikaj
-izomorfioj, ambaŭ rondiroj kaj arbitra-prefiksa stabileco. Restas ĝenerala
-komun-rafinada kvociento, kohereco de konkuraj movoj, reduktita-hammock
-invariant eco kaj norma malfort-ekvivalenta pako.
+izomorfioj, ambaŭ rondiroj kaj arbitra-prefiksa stabileco. Ĉiu rafinado nun
+havas plenumeblan inverson kaj unuigitan semantikan izomorfion. Dulkruraj
+komun-rafinadaj span-oj formas ekvivalentrilaton kaj vico-kvocienton; kvocienta
+egaleco estas ekzakte komun-rafineblo kaj donas semantikan izomorfion sen
+objekta egaleco. Restas kvocienta map-kategorio/nervo, kohereco de konkuraj
+movoj, reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
