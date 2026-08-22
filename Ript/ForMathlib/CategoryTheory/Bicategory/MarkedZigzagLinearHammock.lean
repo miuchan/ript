@@ -113,6 +113,16 @@ theorem flatten_backward {X Y : B} (f : X ⟶ Y) (hf : W f) :
       .cons (.backward f hf) (.nil X) :=
   rfl
 
+/-- Flattening the binary expansion of a linear row recovers the row exactly. -/
+@[simp]
+theorem flatten_toWord {X Y : B} (row : LinearWord W X Y) :
+    flatten W (toWord W row) = row := by
+  induction row with
+  | nil X => rfl
+  | cons step rest ih =>
+      simp only [toWord, Word.append_eq_comp, flatten, append]
+      rw [ih]
+
 /-- Number of oriented steps in a linear word. -/
 def length {X Y : B} : LinearWord W X Y → ℕ
   | .nil _ => 0
@@ -148,6 +158,14 @@ theorem length_flatten {X Y : B} (word : Word W X Y) :
   | comp first second ihFirst ihSecond =>
       simp [flatten, length_append, ihFirst, ihSecond]
 
+/-- Horizontal composition of two isomorphisms in an arbitrary bicategory. -/
+noncomputable def horizontalIso {C : Type u} [Bicategory.{w, v} C]
+    {X Y Z : C} {first first' : X ⟶ Y}
+    {second second' : Y ⟶ Z}
+    (left : first ≅ first') (right : second ≅ second') :
+    first ≫ second ≅ first' ≫ second' :=
+  whiskerRightIso left second ≪≫ whiskerLeftIso first' right
+
 /-- Horizontal composition of isomorphisms between binary words. -/
 noncomputable def appendIso
     {X Y Z : B} {first first' : Word W X Y}
@@ -157,6 +175,137 @@ noncomputable def appendIso
       Word.append (W := W) first' second' := by
   exact whiskerRightIso (B := Presented.Localization W) left second ≪≫
     whiskerLeftIso (B := Presented.Localization W) first' right
+
+/-- Conjugating an associator by three arbitrary isomorphisms gives the
+associator of their targets. -/
+theorem associator_conjugation {C : Type u} [Bicategory.{w, v} C]
+    {A B D E : C} {first first' : A ⟶ B}
+    {second second' : B ⟶ D} {third third' : D ⟶ E}
+    (left : first ≅ first') (middle : second ≅ second')
+    (right : third ≅ third') :
+    ((first' ≫ second') ◁ right.inv ≫
+        ((first' ◁ middle.inv) ≫ (left.inv ▷ second)) ▷ third) ≫
+      (α_ first second third).hom ≫
+      (left.hom ▷ (second ≫ third) ≫
+        first' ◁ ((middle.hom ▷ third) ≫ (second' ◁ right.hom))) =
+    (α_ first' second' third').hom := by
+  simp only [Category.assoc, Bicategory.comp_whiskerRight,
+    Bicategory.whiskerLeft_comp]
+  rw [Bicategory.associator_naturality_left_assoc]
+  rw [← Bicategory.comp_whiskerRight_assoc]
+  rw [left.inv_hom_id]
+  simp only [Bicategory.id_whiskerRight, Category.id_comp]
+  rw [Bicategory.associator_naturality_middle_assoc]
+  rw [← Bicategory.whiskerLeft_comp_assoc]
+  rw [← Bicategory.comp_whiskerRight]
+  rw [middle.inv_hom_id]
+  simp only [Bicategory.id_whiskerRight, Bicategory.whiskerLeft_id,
+    Category.id_comp]
+  rw [Bicategory.associator_naturality_right_assoc]
+  rw [← Bicategory.whiskerLeft_comp]
+  rw [← Bicategory.whiskerLeft_comp]
+  rw [right.inv_hom_id]
+  simp
+
+/-- Normalizing all three factors horizontally transports a raw associator
+to the associator between the chosen composite normal forms. -/
+theorem horizontalIso_associator_normalization
+    {C : Type u} [Bicategory.{w, v} C]
+    {A B D E : C} {first first' : A ⟶ B}
+    {second second' : B ⟶ D} {third third' : D ⟶ E}
+    {firstSecond : A ⟶ D} {secondThird : B ⟶ E}
+    (left : first ≅ first') (middle : second ≅ second')
+    (right : third ≅ third')
+    (firstSecondComparison : firstSecond ≅ first' ≫ second')
+    (secondThirdComparison : secondThird ≅ second' ≫ third') :
+    (horizontalIso
+        (horizontalIso left middle ≪≫ firstSecondComparison.symm) right).inv ≫
+      (α_ first second third).hom ≫
+      (horizontalIso left
+        (horizontalIso middle right ≪≫ secondThirdComparison.symm)).hom =
+    (whiskerRightIso firstSecondComparison third').hom ≫
+      (α_ first' second' third').hom ≫
+      (whiskerLeftIso first' secondThirdComparison.symm).hom := by
+  unfold horizontalIso
+  simp only [Iso.trans_hom, Iso.trans_inv, Iso.symm_hom, Iso.symm_inv,
+    Bicategory.whiskerLeftIso, Bicategory.whiskerRightIso,
+    Bicategory.comp_whiskerRight, Bicategory.whiskerLeft_comp]
+  simp only [Category.assoc]
+  rw [Bicategory.whisker_exchange_assoc]
+  rw [cancel_epi (firstSecondComparison.hom ▷ third')]
+  simp only [← Category.assoc]
+  rw [cancel_mono (first' ◁ secondThirdComparison.inv)]
+  simpa only [Category.assoc, Bicategory.comp_whiskerRight,
+    Bicategory.whiskerLeft_comp] using
+    associator_conjugation left middle right
+
+/-- The preceding normalization formula specialized to binary marked-zigzag
+words. -/
+theorem appendIso_associator_normalization
+    {X Y Z T : B} {first first' : Word W X Y}
+    {second second' : Word W Y Z} {third third' : Word W Z T}
+    (left : first ≅ first') (middle : second ≅ second')
+    (right : third ≅ third')
+    {firstSecond : Word W X Z}
+    (firstSecondComparison : firstSecond ≅ .comp first' second')
+    {secondThird : Word W Y T}
+    (secondThirdComparison : secondThird ≅ .comp second' third') :
+    (appendIso W
+        (appendIso W left middle ≪≫ firstSecondComparison.symm) right).inv ≫
+      (Presented.wordAssociatorIso W first second third).hom ≫
+      (appendIso W left
+        (appendIso W middle right ≪≫ secondThirdComparison.symm)).hom =
+    (whiskerRightIso (B := Presented.Localization W)
+        firstSecondComparison third').hom ≫
+      (Presented.wordAssociatorIso W first' second' third').hom ≫
+      (whiskerLeftIso (B := Presented.Localization W)
+        first' secondThirdComparison.symm).hom :=
+  horizontalIso_associator_normalization
+    (C := Presented.Localization W) left middle right
+      firstSecondComparison secondThirdComparison
+
+/-- Coherence at the empty-prefix base of the recursive linear associator. -/
+theorem associator_unit_coherence {C : Type u} [Bicategory.{w, v} C]
+    {A B D : C} (second : A ⟶ B) (third : B ⟶ D)
+    {target : A ⟶ D} (comparison : target ≅ second ≫ third) :
+    comparison.hom ≫ ((λ_ second).inv ▷ third) ≫
+      (α_ (𝟙 A) second third).hom ≫
+      (𝟙 A ◁ comparison.inv) ≫ (λ_ target).hom = 𝟙 target := by
+  rw [Bicategory.leftUnitor_inv_whiskerRight_assoc]
+  rw [Iso.inv_hom_id_assoc]
+  rw [Bicategory.leftUnitor_naturality]
+  simp
+
+/-- Coherence for transporting the canonical linear associator beneath one
+common leading 1-morphism. -/
+theorem associator_step_coherence {C : Type u} [Bicategory.{w, v} C]
+    {A B D E F : C} (pre : A ⟶ B) (first : B ⟶ D)
+    (second : D ⟶ E) (third : E ⟶ F)
+    {firstSecond : B ⟶ E} {secondThird : D ⟶ F}
+    {leftTarget rightTarget : B ⟶ F}
+    (firstSecondComparison : firstSecond ≅ first ≫ second)
+    (leftTargetComparison : leftTarget ≅ firstSecond ≫ third)
+    (secondThirdComparison : secondThird ≅ second ≫ third)
+    (rightTargetComparison : rightTarget ≅ first ≫ secondThird) :
+    (whiskerLeftIso pre leftTargetComparison ≪≫
+        (α_ pre firstSecond third).symm) ≪≫
+      whiskerRightIso
+        (whiskerLeftIso pre firstSecondComparison ≪≫
+          (α_ pre first second).symm) third ≪≫
+      (α_ (pre ≫ first) second third) ≪≫
+      whiskerLeftIso (pre ≫ first) secondThirdComparison.symm ≪≫
+      (whiskerLeftIso pre rightTargetComparison ≪≫
+        (α_ pre first secondThird).symm).symm =
+    whiskerLeftIso pre
+      (leftTargetComparison ≪≫
+        whiskerRightIso firstSecondComparison third ≪≫
+        (α_ first second third) ≪≫
+        whiskerLeftIso first secondThirdComparison.symm ≪≫
+        rightTargetComparison.symm) := by
+  apply Iso.ext
+  simp only [Iso.trans_hom, Iso.symm_hom, Bicategory.whiskerLeftIso,
+    Bicategory.whiskerRightIso]
+  simp
 
 /-- Conversion of linear append agrees with binary append up to the canonical
 bicategorical associator and unitor isomorphisms. -/
@@ -193,6 +342,58 @@ theorem toWordAppendIso_cons {X Y Z T : B} (step : Step W X Y)
         (Presented.wordAssociatorIso W
           (Word.atom step) (toWord W rest) (toWord W second)).symm :=
   rfl
+
+/-- Canonical comparison between the two binary expansions of an associative
+linear append. -/
+noncomputable def associatorIso {X Y Z T : B}
+    (first : LinearWord W X Y) (second : LinearWord W Y Z)
+    (third : LinearWord W Z T) :
+    toWord W (append W (append W first second) third) ≅
+      toWord W (append W first (append W second third)) :=
+  toWordAppendIso W (append W first second) third ≪≫
+    whiskerRightIso (B := Presented.Localization W)
+      (toWordAppendIso W first second) (toWord W third) ≪≫
+    Presented.wordAssociatorIso W (toWord W first)
+      (toWord W second) (toWord W third) ≪≫
+    whiskerLeftIso (B := Presented.Localization W) (toWord W first)
+      (toWordAppendIso W second third).symm ≪≫
+    (toWordAppendIso W first (append W second third)).symm
+
+/-- The canonical linear associator is identity at an empty prefix. -/
+theorem associatorIso_nil {X Y Z : B}
+    (second : LinearWord W X Y) (third : LinearWord W Y Z) :
+    associatorIso W (.nil X) second third =
+      Iso.refl (toWord W (append W second third)) := by
+  apply Iso.ext
+  unfold associatorIso
+  rw [toWordAppendIso_nil]
+  rw [toWordAppendIso_nil]
+  simp only [Iso.trans_hom, Bicategory.whiskerRightIso,
+    Bicategory.whiskerLeftIso, Iso.symm_hom]
+  exact associator_unit_coherence
+    (C := Presented.Localization W) (toWord W second) (toWord W third)
+      (toWordAppendIso W second third)
+
+/-- The canonical linear associator beneath a leading step is the left
+whiskering of the associator for the remaining rows. -/
+theorem associatorIso_cons {X Y Z T U : B} (step : Step W X Y)
+    (rest : LinearWord W Y Z) (second : LinearWord W Z T)
+    (third : LinearWord W T U) :
+    associatorIso W (.cons step rest) second third =
+      whiskerLeftIso (B := Presented.Localization W) (Word.atom step)
+        (associatorIso W rest second third) := by
+  unfold associatorIso
+  simp only [append]
+  rw [toWordAppendIso_cons]
+  rw [toWordAppendIso_cons]
+  rw [toWordAppendIso_cons]
+  exact associator_step_coherence
+    (C := Presented.Localization W) (Word.atom step) (toWord W rest)
+      (toWord W second) (toWord W third)
+      (toWordAppendIso W rest second)
+      (toWordAppendIso W (append W rest second) third)
+      (toWordAppendIso W second third)
+      (toWordAppendIso W rest (append W second third))
 
 /-- The append comparison for a singleton first row is the left-unitor
 comparison on the second row followed by inverse associativity. -/

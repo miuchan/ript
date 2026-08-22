@@ -1988,6 +1988,15 @@ theorem toHom_ofEq {X Y : B} {first second : LinearWord W X Y}
   subst second
   rfl
 
+/-- Equality transport of an identity is the categorical equality morphism
+induced after binary expansion. -/
+theorem castIdentity_eqToHom {X Y : B}
+    {first second : LinearWord W X Y} (equality : first = second) :
+    equality ▸ 𝟙 (LinearWord.toWord W first) =
+      eqToHom (congrArg (LinearWord.toWord W) equality) := by
+  subst second
+  rfl
+
 /-- Recursive generated path implementing the right-unit equation for a
 linear row. -/
 def rightUnitPath {X Y : B} :
@@ -2015,6 +2024,19 @@ def associatorPath {X Y Z T : B} :
   | .nil _, second, third => .identity (LinearWord.append W second third)
   | .cons step rest, second, third =>
       .under step (associatorPath rest second third)
+
+/-- Recursive inverse generated path implementing the inverse associativity
+equation for linear row append. -/
+def associatorPathInv {X Y Z T : B} :
+    (first : LinearWord W X Y) →
+    (second : LinearWord W Y Z) →
+    (third : LinearWord W Z T) →
+      HammockPath W
+        (LinearWord.append W first (LinearWord.append W second third))
+        (LinearWord.append W (LinearWord.append W first second) third)
+  | .nil _, second, third => .identity (LinearWord.append W second third)
+  | .cons step rest, second, third =>
+      .under step (associatorPathInv rest second third)
 
 /-- Exact semantic formula for the recursive right-unit path. -/
 theorem toHom_rightUnitPath {X Y : B} (row : LinearWord W X Y) :
@@ -2104,6 +2126,67 @@ theorem rightUnitPath_hom_inv {X Y : B} (row : LinearWord W X Y) :
       exact Quot.sound (Presented.Rel.whisker_left_id
         (Word.atom step)
         (LinearWord.toWord W (LinearWord.append W rest (.nil Z))))
+
+/-- The recursive associator path is exactly the canonical comparison between
+the two binary expansions of associative linear append. -/
+theorem toHom_associatorPath {X Y Z T : B}
+    (first : LinearWord W X Y) (second : LinearWord W Y Z)
+    (third : LinearWord W Z T) :
+    toHom W (associatorPath W first second third) =
+      (LinearWord.associatorIso W first second third).hom := by
+  induction first with
+  | nil X =>
+      rw [LinearWord.associatorIso_nil]
+      rfl
+  | @cons X Y U step rest ih =>
+      simp only [LinearWord.append, associatorPath, toHom_under]
+      rw [LinearWord.associatorIso_cons]
+      simp only [Bicategory.whiskerLeftIso]
+      rw [ih]
+      rfl
+
+/-- The inverse recursive associator path is the inverse canonical linear
+associator comparison. -/
+theorem toHom_associatorPathInv {X Y Z T : B}
+    (first : LinearWord W X Y) (second : LinearWord W Y Z)
+    (third : LinearWord W Z T) :
+    toHom W (associatorPathInv W first second third) =
+      (LinearWord.associatorIso W first second third).inv := by
+  induction first with
+  | nil X =>
+      rw [LinearWord.associatorIso_nil]
+      rfl
+  | @cons X Y U step rest ih =>
+      simp only [LinearWord.append, associatorPathInv, toHom_under]
+      rw [LinearWord.associatorIso_cons]
+      simp only [Bicategory.whiskerLeftIso]
+      rw [ih]
+      rfl
+
+/-- The recursive associator path followed by its inverse denotes identity. -/
+theorem associatorPath_hom_inv {X Y Z T : B}
+    (first : LinearWord W X Y) (second : LinearWord W Y Z)
+    (third : LinearWord W Z T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (associatorPath W first second third))
+        (toHom W (associatorPathInv W first second third)) =
+      𝟙 (LinearWord.toWord W
+        (LinearWord.append W (LinearWord.append W first second) third)) := by
+  rw [toHom_associatorPath, toHom_associatorPathInv]
+  exact (LinearWord.associatorIso W first second third).hom_inv_id
+
+/-- The inverse recursive associator path followed by the forward path also
+denotes identity. -/
+theorem associatorPath_inv_hom {X Y Z T : B}
+    (first : LinearWord W X Y) (second : LinearWord W Y Z)
+    (third : LinearWord W Z T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (associatorPathInv W first second third))
+        (toHom W (associatorPath W first second third)) =
+      𝟙 (LinearWord.toWord W
+        (LinearWord.append W first (LinearWord.append W second third))) := by
+  rw [toHom_associatorPathInv, toHom_associatorPath]
+  exact (LinearWord.associatorIso W first second third).inv_hom_id
 
 /-- Exact quotient interpretation of horizontal path append. -/
 @[simp]
@@ -2903,6 +2986,108 @@ theorem normalizedCellHom_leftUnitorInv {X Y : B} (word : Word W X Y) :
     normalizedCellHom_id] at relationEquality
   exact (AlignedCell.quotientVcomp_comp_id W _).symm.trans relationEquality
 
+/-- Raw associator normalizes to the recursive canonical linear associator
+path comparison. -/
+@[simp]
+theorem normalizedCellHom_associator {X Y Z T : B}
+    (first : Word W X Y) (second : Word W Y Z)
+    (third : Word W Z T) :
+    normalizedCellHom W
+        (Cell.associator (W := W) first second third) =
+      toHom W (associatorPath W (LinearWord.flatten W first)
+        (LinearWord.flatten W second) (LinearWord.flatten W third)) := by
+  rw [toHom_associatorPath]
+  unfold normalizedCellHom normalizedHom
+  change ((LinearWord.appendIso W
+      (LinearWord.appendIso W (LinearWord.normalizationIso W first)
+          (LinearWord.normalizationIso W second) ≪≫
+        (LinearWord.toWordAppendIso W (LinearWord.flatten W first)
+          (LinearWord.flatten W second)).symm)
+      (LinearWord.normalizationIso W third) ≪≫
+    (LinearWord.toWordAppendIso W
+      (LinearWord.append W (LinearWord.flatten W first)
+        (LinearWord.flatten W second))
+      (LinearWord.flatten W third)).symm).inv ≫
+    (Presented.wordAssociatorIso W first second third).hom ≫
+    (LinearWord.appendIso W (LinearWord.normalizationIso W first)
+      (LinearWord.appendIso W (LinearWord.normalizationIso W second)
+          (LinearWord.normalizationIso W third) ≪≫
+        (LinearWord.toWordAppendIso W (LinearWord.flatten W second)
+          (LinearWord.flatten W third)).symm) ≪≫
+      (LinearWord.toWordAppendIso W (LinearWord.flatten W first)
+        (LinearWord.append W (LinearWord.flatten W second)
+          (LinearWord.flatten W third))).symm).hom) = _
+  unfold LinearWord.associatorIso
+  simp only [Iso.trans_hom, Iso.trans_inv, Iso.symm_hom, Iso.symm_inv]
+  let sourceComparison := LinearWord.toWordAppendIso W
+    (LinearWord.append W (LinearWord.flatten W first)
+      (LinearWord.flatten W second)) (LinearWord.flatten W third)
+  let targetComparison := LinearWord.toWordAppendIso W
+    (LinearWord.flatten W first)
+    (LinearWord.append W (LinearWord.flatten W second)
+      (LinearWord.flatten W third))
+  simp only [Category.assoc]
+  rw [cancel_epi sourceComparison.hom]
+  simp only [← Category.assoc]
+  rw [cancel_mono targetComparison.inv]
+  convert LinearWord.appendIso_associator_normalization W
+      (LinearWord.normalizationIso W first)
+      (LinearWord.normalizationIso W second)
+      (LinearWord.normalizationIso W third)
+      (LinearWord.toWordAppendIso W (LinearWord.flatten W first)
+        (LinearWord.flatten W second))
+      (LinearWord.toWordAppendIso W (LinearWord.flatten W second)
+        (LinearWord.flatten W third)) using 1 <;>
+    simp only [Category.assoc] <;> rfl
+
+/-- Raw inverse associator normalizes to the inverse recursive canonical
+linear associator path. -/
+@[simp]
+theorem normalizedCellHom_associatorInv {X Y Z T : B}
+    (first : Word W X Y) (second : Word W Y Z)
+    (third : Word W Z T) :
+    normalizedCellHom W
+        (Cell.associatorInv (W := W) first second third) =
+      toHom W (associatorPathInv W (LinearWord.flatten W first)
+        (LinearWord.flatten W second) (LinearWord.flatten W third)) := by
+  let firstRow := LinearWord.flatten W first
+  let secondRow := LinearWord.flatten W second
+  let thirdRow := LinearWord.flatten W third
+  let leftRow := LinearWord.append W
+    (LinearWord.append W firstRow secondRow) thirdRow
+  let rightRow := LinearWord.append W firstRow
+    (LinearWord.append W secondRow thirdRow)
+  let forward : Presented.Hom W
+      (LinearWord.toWord W leftRow) (LinearWord.toWord W rightRow) :=
+    toHom W (associatorPath W firstRow secondRow thirdRow)
+  let inverse : Presented.Hom W
+      (LinearWord.toWord W rightRow) (LinearWord.toWord W leftRow) :=
+    toHom W (associatorPathInv W firstRow secondRow thirdRow)
+  let candidate : Presented.Hom W
+      (LinearWord.toWord W rightRow) (LinearWord.toWord W leftRow) :=
+    normalizedCellHom W
+      (Cell.associatorInv (W := W) first second third)
+  have forwardInverse :
+      forward ≫ inverse = 𝟙 (LinearWord.toWord W leftRow) := by
+    exact associatorPath_hom_inv W firstRow secondRow thirdRow
+  have relationEquality :
+      candidate ≫ forward = 𝟙 (LinearWord.toWord W rightRow) := by
+    have equality := normalizedCellHom_eq_of_rel W
+      (Presented.Rel.associator_inv_hom (W := W) first second third)
+    rw [normalizedCellHom_vcomp, normalizedCellHom_associator,
+      normalizedCellHom_id] at equality
+    exact equality
+  change candidate = inverse
+  calc
+    candidate = candidate ≫ 𝟙 (LinearWord.toWord W leftRow) := by
+      exact (AlignedCell.quotientVcomp_comp_id W candidate).symm
+    _ = candidate ≫ (forward ≫ inverse) := by
+      rw [forwardInverse]
+    _ = (candidate ≫ forward) ≫ inverse := (Category.assoc _ _ _).symm
+    _ = 𝟙 (LinearWord.toWord W rightRow) ≫ inverse := by
+      rw [relationEquality]
+    _ = inverse := AlignedCell.quotientVcomp_id_comp W inverse
+
 /-- Raw right unitor normalizes to the recursive generated path deleting the
 terminal empty row. -/
 @[simp]
@@ -3192,6 +3377,26 @@ theorem rightUnitorInv_normalizable {X Y : B} (word : Word W X Y) :
   rw [Normalizable, normalizedCellHom_rightUnitorInv]
   exact ⟨rightUnitPathInv W (LinearWord.flatten W word), rfl⟩
 
+/-- Associator is hammock-normalizable by the recursive linear associator
+path. -/
+theorem associator_normalizable {X Y Z T : B}
+    (first : Word W X Y) (second : Word W Y Z)
+    (third : Word W Z T) :
+    Normalizable W (Cell.associator (W := W) first second third) := by
+  rw [Normalizable, normalizedCellHom_associator]
+  exact ⟨associatorPath W (LinearWord.flatten W first)
+    (LinearWord.flatten W second) (LinearWord.flatten W third), rfl⟩
+
+/-- Inverse associator is hammock-normalizable by the inverse recursive linear
+associator path. -/
+theorem associatorInv_normalizable {X Y Z T : B}
+    (first : Word W X Y) (second : Word W Y Z)
+    (third : Word W Z T) :
+    Normalizable W (Cell.associatorInv (W := W) first second third) := by
+  rw [Normalizable, normalizedCellHom_associatorInv]
+  exact ⟨associatorPathInv W (LinearWord.flatten W first)
+    (LinearWord.flatten W second) (LinearWord.flatten W third), rfl⟩
+
 /-- Equality transport preserves raw-cell normalizability. -/
 theorem transport_normalizable {X Y : B}
     {first second first' second' : Word W X Y}
@@ -3203,23 +3408,10 @@ theorem transport_normalizable {X Y : B}
   rw [Normalizable, normalizedCellHom_transport]
   exact member
 
-/-- Exact remaining generator obligations for a complete raw-cell
-normalization induction. Only the binary associator and its inverse remain;
-all other raw generators and closure operations are discharged separately. -/
-structure StructuralGeneratorNormalizable : Prop where
-  /-- Binary associator. -/
-  associator : ∀ {X Y Z T : B} (first : Word W X Y)
-      (second : Word W Y Z) (third : Word W Z T),
-    Normalizable W (Cell.associator (W := W) first second third)
-  /-- Inverse binary associator. -/
-  associatorInv : ∀ {X Y Z T : B} (first : Word W X Y)
-      (second : Word W Y Z) (third : Word W Z T),
-    Normalizable W (Cell.associatorInv (W := W) first second third)
-
-/-- Complete raw-cell normalization follows by structural induction from the
-remaining explicit structural-generator obligations. -/
-theorem normalizable_of_structuralGenerators
-    (generators : StructuralGeneratorNormalizable W) :
+/-- Every raw presented cell is hammock-normalizable. This is the unconditional
+structural induction: all generators, both whiskerings, vertical composition,
+and equality transport have explicit generated-path witnesses. -/
+theorem allCells_normalizable :
     ∀ {X Y : B} {first second : Word W X Y}
       (cell : Cell W first second), Normalizable W cell := by
   intro X Y first second cell
@@ -3243,15 +3435,88 @@ theorem normalizable_of_structuralGenerators
   | whiskerRight cell post member =>
       exact whiskerRight_normalizable W member post
   | associator first second third =>
-      exact generators.associator first second third
+      exact associator_normalizable W first second third
   | associatorInv first second third =>
-      exact generators.associatorInv first second third
+      exact associatorInv_normalizable W first second third
   | leftUnitor word => exact leftUnitor_normalizable W word
   | leftUnitorInv word => exact leftUnitorInv_normalizable W word
   | rightUnitor word => exact rightUnitor_normalizable W word
   | rightUnitorInv word => exact rightUnitorInv_normalizable W word
   | transport sourceEquality targetEquality cell member =>
       exact transport_normalizable W sourceEquality targetEquality member
+
+/-- Every quotient 2-cell between binary expansions of linear rows is in the
+generated hammock semantic image. The representative is first conjugated so
+that raw-cell normalization recovers the requested morphism exactly; equality
+paths then transport the flattened endpoints back to the original rows. -/
+theorem all_mem_semanticImage {X Y : B}
+    {first second : LinearWord W X Y}
+    (alpha : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)) :
+    InSemanticImage W alpha := by
+  let firstEquality := LinearWord.flatten_toWord W first
+  let secondEquality := LinearWord.flatten_toWord W second
+  let alphaNormalized : Presented.Hom W
+      (LinearWord.toWord W
+        (LinearWord.flatten W (LinearWord.toWord W first)))
+      (LinearWord.toWord W
+        (LinearWord.flatten W (LinearWord.toWord W second))) :=
+    eqToHom (congrArg (LinearWord.toWord W) firstEquality) ≫ alpha ≫
+      eqToHom (congrArg (LinearWord.toWord W) secondEquality).symm
+  let beta : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second) :=
+    (LinearWord.normalizationIso W (LinearWord.toWord W first)).hom ≫
+      alphaNormalized ≫
+      (LinearWord.normalizationIso W (LinearWord.toWord W second)).inv
+  rcases Quot.exists_rep beta with ⟨cell, cellEquality⟩
+  change Presented.mk W cell = beta at cellEquality
+  have member := allCells_normalizable W cell
+  have normalizedEquality :
+      normalizedCellHom W cell = alphaNormalized := by
+    unfold normalizedCellHom normalizedHom
+    rw [cellEquality]
+    dsimp only [beta]
+    change (LinearWord.normalizationIso W
+        (LinearWord.toWord W first)).inv ≫
+      ((LinearWord.normalizationIso W (LinearWord.toWord W first)).hom ≫
+        alphaNormalized ≫
+        (LinearWord.normalizationIso W (LinearWord.toWord W second)).inv) ≫
+      (LinearWord.normalizationIso W (LinearWord.toWord W second)).hom =
+      alphaNormalized
+    simp
+  change InSemanticImage W (normalizedCellHom W cell) at member
+  rw [normalizedEquality] at member
+  rcases member with ⟨path, pathEquality⟩
+  refine ⟨.vcomp (ofEq W firstEquality.symm)
+    (.vcomp path (ofEq W secondEquality)), ?_⟩
+  simp only [toHom_vcomp, toHom_ofEq]
+  rw [pathEquality]
+  dsimp only [alphaNormalized]
+  rw [castIdentity_eqToHom W firstEquality.symm]
+  rw [castIdentity_eqToHom W secondEquality]
+  change eqToHom (congrArg (LinearWord.toWord W) firstEquality).symm ≫
+      ((eqToHom (congrArg (LinearWord.toWord W) firstEquality) ≫ alpha ≫
+        eqToHom (congrArg (LinearWord.toWord W) secondEquality).symm) ≫
+      eqToHom (congrArg (LinearWord.toWord W) secondEquality)) = alpha
+  simp
+
+instance semanticFunctor_full (X Y : B) :
+    (semanticFunctor W X Y).Full where
+  map_surjective alpha :=
+    (inSemanticImage_iff_exists_map W alpha).mp
+      (all_mem_semanticImage W alpha)
+
+instance semanticFunctor_isEquivalence (X Y : B) :
+    (semanticFunctor W X Y).IsEquivalence where
+  faithful := inferInstance
+  full := inferInstance
+  essSurj := inferInstance
+
+/-- The generated hammock-path category is categorically equivalent to the
+entire linear mapping category, not merely to a refinement-generated image. -/
+noncomputable def semanticEquivalence (X Y : B) :
+    HammockPathObject W X Y ≌ LinearWord W X Y :=
+  (semanticFunctor W X Y).asEquivalence
 
 /-- Original source 2-cells are hammock-normalizable. -/
 theorem original_normalizable {X Y : B} {f g : X ⟶ Y}

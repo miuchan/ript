@@ -374,11 +374,14 @@ per ekzakta para enmeto/forigo. Linearaj append-right-unit/asocieco kaj
 komputeblaj egalecvojoj estas aldonitaj; left-unitor kaj inverso normaligas al
 identeco per arbitra-izomorfia konjugacio. Rekursiaj vojoj por forigi/enmeti
 finan malplenan vicon nun ekzakte normaligas right-unitor kaj ĝian inverson,
-kaj iliaj kvocientaj semantikoj estas reciproke inversaj. La ceteraj du
-asociatoraj generatoraj kampoj estas eksplicitaj kaj kondiĉe
-implicas normaligon de ĉiu kruda ĉelo, sed ne estas senkondiĉe pruvitaj.
-Semantika pleneco, kohereco de kritikaj paroj, reduktita-hammock invariant eco
-kaj norma malfort-ekvivalenta pako restas malfermitaj.
+kaj iliaj kvocientaj semantikoj estas reciproke inversaj. Rekursiaj
+asociatoraj vojoj, bikategoria natureco, triangulo kaj pentagono same
+normaligas associator kaj ĝian inverson. Ĉiu kruda ĉelo estas nun
+senkondiĉe normaligebla; ĉiu lineara kvocienta 2-ĉelo havas generitan vojan
+reprezentanton. La semantika funktoro estas kategoria ekvivalento kaj ĝia
+nerva mapo havas eksplicitan homotopian inverson. Kohereco de kritikaj paroj,
+reduktita-hammock invariant eco, norma malfort-ekvivalenta pako kaj la fina
+tutmonda Dwyer--Kan/Rezk-teoremo restas malfermitaj.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
