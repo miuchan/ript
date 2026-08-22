@@ -1095,6 +1095,16 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_transport
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.transport_normalizable
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizable_of_structuralGenerators
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso_singleton
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso_singleton_inv
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso_singleton_symm_hom
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.rightAssociatedPair_coherence
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.normalizationIso_twoAtoms_hom
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.LinearWord.normalizationIso_twoAtoms_inv
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_sourceComp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_sourceCompInv
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.sourceComp_normalizable
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.sourceCompInv_normalizable
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore

@@ -1,4 +1,5 @@
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzag
+import Mathlib.Tactic.CategoryTheory.Bicategory.PureCoherence
 
 /-!
 # Linear hammock words for marked bicategories
@@ -145,6 +146,41 @@ noncomputable def toWordAppendIso {X Y Z : B}
         (Presented.wordAssociatorIso W
           (Word.atom step) (toWord W rest) (toWord W second)).symm
 
+/-- The append comparison for a singleton first row is the left-unitor
+comparison on the second row followed by inverse associativity. -/
+theorem toWordAppendIso_singleton {X Y Z : B} (step : Step W X Y)
+    (second : LinearWord W Y Z) :
+    toWordAppendIso W (.cons step (.nil Y)) second =
+      whiskerLeftIso (B := Presented.Localization W) (Word.atom step)
+          (Presented.wordLeftUnitorIso W (toWord W second)).symm ≪≫
+        (Presented.wordAssociatorIso W
+          (Word.atom step) (.nil Y) (toWord W second)).symm :=
+  rfl
+
+/-- The inverse singleton append comparison is associativity followed by the
+left unitor on the second row. -/
+theorem toWordAppendIso_singleton_inv {X Y Z : B} (step : Step W X Y)
+    (second : LinearWord W Y Z) :
+    (toWordAppendIso W (.cons step (.nil Y)) second).inv =
+      (Presented.wordAssociatorIso W
+        (Word.atom step) (.nil Y) (toWord W second)).hom ≫
+      Presented.whiskerLeftHom W (Word.atom step)
+        (Presented.wordLeftUnitorIso W (toWord W second)).hom := by
+  rw [toWordAppendIso_singleton]
+  rfl
+
+/-- The hom of the symmetric singleton append comparison is the same explicit
+associator/unitor composite. -/
+theorem toWordAppendIso_singleton_symm_hom {X Y Z : B}
+    (step : Step W X Y) (second : LinearWord W Y Z) :
+    (toWordAppendIso W (.cons step (.nil Y)) second).symm.hom =
+      (Presented.wordAssociatorIso W
+        (Word.atom step) (.nil Y) (toWord W second)).hom ≫
+      Presented.whiskerLeftHom W (Word.atom step)
+        (Presented.wordLeftUnitorIso W (toWord W second)).hom := by
+  rw [toWordAppendIso_singleton]
+  rfl
+
 /-- Every binary word is canonically isomorphic to the binary expansion of
 its flattened linear normal form. -/
 noncomputable def normalizationIso {X Y : B} (word : Word W X Y) :
@@ -184,6 +220,69 @@ theorem normalizationIso_append {X Y Z : B}
     normalizationIso W (.comp first second) =
       appendIso W (normalizationIso W first) (normalizationIso W second) ≪≫
         (toWordAppendIso W (flatten W first) (flatten W second)).symm :=
+  rfl
+
+/-- Pure bicategorical coherence used by normalization of a two-step linear
+row. -/
+theorem rightAssociatedPair_coherence {C : Type u} [Bicategory.{w, v} C]
+    {X Y Z : C} (first : X ⟶ Y) (second : Y ⟶ Z) :
+    (((ρ_ first).inv ▷ second) ≫
+        ((first ≫ 𝟙 Y) ◁ (ρ_ second).inv)) ≫
+      (α_ first (𝟙 Y) (second ≫ 𝟙 Z)).hom ≫
+      (first ◁ (λ_ (second ≫ 𝟙 Z)).hom) =
+    (ρ_ (first ≫ second)).inv ≫
+      (α_ first second (𝟙 Z)).hom := by
+  bicategory_coherence
+
+/-- Normalizing a binary word of two atomic steps is exactly inverse right
+unitor followed by the associator into the canonical right-associated row. -/
+theorem normalizationIso_twoAtoms_hom {X Y Z : B}
+    (first : Step W X Y) (second : Step W Y Z) :
+    (normalizationIso W (.comp (.atom first) (.atom second))).hom =
+    (Presented.wordRightUnitorIso W
+      (.comp (.atom first) (.atom second))).inv ≫
+      (Presented.wordAssociatorIso W
+        (.atom first) (.atom second) (.nil Z)).hom := by
+  rw [show normalizationIso W
+      (.comp (.atom first) (.atom second)) =
+    appendIso W (normalizationIso W (.atom first))
+        (normalizationIso W (.atom second)) ≪≫
+      (toWordAppendIso W (flatten W (.atom first))
+        (flatten W (.atom second))).symm from rfl]
+  simp only [flatten]
+  rw [normalizationIso_atom W first]
+  rw [normalizationIso_atom W second]
+  simp only [Iso.trans_hom]
+  rw [toWordAppendIso_singleton_symm_hom W first
+    (.cons second (.nil Z))]
+  unfold appendIso
+  simp only [Iso.trans_hom, Bicategory.whiskerLeftIso,
+    Bicategory.whiskerRightIso, toWord]
+  rw [show (Presented.wordRightUnitorIso W (Word.atom first)).symm.hom =
+      (Presented.wordRightUnitorIso W (Word.atom first)).inv from rfl]
+  rw [show (Presented.wordRightUnitorIso W (Word.atom second)).symm.hom =
+      (Presented.wordRightUnitorIso W (Word.atom second)).inv from rfl]
+  exact rightAssociatedPair_coherence
+    (C := Presented.Localization W) (Word.atom first) (Word.atom second)
+
+/-- Inverse of the two-atomic-step normalization: inverse associativity
+followed by the whole-word right unitor. -/
+theorem normalizationIso_twoAtoms_inv {X Y Z : B}
+    (first : Step W X Y) (second : Step W Y Z) :
+    (normalizationIso W (.comp (.atom first) (.atom second))).inv =
+      (Presented.wordAssociatorIso W
+        (.atom first) (.atom second) (.nil Z)).inv ≫
+      (Presented.wordRightUnitorIso W
+        (.comp (.atom first) (.atom second))).hom := by
+  have isoEquality :
+      normalizationIso W (.comp (.atom first) (.atom second)) =
+        (Presented.wordRightUnitorIso W
+          (.comp (.atom first) (.atom second))).symm ≪≫
+        Presented.wordAssociatorIso W
+          (.atom first) (.atom second) (.nil Z) := by
+    apply Iso.ext
+    exact normalizationIso_twoAtoms_hom W first second
+  rw [isoEquality]
   rfl
 
 /-- Linear words form a mapping category by pulling back the quotient

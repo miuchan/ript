@@ -367,8 +367,10 @@ nervaj formuloj. Krudaj identecaj kaj originalaj ĉeloj estas normaligeblaj,
 kaj vertikala kunmeto konservas normaligeblecon. Normaligo nun estas nature
 kongrua kun ambaŭ krudaj whiskering-operacioj; krudaj identecaj, originalaj,
 font-identecaj/inversaj kaj transportaj kazoj, kune kun vertikala/whiskering
-fermo, estas pruvitaj. La ceteraj dek du source-composite, markitaj paroj,
-asociatoraj kaj unuitoraj generatoraj kampoj estas eksplicitaj kaj kondiĉe
+fermo, estas pruvitaj. Font-kompona/inversa estas pruvitaj per pura bikategoria
+du-atoma kohereco kaj ekzakta forward expand/contract. La ceteraj dek
+markitaj-paraj, asociatoraj kaj
+unuitoraj generatoraj kampoj estas eksplicitaj kaj kondiĉe
 implicas normaligon de ĉiu kruda ĉelo, sed ne estas senkondiĉe pruvitaj.
 Semantika pleneco, kohereco de kritikaj paroj, reduktita-hammock invariant eco
 kaj norma malfort-ekvivalenta pako restas malfermitaj.

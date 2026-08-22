@@ -27,7 +27,8 @@ now alternates arbitrary aligned cells with invertible refinements, retains
 all source 2-cells in one-column form, and is closed under normalized left/right
 whiskering and horizontal append. Normalization is natural for raw whiskering;
 identity, original, source-identity/inverse, composition-closure, whiskering,
-and equality-transport induction branches are complete, while twelve explicit
+source-composition/inverse, and equality-transport induction branches are
+complete, while ten explicit
 structural-generator obligations remain. Coverage of every presented quotient
 2-cell, critical-pair coherence, and reduced-hammock invariance are still
 absent, so this is not by itself the classical Dwyer--Kan hammock localization.
@@ -2394,6 +2395,106 @@ theorem normalizedCellHom_sourceIdInv {X : B} :
     exact (Presented.wordRightUnitorIso W (.nil X)).inv_hom_id
   rw [unitCancellation, AlignedCell.quotientVcomp_id_comp]
 
+/-- The source-composition comparison normalizes to executable expansion of
+one forward composite into two forward columns. -/
+@[simp]
+theorem normalizedCellHom_sourceComp {X Y Z : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    normalizedCellHom W (Cell.sourceComp (W := W) f g) =
+      ColumnRefinement.toHom W (.expandForward f g (.nil Z)) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append,
+    Word.forward, Word.single]
+  rw [show LinearWord.normalizationIso W
+      (Word.atom (Step.forward (f ≫ g))) =
+    (Presented.wordRightUnitorIso W
+      (Word.atom (Step.forward (f ≫ g)))).symm from rfl]
+  rw [LinearWord.normalizationIso_twoAtoms_hom W
+    (Step.forward (W := W) f) (Step.forward (W := W) g)]
+  simp only [Iso.symm_inv]
+  rw [ColumnRefinement.toHom_expandForward]
+  change AlignedCell.quotientVcomp W
+      (Presented.wordRightUnitorIso W
+        (Word.atom (Step.forward (f ≫ g)))).hom
+      (AlignedCell.quotientVcomp W
+        (Presented.mk W (Cell.sourceComp (W := W) f g))
+        (AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W
+            (.comp (Word.atom (Step.forward f))
+              (Word.atom (Step.forward g)))).inv
+          (Presented.wordAssociatorIso W (Word.forward W f)
+            (Word.forward W g) (.nil Z)).hom)) =
+    AlignedCell.quotientVcomp W
+      (Presented.whiskerRightHom W (.nil Z)
+        (Presented.mk W (Cell.sourceComp (W := W) f g)))
+      (Presented.wordAssociatorIso W (Word.forward W f)
+        (Word.forward W g) (.nil Z)).hom
+  rw [← AlignedCell.quotientVcomp_assoc]
+  have whiskerEquality :
+      Presented.whiskerRightHom W (.nil Z)
+          (Presented.mk W (Cell.sourceComp (W := W) f g)) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (Word.forward W (f ≫ g))).hom
+          (AlignedCell.quotientVcomp W
+            (Presented.mk W (Cell.sourceComp (W := W) f g))
+            (Presented.wordRightUnitorIso W
+              (Word.append (W := W) (Word.forward W f)
+                (Word.forward W g))).inv) :=
+    Quot.sound (Presented.Rel.whisker_right_id_word
+      (Cell.sourceComp (W := W) f g))
+  rw [whiskerEquality]
+  simp only [AlignedCell.quotientVcomp_assoc]
+  rfl
+
+/-- The inverse source-composition comparison normalizes to executable
+contraction of two forward columns. -/
+@[simp]
+theorem normalizedCellHom_sourceCompInv {X Y Z : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    normalizedCellHom W (Cell.sourceCompInv (W := W) f g) =
+      ColumnRefinement.toHom W (.contractForward f g (.nil Z)) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append,
+    Word.forward, Word.single]
+  rw [LinearWord.normalizationIso_twoAtoms_inv W
+    (Step.forward (W := W) f) (Step.forward (W := W) g)]
+  rw [show LinearWord.normalizationIso W
+      (Word.atom (Step.forward (f ≫ g))) =
+    (Presented.wordRightUnitorIso W
+      (Word.atom (Step.forward (f ≫ g)))).symm from rfl]
+  simp only [Iso.symm_hom]
+  rw [ColumnRefinement.toHom_contractForward]
+  change AlignedCell.quotientVcomp W
+      (AlignedCell.quotientVcomp W
+        (Presented.wordAssociatorIso W
+          (Word.forward W f) (Word.forward W g) (.nil Z)).inv
+        (Presented.wordRightUnitorIso W
+          (Word.append (W := W) (Word.forward W f)
+            (Word.forward W g))).hom)
+      (AlignedCell.quotientVcomp W
+        (Presented.mk W (Cell.sourceCompInv (W := W) f g))
+        (Presented.wordRightUnitorIso W (Word.forward W (f ≫ g))).inv) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordAssociatorIso W
+        (Word.forward W f) (Word.forward W g) (.nil Z)).inv
+      (Presented.whiskerRightHom W (.nil Z)
+        (Presented.mk W (Cell.sourceCompInv (W := W) f g)))
+  rw [AlignedCell.quotientVcomp_assoc]
+  have whiskerEquality :
+      Presented.whiskerRightHom W (.nil Z)
+          (Presented.mk W (Cell.sourceCompInv (W := W) f g)) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W
+            (Word.append (W := W) (Word.forward W f)
+              (Word.forward W g))).hom
+          (AlignedCell.quotientVcomp W
+            (Presented.mk W (Cell.sourceCompInv (W := W) f g))
+            (Presented.wordRightUnitorIso W
+              (Word.forward W (f ≫ g))).inv) :=
+    Quot.sound (Presented.Rel.whisker_right_id_word
+      (Cell.sourceCompInv (W := W) f g))
+  rw [whiskerEquality]
+
 /-- Equality transport does not change normalized quotient semantics. -/
 @[simp]
 theorem normalizedCellHom_transport {X Y : B}
@@ -2522,6 +2623,20 @@ theorem sourceIdInv_normalizable {X : B} :
   rw [Normalizable, normalizedCellHom_sourceIdInv]
   exact refinement_mem_semanticImage W (.insertIdentity (.nil X))
 
+/-- Source-composition comparison is hammock-normalizable. -/
+theorem sourceComp_normalizable {X Y Z : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    Normalizable W (Cell.sourceComp (W := W) f g) := by
+  rw [Normalizable, normalizedCellHom_sourceComp]
+  exact refinement_mem_semanticImage W (.expandForward f g (.nil Z))
+
+/-- Inverse source-composition comparison is hammock-normalizable. -/
+theorem sourceCompInv_normalizable {X Y Z : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) :
+    Normalizable W (Cell.sourceCompInv (W := W) f g) := by
+  rw [Normalizable, normalizedCellHom_sourceCompInv]
+  exact refinement_mem_semanticImage W (.contractForward f g (.nil Z))
+
 /-- Equality transport preserves raw-cell normalizability. -/
 theorem transport_normalizable {X Y : B}
     {first second first' second' : Word W X Y}
@@ -2535,15 +2650,10 @@ theorem transport_normalizable {X Y : B}
 
 /-- Exact remaining generator obligations for a complete raw-cell
 normalization induction. Identity, vertical composition, original cells,
-source identities, both whiskerings, and equality transport are already
+source identities, source composition, both whiskerings, and equality transport
+are already
 discharged separately. -/
 structure StructuralGeneratorNormalizable : Prop where
-  /-- Source-composition comparison. -/
-  sourceComp : ∀ {X Y Z : B} (f : X ⟶ Y) (g : Y ⟶ Z),
-    Normalizable W (Cell.sourceComp (W := W) f g)
-  /-- Inverse source-composition comparison. -/
-  sourceCompInv : ∀ {X Y Z : B} (f : X ⟶ Y) (g : Y ⟶ Z),
-    Normalizable W (Cell.sourceCompInv (W := W) f g)
   /-- Marked unit. -/
   markedUnit : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
     Normalizable W (Cell.markedUnit (W := W) f hf)
@@ -2593,8 +2703,8 @@ theorem normalizable_of_structuralGenerators
       exact originalCell_mem_semanticImage W alpha
   | sourceId => exact sourceId_normalizable W
   | sourceIdInv => exact sourceIdInv_normalizable W
-  | sourceComp f g => exact generators.sourceComp f g
-  | sourceCompInv f g => exact generators.sourceCompInv f g
+  | sourceComp f g => exact sourceComp_normalizable W f g
+  | sourceCompInv f g => exact sourceCompInv_normalizable W f g
   | markedUnit f hf => exact generators.markedUnit f hf
   | markedUnitInv f hf => exact generators.markedUnitInv f hf
   | markedCounit f hf => exact generators.markedCounit f hf
