@@ -21,10 +21,12 @@ relation and a row quotient, whose equality is sound for semantic isomorphism
 without assuming object equality. The induced thin refinement groupoid is
 equivalent to the discrete row quotient. A non-thin semantic refinement-path
 groupoid now retains paths up to equality of their quotient-cell semantics and
-embeds faithfully into the linear mapping category. Fullness/image
-characterization, critical-pair coherence, and reduced-hammock invariance are
-still absent, so this is not by itself the classical Dwyer--Kan hammock
-localization.
+embeds faithfully into the linear mapping category. Its exact generated image
+is internalized as a subgroupoid. A larger non-groupoidal hammock-path syntax
+now alternates arbitrary aligned cells with invertible refinements, retaining
+all source 2-cells in one-column form. Coverage of every presented quotient
+2-cell, critical-pair coherence, and reduced-hammock invariance are still
+absent, so this is not by itself the classical Dwyer--Kan hammock localization.
 -/
 
 set_option autoImplicit false
@@ -1537,5 +1539,323 @@ theorem semanticFunctor_factorization (X Y : B) :
     rfl
 
 end RefinementImage
+
+/-! ## Aligned-cell-augmented hammock paths -/
+
+/-- Wrapper for linear rows in the aligned-cell-augmented hammock-path
+category. -/
+structure HammockPathObject (X Y : B) where
+  /-- Underlying linear row. -/
+  row : LinearWord W X Y
+
+/-- A generated hammock path may apply an invertible structural refinement,
+an arbitrary aligned raw 2-cell, or a vertical composite of such moves. -/
+inductive HammockPath : ∀ {X Y : B},
+    LinearWord W X Y → LinearWord W X Y → Type max u v w where
+  /-- Empty vertical path. -/
+  | identity {X Y : B} (row : LinearWord W X Y) : HammockPath row row
+  /-- Vertical composition of generated paths. -/
+  | vcomp {X Y : B} {first middle last : LinearWord W X Y}
+      (alpha : HammockPath first middle)
+      (beta : HammockPath middle last) : HammockPath first last
+  /-- An executable invertible structural refinement. -/
+  | ofRefinement {X Y : B} {first second : LinearWord W X Y}
+      (refinement : ColumnRefinement W first second) :
+      HammockPath first second
+  /-- An arbitrary componentwise aligned raw 2-cell. -/
+  | ofAligned {X Y : B} {first second : LinearWord W X Y}
+      (cell : AlignedCell W first second) : HammockPath first second
+
+namespace HammockPath
+
+/-- Interpret a generated hammock path as one quotient 2-cell. -/
+def toHom {X Y : B} {first second : LinearWord W X Y} :
+    HammockPath W first second →
+      Presented.Hom W (LinearWord.toWord W first)
+        (LinearWord.toWord W second)
+  | .identity row => 𝟙 (LinearWord.toWord W row)
+  | .vcomp alpha beta =>
+      AlignedCell.quotientVcomp W (toHom alpha) (toHom beta)
+  | .ofRefinement refinement => ColumnRefinement.toHom W refinement
+  | .ofAligned cell => AlignedCell.toHom W cell
+
+@[simp]
+theorem toHom_identity {X Y : B} (row : LinearWord W X Y) :
+    toHom W (.identity row) = 𝟙 (LinearWord.toWord W row) :=
+  rfl
+
+@[simp]
+theorem toHom_vcomp {X Y : B}
+    {first middle last : LinearWord W X Y}
+    (alpha : HammockPath W first middle)
+    (beta : HammockPath W middle last) :
+    toHom W (.vcomp alpha beta) =
+      AlignedCell.quotientVcomp W (toHom W alpha) (toHom W beta) :=
+  rfl
+
+@[simp]
+theorem toHom_ofRefinement {X Y : B}
+    {first second : LinearWord W X Y}
+    (refinement : ColumnRefinement W first second) :
+    toHom W (.ofRefinement refinement) =
+      ColumnRefinement.toHom W refinement :=
+  rfl
+
+@[simp]
+theorem toHom_ofAligned {X Y : B}
+    {first second : LinearWord W X Y}
+    (cell : AlignedCell W first second) :
+    toHom W (.ofAligned cell) = AlignedCell.toHom W cell :=
+  rfl
+
+/-- Generated paths are semantically equal when their quotient 2-cell
+interpretations agree. -/
+def Rel {X Y : B} {first second : LinearWord W X Y}
+    (alpha beta : HammockPath W first second) : Prop :=
+  toHom W alpha = toHom W beta
+
+/-- Semantic equality is an equivalence relation on generated paths. -/
+def setoid {X Y : B} (first second : LinearWord W X Y) :
+    Setoid (HammockPath W first second) where
+  r := Rel W
+  iseqv := ⟨fun _ => rfl, fun h => h.symm, fun h₁ h₂ => h₁.trans h₂⟩
+
+/-- Morphisms are aligned-cell-augmented paths modulo equality of their
+quotient-cell semantics. -/
+abbrev Hom {X Y : B} (first second : LinearWord W X Y) :=
+  Quotient (setoid W first second)
+
+/-- Semantic equality is stable under vertical path composition. -/
+theorem rel_vcomp {X Y : B}
+    {first middle last : LinearWord W X Y}
+    {alpha alpha' : HammockPath W first middle}
+    {beta beta' : HammockPath W middle last}
+    (hAlpha : Rel W alpha alpha') (hBeta : Rel W beta beta') :
+    Rel W (.vcomp alpha beta) (.vcomp alpha' beta') := by
+  unfold Rel at hAlpha hBeta ⊢
+  change AlignedCell.quotientVcomp W (toHom W alpha) (toHom W beta) =
+    AlignedCell.quotientVcomp W (toHom W alpha') (toHom W beta')
+  rw [hAlpha, hBeta]
+
+/-- Aligned-cell-augmented semantic paths form a category. -/
+instance category (X Y : B) : Category (HammockPathObject W X Y) where
+  Hom first second := Hom W first.row second.row
+  id first := Quotient.mk (setoid W first.row first.row) (.identity first.row)
+  comp := Quotient.map₂ HammockPath.vcomp
+    (fun alpha alpha' hAlpha beta beta' hBeta => by
+      change Rel W alpha alpha' at hAlpha
+      change Rel W beta beta' at hBeta
+      exact rel_vcomp W hAlpha hBeta)
+  id_comp := by
+    rintro first second ⟨path⟩
+    apply Quotient.sound
+    change Rel W (.vcomp (.identity first.row) path) path
+    unfold Rel
+    exact Category.id_comp _
+  comp_id := by
+    rintro first second ⟨path⟩
+    apply Quotient.sound
+    change Rel W (.vcomp path (.identity second.row)) path
+    unfold Rel
+    exact Category.comp_id _
+  assoc := by
+    rintro first second third fourth ⟨alpha⟩ ⟨beta⟩ ⟨gamma⟩
+    apply Quotient.sound
+    change Rel W (.vcomp (.vcomp alpha beta) gamma)
+      (.vcomp alpha (.vcomp beta gamma))
+    unfold Rel
+    exact Category.assoc _ _ _
+
+/-- Faithful semantic interpretation into the full linear mapping category. -/
+def semanticFunctor (X Y : B) :
+    HammockPathObject W X Y ⥤ LinearWord W X Y where
+  obj row := row.row
+  map := Quotient.lift (toHom W)
+    (fun alpha beta equality => by
+      change Rel W alpha beta at equality
+      exact equality)
+  map_id _ := rfl
+  map_comp alpha beta := by
+    rcases alpha with ⟨alpha⟩
+    rcases beta with ⟨beta⟩
+    rfl
+
+instance semanticFunctor_faithful (X Y : B) :
+    (semanticFunctor W X Y).Faithful where
+  map_injective {first second} alpha beta equality := by
+    rcases alpha with ⟨alpha⟩
+    rcases beta with ⟨beta⟩
+    apply Quotient.sound
+    change Rel W alpha beta
+    exact equality
+
+instance semanticFunctor_essSurj (X Y : B) :
+    (semanticFunctor W X Y).EssSurj where
+  mem_essImage row := ⟨⟨row⟩, ⟨Iso.refl _⟩⟩
+
+/-- Embed one semantic refinement path into the larger generated hammock-path
+category. -/
+def ofRefinementHom {X Y : B}
+    {first second : RefinementPathObject W X Y} :
+    (first ⟶ second) → Hom W first.row second.row :=
+  Quotient.map HammockPath.ofRefinement
+    (fun alpha beta equality => by
+      change RefinementPath.Rel W alpha beta at equality
+      change Rel W (.ofRefinement alpha) (.ofRefinement beta)
+      exact equality)
+
+/-- Refinement-only semantic paths embed into aligned-cell-augmented paths. -/
+def refinementFunctor (X Y : B) :
+    RefinementPathObject W X Y ⥤ HammockPathObject W X Y where
+  obj row := ⟨row.row⟩
+  map := ofRefinementHom W
+  map_id row := by
+    apply Quotient.sound
+    change Rel W (.ofRefinement (.identity row.row)) (.identity row.row)
+    rfl
+  map_comp alpha beta := by
+    rcases alpha with ⟨alpha⟩
+    rcases beta with ⟨beta⟩
+    apply Quotient.sound
+    change Rel W (.ofRefinement (.vcomp alpha beta))
+      (.vcomp (.ofRefinement alpha) (.ofRefinement beta))
+    rfl
+
+instance refinementFunctor_faithful (X Y : B) :
+    (refinementFunctor W X Y).Faithful where
+  map_injective {first second} alpha beta equality := by
+    rcases alpha with ⟨alpha⟩
+    rcases beta with ⟨beta⟩
+    apply Quotient.sound
+    change RefinementPath.Rel W alpha beta
+    have mappedEquality := congrArg (semanticFunctor W X Y).map equality
+    change toHom W (.ofRefinement alpha) =
+      toHom W (.ofRefinement beta) at mappedEquality
+    exact mappedEquality
+
+instance refinementFunctor_essSurj (X Y : B) :
+    (refinementFunctor W X Y).EssSurj where
+  mem_essImage row := ⟨⟨row.row⟩, ⟨Iso.refl _⟩⟩
+
+/-- Refinement semantics factors strictly through the larger generated
+hammock-path category. -/
+theorem refinementSemanticFunctor_factorization (X Y : B) :
+    RefinementPath.semanticFunctor W X Y =
+      refinementFunctor W X Y ⋙ semanticFunctor W X Y := by
+  apply Functor.hext
+  · intro row
+    rfl
+  · intro first second path
+    rcases path with ⟨refinement⟩
+    rfl
+
+/-- Include one aligned cell as a generated semantic hammock morphism. -/
+def alignedHom {X Y : B} {first second : LinearWord W X Y}
+    (cell : AlignedCell W first second) : Hom W first second :=
+  Quotient.mk (setoid W first second) (.ofAligned cell)
+
+/-- The semantic functor maps an included aligned cell to its exact quotient
+interpretation. -/
+@[simp]
+theorem semanticFunctor_map_aligned {X Y : B}
+    {first second : LinearWord W X Y}
+    (cell : AlignedCell W first second) :
+    (semanticFunctor W X Y).map (alignedHom W cell) =
+      AlignedCell.toHom W cell :=
+  rfl
+
+/-- A quotient 2-cell lies in the generated hammock semantic image when some
+raw generated path denotes it. -/
+def InSemanticImage {X Y : B} {first second : LinearWord W X Y}
+    (morphism : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)) : Prop :=
+  ∃ path : HammockPath W first second, toHom W path = morphism
+
+/-- Exact image characterization through morphisms of the semantic path
+category. -/
+theorem inSemanticImage_iff_exists_map {X Y : B}
+    {first second : LinearWord W X Y}
+    (morphism : Presented.Hom W (LinearWord.toWord W first)
+      (LinearWord.toWord W second)) :
+    InSemanticImage W morphism ↔
+      ∃ path : (⟨first⟩ : HammockPathObject W X Y) ⟶ ⟨second⟩,
+        (semanticFunctor W X Y).map path = morphism := by
+  constructor
+  · rintro ⟨path, equality⟩
+    exact ⟨Quotient.mk (setoid W first second) path, equality⟩
+  · rintro ⟨⟨path⟩, equality⟩
+    exact ⟨path, equality⟩
+
+/-- Every executable structural refinement belongs to the enlarged semantic
+image. -/
+theorem refinement_mem_semanticImage {X Y : B}
+    {first second : LinearWord W X Y}
+    (refinement : ColumnRefinement W first second) :
+    InSemanticImage W (ColumnRefinement.toHom W refinement) :=
+  ⟨.ofRefinement refinement, rfl⟩
+
+/-- Every arbitrary aligned raw 2-cell belongs to the enlarged semantic
+image. -/
+theorem aligned_mem_semanticImage {X Y : B}
+    {first second : LinearWord W X Y}
+    (cell : AlignedCell W first second) :
+    InSemanticImage W (AlignedCell.toHom W cell) :=
+  ⟨.ofAligned cell, rfl⟩
+
+/-- One-step linear row representing a source 1-cell. -/
+def forwardRow {X Y : B} (f : X ⟶ Y) : LinearWord W X Y :=
+  .cons (.forward f) (.nil Y)
+
+/-- One-column aligned representative of an arbitrary source 2-cell. -/
+def originalAlignedCell {X Y : B} {f g : X ⟶ Y} (alpha : f ⟶ g) :
+    AlignedCell W (forwardRow W f) (forwardRow W g) :=
+  .cons (.original alpha) (.nil Y)
+
+/-- The aligned one-column interpretation is the original source 2-cell
+conjugated by the canonical right-unitors of the linear one-step rows. -/
+theorem originalAlignedCell_toHom {X Y : B} {f g : X ⟶ Y}
+    (alpha : f ⟶ g) :
+    AlignedCell.toHom W (originalAlignedCell W alpha) =
+      AlignedCell.quotientVcomp W
+        (Presented.wordRightUnitorIso W (Word.forward W f)).hom
+        (AlignedCell.quotientVcomp W
+          (Presented.mk W (Cell.original (W := W) alpha))
+          (Presented.wordRightUnitorIso W (Word.forward W g)).inv) := by
+  change AlignedCell.quotientVcomp W
+      (Presented.whiskerRightHom W (.nil Y)
+        (Presented.mk W (Cell.original (W := W) alpha)))
+      (Presented.whiskerLeftHom W (Word.forward W g)
+        (Presented.mk W (Cell.id (.nil Y)))) = _
+  have leftIdentity :
+      Presented.whiskerLeftHom W (Word.forward W g)
+          (Presented.mk W (Cell.id (.nil Y))) =
+        𝟙 (Word.append (W := W) (Word.forward W g) (.nil Y)) :=
+    Quot.sound (Presented.Rel.whisker_left_id
+      (Word.forward W g) (.nil Y))
+  rw [leftIdentity]
+  have rightIdentity :
+      AlignedCell.quotientVcomp W
+          (Presented.whiskerRightHom W (.nil Y)
+            (Presented.mk W (Cell.original (W := W) alpha)))
+          (𝟙 (Word.append (W := W) (Word.forward W g) (.nil Y))) =
+        Presented.whiskerRightHom W (.nil Y)
+          (Presented.mk W (Cell.original (W := W) alpha)) := by
+    exact @Category.comp_id (Word W X Y) (Presented.wordCategory W X Y)
+      _ _ (Presented.whiskerRightHom W (.nil Y)
+        (Presented.mk W (Cell.original (W := W) alpha)))
+  rw [rightIdentity]
+  exact Quot.sound
+    (Presented.Rel.whisker_right_id_word
+      (Cell.original (W := W) alpha))
+
+/-- Every source 2-cell therefore belongs to the generated hammock semantic
+image in its canonical one-column linear representation. -/
+theorem originalCell_mem_semanticImage {X Y : B} {f g : X ⟶ Y}
+    (alpha : f ⟶ g) :
+    InSemanticImage W
+      (AlignedCell.toHom W (originalAlignedCell W alpha)) :=
+  aligned_mem_semanticImage W (originalAlignedCell W alpha)
+
+end HammockPath
 
 end CategoryTheory.Bicategory.MarkedZigzag

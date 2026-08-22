@@ -972,6 +972,15 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathFunctor_essSurj` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.semanticFunctor_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.rel_vcomp` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.semanticFunctor_faithful` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.refinementFunctor_faithful` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.refinementSemanticFunctor_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.inSemanticImage_iff_exists_map` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.refinement_mem_semanticImage` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.aligned_mem_semanticImage` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.originalAlignedCell_toHom` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.originalCell_mem_semanticImage` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
@@ -987,6 +996,10 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_factorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.refinementPathImageComparison_edge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.refinementImageNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.hammockPathSemanticComparison_alignedEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.hammockPathSemanticComparison_originalEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_hammockFactorization` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.hammockPathNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |

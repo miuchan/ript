@@ -28,10 +28,12 @@ simplicial homotopy inverse. A non-thin semantic refinement-path groupoid nerve
 is now equivalent to its exact refinement-generated semantic image subgroupoid.
 The image includes faithfully into the full linear mapping category, the
 original semantic nerve map factors through it strictly, and generator edges
-retain their literal quotient-2-cell interpretations. Coverage of all linear
-quotient 2-cells, competing-move coherence, and reduced-hammock invariance are
-still absent, so these results are not by themselves the final Dwyer--Kan
-theorem.
+retain their literal quotient-2-cell interpretations. A larger non-groupoidal
+generated hammock-path nerve now adds arbitrary aligned raw cells, contains
+the refinement-path nerve faithfully, and covers every source 2-cell in its
+canonical one-column representation. Coverage of all presented quotient
+2-cells, competing-move coherence, and reduced-hammock invariance are still
+absent, so these results are not by themselves the final Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -988,6 +990,190 @@ theorem refinementImageNerveCore
     refinementPathSemanticComparison_factorization M N
   maps_edge := refinementPathImageComparison_edge
 
+/-! ## Aligned-cell-augmented hammock-path nerve -/
+
+/-- Cost-exact generated hammock-path category combining executable
+refinements with arbitrary aligned raw 2-cells. -/
+abbrev GeneratedHammockPath
+    (M N : ProcessModel.{u, v, w} R) :=
+  Bicategory.MarkedZigzag.HammockPathObject
+    (costExactArrows R) M N
+
+/-- Nerve map from generated hammock paths into the full linear mapping
+nerve. -/
+def hammockPathSemanticComparison
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerveMap
+    (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
+      (costExactArrows R) M N)
+
+/-- Nerve inclusion from refinement-only paths into generated hammock paths. -/
+def refinementPathToHammockComparison
+    (M N : ProcessModel.{u, v, w} R) :=
+  CategoryTheory.nerveMap
+    (Bicategory.MarkedZigzag.HammockPath.refinementFunctor
+      (costExactArrows R) M N)
+
+/-- Exact vertex action of generated hammock semantics. -/
+theorem hammockPathSemanticComparison_vertex
+    {M N : ProcessModel.{u, v, w} R}
+    (row : LinearHammock M N) :
+    (hammockPathSemanticComparison M N).app (op ⦋0⦌)
+        (ComposableArrows.mk₀
+          (⟨row⟩ : GeneratedHammockPath M N)) =
+      ComposableArrows.mk₀ row := by
+  exact CategoryTheory.nerveMap_app_mk₀ _ _
+
+/-- Exact inclusion of an executable refinement edge into the larger path
+nerve. -/
+theorem refinementPathToHammockComparison_edge
+    {M N : ProcessModel.{u, v, w} R}
+    {first second : LinearHammock M N}
+    (refinement : HammockColumnRefinement first second) :
+    (refinementPathToHammockComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.RefinementPath.setoid
+              (costExactArrows R) first second) refinement)) =
+      ComposableArrows.mk₁
+        (Quotient.mk
+          (Bicategory.MarkedZigzag.HammockPath.setoid
+            (costExactArrows R) first second)
+          (Bicategory.MarkedZigzag.HammockPath.ofRefinement refinement)) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Exact semantic action on an executable refinement edge. -/
+theorem hammockPathSemanticComparison_refinementEdge
+    {M N : ProcessModel.{u, v, w} R}
+    {first second : LinearHammock M N}
+    (refinement : HammockColumnRefinement first second) :
+    (hammockPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R) first second)
+            (Bicategory.MarkedZigzag.HammockPath.ofRefinement refinement))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) refinement) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Exact semantic action on an arbitrary aligned raw-cell edge. -/
+theorem hammockPathSemanticComparison_alignedEdge
+    {M N : ProcessModel.{u, v, w} R}
+    {first second : LinearHammock M N}
+    (cell : AlignedHammockCell first second) :
+    (hammockPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Bicategory.MarkedZigzag.HammockPath.alignedHom
+            (costExactArrows R) cell)) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R) cell) := by
+  exact CategoryTheory.nerveMap_app_mk₁ _ _
+
+/-- Exact semantic action on a source 2-cell in its canonical one-column
+linear representation. -/
+theorem hammockPathSemanticComparison_originalEdge
+    {M N : ProcessModel.{u, v, w} R}
+    {f g : M ⟶ N} (alpha : f ⟶ g) :
+    (hammockPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Bicategory.MarkedZigzag.HammockPath.alignedHom
+            (costExactArrows R)
+            (Bicategory.MarkedZigzag.HammockPath.originalAlignedCell
+              (costExactArrows R) alpha))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R)
+          (Bicategory.MarkedZigzag.HammockPath.originalAlignedCell
+            (costExactArrows R) alpha)) :=
+  hammockPathSemanticComparison_alignedEdge _
+
+/-- The old refinement semantic nerve map factors strictly through generated
+hammock paths and their faithful semantic functor. -/
+theorem refinementPathSemanticComparison_hammockFactorization
+    (M N : ProcessModel.{u, v, w} R) :
+    refinementPathSemanticComparison M N =
+      refinementPathToHammockComparison M N ≫
+        hammockPathSemanticComparison M N := by
+  change CategoryTheory.nerveMap
+      (Bicategory.MarkedZigzag.RefinementPath.semanticFunctor
+        (costExactArrows R) M N) = _
+  rw [Bicategory.MarkedZigzag.HammockPath.refinementSemanticFunctor_factorization]
+  rfl
+
+/-- Machine-facing core for the aligned-cell-augmented generated hammock
+path nerve. It records faithful semantic action, the faithful refinement-only
+subsystem, strict factorization, and exact arbitrary/source 2-cell coverage. -/
+structure HammockPathNerveCore
+    (M N : ProcessModel.{u, v, w} R) : Prop where
+  /-- Generated hammock semantics is faithful. -/
+  semantic_faithful :
+    (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
+      (costExactArrows R) M N).Faithful
+  /-- Every linear row object lies in its essential image. -/
+  semantic_essSurj :
+    (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
+      (costExactArrows R) M N).EssSurj
+  /-- Refinement-only paths embed faithfully. -/
+  refinement_faithful :
+    (Bicategory.MarkedZigzag.HammockPath.refinementFunctor
+      (costExactArrows R) M N).Faithful
+  /-- The old semantic nerve map factors through generated hammock paths. -/
+  refinement_factorization :
+    refinementPathSemanticComparison M N =
+      refinementPathToHammockComparison M N ≫
+        hammockPathSemanticComparison M N
+  /-- Exact action on every executable refinement edge. -/
+  maps_refinement : ∀ {first second : LinearHammock M N}
+      (refinement : HammockColumnRefinement first second),
+    (hammockPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Quotient.mk
+            (Bicategory.MarkedZigzag.HammockPath.setoid
+              (costExactArrows R) first second)
+            (Bicategory.MarkedZigzag.HammockPath.ofRefinement refinement))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) refinement)
+  /-- Exact action on every arbitrary aligned-cell edge. -/
+  maps_aligned : ∀ {first second : LinearHammock M N}
+      (cell : AlignedHammockCell first second),
+    (hammockPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Bicategory.MarkedZigzag.HammockPath.alignedHom
+            (costExactArrows R) cell)) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R) cell)
+  /-- Every source 2-cell has an exact one-column generated edge. -/
+  maps_original : ∀ {f g : M ⟶ N} (alpha : f ⟶ g),
+    (hammockPathSemanticComparison M N).app (op ⦋1⦌)
+        (ComposableArrows.mk₁
+          (Bicategory.MarkedZigzag.HammockPath.alignedHom
+            (costExactArrows R)
+            (Bicategory.MarkedZigzag.HammockPath.originalAlignedCell
+              (costExactArrows R) alpha))) =
+      ComposableArrows.mk₁
+        (Bicategory.MarkedZigzag.AlignedCell.toHom
+          (costExactArrows R)
+          (Bicategory.MarkedZigzag.HammockPath.originalAlignedCell
+            (costExactArrows R) alpha))
+
+/-- Every cost-exact model pair satisfies the aligned-cell-augmented generated
+hammock-path nerve core. -/
+theorem hammockPathNerveCore (M N : ProcessModel.{u, v, w} R) :
+    HammockPathNerveCore M N where
+  semantic_faithful := inferInstance
+  semantic_essSurj := inferInstance
+  refinement_faithful := inferInstance
+  refinement_factorization :=
+    refinementPathSemanticComparison_hammockFactorization M N
+  maps_refinement := hammockPathSemanticComparison_refinementEdge
+  maps_aligned := hammockPathSemanticComparison_alignedEdge
+  maps_original := hammockPathSemanticComparison_originalEdge
+
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
 underlying categories are definitionally the same presentation, but this
@@ -1226,6 +1412,9 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Exact refinement-generated semantic image subgroupoid, its equivalence
   with semantic paths, and its faithful inclusion into the full linear nerve. -/
   refinementImageNerve : RefinementImageNerveCore M N
+  /-- Non-groupoidal generated hammock paths combining refinements with
+  arbitrary aligned/source 2-cells and strictly extending refinement paths. -/
+  hammockPathNerve : HammockPathNerveCore M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -1303,6 +1492,7 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
   thinRefinementNerve := thinRefinementNerveCore M N
   refinementPathNerve := refinementPathNerveCore M N
   refinementImageNerve := refinementImageNerveCore M N
+  hammockPathNerve := hammockPathNerveCore M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N

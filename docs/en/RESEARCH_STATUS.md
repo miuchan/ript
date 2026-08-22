@@ -385,10 +385,15 @@ internalized as the subgroupoid of actual quotient 2-cells carrying an
 executable-refinement witness. Semantic paths are categorically equivalent to
 this image; the nerve comparison has an explicit simplicial homotopy inverse,
 the image inclusion into the full linear mapping category is faithful, and the
-original semantic nerve map factors through it strictly. Coverage of the
-required derived/hammock mapping core by this exact image, competing-move
-coherence, reduced-hammock invariance, standard weak-equivalence packaging,
-and the global Dwyer--Kan/Rezk theorem remain.
+original semantic nerve map factors through it strictly. A larger
+non-groupoidal generated path category now alternates refinements with
+arbitrary aligned raw 2-cells. Its semantics and the refinement embedding are
+faithful, the old nerve map factors through it strictly, and every source
+2-cell has a canonical one-column edge equal to the original quotient cell
+conjugated by right-unitors. Normalization of every presented quotient 2-cell
+into these paths, competing-move coherence, reduced-hammock invariance,
+standard weak-equivalence packaging, and the global Dwyer--Kan/Rezk theorem
+remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,
