@@ -352,8 +352,13 @@ words, preserve length, and yield an equivalent mapping category and nerve
 with explicit homotopy inverse, including a direct comparison to the actual
 target local nerve. Together with outer essential surjectivity this is
 packaged as `LinearHammockDwyerKanCore`. Comparison with the classical
-arbitrary-grid hammock (or another accepted derived construction), standard
-weak-equivalence packaging, and the global Dwyer--Kan/Rezk theorem remain.
+arbitrary-grid hammock is now partially internalized: for every `n`, an
+explicit row grid has `n + 1` linear hammocks, `n` adjacent quotient-2-cell
+edges, and endpoint equations, and strict-Segal reconstruction identifies it
+with the `n`-simplices of the linear hammock nerve. Row, edge, decoding, and
+both round-trip formulas are exact. Classical horizontal multi-column hammock
+moves/reductions, standard weak-equivalence packaging, and the global
+Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

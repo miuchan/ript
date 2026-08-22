@@ -144,6 +144,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 现已有受限但真正独立的右结合 linear hammock 对象模型：typed step 列表与二叉 words 相互转换和扁平化，精确保留长度，并给出等价 mapping category、nerve 显式同伦逆以及到实际 target local nerve 的直接比较。`LinearHammockDwyerKanCore` 将其与 outer essential surjectivity 组合。尚缺与经典任意网格 hammock 或其他认可 derived 构造的比较。
 
+任意高度的纵向 grid 现也已显式化：`n`-grid 包含 `n + 1` 行 linear hammocks、`n` 条相邻商 2-胞腔边和全部端点方程，strict-Segal 重构将其与 linear hammock nerve 的 `n`-simplices 等价，并精确证明行、边、解码和双向 round trip。仍缺经典横向多列 hammock moves/reductions。
+
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算
 成本到 `Nat` 步数的投影可执行且有定理支持。

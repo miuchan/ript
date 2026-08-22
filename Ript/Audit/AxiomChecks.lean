@@ -1010,6 +1010,10 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.localPresentationCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearComparisonNerveEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearTargetHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv_vertex
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv_arrow
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridRow_equiv
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk

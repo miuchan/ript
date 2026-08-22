@@ -127,6 +127,92 @@ abbrev LinearHammockMappingNerve
     (M N : ProcessModel.{u, v, w} R) :=
   CategoryTheory.nerve (LinearHammockMappingCategory M N)
 
+/-- An arbitrary-height linear hammock grid. It contains `n + 1` rows of
+linear hammock words, `n` adjacent quotient-2-cell edges, and the source and
+target endpoint equations for every edge. -/
+abbrev LinearHammockGrid
+    (M N : ProcessModel.{u, v, w} R) (n : ℕ) :=
+  SSet.Path (LinearHammockMappingNerve M N) n
+
+/-- Strict-Segal representation of every linear hammock nerve simplex as an
+explicit arbitrary-height row grid. -/
+def linearHammockGridEquiv
+    (M N : ProcessModel.{u, v, w} R) (n : ℕ) :
+    (LinearHammockMappingNerve M N).obj (op ⦋n⦌) ≃
+      LinearHammockGrid M N n :=
+  (CategoryTheory.Nerve.strictSegal
+    (LinearHammockMappingCategory M N)).spineEquiv n
+
+/-- The `i`th row of a represented grid is the corresponding vertex
+restriction of the original simplex. -/
+@[simp]
+theorem linearHammockGridEquiv_vertex
+    (M N : ProcessModel.{u, v, w} R) {n : ℕ}
+    (simplex : (LinearHammockMappingNerve M N).obj (op ⦋n⦌))
+    (i : Fin (n + 1)) :
+    (linearHammockGridEquiv M N n simplex).vertex i =
+      (LinearHammockMappingNerve M N).map
+        (SimplexCategory.const ⦋0⦌ ⦋n⦌ i).op simplex := by
+  rfl
+
+/-- The `i`th adjacent grid edge is the corresponding spine edge restriction
+of the original simplex. -/
+@[simp]
+theorem linearHammockGridEquiv_arrow
+    (M N : ProcessModel.{u, v, w} R) {n : ℕ}
+    (simplex : (LinearHammockMappingNerve M N).obj (op ⦋n⦌))
+    (i : Fin n) :
+    (linearHammockGridEquiv M N n simplex).arrow i =
+      (LinearHammockMappingNerve M N).map
+        (SimplexCategory.mkOfSucc i).op simplex := by
+  rfl
+
+/-- Reconstructing a simplex from a grid and extracting its grid is the
+identity. -/
+theorem linearHammockGridEquiv_symm_apply
+    (M N : ProcessModel.{u, v, w} R) {n : ℕ}
+    (grid : LinearHammockGrid M N n) :
+    linearHammockGridEquiv M N n
+        ((linearHammockGridEquiv M N n).symm grid) = grid :=
+  (linearHammockGridEquiv M N n).apply_symm_apply grid
+
+/-- Extracting the grid of a simplex and reconstructing the simplex is the
+identity. -/
+theorem linearHammockGridEquiv_apply_symm
+    (M N : ProcessModel.{u, v, w} R) {n : ℕ}
+    (simplex : (LinearHammockMappingNerve M N).obj (op ⦋n⦌)) :
+    (linearHammockGridEquiv M N n).symm
+        (linearHammockGridEquiv M N n simplex) = simplex :=
+  (linearHammockGridEquiv M N n).symm_apply_apply simplex
+
+/-- Package one adjacent row transition as an edge with its endpoint
+equations. -/
+def linearHammockGridEdge
+    {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : LinearHammockGrid M N n) (i : Fin n) :
+    (LinearHammockMappingNerve M N).Edge
+      (grid.vertex i.castSucc) (grid.vertex i.succ) :=
+  SSet.Edge.mk (grid.arrow i) (grid.arrow_src i) (grid.arrow_tgt i)
+
+/-- Decode one grid row from the common-universe nerve vertex back to its raw
+linear hammock word. -/
+def linearHammockGridRow
+    {M N : ProcessModel.{u, v, w} R} {n : ℕ}
+    (grid : LinearHammockGrid M N n) (i : Fin (n + 1)) :
+    LinearHammock M N :=
+  AsSmall.down.obj (CategoryTheory.nerveEquiv (grid.vertex i))
+
+/-- Row decoding of a represented grid recovers exactly the corresponding
+object of the original nerve simplex. -/
+@[simp]
+theorem linearHammockGridRow_equiv
+    (M N : ProcessModel.{u, v, w} R) {n : ℕ}
+    (simplex : (LinearHammockMappingNerve M N).obj (op ⦋n⦌))
+    (i : Fin (n + 1)) :
+    linearHammockGridRow (linearHammockGridEquiv M N n simplex) i =
+      AsSmall.down.obj (simplex.obj i) := by
+  rfl
+
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
 underlying categories are definitionally the same presentation, but this
@@ -348,6 +434,11 @@ pair of process models. -/
 structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Source-defined quotient-presentation universal property. -/
   localPresentation : LocalPresentationCore M N
+  /-- Arbitrary-height row-grid representation of every linear hammock nerve
+  simplex. -/
+  linearGridRepresentation : ∀ n : ℕ,
+    (LinearHammockMappingNerve M N).obj (op ⦋n⦌) ≃
+      LinearHammockGrid M N n
   /-- Independent linear hammock nerve is categorically equivalent to the
   presented relative mapping nerve. -/
   linearNerveEquivalence :
@@ -414,6 +505,7 @@ zigzag mapping-space comparison. -/
 noncomputable def core (M N : ProcessModel.{u, v, w} R) :
     MappingSpaceCore M N where
   localPresentation := localPresentationCore M N
+  linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N
   linearTargetNerveEquivalence := linearTargetNerveEquivalence M N

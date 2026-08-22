@@ -383,8 +383,9 @@ Every node in this graph is an existing compiled module.
 | 12 (presented Dwyer--Kan core) | One audited proposition now packages outer essential surjectivity with, for every model pair, a categorical-nerve equivalence, explicit simplicial homotopy inverse, target-independent algebraic/simplicial presentation core, strict source-local-map factorization, and exact all-degree comparison action; this is a project-local criterion using the presented relative-zigzag nerves, not an independent hammock theorem | PROVED |
 | 12 (linear hammock mapping category) | Independently defined right-associated typed step lists have executable append, binary conversion and flattening, exact length preservation, canonical append coherence, and a normalization isomorphism from every binary word; pulling back quotient 2-cell hom-sets gives a linear hammock mapping category whose conversion functor to the binary word category is faithful, full, essentially surjective, and therefore a categorical equivalence | PROVED |
 | 12 (linear hammock Dwyer--Kan core) | For every model pair, the independent linear hammock nerve is categorically equivalent both to the presented relative-zigzag nerve and directly to the actual target local nerve, with explicit simplicial homotopy inverses; together with outer essential surjectivity this forms an audited project-local linear-hammock Dwyer--Kan criterion | PROVED |
+| 12 (arbitrary-height linear hammock grids) | For every model pair and every `n`, an explicit grid contains `n + 1` linear-hammock rows, `n` adjacent quotient-2-cell edges, and all endpoint equations; strict-Segal spine reconstruction gives an equivalence between these grids and the `n`-simplices of the linear hammock nerve, with exact row-vertex, adjacent-edge, row-decoding, and both round-trip formulas | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Compare the compiled right-associated linear hammock model with a classical arbitrary-grid hammock or another accepted derived mapping-space construction, connect that comparison to a standard weak-equivalence interface, and finish the standard Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Extend the compiled arbitrary-height row grids to the classical multi-column hammock moves/reductions (or compare them to another accepted derived mapping-space construction), connect that comparison to a standard weak-equivalence interface, and finish the standard Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6161,9 +6162,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   preserves length, and gives an equivalent mapping category and nerve with
   explicit homotopy inverse, including a direct comparison to the actual
   target local nerve. Together with outer essential surjectivity it forms
-  `LinearHammockDwyerKanCore`. What remains is comparison with the classical
-  arbitrary-grid hammock (or another accepted derived construction), standard
-  weak-equivalence packaging, and the final Dwyer--Kan/Rezk statement.
+  `LinearHammockDwyerKanCore`. Its arbitrary-height vertical grids are now
+  explicit too: every `n`-simplex is equivalent to `n + 1` linear rows and
+  `n` adjacent quotient-cell edges with endpoint equations, and all row/edge
+  projections and round trips compile. What remains is the classical
+  horizontal multi-column hammock moves and reductions (or comparison with
+  another accepted derived construction), standard weak-equivalence
+  packaging, and the final Dwyer--Kan/Rezk statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`
