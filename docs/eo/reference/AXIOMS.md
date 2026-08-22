@@ -1036,6 +1036,20 @@ per `scripts/sync-doc-reference-tables.sh` kaj ne estu mane redaktataj.
 | `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.markedUnitInv_normalizable` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.markedCounit_normalizable` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.markedCounitInv_normalizable` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWord_nil` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.flatten_nil` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.append_nil` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.append_assoc` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.toWordAppendIso_nil` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.leftUnitor_conjugation` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.LinearWord.leftUnitor_inv_conjugation` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagLinearHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.ofEq` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.toHom_ofEq` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_eq_of_rel` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_leftUnitor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.normalizedCellHom_leftUnitorInv` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.leftUnitor_normalizable` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.HammockPath.leftUnitorInv_normalizable` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
