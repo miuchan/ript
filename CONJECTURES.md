@@ -474,22 +474,25 @@ exact cost-exact three-model nerve formulas. Raw identities and original cells
 are normalizable, and normalizability is closed under vertical composition.
 Normalization naturality for both raw whiskerings is now proved by explicit
 append-isomorphism exchange and cancellation; source identity and inverse plus
-equality transport are normalizable too. The exact remaining induction basis
-has now shrunk to the two-field `StructuralGeneratorNormalizable` record:
-associator and inverse. Recursive `rightUnitPath` and `rightUnitPathInv`
-delete and insert a terminal empty row beneath every atomic prefix; their
-quotient interpretations are mutually inverse, and raw right unitor/inverse
-normalize exactly to them. Source
+equality transport are normalizable too. Recursive `rightUnitPath` and
+`rightUnitPathInv` delete and insert a terminal empty row beneath every atomic
+prefix; their quotient interpretations are mutually inverse, and raw right
+unitor/inverse normalize exactly to them. Recursive `associatorPath` and its
+inverse similarly implement the two linear append bracketings; bicategorical
+naturality, triangle, and pentagon coherence identify their exact quotient
+semantics with raw associator/inverse normalization. Source
 composition/inverse are normalized exactly by executable
 forward expansion/contraction using the audited two-atomic-step coherence
 formula; generic empty/two-atom formulas now normalize marked unit/counit and
 inverses exactly by pair insertion/deletion. Computable linear append right-
 unit/associativity equalities and equality paths are available; left unitor and
-inverse normalize to identity by arbitrary-iso conjugation. The remaining
-record already implies normalization of every raw
-cell by structural induction, but none of its unproved fields is assumed in an
-unconditional theorem. Competing forward/marked moves, reduced-hammock moves,
-and their homotopical invariance remain open.
+inverse normalize to identity by arbitrary-iso conjugation. Unconditional
+structural induction now normalizes every raw cell. Conjugating an arbitrary
+quotient representative before choosing a raw representative then proves that
+every linear quotient 2-cell is denoted by a generated path; the semantic
+functor is a categorical equivalence and its nerve map has an explicit
+homotopy inverse. Competing forward/marked moves, reduced-hammock moves, and
+their homotopical invariance remain open.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -598,11 +601,11 @@ source 2-cell in one-column form, strictly extends refinement paths, and is
 closed under normalized left/right whiskering and horizontal append. Identity,
 vertical-composite, original-cell, both whiskering, source-identity/inverse,
 source-composition/inverse, and equality-transport normalization cases are
-proved; all marked unit/counit and both unitor cases are proved too. The
-remaining two associator generator obligations are explicit and
-sufficient for the complete
-induction, but remain unproved; critical-pair coherence and reduced-hammock
-invariance remain open.
+proved; all marked unit/counit, unitor, and associator cases are proved too.
+Every raw cell is therefore normalizable, every quotient 2-cell between linear
+rows is in the generated semantic image, and the generated path category is
+equivalent to the full linear mapping category. Critical-pair coherence and
+reduced-hammock invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

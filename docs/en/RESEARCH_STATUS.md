@@ -404,11 +404,14 @@ obligations are further reduced: computable linear append
 right-unit/associativity equalities and equality paths are available, and left
 unitor/inverse normalize to identity by arbitrary-iso conjugation. Recursive
 terminal-empty-row paths now normalize right unitor/inverse exactly, with
-mutually inverse quotient semantics. The remaining two associator/inverse
-obligations already imply all-cell normalization conditionally,
-but are not assumed unconditionally. Semantic fullness, competing-move
-coherence, reduced-hammock invariance, standard weak-equivalence packaging, and
-the global Dwyer--Kan/Rezk theorem remain.
+mutually inverse quotient semantics. Recursive associator paths now do the
+same for both append bracketings; their exact semantics follows from
+bicategorical naturality, triangle, and pentagon coherence. Every raw cell is
+therefore normalizable without hypotheses. Every linear quotient 2-cell has a
+generated path representative, making the semantic functor a categorical
+equivalence whose nerve map has an explicit homotopy inverse. Competing-move
+coherence, reduced-hammock invariance, standard weak-equivalence packaging,
+and the global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

@@ -33,14 +33,14 @@ generated hammock-path nerve now adds arbitrary aligned raw cells, contains
 the refinement-path nerve faithfully, and covers every source 2-cell in its
 canonical one-column representation. Generated paths are now also closed under
 normalized left/right whiskering and horizontal append, with exact three-model
-nerve formulas. A raw-cell normalization core records the completed identity,
-original, source-identity/inverse, source-composition/inverse, vertical,
-whiskering, marked-pair/inverse, and transport branches, plus a conditional
-left-unitor/inverse and transport branches, plus a conditional all-cell
-induction from four remaining structural generators. Coverage of all
-presented quotient 2-cells, competing-move
-coherence, and reduced-hammock invariance are still absent, so these results
-are not by themselves the final Dwyer--Kan theorem.
+nerve formulas. Recursive right-unit and associator paths now normalize every
+raw generator in both directions, so structural induction covers every raw
+cell unconditionally. Every quotient 2-cell is represented by a generated
+path; the semantic functor is therefore a categorical equivalence and its
+nerve map has an explicit simplicial homotopy inverse. Competing-move
+coherence and reduced-hammock invariance are still absent, so this stronger
+mapping-space presentation is not by itself the final global Dwyer--Kan/Rezk
+theorem.
 -/
 
 set_option autoImplicit false
@@ -1014,6 +1014,29 @@ noncomputable def hammockPathSemanticComparison
     (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
       (costExactArrows R) M N)
 
+/-- Categorical equivalence from generated hammock paths to the full linear
+mapping category. -/
+noncomputable def hammockPathSemanticEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    GeneratedHammockPath M N ≌ LinearHammock M N :=
+  Bicategory.MarkedZigzag.HammockPath.semanticEquivalence
+    (costExactArrows R) M N
+
+/-- The generated hammock semantic nerve map is a categorical-nerve
+equivalence. -/
+noncomputable def hammockPathNerveEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.NerveEquivalenceWitness (hammockPathSemanticComparison M N) :=
+  SSet.NerveEquivalenceWitness.ofEquivalence
+    (hammockPathSemanticEquivalence M N)
+
+/-- Explicit simplicial inverse and both homotopies for generated hammock
+semantics. -/
+noncomputable def hammockPathHomotopyEquivalence
+    (M N : ProcessModel.{u, v, w} R) :
+    SSet.HomotopyEquivalenceWitness (hammockPathSemanticComparison M N) :=
+  (hammockPathNerveEquivalence M N).homotopyEquivalence
+
 /-- Nerve inclusion from refinement-only paths into generated hammock paths. -/
 def refinementPathToHammockComparison
     (M N : ProcessModel.{u, v, w} R) :=
@@ -1203,10 +1226,24 @@ structure HammockPathNerveCore
   semantic_faithful :
     (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
       (costExactArrows R) M N).Faithful
+  /-- Generated hammock semantics is full onto every quotient 2-cell. -/
+  semantic_full :
+    (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
+      (costExactArrows R) M N).Full
   /-- Every linear row object lies in its essential image. -/
   semantic_essSurj :
     (Bicategory.MarkedZigzag.HammockPath.semanticFunctor
       (costExactArrows R) M N).EssSurj
+  /-- Generated hammock paths are categorically equivalent to the full linear
+  mapping category. -/
+  semantic_equivalence : Nonempty
+    (GeneratedHammockPath M N ≌ LinearHammock M N)
+  /-- Their semantic nerve map is a categorical-nerve equivalence. -/
+  nerve_equivalence : Nonempty
+    (SSet.NerveEquivalenceWitness (hammockPathSemanticComparison M N))
+  /-- The nerve comparison has an explicit inverse and both homotopies. -/
+  homotopy_equivalence : Nonempty
+    (SSet.HomotopyEquivalenceWitness (hammockPathSemanticComparison M N))
   /-- Refinement-only paths embed faithfully. -/
   refinement_faithful :
     (Bicategory.MarkedZigzag.HammockPath.refinementFunctor
@@ -1257,7 +1294,11 @@ hammock-path nerve core. -/
 theorem hammockPathNerveCore (M N : ProcessModel.{u, v, w} R) :
     HammockPathNerveCore M N where
   semantic_faithful := inferInstance
+  semantic_full := inferInstance
   semantic_essSurj := inferInstance
+  semantic_equivalence := ⟨hammockPathSemanticEquivalence M N⟩
+  nerve_equivalence := ⟨hammockPathNerveEquivalence M N⟩
+  homotopy_equivalence := ⟨hammockPathHomotopyEquivalence M N⟩
   refinement_faithful := inferInstance
   refinement_factorization :=
     refinementPathSemanticComparison_hammockFactorization M N
@@ -1349,9 +1390,8 @@ theorem hammockPathWhiskeringCore
   maps_whiskerRight := hammockPathSemanticComparison_whiskerRightEdge
   maps_append := hammockPathSemanticComparison_appendEdge
 
-/-- Machine-facing raw-cell normalization fragment for the cost-exact
-marking. It records the completed structural-induction cases without claiming
-normalization of every raw generator. -/
+/-- Machine-facing complete raw-cell normalization interface for the
+cost-exact marking. -/
 structure HammockRawCellNormalizationCore : Prop where
   /-- Every raw identity cell is normalizable. -/
   identity : ∀ (M N : ProcessModel.{u, v, w} R)
@@ -1496,11 +1536,8 @@ structure HammockRawCellNormalizationCore : Prop where
         (costExactArrows R)
         (Bicategory.MarkedZigzag.Cell.transport
           sourceEquality targetEquality cell)
-  /-- The remaining explicit structural-generator obligations suffice for
-  normalization of every cost-exact raw cell. -/
-  structural_induction : ∀ (M N : ProcessModel.{u, v, w} R),
-      (@Bicategory.MarkedZigzag.HammockPath.StructuralGeneratorNormalizable
-          (ProcessModel.{u, v, w} R) _ (costExactArrows R)) →
+  /-- Every cost-exact raw cell is unconditionally normalizable. -/
+  all_cells : ∀ (M N : ProcessModel.{u, v, w} R),
       ∀ {first second : CostExactZigzag.Word (R := R) M N}
         (cell : Bicategory.MarkedZigzag.Cell
           (costExactArrows R) first second),
@@ -1565,9 +1602,9 @@ theorem hammockRawCellNormalizationCore :
   transport := fun _ _ {_ _ _ _} sourceEquality targetEquality {_} member =>
     Bicategory.MarkedZigzag.HammockPath.transport_normalizable
       (costExactArrows R) sourceEquality targetEquality member
-  structural_induction := fun _ _ generators {_ _} cell =>
-    Bicategory.MarkedZigzag.HammockPath.normalizable_of_structuralGenerators
-      (costExactArrows R) generators cell
+  all_cells := fun _ _ {_ _} cell =>
+    Bicategory.MarkedZigzag.HammockPath.allCells_normalizable
+      (costExactArrows R) cell
 
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
