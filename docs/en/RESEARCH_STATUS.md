@@ -380,10 +380,15 @@ refinement-path groupoid now retains paths modulo equality of quotient-cell
 interpretations. Its semantic nerve map into the linear mapping nerve is
 faithful and essentially surjective on row objects, maps every path to an
 isomorphism, and has exact vertex/edge action; its zero-truncation to the thin
-groupoid is full and essentially surjective. Fullness or an exact semantic
-image characterization, competing-move coherence, reduced-hammock invariance,
-standard weak-equivalence packaging, and the global Dwyer--Kan/Rezk theorem
-remain.
+groupoid is full and essentially surjective. The exact semantic image is now
+internalized as the subgroupoid of actual quotient 2-cells carrying an
+executable-refinement witness. Semantic paths are categorically equivalent to
+this image; the nerve comparison has an explicit simplicial homotopy inverse,
+the image inclusion into the full linear mapping category is faithful, and the
+original semantic nerve map factors through it strictly. Coverage of the
+required derived/hammock mapping core by this exact image, competing-move
+coherence, reduced-hammock invariance, standard weak-equivalence packaging,
+and the global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

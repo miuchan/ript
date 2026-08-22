@@ -1044,6 +1044,13 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.semanticFunctor_map_isIso
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.toThinFunctor_full
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementPath.toThinFunctor_essSurj
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.isGroupoid
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.inclusion_faithful
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathFunctor_full
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathFunctor_faithful
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathFunctor_essSurj
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.pathEquivalence
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.RefinementImage.semanticFunctor_factorization
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore
@@ -1054,6 +1061,11 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_vertex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_edge
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathNerveCore
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathImageNerveEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathImageHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathSemanticComparison_factorization
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementPathImageComparison_edge
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.refinementImageNerveCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk

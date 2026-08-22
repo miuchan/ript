@@ -459,10 +459,15 @@ isomorphism, not Lean object equality. A non-thin semantic refinement-path
 groupoid is now compiled as well: paths are quotiented only by equality of
 their quotient-cell interpretations, executable reversal gives inverses, and
 the semantic functor into the linear mapping category is faithful and
-essentially surjective on row objects with exact nerve edge action. The
-remaining classical gap is fullness or an exact image characterization,
-coherence for competing forward/marked moves, reduced-hammock moves, and their
-homotopical invariance.
+essentially surjective on row objects with exact nerve edge action. Its exact
+semantic image has now been internalized as the subgroupoid of actual quotient
+2-cells carrying an executable-refinement witness: paths are equivalent to
+this image, the image inclusion is faithful, the nerve equivalence has an
+explicit simplicial homotopy inverse, and semantic interpretation factors
+through it strictly. The remaining classical gap is proving that this exact
+image covers the required derived/hammock core (or adding the missing linear
+quotient 2-cells), together with coherence for competing forward/marked moves,
+reduced-hammock moves, and their homotopical invariance.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -562,9 +567,12 @@ and semantic inverse laws. Their object-level common-refinement quotient and
 semantic-isomorphism soundness are now proved. A quotient mapping nerve,
 in the precise 0-truncated sense, is also proved via the thin refinement
 groupoid/discrete-quotient nerve equivalence. A non-thin refinement-path nerve,
-with faithful exact semantic action, is now proved too. Fullness/image
-characterization, critical-pair coherence, and reduced-hammock invariance
-remain open.
+with faithful exact semantic action, is now proved too. It is categorically
+and simplicially equivalent to the exact subgroupoid of refinement-generated
+quotient 2-cells, which includes faithfully in the full linear mapping
+category and strictly factors the semantic nerve map. Coverage of the required
+derived/hammock mapping core by this exact image, critical-pair coherence, and
+reduced-hammock invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an
