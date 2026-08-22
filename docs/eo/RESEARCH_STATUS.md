@@ -314,7 +314,12 @@ en ĉiu grado: ĉiu kongrua levo induktas la kanonan nervan mapon; vortaj
 verticoj, krud-2-ĉelaj eĝoj kaj arbitraj simplaĵoj kalkuliĝas ekzakte; kaj
 naturaj transformoj aŭ izomorfioj inter descenditaj interpretoj donas faktajn
 unudirektajn aŭ dudirektajn `SSet.Homotopy`-atestojn. Sendependa
-derived/hammock-a komparo ankoraŭ mankas.
+derived/hammock-a komparo ankoraŭ mankas. `PresentedDwyerKanCore` nun unuigas
+eksteran esencan surĵetecon kun ĉiuj prezentitaj map-spacaj kondiĉoj en unu
+reviziita aserto: nerva ekvivalento, eksplicita homotopia inversilo, algebra
+kaj simplicia prezenta universaleco, strikta faktorizo kaj ekzakta tutgrada
+ago. La kvalifiko “presented” estas esenca; tio ne estas sendependa hammock-a
+teoremo.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

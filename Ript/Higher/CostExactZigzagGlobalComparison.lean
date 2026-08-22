@@ -1465,6 +1465,45 @@ abbrev LocalNerveCore :=
     (CostExactZigzag.inclusion (R := R)) (costExactArrows R)
     CostExactZigzag.inclusion_isBicategoricalLocalization
 
+/-- Project-local presented Dwyer--Kan criterion for the actual cost-exact
+localization. It records outer essential surjectivity and, for every model
+pair, categorical-nerve equivalence plus explicit simplicial homotopy inverse,
+the target-independent algebraic/simplicial presentation core, strict
+factorization of the source local map, and exact action in every degree.
+
+The source mapping spaces in this criterion are the compiled presented
+relative-zigzag nerves. Thus this proposition is intentionally weaker than a
+standard Dwyer--Kan theorem based on an independently constructed hammock or
+derived localization. -/
+def PresentedDwyerKanCore : Prop :=
+  (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
+  ∀ (M N : ProcessModel.{u, v, w} R),
+    Nonempty (SSet.NerveEquivalenceWitness
+      (CostExactZigzagMappingSpace.comparison M N)) ∧
+    Nonempty (SSet.HomotopyEquivalenceWitness
+      (CostExactZigzagMappingSpace.comparison M N)) ∧
+    CostExactZigzagMappingSpace.LocalPresentationCore M N ∧
+    (CostExactZigzagNerveComparison.core
+      (R := R)).toPseudofunctorNerveCore.localMap M N =
+        CostExactZigzagMappingSpace.forwardMap M N ≫
+          CostExactZigzagMappingSpace.comparison M N ∧
+    ∀ {n : ℕ}
+      (simplex : (CostExactZigzagMappingSpace.RelativeZigzagMappingNerve
+        M N).obj (Opposite.op (SimplexCategory.mk n))),
+      (CostExactZigzagMappingSpace.comparison M N).app
+        (Opposite.op (SimplexCategory.mk n)) simplex = simplex
+
+/-- The actual cost-exact localization satisfies the complete project-local
+presented Dwyer--Kan criterion. -/
+theorem presentedDwyerKanCore : PresentedDwyerKanCore.{u, v, w} (R := R) := by
+  refine ⟨smallHomotopyLocalizationFunctor_essSurj (R := R), ?_⟩
+  intro M N
+  exact ⟨⟨CostExactZigzagMappingSpace.comparisonNerveEquivalence M N⟩,
+    ⟨CostExactZigzagMappingSpace.comparisonHomotopyEquivalence M N⟩,
+    CostExactZigzagMappingSpace.localPresentationCore M N,
+    CostExactZigzagMappingSpace.localMap_factorization M N,
+    CostExactZigzagMappingSpace.comparison_simplex M N⟩
+
 
 /-- Machine-facing global comparison. The canonical outer direction uses the
 relative Rezk source, the auxiliary ordinary direction records the induced
@@ -1496,6 +1535,10 @@ structure GlobalComparisonCore where
   relativeZigzagMappingSpace : ∀
     (M N : ProcessModel.{u, v, w} R),
     CostExactZigzagMappingSpace.MappingSpaceCore M N
+  /-- Project-local presented Dwyer--Kan evidence: outer essential
+  surjectivity plus the complete presented mapping-space condition for every
+  model pair. -/
+  presentedDwyerKan : PresentedDwyerKanCore.{u, v, w} (R := R)
   /-- Explicit simplicial homotopy-equivalence witness for source outer
   completeness. -/
   sourceCompleteness : SSet.HomotopyEquivalenceWitness
@@ -1735,6 +1778,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
     smallHomotopyLocalizationFunctor_essSurj (R := R)
   localNerve := CostExactZigzagNerveComparison.core (R := R)
   relativeZigzagMappingSpace := CostExactZigzagMappingSpace.core
+  presentedDwyerKan := presentedDwyerKanCore (R := R)
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   relativeArrowGlue := relativeOuterComparison_sourceArrow

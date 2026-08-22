@@ -426,7 +426,10 @@ induces an all-degree common-universe nerve map, all compatible lifts induce
 that same map, and natural transformations or natural isomorphisms of
 descended interpretations induce genuine one-way or two-way simplicial
 homotopies. What is still absent is the comparison with an independently
-specified derived/hammock construction.
+specified derived/hammock construction. Outer essential surjectivity and all
+presented mapping-space conditions are now combined in the audited
+`PresentedDwyerKanCore`; the qualifier is essential because its source
+mapping spaces are the compiled word/quotient nerves themselves.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -510,7 +513,10 @@ complete-Segal/Rezk weak equivalence remains open. The target-independent
 quotient-presentation descent and uniqueness theorem is now compiled, but a
 hammock/derived homotopical comparison has not yet been deduced from it. The
 all-dimensional nerve-map uniqueness and natural-transformation homotopy
-invariance are now proved and available for that comparison.
+invariance are now proved and available for that comparison. A project-local
+presented Dwyer--Kan criterion is also proved; a standard Dwyer--Kan claim
+still requires an independent derived/hammock comparison and accepted weak-
+equivalence packaging.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an
