@@ -140,6 +140,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 该普遍性质现已提升到所有次数的 common-universe 范畴 nerve：任意相容 lift 都诱导同一个规范 nerve map，word 顶点、raw 2-胞腔边和任意 simplex 均精确计算，下降解释之间的自然变换或自然同构给出真实的单向或双向 `SSet.Homotopy`。仍缺独立 derived/hammock 构造的比较。
 
+`PresentedDwyerKanCore` 现把 outer essential surjectivity 与全部 presented mapping-space 条件统一封装为一个经审计命题：nerve 等价、显式同伦逆、代数/单纯呈示普遍性、严格因子化和全维精确作用。`Presented` 限定不可删除；这仍不是独立 hammock 定理。
+
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算
 成本到 `Nat` 步数的投影可执行且有定理支持。

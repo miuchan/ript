@@ -341,9 +341,13 @@ common-universe categorical nerves in every degree: every compatible lift
 induces the canonical nerve map; word vertices, raw-cell edges, and arbitrary
 simplices compute exactly; and natural transformations or natural
 isomorphisms between descended interpretations produce genuine one-way or
-two-way `SSet.Homotopy` witnesses. An independent derived/hammock mapping-
-space characterization, accepted weak-equivalence packaging, and the global
-Dwyer--Kan/Rezk theorem remain.
+two-way `SSet.Homotopy` witnesses. `PresentedDwyerKanCore` now combines outer
+essential surjectivity with every presented mapping-space condition in one
+audited proposition: nerve equivalence, explicit homotopy inverse, algebraic
+and simplicial presentation universality, strict factorization, and exact
+all-degree action. Its qualifier is essential. An independent derived/
+hammock mapping-space characterization, accepted weak-equivalence packaging,
+and the standard global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,
