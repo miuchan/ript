@@ -435,8 +435,13 @@ compiled. Conversion and flattening preserve length, every binary word is
 canonically isomorphic to its linear normal form, and the induced linear
 mapping category is equivalent to both the presented category and the actual
 target local nerve. `LinearHammockDwyerKanCore` combines this mapping condition
-with outer essential surjectivity. What remains is comparison with the
-classical arbitrary-grid hammock or another accepted derived construction.
+with outer essential surjectivity. The generated non-groupoidal path category
+now represents every linear quotient 2-cell; its common-universe replacement
+is directly equivalent to the actual target local category, has a nerve map
+with explicit homotopy inverse, factors strictly through the linear
+comparison, and forms `GeneratedHammockDwyerKanCore` with outer essential
+surjectivity. What remains is comparison with the classical reduced arbitrary-
+grid hammock or another accepted derived construction.
 The arbitrary-height vertical-grid part is now explicit: an `n`-grid consists
 of `n + 1` linear rows, `n` adjacent quotient-cell edges, and endpoint
 equations, and strict-Segal reconstruction identifies it with every
@@ -491,8 +496,13 @@ structural induction now normalizes every raw cell. Conjugating an arbitrary
 quotient representative before choosing a raw representative then proves that
 every linear quotient 2-cell is denoted by a generated path; the semantic
 functor is a categorical equivalence and its nerve map has an explicit
-homotopy inverse. Competing forward/marked moves, reduced-hammock moves, and
-their homotopical invariance remain open.
+homotopy inverse. Smallifying the generated and linear categories now gives a
+direct categorical equivalence from generated paths to the actual target
+local hom-category. Its nerve comparison has an explicit homotopy inverse and
+factors strictly through the independent linear comparison; outer essential
+surjectivity packages this as `GeneratedHammockDwyerKanCore`. Competing
+forward/marked moves, reduced-hammock moves, and their homotopical invariance
+remain open.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -581,10 +591,13 @@ hammock/derived homotopical comparison has not yet been deduced from it. The
 all-dimensional nerve-map uniqueness and natural-transformation homotopy
 invariance are now proved and available for that comparison. A project-local
 presented Dwyer--Kan criterion is also proved; a standard Dwyer--Kan claim
-now has an independent linear hammock mapping model and direct target
-comparison, but still requires comparison with the classical arbitrary-grid
-hammock (or another accepted derived model) and standard weak-equivalence
-packaging. Arbitrary-height row grids and their exact nerve representation are
+now has both an independent linear hammock model and a full generated path
+model with direct target comparisons, categorical-nerve equivalences, explicit
+homotopy inverses, and strict generated-to-linear-to-target factorization.
+`GeneratedHammockDwyerKanCore` packages this with outer essential surjectivity,
+but a standard claim still requires comparison with the classical reduced
+arbitrary-grid hammock (or another accepted derived model) and standard weak-
+equivalence packaging. Arbitrary-height row grids and their exact nerve representation are
 proved. Fixed-shape aligned multi-column cells and grids now have exact
 quotient/nerve interpretation, and elementary executable forward-column
 refinements plus marked unit/counit pair refinements have exact signed-width

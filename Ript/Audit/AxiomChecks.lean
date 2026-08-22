@@ -1010,6 +1010,13 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.localPresentationCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearComparisonNerveEquivalence
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearTargetHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedLinearEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedLinearNerveEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedLinearHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedTargetEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedTargetNerveEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedTargetHomotopyEquivalence
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.generatedTargetComparison_factorization
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv_vertex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridEquiv_arrow
@@ -1210,6 +1217,8 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.presentedDwyerKanCore
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.LinearHammockDwyerKanCore
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.linearHammockDwyerKanCore
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.GeneratedHammockDwyerKanCore
+#print axioms Ript.Higher.CostExactZigzagGlobalComparison.generatedHammockDwyerKanCore
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.homotopyLocalizationFunctor_invertsCostExactMorphisms
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.smallHomotopyLocalization_invertsRelativeMarking
 #print axioms Ript.Higher.CostExactZigzagGlobalComparison.relativeOuterComparison

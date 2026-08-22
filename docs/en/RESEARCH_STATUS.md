@@ -409,9 +409,14 @@ same for both append bracketings; their exact semantics follows from
 bicategorical naturality, triangle, and pentagon coherence. Every raw cell is
 therefore normalizable without hypotheses. Every linear quotient 2-cell has a
 generated path representative, making the semantic functor a categorical
-equivalence whose nerve map has an explicit homotopy inverse. Competing-move
-coherence, reduced-hammock invariance, standard weak-equivalence packaging,
-and the global Dwyer--Kan/Rezk theorem remain.
+equivalence whose nerve map has an explicit homotopy inverse. After common-
+universe replacement, generated paths are now categorically equivalent
+directly to each actual localization-target local hom-category; the direct
+nerve map has an explicit homotopy inverse and factors strictly through the
+linear comparison. Together with outer essential surjectivity this forms an
+audited `GeneratedHammockDwyerKanCore`. Competing-move coherence, reduced-
+hammock invariance, standard weak-equivalence packaging, and the global
+Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

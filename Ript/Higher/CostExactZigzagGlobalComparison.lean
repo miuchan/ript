@@ -10,6 +10,9 @@ Rezk map whose vertical source transformations are pointwise cost-exact. It
 also induces an auxiliary ordinary outer map on homotopy categories and a
 full non-groupoidal local nerve map retaining arbitrary 2-cells. This module
 packages all three layers from the same canonical bicategorical localization.
+It also combines outer essential surjectivity with the full common-universe
+generated-hammock-to-target mapping equivalences in an audited project-local
+Dwyer--Kan core.
 -/
 
 set_option autoImplicit false
@@ -1513,10 +1516,11 @@ The linear model now has a fixed-shape aligned multi-column fragment and
 elementary executable forward and marked-pair refinements, plus an object-level
 common-refinement quotient and equivalent zero-truncated thin groupoid nerve.
 It now also has a non-thin semantic refinement-path groupoid nerve faithfully
-embedded in the linear mapping nerve, but not fullness/image characterization,
-competing-move coherence, or reduced-hammock invariance of the classical
-arbitrary-grid localization, so this is not yet the standard Dwyer--Kan
-theorem. -/
+embedded in the linear mapping nerve. That refinement-only subgroupoid is not
+full; the larger generated path core below supplies fullness, while competing-
+move coherence and reduced-hammock invariance of the classical arbitrary-grid
+localization remain open. Thus this linear criterion alone is not the standard
+Dwyer--Kan theorem. -/
 def LinearHammockDwyerKanCore : Prop :=
   (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
   ∀ (M N : ProcessModel.{u, v, w} R),
@@ -1533,6 +1537,45 @@ theorem linearHammockDwyerKanCore :
   intro M N
   exact ⟨⟨CostExactZigzagMappingSpace.linearTargetNerveEquivalence M N⟩,
     ⟨CostExactZigzagMappingSpace.linearTargetHomotopyEquivalence M N⟩⟩
+
+/-- Project-local generated-hammock Dwyer--Kan criterion. Its mapping spaces
+are the non-groupoidal generated path categories containing executable
+refinements and arbitrary aligned raw 2-cells. Every quotient 2-cell is
+represented, and each common-universe generated mapping nerve maps directly
+to the actual localization target by a categorical-nerve equivalence with an
+explicit homotopy inverse. The direct comparison factors strictly through the
+independent linear hammock nerve.
+
+This establishes the full project-owned generated mapping-space comparison.
+It does not identify this presentation with the classical reduced arbitrary-
+grid hammock localization or a standard model-categorical derived mapping
+space. -/
+def GeneratedHammockDwyerKanCore : Prop :=
+  (smallHomotopyLocalizationFunctor.{u, v, w} (R := R)).EssSurj ∧
+  ∀ (M N : ProcessModel.{u, v, w} R),
+    Nonempty
+      (CostExactZigzagMappingSpace.GeneratedHammockMappingCategory M N ≌
+        UniverseLiftedNerve.CommonTargetHom
+          (CostExactZigzag.inclusion (R := R)) M N) ∧
+    Nonempty (SSet.NerveEquivalenceWitness
+      (CostExactZigzagMappingSpace.generatedTargetComparison M N)) ∧
+    Nonempty (SSet.HomotopyEquivalenceWitness
+      (CostExactZigzagMappingSpace.generatedTargetComparison M N)) ∧
+    CostExactZigzagMappingSpace.generatedTargetComparison M N =
+      CostExactZigzagMappingSpace.generatedLinearComparison M N ≫
+        CostExactZigzagMappingSpace.linearTargetComparison M N
+
+/-- The actual cost-exact localization satisfies the project-local full
+generated-hammock Dwyer--Kan criterion. -/
+theorem generatedHammockDwyerKanCore :
+    GeneratedHammockDwyerKanCore.{u, v, w} (R := R) := by
+  refine ⟨smallHomotopyLocalizationFunctor_essSurj (R := R), ?_⟩
+  intro M N
+  exact
+    ⟨⟨CostExactZigzagMappingSpace.generatedTargetEquivalence M N⟩,
+      ⟨CostExactZigzagMappingSpace.generatedTargetNerveEquivalence M N⟩,
+      ⟨CostExactZigzagMappingSpace.generatedTargetHomotopyEquivalence M N⟩,
+      CostExactZigzagMappingSpace.generatedTargetComparison_factorization M N⟩
 
 
 /-- Machine-facing global comparison. The canonical outer direction uses the
@@ -1573,6 +1616,10 @@ structure GlobalComparisonCore where
   linear hammock mapping nerves. -/
   linearHammockDwyerKan :
     LinearHammockDwyerKanCore.{u, v, w} (R := R)
+  /-- Project-local Dwyer--Kan evidence using the full generated hammock path
+  mapping categories and their direct target comparisons. -/
+  generatedHammockDwyerKan :
+    GeneratedHammockDwyerKanCore.{u, v, w} (R := R)
   /-- Explicit simplicial homotopy-equivalence witness for source outer
   completeness. -/
   sourceCompleteness : SSet.HomotopyEquivalenceWitness
@@ -1814,6 +1861,7 @@ noncomputable def core : GlobalComparisonCore.{u, v, w} (R := R) where
   relativeZigzagMappingSpace := CostExactZigzagMappingSpace.core
   presentedDwyerKan := presentedDwyerKanCore (R := R)
   linearHammockDwyerKan := linearHammockDwyerKanCore (R := R)
+  generatedHammockDwyerKan := generatedHammockDwyerKanCore (R := R)
   sourceCompleteness := sourceCompletenessHomotopyEquivalence (R := R)
   targetCompleteness := targetCompletenessHomotopyEquivalence (R := R)
   relativeArrowGlue := relativeOuterComparison_sourceArrow
