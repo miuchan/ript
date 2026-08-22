@@ -25,9 +25,12 @@ embeds faithfully into the linear mapping category. Its exact generated image
 is internalized as a subgroupoid. A larger non-groupoidal hammock-path syntax
 now alternates arbitrary aligned cells with invertible refinements, retains
 all source 2-cells in one-column form, and is closed under normalized left/right
-whiskering and horizontal append. Coverage of every presented quotient 2-cell,
-critical-pair coherence, and reduced-hammock invariance are still absent, so
-this is not by itself the classical Dwyer--Kan hammock localization.
+whiskering and horizontal append. Normalization is natural for raw whiskering;
+identity, original, source-identity/inverse, composition-closure, whiskering,
+and equality-transport induction branches are complete, while twelve explicit
+structural-generator obligations remain. Coverage of every presented quotient
+2-cell, critical-pair coherence, and reduced-hammock invariance are still
+absent, so this is not by itself the classical Dwyer--Kan hammock localization.
 -/
 
 set_option autoImplicit false
@@ -174,6 +177,31 @@ def quotientVcomp {X Y : B} {first middle last : Word W X Y}
   @CategoryStruct.comp (Word W X Y)
     (Presented.wordCategory W X Y).toCategoryStruct
     first middle last alpha beta
+
+/-- Explicit associativity of quotient vertical composition. -/
+theorem quotientVcomp_assoc {X Y : B}
+    {first second third fourth : Word W X Y}
+    (alpha : Presented.Hom W first second)
+    (beta : Presented.Hom W second third)
+    (gamma : Presented.Hom W third fourth) :
+    quotientVcomp W (quotientVcomp W alpha beta) gamma =
+      quotientVcomp W alpha (quotientVcomp W beta gamma) :=
+  @Category.assoc (Word W X Y) (Presented.wordCategory W X Y)
+    _ _ _ _ alpha beta gamma
+
+/-- Explicit left identity law for quotient vertical composition. -/
+theorem quotientVcomp_id_comp {X Y : B} {first second : Word W X Y}
+    (alpha : Presented.Hom W first second) :
+    quotientVcomp W (𝟙 first) alpha = alpha :=
+  @Category.id_comp (Word W X Y) (Presented.wordCategory W X Y)
+    first second alpha
+
+/-- Explicit right identity law for quotient vertical composition. -/
+theorem quotientVcomp_comp_id {X Y : B} {first second : Word W X Y}
+    (alpha : Presented.Hom W first second) :
+    quotientVcomp W alpha (𝟙 second) = alpha :=
+  @Category.comp_id (Word W X Y) (Presented.wordCategory W X Y)
+    first second alpha
 
 /-- Quotient interpretation of an aligned hammock in the linear mapping
 category. -/
@@ -1551,6 +1579,114 @@ structure HammockPathObject (X Y : B) where
 
 namespace HammockPath
 
+/-- Naturality of binary append isomorphisms around a left-whiskered
+quotient 2-cell. -/
+theorem appendIso_inv_whiskerLeft_appendIso_hom {X Y Z : B}
+    {pre pre' : Word W X Y}
+    {first first' second second' : Word W Y Z}
+    (left : pre ≅ pre') (source : first ≅ first')
+    (target : second ≅ second')
+    (alpha : Presented.Hom W first second) :
+    (LinearWord.appendIso W left source).inv ≫
+        Presented.whiskerLeftHom W pre alpha ≫
+          (LinearWord.appendIso W left target).hom =
+      Presented.whiskerLeftHom W pre'
+        (source.inv ≫ alpha ≫ target.hom) := by
+  simp only [LinearWord.appendIso, Iso.trans_hom, Iso.trans_inv,
+    Bicategory.whiskerLeftIso, Bicategory.whiskerRightIso]
+  simp only [Category.assoc]
+  change AlignedCell.quotientVcomp W
+      (Presented.whiskerLeftHom W pre' source.inv)
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W first left.inv)
+        (AlignedCell.quotientVcomp W
+          (Presented.whiskerLeftHom W pre alpha)
+          (AlignedCell.quotientVcomp W
+            (Presented.whiskerRightHom W second left.hom)
+            (Presented.whiskerLeftHom W pre' target.hom)))) =
+    Presented.whiskerLeftHom W pre'
+      (AlignedCell.quotientVcomp W source.inv
+        (AlignedCell.quotientVcomp W alpha target.hom))
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.whiskerRightHom W first left.inv)
+    (Presented.whiskerLeftHom W pre alpha)]
+  rw [← AlignedCell.whisker_exchange W left.inv alpha]
+  rw [AlignedCell.quotientVcomp_assoc]
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.whiskerRightHom W second left.inv)
+    (Presented.whiskerRightHom W second left.hom)]
+  rw [← AlignedCell.whiskerRightHom_vcomp W second left.inv left.hom]
+  have leftCancellation :
+      AlignedCell.quotientVcomp W left.inv left.hom = 𝟙 pre' :=
+    left.inv_hom_id
+  rw [leftCancellation]
+  have whiskerIdentity :
+      Presented.whiskerRightHom W second (𝟙 pre') =
+        𝟙 (Word.append (W := W) pre' second) :=
+    Quot.sound (Presented.Rel.whisker_right_id pre' second)
+  rw [whiskerIdentity, AlignedCell.quotientVcomp_id_comp]
+  rw [← AlignedCell.whiskerLeftHom_vcomp W pre' alpha target.hom]
+  rw [← AlignedCell.whiskerLeftHom_vcomp W pre' source.inv
+    (AlignedCell.quotientVcomp W alpha target.hom)]
+
+/-- Naturality of binary append isomorphisms around a right-whiskered
+quotient 2-cell. -/
+theorem appendIso_inv_whiskerRight_appendIso_hom {X Y Z : B}
+    {first first' second second' : Word W X Y}
+    {post post' : Word W Y Z}
+    (source : first ≅ first') (target : second ≅ second')
+    (right : post ≅ post')
+    (alpha : Presented.Hom W first second) :
+    (LinearWord.appendIso W source right).inv ≫
+        Presented.whiskerRightHom W post alpha ≫
+          (LinearWord.appendIso W target right).hom =
+      Presented.whiskerRightHom W post'
+        (source.inv ≫ alpha ≫ target.hom) := by
+  simp only [LinearWord.appendIso, Iso.trans_hom, Iso.trans_inv,
+    Bicategory.whiskerLeftIso, Bicategory.whiskerRightIso]
+  simp only [Category.assoc]
+  change AlignedCell.quotientVcomp W
+      (Presented.whiskerLeftHom W first' right.inv)
+      (AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W post source.inv)
+        (AlignedCell.quotientVcomp W
+          (Presented.whiskerRightHom W post alpha)
+          (AlignedCell.quotientVcomp W
+            (Presented.whiskerRightHom W post target.hom)
+            (Presented.whiskerLeftHom W second' right.hom)))) =
+    Presented.whiskerRightHom W post'
+      (AlignedCell.quotientVcomp W source.inv
+        (AlignedCell.quotientVcomp W alpha target.hom))
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.whiskerRightHom W post alpha)
+    (Presented.whiskerRightHom W post target.hom)]
+  rw [← AlignedCell.whiskerRightHom_vcomp W post alpha target.hom]
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.whiskerRightHom W post source.inv)
+    (Presented.whiskerRightHom W post
+      (AlignedCell.quotientVcomp W alpha target.hom))]
+  rw [← AlignedCell.whiskerRightHom_vcomp W post source.inv
+    (AlignedCell.quotientVcomp W alpha target.hom)]
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.whiskerLeftHom W first' right.inv)
+    (Presented.whiskerRightHom W post
+      (AlignedCell.quotientVcomp W source.inv
+        (AlignedCell.quotientVcomp W alpha target.hom)))]
+  rw [AlignedCell.whisker_exchange W
+    (AlignedCell.quotientVcomp W source.inv
+      (AlignedCell.quotientVcomp W alpha target.hom)) right.inv]
+  rw [AlignedCell.quotientVcomp_assoc]
+  rw [← AlignedCell.whiskerLeftHom_vcomp W second' right.inv right.hom]
+  have rightCancellation :
+      AlignedCell.quotientVcomp W right.inv right.hom = 𝟙 post' :=
+    right.inv_hom_id
+  rw [rightCancellation]
+  have whiskerIdentity :
+      Presented.whiskerLeftHom W second' (𝟙 post') =
+        𝟙 (Word.append (W := W) second' post') :=
+    Quot.sound (Presented.Rel.whisker_left_id second' post')
+  rw [whiskerIdentity, AlignedCell.quotientVcomp_comp_id]
+
 /-- Left whiskering of a quotient 2-cell between linear normal forms. The
 canonical append isomorphisms enter the binary word presentation and return
 to the right-associated linear normal form. -/
@@ -1582,6 +1718,19 @@ noncomputable def normalizedWhiskerRightHom {X Y Z : B}
       (Presented.whiskerRightHom W (LinearWord.toWord W post) alpha)
       (LinearWord.toWordAppendIso W second post).inv)
 
+/-- Transport an arbitrary quotient 2-cell to the linear normal forms of its
+two binary word endpoints. -/
+noncomputable def normalizedHom {X Y : B}
+    {first second : Word W X Y} (alpha : Presented.Hom W first second) :
+    Presented.Hom W
+      (LinearWord.toWord W (LinearWord.flatten W first))
+      (LinearWord.toWord W (LinearWord.flatten W second)) :=
+  AlignedCell.quotientVcomp W
+    (LinearWord.normalizationIso W first).inv
+    (AlignedCell.quotientVcomp W
+      alpha
+      (LinearWord.normalizationIso W second).hom)
+
 /-- Transport an arbitrary raw presented cell to the linear normal forms of
 its two binary word endpoints. -/
 noncomputable def normalizedCellHom {X Y : B}
@@ -1589,11 +1738,108 @@ noncomputable def normalizedCellHom {X Y : B}
     Presented.Hom W
       (LinearWord.toWord W (LinearWord.flatten W first))
       (LinearWord.toWord W (LinearWord.flatten W second)) :=
-  AlignedCell.quotientVcomp W
-    (LinearWord.normalizationIso W first).inv
-    (AlignedCell.quotientVcomp W
-      (Presented.mk W cell)
-      (LinearWord.normalizationIso W second).hom)
+  normalizedHom W (Presented.mk W cell)
+
+/-- Normalization commutes exactly with raw left whiskering. -/
+theorem normalizedHom_whiskerLeft {X Y Z : B} (pre : Word W X Y)
+    {first second : Word W Y Z} (alpha : Presented.Hom W first second) :
+    normalizedHom W (Presented.whiskerLeftHom W pre alpha) =
+      normalizedWhiskerLeftHom W (LinearWord.flatten W pre)
+        (normalizedHom W alpha) := by
+  unfold normalizedHom normalizedWhiskerLeftHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append]
+  rw [LinearWord.normalizationIso_append W pre first]
+  rw [LinearWord.normalizationIso_append W pre second]
+  simp only [Iso.trans_hom, Iso.trans_inv, Iso.symm_hom, Iso.symm_inv]
+  let sourceComparison := (LinearWord.toWordAppendIso W
+    (LinearWord.flatten W pre) (LinearWord.flatten W first)).hom
+  let targetComparison := (LinearWord.toWordAppendIso W
+    (LinearWord.flatten W pre) (LinearWord.flatten W second)).inv
+  let sourceAppend := (LinearWord.appendIso W
+    (LinearWord.normalizationIso W pre)
+    (LinearWord.normalizationIso W first)).inv
+  let targetAppend := (LinearWord.appendIso W
+    (LinearWord.normalizationIso W pre)
+    (LinearWord.normalizationIso W second)).hom
+  let whiskered := Presented.whiskerLeftHom W pre alpha
+  let normalized := Presented.whiskerLeftHom W
+    (LinearWord.toWord W (LinearWord.flatten W pre))
+    (AlignedCell.quotientVcomp W (LinearWord.normalizationIso W first).inv
+      (AlignedCell.quotientVcomp W alpha
+        (LinearWord.normalizationIso W second).hom))
+  change AlignedCell.quotientVcomp W
+      (AlignedCell.quotientVcomp W sourceComparison sourceAppend)
+      (AlignedCell.quotientVcomp W whiskered
+        (AlignedCell.quotientVcomp W targetAppend targetComparison)) =
+    AlignedCell.quotientVcomp W sourceComparison
+      (AlignedCell.quotientVcomp W normalized targetComparison)
+  calc
+    _ = AlignedCell.quotientVcomp W sourceComparison
+        (AlignedCell.quotientVcomp W
+          (AlignedCell.quotientVcomp W sourceAppend
+            (AlignedCell.quotientVcomp W whiskered targetAppend))
+          targetComparison) := by
+      simp only [AlignedCell.quotientVcomp_assoc]
+    _ = AlignedCell.quotientVcomp W sourceComparison
+        (AlignedCell.quotientVcomp W normalized targetComparison) := by
+      rw [show AlignedCell.quotientVcomp W sourceAppend
+          (AlignedCell.quotientVcomp W whiskered targetAppend) = normalized by
+        dsimp [sourceAppend, whiskered, targetAppend, normalized]
+        exact appendIso_inv_whiskerLeft_appendIso_hom W
+          (LinearWord.normalizationIso W pre)
+          (LinearWord.normalizationIso W first)
+          (LinearWord.normalizationIso W second) alpha]
+
+/-- Normalization commutes exactly with raw right whiskering. -/
+theorem normalizedHom_whiskerRight {X Y Z : B}
+    {first second : Word W X Y} (alpha : Presented.Hom W first second)
+    (post : Word W Y Z) :
+    normalizedHom W (Presented.whiskerRightHom W post alpha) =
+      normalizedWhiskerRightHom W (LinearWord.flatten W post)
+        (normalizedHom W alpha) := by
+  unfold normalizedHom normalizedWhiskerRightHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append]
+  rw [LinearWord.normalizationIso_append W first post]
+  rw [LinearWord.normalizationIso_append W second post]
+  simp only [Iso.trans_hom, Iso.trans_inv, Iso.symm_hom, Iso.symm_inv]
+  let sourceComparison := (LinearWord.toWordAppendIso W
+    (LinearWord.flatten W first) (LinearWord.flatten W post)).hom
+  let targetComparison := (LinearWord.toWordAppendIso W
+    (LinearWord.flatten W second) (LinearWord.flatten W post)).inv
+  let sourceAppend := (LinearWord.appendIso W
+    (LinearWord.normalizationIso W first)
+    (LinearWord.normalizationIso W post)).inv
+  let targetAppend := (LinearWord.appendIso W
+    (LinearWord.normalizationIso W second)
+    (LinearWord.normalizationIso W post)).hom
+  let whiskered := Presented.whiskerRightHom W post alpha
+  let normalized := Presented.whiskerRightHom W
+    (LinearWord.toWord W (LinearWord.flatten W post))
+    (AlignedCell.quotientVcomp W (LinearWord.normalizationIso W first).inv
+      (AlignedCell.quotientVcomp W alpha
+        (LinearWord.normalizationIso W second).hom))
+  change AlignedCell.quotientVcomp W
+      (AlignedCell.quotientVcomp W sourceComparison sourceAppend)
+      (AlignedCell.quotientVcomp W whiskered
+        (AlignedCell.quotientVcomp W targetAppend targetComparison)) =
+    AlignedCell.quotientVcomp W sourceComparison
+      (AlignedCell.quotientVcomp W normalized targetComparison)
+  calc
+    _ = AlignedCell.quotientVcomp W sourceComparison
+        (AlignedCell.quotientVcomp W
+          (AlignedCell.quotientVcomp W sourceAppend
+            (AlignedCell.quotientVcomp W whiskered targetAppend))
+          targetComparison) := by
+      simp only [AlignedCell.quotientVcomp_assoc]
+    _ = AlignedCell.quotientVcomp W sourceComparison
+        (AlignedCell.quotientVcomp W normalized targetComparison) := by
+      rw [show AlignedCell.quotientVcomp W sourceAppend
+          (AlignedCell.quotientVcomp W whiskered targetAppend) = normalized by
+        dsimp [sourceAppend, whiskered, targetAppend, normalized]
+        exact appendIso_inv_whiskerRight_appendIso_hom W
+          (LinearWord.normalizationIso W first)
+          (LinearWord.normalizationIso W second)
+          (LinearWord.normalizationIso W post) alpha]
 
 end HammockPath
 
@@ -2029,6 +2275,142 @@ theorem normalizedCellHom_vcomp {X Y : B}
       Presented.mk W beta ≫ (LinearWord.normalizationIso W last).hom)
   simp [Category.assoc]
 
+/-- Raw left whiskering is transported exactly to normalized left
+whiskering. -/
+@[simp]
+theorem normalizedCellHom_whiskerLeft {X Y Z : B}
+    (pre : Word W X Y) {first second : Word W Y Z}
+    (cell : Cell W first second) :
+    normalizedCellHom W (.whiskerLeft pre cell) =
+      normalizedWhiskerLeftHom W (LinearWord.flatten W pre)
+        (normalizedCellHom W cell) := by
+  exact normalizedHom_whiskerLeft W pre (Presented.mk W cell)
+
+/-- Raw right whiskering is transported exactly to normalized right
+whiskering. -/
+@[simp]
+theorem normalizedCellHom_whiskerRight {X Y Z : B}
+    {first second : Word W X Y} (cell : Cell W first second)
+    (post : Word W Y Z) :
+    normalizedCellHom W (.whiskerRight cell post) =
+      normalizedWhiskerRightHom W (LinearWord.flatten W post)
+        (normalizedCellHom W cell) := by
+  exact normalizedHom_whiskerRight W (Presented.mk W cell) post
+
+/-- The source-identity comparison normalizes to executable deletion of one
+forward identity column. -/
+@[simp]
+theorem normalizedCellHom_sourceId {X : B} :
+    normalizedCellHom W (Cell.sourceId (W := W) (X := X)) =
+      ColumnRefinement.toHom W (.deleteIdentity (.nil X)) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [LinearWord.flatten_forward, LinearWord.flatten]
+  rw [show LinearWord.normalizationIso W (Word.forward W (𝟙 X)) =
+      (Presented.wordRightUnitorIso W (Word.forward W (𝟙 X))).symm from rfl]
+  rw [LinearWord.normalizationIso_nil W X]
+  simp only [Iso.symm_inv, Iso.refl_hom]
+  rw [ColumnRefinement.toHom_deleteIdentity]
+  change AlignedCell.quotientVcomp W
+      (Presented.wordRightUnitorIso W (Word.forward W (𝟙 X))).hom
+      (AlignedCell.quotientVcomp W
+        (Presented.mk W (Cell.sourceId (W := W))) (𝟙 (Word.nil X))) =
+    AlignedCell.quotientVcomp W
+      (Presented.whiskerRightHom W (.nil X)
+        (Presented.mk W (Cell.sourceId (W := W))))
+      (Presented.wordLeftUnitorIso W (.nil X)).hom
+  rw [AlignedCell.quotientVcomp_comp_id]
+  have whiskerEquality :
+      Presented.whiskerRightHom W (.nil X)
+          (Presented.mk W (Cell.sourceId (W := W))) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (Word.forward W (𝟙 X))).hom
+          (AlignedCell.quotientVcomp W
+            (Presented.mk W (Cell.sourceId (W := W)))
+            (Presented.wordRightUnitorIso W (.nil X)).inv) :=
+    Quot.sound (Presented.Rel.whisker_right_id_word
+      (Cell.sourceId (W := W)))
+  rw [whiskerEquality]
+  rw [AlignedCell.quotientVcomp_assoc]
+  rw [AlignedCell.quotientVcomp_assoc W
+    (Presented.mk W (Cell.sourceId (W := W)))
+    (Presented.wordRightUnitorIso W (.nil X)).inv
+    (Presented.wordLeftUnitorIso W (.nil X)).hom]
+  have unitCancellation :
+      AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (.nil X)).inv
+          (Presented.wordLeftUnitorIso W (.nil X)).hom =
+        𝟙 (Word.nil X) := by
+    change (ρ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv ≫
+      (λ_ (𝟙 (⟨X⟩ : Presented.Localization W))).hom = _
+    rw [← unitors_inv_equal]
+    exact (Presented.wordLeftUnitorIso W (.nil X)).inv_hom_id
+  rw [unitCancellation, AlignedCell.quotientVcomp_comp_id]
+
+/-- The inverse source-identity comparison normalizes to executable insertion
+of one forward identity column. -/
+@[simp]
+theorem normalizedCellHom_sourceIdInv {X : B} :
+    normalizedCellHom W (Cell.sourceIdInv (W := W) (X := X)) =
+      ColumnRefinement.toHom W (.insertIdentity (.nil X)) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [LinearWord.flatten_forward, LinearWord.flatten]
+  rw [LinearWord.normalizationIso_nil W X]
+  rw [show LinearWord.normalizationIso W (Word.forward W (𝟙 X)) =
+      (Presented.wordRightUnitorIso W (Word.forward W (𝟙 X))).symm from rfl]
+  simp only [Iso.refl_inv, Iso.symm_hom]
+  rw [ColumnRefinement.toHom_insertIdentity]
+  change AlignedCell.quotientVcomp W (𝟙 (Word.nil X))
+      (AlignedCell.quotientVcomp W
+        (Presented.mk W (Cell.sourceIdInv (W := W)))
+        (Presented.wordRightUnitorIso W (Word.forward W (𝟙 X))).inv) =
+    AlignedCell.quotientVcomp W
+      (Presented.wordLeftUnitorIso W (.nil X)).inv
+      (Presented.whiskerRightHom W (.nil X)
+        (Presented.mk W (Cell.sourceIdInv (W := W))))
+  rw [AlignedCell.quotientVcomp_id_comp]
+  have whiskerEquality :
+      Presented.whiskerRightHom W (.nil X)
+          (Presented.mk W (Cell.sourceIdInv (W := W))) =
+        AlignedCell.quotientVcomp W
+          (Presented.wordRightUnitorIso W (.nil X)).hom
+          (AlignedCell.quotientVcomp W
+            (Presented.mk W (Cell.sourceIdInv (W := W)))
+            (Presented.wordRightUnitorIso W
+              (Word.forward W (𝟙 X))).inv) :=
+    Quot.sound (Presented.Rel.whisker_right_id_word
+      (Cell.sourceIdInv (W := W)))
+  rw [whiskerEquality]
+  rw [← AlignedCell.quotientVcomp_assoc W
+    (Presented.wordLeftUnitorIso W (.nil X)).inv
+    (Presented.wordRightUnitorIso W (.nil X)).hom]
+  have unitCancellation :
+      AlignedCell.quotientVcomp W
+          (Presented.wordLeftUnitorIso W (.nil X)).inv
+          (Presented.wordRightUnitorIso W (.nil X)).hom =
+        𝟙 (Word.nil X) := by
+    change (λ_ (𝟙 (⟨X⟩ : Presented.Localization W))).inv ≫
+      (ρ_ (𝟙 (⟨X⟩ : Presented.Localization W))).hom = _
+    rw [unitors_inv_equal]
+    exact (Presented.wordRightUnitorIso W (.nil X)).inv_hom_id
+  rw [unitCancellation, AlignedCell.quotientVcomp_id_comp]
+
+/-- Equality transport does not change normalized quotient semantics. -/
+@[simp]
+theorem normalizedCellHom_transport {X Y : B}
+    {first second first' second' : Word W X Y}
+    (sourceEquality : first = first') (targetEquality : second = second')
+    (cell : Cell W first second) :
+    normalizedCellHom W (.transport sourceEquality targetEquality cell) =
+      sourceEquality ▸ targetEquality ▸ normalizedCellHom W cell := by
+  subst first'
+  subst second'
+  unfold normalizedCellHom
+  have transportEquality :
+      Presented.mk W (Cell.transport (W := W) rfl rfl cell) =
+        Presented.mk W cell :=
+    Quot.sound (Presented.Rel.transport_refl cell)
+  rw [transportEquality]
+
 /-- One-step linear row representing a source 1-cell. -/
 def forwardRow {X Y : B} (f : X ⟶ Y) : LinearWord W X Y :=
   .cons (.forward f) (.nil Y)
@@ -2111,6 +2493,126 @@ theorem vcomp_normalizable {X Y : B}
     Normalizable W (.vcomp alpha beta) := by
   rw [Normalizable, normalizedCellHom_vcomp]
   exact vcomp_mem_semanticImage W hAlpha hBeta
+
+/-- Left whiskering preserves raw-cell normalizability. -/
+theorem whiskerLeft_normalizable {X Y Z : B}
+    (pre : Word W X Y) {first second : Word W Y Z}
+    {cell : Cell W first second} (member : Normalizable W cell) :
+    Normalizable W (.whiskerLeft pre cell) := by
+  rw [Normalizable, normalizedCellHom_whiskerLeft]
+  exact whiskerLeft_mem_semanticImage W (LinearWord.flatten W pre) member
+
+/-- Right whiskering preserves raw-cell normalizability. -/
+theorem whiskerRight_normalizable {X Y Z : B}
+    {first second : Word W X Y} {cell : Cell W first second}
+    (member : Normalizable W cell) (post : Word W Y Z) :
+    Normalizable W (.whiskerRight cell post) := by
+  rw [Normalizable, normalizedCellHom_whiskerRight]
+  exact whiskerRight_mem_semanticImage W (LinearWord.flatten W post) member
+
+/-- The source-identity comparison is hammock-normalizable. -/
+theorem sourceId_normalizable {X : B} :
+    Normalizable W (Cell.sourceId (W := W) (X := X)) := by
+  rw [Normalizable, normalizedCellHom_sourceId]
+  exact refinement_mem_semanticImage W (.deleteIdentity (.nil X))
+
+/-- The inverse source-identity comparison is hammock-normalizable. -/
+theorem sourceIdInv_normalizable {X : B} :
+    Normalizable W (Cell.sourceIdInv (W := W) (X := X)) := by
+  rw [Normalizable, normalizedCellHom_sourceIdInv]
+  exact refinement_mem_semanticImage W (.insertIdentity (.nil X))
+
+/-- Equality transport preserves raw-cell normalizability. -/
+theorem transport_normalizable {X Y : B}
+    {first second first' second' : Word W X Y}
+    (sourceEquality : first = first') (targetEquality : second = second')
+    {cell : Cell W first second} (member : Normalizable W cell) :
+    Normalizable W (.transport sourceEquality targetEquality cell) := by
+  subst first'
+  subst second'
+  rw [Normalizable, normalizedCellHom_transport]
+  exact member
+
+/-- Exact remaining generator obligations for a complete raw-cell
+normalization induction. Identity, vertical composition, original cells,
+source identities, both whiskerings, and equality transport are already
+discharged separately. -/
+structure StructuralGeneratorNormalizable : Prop where
+  /-- Source-composition comparison. -/
+  sourceComp : ∀ {X Y Z : B} (f : X ⟶ Y) (g : Y ⟶ Z),
+    Normalizable W (Cell.sourceComp (W := W) f g)
+  /-- Inverse source-composition comparison. -/
+  sourceCompInv : ∀ {X Y Z : B} (f : X ⟶ Y) (g : Y ⟶ Z),
+    Normalizable W (Cell.sourceCompInv (W := W) f g)
+  /-- Marked unit. -/
+  markedUnit : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
+    Normalizable W (Cell.markedUnit (W := W) f hf)
+  /-- Inverse marked unit. -/
+  markedUnitInv : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
+    Normalizable W (Cell.markedUnitInv (W := W) f hf)
+  /-- Marked counit. -/
+  markedCounit : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
+    Normalizable W (Cell.markedCounit (W := W) f hf)
+  /-- Inverse marked counit. -/
+  markedCounitInv : ∀ {X Y : B} (f : X ⟶ Y) (hf : W f),
+    Normalizable W (Cell.markedCounitInv (W := W) f hf)
+  /-- Binary associator. -/
+  associator : ∀ {X Y Z T : B} (first : Word W X Y)
+      (second : Word W Y Z) (third : Word W Z T),
+    Normalizable W (Cell.associator (W := W) first second third)
+  /-- Inverse binary associator. -/
+  associatorInv : ∀ {X Y Z T : B} (first : Word W X Y)
+      (second : Word W Y Z) (third : Word W Z T),
+    Normalizable W (Cell.associatorInv (W := W) first second third)
+  /-- Binary left unitor. -/
+  leftUnitor : ∀ {X Y : B} (word : Word W X Y),
+    Normalizable W (Cell.leftUnitor (W := W) word)
+  /-- Inverse binary left unitor. -/
+  leftUnitorInv : ∀ {X Y : B} (word : Word W X Y),
+    Normalizable W (Cell.leftUnitorInv (W := W) word)
+  /-- Binary right unitor. -/
+  rightUnitor : ∀ {X Y : B} (word : Word W X Y),
+    Normalizable W (Cell.rightUnitor (W := W) word)
+  /-- Inverse binary right unitor. -/
+  rightUnitorInv : ∀ {X Y : B} (word : Word W X Y),
+    Normalizable W (Cell.rightUnitorInv (W := W) word)
+
+/-- Complete raw-cell normalization follows by structural induction from the
+remaining explicit structural-generator obligations. -/
+theorem normalizable_of_structuralGenerators
+    (generators : StructuralGeneratorNormalizable W) :
+    ∀ {X Y : B} {first second : Word W X Y}
+      (cell : Cell W first second), Normalizable W cell := by
+  intro X Y first second cell
+  induction cell with
+  | id word => exact identity_normalizable W word
+  | vcomp alpha beta hAlpha hBeta =>
+      exact vcomp_normalizable W hAlpha hBeta
+  | original alpha =>
+      rw [Normalizable, normalizedCellHom_original]
+      exact originalCell_mem_semanticImage W alpha
+  | sourceId => exact sourceId_normalizable W
+  | sourceIdInv => exact sourceIdInv_normalizable W
+  | sourceComp f g => exact generators.sourceComp f g
+  | sourceCompInv f g => exact generators.sourceCompInv f g
+  | markedUnit f hf => exact generators.markedUnit f hf
+  | markedUnitInv f hf => exact generators.markedUnitInv f hf
+  | markedCounit f hf => exact generators.markedCounit f hf
+  | markedCounitInv f hf => exact generators.markedCounitInv f hf
+  | whiskerLeft pre cell member =>
+      exact whiskerLeft_normalizable W pre member
+  | whiskerRight cell post member =>
+      exact whiskerRight_normalizable W member post
+  | associator first second third =>
+      exact generators.associator first second third
+  | associatorInv first second third =>
+      exact generators.associatorInv first second third
+  | leftUnitor word => exact generators.leftUnitor word
+  | leftUnitorInv word => exact generators.leftUnitorInv word
+  | rightUnitor word => exact generators.rightUnitor word
+  | rightUnitorInv word => exact generators.rightUnitorInv word
+  | transport sourceEquality targetEquality cell member =>
+      exact transport_normalizable W sourceEquality targetEquality member
 
 /-- Original source 2-cells are hammock-normalizable. -/
 theorem original_normalizable {X Y : B} {f g : X ⟶ Y}

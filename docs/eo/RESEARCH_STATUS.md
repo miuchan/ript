@@ -364,10 +364,14 @@ unukolumnan eĝon egalan al la origina kvocienta ĉelo konjugita per dekstraj
 unuigiloj. Normaligitaj maldekstra/dekstra whiskering kaj horizontala append
 nun konservas semantikan egalecon kaj bildanecon, kun ekzaktaj tri-modelaj
 nervaj formuloj. Krudaj identecaj kaj originalaj ĉeloj estas normaligeblaj,
-kaj vertikala kunmeto konservas normaligeblecon. Restas pruvi naturecon de la
-normaligaj izomorfioj rilate al kruda whiskering, normaligi la aliajn
-strukturajn generatorojn, koherecon de kritikaj paroj, reduktita-hammock
-invariant econ kaj norman malfort-ekvivalentan pakon.
+kaj vertikala kunmeto konservas normaligeblecon. Normaligo nun estas nature
+kongrua kun ambaŭ krudaj whiskering-operacioj; krudaj identecaj, originalaj,
+font-identecaj/inversaj kaj transportaj kazoj, kune kun vertikala/whiskering
+fermo, estas pruvitaj. La ceteraj dek du source-composite, markitaj paroj,
+asociatoraj kaj unuitoraj generatoraj kampoj estas eksplicitaj kaj kondiĉe
+implicas normaligon de ĉiu kruda ĉelo, sed ne estas senkondiĉe pruvitaj.
+Semantika pleneco, kohereco de kritikaj paroj, reduktita-hammock invariant eco
+kaj norma malfort-ekvivalenta pako restas malfermitaj.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

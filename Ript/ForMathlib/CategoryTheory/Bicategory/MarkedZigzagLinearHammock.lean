@@ -64,6 +64,22 @@ def flatten {X Y : B} : Word W X Y → LinearWord W X Y
   | .nil X => .nil X
   | .comp first second => append W (flatten first) (flatten second)
 
+/-- Flattening a one-step forward word gives the corresponding singleton
+linear row. -/
+@[simp]
+theorem flatten_forward {X Y : B} (f : X ⟶ Y) :
+    flatten W (Word.forward W f) =
+      .cons (.forward f) (.nil Y) :=
+  rfl
+
+/-- Flattening a one-step marked reverse gives the corresponding singleton
+linear row. -/
+@[simp]
+theorem flatten_backward {X Y : B} (f : X ⟶ Y) (hf : W f) :
+    flatten W (Word.backward W f hf) =
+      .cons (.backward f hf) (.nil X) :=
+  rfl
+
 /-- Number of oriented steps in a linear word. -/
 def length {X Y : B} : LinearWord W X Y → ℕ
   | .nil _ => 0
@@ -140,6 +156,35 @@ noncomputable def normalizationIso {X Y : B} (word : Word W X Y) :
   | @comp X Y Z first second ihFirst ihSecond =>
       exact appendIso W ihFirst ihSecond ≪≫
         (toWordAppendIso W (flatten W first) (flatten W second)).symm
+
+/-- Normalization of one atomic word is inverse right unitor. -/
+theorem normalizationIso_atom {X Y : B} (step : Step W X Y) :
+    normalizationIso W (Word.atom step) =
+      (Presented.wordRightUnitorIso W (Word.atom step)).symm :=
+  rfl
+
+/-- The empty word is already in linear normal form. -/
+theorem normalizationIso_nil (X : B) :
+    normalizationIso W (Word.nil X) = Iso.refl (Word.nil X) :=
+  rfl
+
+/-- Flattening binary append is exactly linear append. -/
+@[simp]
+theorem flatten_append {X Y Z : B}
+    (first : Word W X Y) (second : Word W Y Z) :
+    flatten W (.comp first second) =
+      append W (flatten W first) (flatten W second) :=
+  rfl
+
+/-- The canonical normalization of a binary append is horizontal append of
+the two endpoint normalizations followed by the canonical linear append
+comparison. -/
+theorem normalizationIso_append {X Y Z : B}
+    (first : Word W X Y) (second : Word W Y Z) :
+    normalizationIso W (.comp first second) =
+      appendIso W (normalizationIso W first) (normalizationIso W second) ≪≫
+        (toWordAppendIso W (flatten W first) (flatten W second)).symm :=
+  rfl
 
 /-- Linear words form a mapping category by pulling back the quotient
 2-cell hom-sets between their binary expansions. -/
