@@ -437,6 +437,11 @@ mapping category is equivalent to both the presented category and the actual
 target local nerve. `LinearHammockDwyerKanCore` combines this mapping condition
 with outer essential surjectivity. What remains is comparison with the
 classical arbitrary-grid hammock or another accepted derived construction.
+The arbitrary-height vertical-grid part is now explicit: an `n`-grid consists
+of `n + 1` linear rows, `n` adjacent quotient-cell edges, and endpoint
+equations, and strict-Segal reconstruction identifies it with every
+linear-hammock `n`-simplex. The remaining classical gap is horizontal
+multi-column hammock moves/reductions and their homotopical invariance.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -525,7 +530,8 @@ presented Dwyer--Kan criterion is also proved; a standard Dwyer--Kan claim
 now has an independent linear hammock mapping model and direct target
 comparison, but still requires comparison with the classical arbitrary-grid
 hammock (or another accepted derived model) and standard weak-equivalence
-packaging.
+packaging. Arbitrary-height row grids and their exact nerve representation are
+proved; multi-column hammock reductions remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

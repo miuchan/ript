@@ -325,6 +325,11 @@ longon kaj donas ekvivalentan map-kategorion kaj nervon kun eksplicita
 homotopia inversilo, inkluzive rektan komparon al la fakta cela loka nervo.
 `LinearHammockDwyerKanCore` kunigas tion kun ekstera esenca surĵeteco. Restas
 komparo kun la klasika arbitra-krada hammock aŭ alia akceptita derivita modelo.
+La arbitra-alteca vertikala parto nun estas eksplicita: `n`-krado enhavas
+`n + 1` linearajn hammock-vicojn, `n` apudajn kvocient-2-ĉelajn eĝojn kaj
+finpunktajn ekvaciojn, kaj strikta Segal-rekonstruo identigas ĝin kun la
+`n`-simplaĵoj de la lineara hammock-nervo. Restas la klasikaj horizontalaj
+plurkolumnaj movoj kaj reduktoj.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
