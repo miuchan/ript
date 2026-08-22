@@ -949,10 +949,18 @@ the actual output of `lake env lean Ript/Audit/AxiomChecks.lean`.
 | `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.related_trans` | `none` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_iff_related` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientMk_eq_semanticIso` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientFunctor_full` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientFunctor_faithful` | `[propext, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientFunctor_essSurj` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.quotientEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.CommonRefinement.rowObjectIsGroupoid` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagAlignedHammock.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.commonRefinementCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.thinRefinementNerveEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.thinRefinementHomotopyEquivalence` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
+| `Ript.Higher.CostExactZigzagMappingSpace.thinRefinementNerveCore` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `Ript.Higher.CostExactZigzagMappingSpace.core` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzagMappingSpace.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |
 | `CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/PseudofunctorHomotopy.lean` |

@@ -1,4 +1,5 @@
 import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagLinearHammock
+import Mathlib.CategoryTheory.Groupoid.Discrete
 
 /-!
 # Column-aligned hammocks for marked bicategories
@@ -17,9 +18,11 @@ and quotient interpretations are exact, and inverse generator moves cancel
 semantically. Every refinement now has an executable reverse and one unified
 semantic isomorphism. Explicit common-refinement spans form an equivalence
 relation and a row quotient, whose equality is sound for semantic isomorphism
-without assuming object equality. Critical-pair coherence, a quotient mapping
-category/nerve, and reduced-hammock invariance are still absent, so this is not
-by itself the classical Dwyer--Kan hammock localization.
+without assuming object equality. The induced thin refinement groupoid is
+equivalent to the discrete row quotient. A non-thin refinement-path mapping
+category retaining competing paths, critical-pair coherence, and reduced-
+hammock invariance are still absent, so this is not by itself the classical
+Dwyer--Kan hammock localization.
 -/
 
 set_option autoImplicit false
@@ -1066,6 +1069,74 @@ theorem quotientMk_eq_semanticIso {X Y : B}
     Nonempty (@Iso (Word W X Y) (Presented.wordCategory W X Y)
       (LinearWord.toWord W first) (LinearWord.toWord W second)) :=
   related_semanticIso W ((quotientMk_eq_iff_related W first second).mp equality)
+
+/-! ### Zero-truncated quotient mapping category -/
+
+/-- Wrapper for rows regarded only through common-refinement morphisms.  A
+wrapper is necessary because raw `LinearWord`s already carry the richer
+quotient-2-cell mapping category. -/
+structure RowObject (X Y : B) where
+  /-- Underlying linear hammock row. -/
+  row : LinearWord W X Y
+
+/-- The thin common-refinement category: there is at most one morphism between
+two rows, inhabited exactly when they have a common refinement. -/
+instance rowObjectCategory (X Y : B) : Category (RowObject W X Y) where
+  Hom first second := ULift (PLift (Related W first.row second.row))
+  id first := ⟨⟨related_refl W first.row⟩⟩
+  comp first second :=
+    ⟨⟨related_trans W first.down.down second.down.down⟩⟩
+  id_comp _ := Subsingleton.elim _ _
+  comp_id _ := Subsingleton.elim _ _
+  assoc _ _ _ := Subsingleton.elim _ _
+
+/-- Projection from the thin common-refinement category to the discrete row
+quotient. -/
+def quotientFunctor (X Y : B) :
+    RowObject W X Y ⥤ Discrete (RowQuotient W X Y) where
+  obj row := Discrete.mk (quotientMk W row.row)
+  map refinement := Discrete.eqToHom (Quotient.sound refinement.down.down)
+  map_id _ := Subsingleton.elim _ _
+  map_comp _ _ := Subsingleton.elim _ _
+
+instance quotientFunctor_faithful (X Y : B) :
+    (quotientFunctor W X Y).Faithful where
+  map_injective {X Y} first second _ := by
+    rcases first with ⟨⟨first⟩⟩
+    rcases second with ⟨⟨second⟩⟩
+    rfl
+
+instance quotientFunctor_full (X Y : B) :
+    (quotientFunctor W X Y).Full where
+  map_surjective {first second} morphism := by
+    have equality : quotientMk W first.row = quotientMk W second.row :=
+      Discrete.eq_of_hom morphism
+    refine ⟨⟨⟨(quotientMk_eq_iff_related W first.row second.row).mp equality⟩⟩, ?_⟩
+    exact Subsingleton.elim _ _
+
+instance quotientFunctor_essSurj (X Y : B) :
+    (quotientFunctor W X Y).EssSurj where
+  mem_essImage target := by
+    rcases target with ⟨target⟩
+    induction target using Quotient.inductionOn with
+    | _ row =>
+        exact ⟨⟨row⟩, ⟨Iso.refl _⟩⟩
+
+instance quotientFunctor_isEquivalence (X Y : B) :
+    (quotientFunctor W X Y).IsEquivalence where
+  faithful := inferInstance
+  full := inferInstance
+  essSurj := inferInstance
+
+/-- The zero-truncated common-refinement mapping category is equivalent to the
+discrete category of row-quotient classes. -/
+noncomputable def quotientEquivalence (X Y : B) :
+    RowObject W X Y ≌ Discrete (RowQuotient W X Y) :=
+  (quotientFunctor W X Y).asEquivalence
+
+/-- The thin common-refinement category is a groupoid. -/
+instance rowObjectIsGroupoid (X Y : B) : IsGroupoid (RowObject W X Y) :=
+  isGroupoid_of_reflects_iso (quotientFunctor W X Y)
 
 end CommonRefinement
 

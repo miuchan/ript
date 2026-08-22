@@ -344,8 +344,12 @@ izomorfioj, ambaŭ rondiroj kaj arbitra-prefiksa stabileco. Ĉiu rafinado nun
 havas plenumeblan inverson kaj unuigitan semantikan izomorfion. Dulkruraj
 komun-rafinadaj span-oj formas ekvivalentrilaton kaj vico-kvocienton; kvocienta
 egaleco estas ekzakte komun-rafineblo kaj donas semantikan izomorfion sen
-objekta egaleco. Restas kvocienta map-kategorio/nervo, kohereco de konkuraj
-movoj, reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
+objekta egaleco. La nul-tranĉita map-tavolo ankaŭ estas kompleta: envolvitaj
+vicoj formas maldikan komun-rafinadan grupoion, kategorie ekvivalentan al la
+diskreta vico-kvociento, kaj la nerva komparo havas eksplicitan simplican
+inversilon kaj ambaŭ homotopiojn. Restas nemaldika rafinad-voja nervo, kohereco
+de konkuraj movoj, reduktita-hammock invariant eco kaj norma
+malfort-ekvivalenta pako.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
