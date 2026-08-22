@@ -352,7 +352,13 @@ nun konservas vojojn modulo egaleco de iliaj kvocient-ĉelaj interpretoj. Ĝia
 nerva mapo al la lineara map-nervo estas fidela kaj esence surĵeta je vicaj
 objektoj, sendas ĉiun vojon al izomorfio, kaj havas ekzaktajn verticajn/eĝajn
 formulojn; la nul-tranĉo al la maldika grupoido estas plena kaj esence
-surĵeta. Restas pleneco aŭ ekzakta bilda karakterizo, kohereco de kritikaj
+surĵeta. Faktaj kvocientaj 2-ĉeloj kun ekzista atestilo de plenumebla rafinado
+nun formas la ekzaktan semantikan bildgrupoidon. La voja grupoido estas
+kategorie ekvivalenta al ĝi; la nerva komparo havas eksplicitan simplician
+homotopian inverson, la bildinkludo en la plenan linearan mapkategorion estas
+fidela, kaj la origina semantika nervomapo strikte faktoriĝas tra ĝi. Restas
+pruvi ke tiu ekzakta bildo kovras la bezonatan derivitan/hammock-an mapkernon
+(aŭ aldoni la mankantajn linearajn kvocientajn 2-ĉelojn), kohereco de kritikaj
 paroj, reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
