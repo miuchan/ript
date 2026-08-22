@@ -28,9 +28,9 @@ all source 2-cells in one-column form, and is closed under normalized left/right
 whiskering and horizontal append. Normalization is natural for raw whiskering;
 identity, original, source-identity/inverse, composition-closure, whiskering,
 source-composition/inverse, and equality-transport induction branches are
-complete; marked unit/counit pairs and inverses are complete too, while six
-explicit
-structural-generator obligations remain. Coverage of every presented quotient
+complete; marked unit/counit pairs and inverses plus left unitor and inverse
+are complete too. Four explicit associator/right-unitor obligations remain.
+Coverage of every presented quotient
 2-cell, critical-pair coherence, and reduced-hammock invariance are still
 absent, so this is not by itself the classical Dwyer--Kan hammock localization.
 -/
@@ -1742,6 +1742,14 @@ noncomputable def normalizedCellHom {X Y : B}
       (LinearWord.toWord W (LinearWord.flatten W second)) :=
   normalizedHom W (Presented.mk W cell)
 
+/-- Presented raw-cell relations induce equality of normalized semantics. -/
+theorem normalizedCellHom_eq_of_rel {X Y : B}
+    {first second : Word W X Y} {alpha beta : Cell W first second}
+    (relation : Presented.Rel (W := W) alpha beta) :
+    normalizedCellHom W alpha = normalizedCellHom W beta := by
+  unfold normalizedCellHom
+  rw [show Presented.mk W alpha = Presented.mk W beta from Quot.sound relation]
+
 /-- Normalization commutes exactly with raw left whiskering. -/
 theorem normalizedHom_whiskerLeft {X Y Z : B} (pre : Word W X Y)
     {first second : Word W Y Z} (alpha : Presented.Hom W first second) :
@@ -1948,6 +1956,21 @@ def append {X Y Z : B}
       (LinearWord.append W firstTarget secondTarget) :=
   .vcomp (.whiskerRight first secondSource)
     (.whiskerLeft firstTarget second)
+
+/-- A propositional equality of linear rows yields the transported identity
+generated path. -/
+def ofEq {X Y : B} {first second : LinearWord W X Y}
+    (equality : first = second) : HammockPath W first second := by
+  subst second
+  exact .identity first
+
+/-- The equality path reduces to the identity after equality elimination. -/
+@[simp]
+theorem toHom_ofEq {X Y : B} {first second : LinearWord W X Y}
+    (equality : first = second) :
+    toHom W (ofEq W equality) = equality ▸ 𝟙 (LinearWord.toWord W first) := by
+  subst second
+  rfl
 
 /-- Exact quotient interpretation of horizontal path append. -/
 @[simp]
@@ -2690,6 +2713,52 @@ theorem normalizedCellHom_markedCounitInv {X Y : B}
   exact normalizedCellHom_nil_twoAtoms W
     (.backward f hf) (.forward f) (.markedCounitInv f hf)
 
+/-- Raw left unitor normalizes to the identity of the linear normal form. -/
+@[simp]
+theorem normalizedCellHom_leftUnitor {X Y : B} (word : Word W X Y) :
+    normalizedCellHom W (Cell.leftUnitor (W := W) word) =
+      𝟙 (LinearWord.toWord W (LinearWord.flatten W word)) := by
+  unfold normalizedCellHom normalizedHom
+  simp only [Word.append_eq_comp, LinearWord.flatten_append]
+  rw [LinearWord.normalizationIso_append W (.nil X) word]
+  rw [LinearWord.normalizationIso_nil W X]
+  simp only [LinearWord.flatten_nil]
+  rw [LinearWord.toWordAppendIso_nil W (LinearWord.flatten W word)]
+  simp only [Iso.trans_inv]
+  unfold LinearWord.appendIso
+  simp only [Iso.trans_inv, Bicategory.whiskerLeftIso,
+    Bicategory.whiskerRightIso, LinearWord.toWord_nil]
+  let iso := LinearWord.normalizationIso W word
+  let target := LinearWord.toWord W (LinearWord.flatten W word)
+  change AlignedCell.quotientVcomp W
+      (AlignedCell.quotientVcomp W
+        (Presented.wordLeftUnitorIso W target).inv
+        (AlignedCell.quotientVcomp W
+          (Presented.whiskerLeftHom W (.nil X) iso.inv)
+          (Presented.whiskerRightHom W word (𝟙 (Word.nil X)))))
+      (AlignedCell.quotientVcomp W
+        (Presented.wordLeftUnitorIso W word).hom iso.hom) =
+    𝟙 target
+  have whiskerIdentity :
+      Presented.whiskerRightHom W word (𝟙 (Word.nil X)) =
+        𝟙 (Word.append (W := W) (.nil X) word) :=
+    Quot.sound (Presented.Rel.whisker_right_id (.nil X) word)
+  rw [whiskerIdentity, AlignedCell.quotientVcomp_comp_id]
+  simp only [AlignedCell.quotientVcomp_assoc]
+  exact LinearWord.leftUnitor_conjugation
+    (C := Presented.Localization W) iso
+
+/-- Raw inverse left unitor also normalizes to identity. -/
+@[simp]
+theorem normalizedCellHom_leftUnitorInv {X Y : B} (word : Word W X Y) :
+    normalizedCellHom W (Cell.leftUnitorInv (W := W) word) =
+      𝟙 (LinearWord.toWord W (LinearWord.flatten W word)) := by
+  have relationEquality := normalizedCellHom_eq_of_rel W
+    (Presented.Rel.left_unitor_inv_hom (W := W) word)
+  rw [normalizedCellHom_vcomp, normalizedCellHom_leftUnitor,
+    normalizedCellHom_id] at relationEquality
+  exact (AlignedCell.quotientVcomp_comp_id W _).symm.trans relationEquality
+
 /-- Equality transport does not change normalized quotient semantics. -/
 @[simp]
 theorem normalizedCellHom_transport {X Y : B}
@@ -2860,6 +2929,18 @@ theorem markedCounitInv_normalizable {X Y : B}
   rw [Normalizable, normalizedCellHom_markedCounitInv]
   exact refinement_mem_semanticImage W (.insertMarkedCounitPair f hf (.nil Y))
 
+/-- Left unitor is hammock-normalizable. -/
+theorem leftUnitor_normalizable {X Y : B} (word : Word W X Y) :
+    Normalizable W (Cell.leftUnitor (W := W) word) := by
+  rw [Normalizable, normalizedCellHom_leftUnitor]
+  exact ⟨.identity (LinearWord.flatten W word), rfl⟩
+
+/-- Inverse left unitor is hammock-normalizable. -/
+theorem leftUnitorInv_normalizable {X Y : B} (word : Word W X Y) :
+    Normalizable W (Cell.leftUnitorInv (W := W) word) := by
+  rw [Normalizable, normalizedCellHom_leftUnitorInv]
+  exact ⟨.identity (LinearWord.flatten W word), rfl⟩
+
 /-- Equality transport preserves raw-cell normalizability. -/
 theorem transport_normalizable {X Y : B}
     {first second first' second' : Word W X Y}
@@ -2874,7 +2955,7 @@ theorem transport_normalizable {X Y : B}
 /-- Exact remaining generator obligations for a complete raw-cell
 normalization induction. Identity, vertical composition, original cells,
 source identities, source composition, marked pairs, both whiskerings, and
-equality transport are already
+left unitors, plus equality transport are already
 discharged separately. -/
 structure StructuralGeneratorNormalizable : Prop where
   /-- Binary associator. -/
@@ -2885,12 +2966,6 @@ structure StructuralGeneratorNormalizable : Prop where
   associatorInv : ∀ {X Y Z T : B} (first : Word W X Y)
       (second : Word W Y Z) (third : Word W Z T),
     Normalizable W (Cell.associatorInv (W := W) first second third)
-  /-- Binary left unitor. -/
-  leftUnitor : ∀ {X Y : B} (word : Word W X Y),
-    Normalizable W (Cell.leftUnitor (W := W) word)
-  /-- Inverse binary left unitor. -/
-  leftUnitorInv : ∀ {X Y : B} (word : Word W X Y),
-    Normalizable W (Cell.leftUnitorInv (W := W) word)
   /-- Binary right unitor. -/
   rightUnitor : ∀ {X Y : B} (word : Word W X Y),
     Normalizable W (Cell.rightUnitor (W := W) word)
@@ -2928,8 +3003,8 @@ theorem normalizable_of_structuralGenerators
       exact generators.associator first second third
   | associatorInv first second third =>
       exact generators.associatorInv first second third
-  | leftUnitor word => exact generators.leftUnitor word
-  | leftUnitorInv word => exact generators.leftUnitorInv word
+  | leftUnitor word => exact leftUnitor_normalizable W word
+  | leftUnitorInv word => exact leftUnitorInv_normalizable W word
   | rightUnitor word => exact generators.rightUnitor word
   | rightUnitorInv word => exact generators.rightUnitorInv word
   | transport sourceEquality targetEquality cell member =>

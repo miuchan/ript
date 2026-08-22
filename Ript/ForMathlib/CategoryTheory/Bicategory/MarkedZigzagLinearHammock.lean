@@ -52,6 +52,28 @@ def append {X Y Z : B} :
   | .nil _, second => second
   | .cons step rest, second => .cons step (append rest second)
 
+/-- Appending an empty row on the right returns the original linear row. -/
+@[simp]
+theorem append_nil {X Y : B} (word : LinearWord W X Y) :
+    append W word (.nil Y) = word := by
+  induction word with
+  | nil => rfl
+  | cons step rest ih =>
+      simp only [append]
+      rw [ih]
+
+/-- Linear row append is associative. -/
+theorem append_assoc {X Y Z T : B}
+    (first : LinearWord W X Y) (second : LinearWord W Y Z)
+    (third : LinearWord W Z T) :
+    append W (append W first second) third =
+      append W first (append W second third) := by
+  induction first with
+  | nil => rfl
+  | cons step rest ih =>
+      simp only [append]
+      rw [ih]
+
 /-- Convert a right-associated linear word to the binary marked-zigzag
 syntax. -/
 def toWord {X Y : B} : LinearWord W X Y → Word W X Y
@@ -59,11 +81,21 @@ def toWord {X Y : B} : LinearWord W X Y → Word W X Y
   | .cons step rest =>
       Word.append (W := W) (.atom step) (toWord rest)
 
+/-- The empty linear row converts to the empty binary word. -/
+@[simp]
+theorem toWord_nil (X : B) : toWord W (.nil X) = .nil X :=
+  rfl
+
 /-- Flatten a binary marked-zigzag composition tree to a linear word. -/
 def flatten {X Y : B} : Word W X Y → LinearWord W X Y
   | .atom step => .cons step (.nil _)
   | .nil X => .nil X
   | .comp first second => append W (flatten first) (flatten second)
+
+/-- The empty binary word flattens to the empty linear row. -/
+@[simp]
+theorem flatten_nil (X : B) : flatten W (.nil X) = .nil X :=
+  rfl
 
 /-- Flattening a one-step forward word gives the corresponding singleton
 linear row. -/
@@ -145,6 +177,12 @@ noncomputable def toWordAppendIso {X Y Z : B}
         (Word.atom step) (ih second) ≪≫
         (Presented.wordAssociatorIso W
           (Word.atom step) (toWord W rest) (toWord W second)).symm
+
+/-- The append comparison with an empty first row is inverse left unitor. -/
+theorem toWordAppendIso_nil {X Y : B} (second : LinearWord W X Y) :
+    toWordAppendIso W (.nil X) second =
+      (Presented.wordLeftUnitorIso W (toWord W second)).symm :=
+  rfl
 
 /-- The append comparison for a singleton first row is the left-unitor
 comparison on the second row followed by inverse associativity. -/
@@ -233,6 +271,21 @@ theorem rightAssociatedPair_coherence {C : Type u} [Bicategory.{w, v} C]
     (ρ_ (first ≫ second)).inv ≫
       (α_ first second (𝟙 Z)).hom := by
   bicategory_coherence
+
+/-- Conjugating a left unitor along an arbitrary isomorphism cancels. -/
+theorem leftUnitor_conjugation {C : Type u} [Bicategory.{w, v} C]
+    {X Y : C} {first second : X ⟶ Y} (iso : first ≅ second) :
+    (λ_ second).inv ≫ (𝟙 X ◁ iso.inv) ≫
+      (λ_ first).hom ≫ iso.hom = 𝟙 second := by
+  simp
+
+/-- Inverse left-unitor conjugation along an arbitrary isomorphism also
+cancels. -/
+theorem leftUnitor_inv_conjugation {C : Type u} [Bicategory.{w, v} C]
+    {X Y : C} {first second : X ⟶ Y} (iso : first ≅ second) :
+    iso.inv ≫ (λ_ first).inv ≫ (𝟙 X ◁ iso.hom) ≫
+      (λ_ second).hom = 𝟙 second := by
+  simp
 
 /-- Normalizing a binary word of two atomic steps is exactly inverse right
 unitor followed by the associator into the canonical right-associated row. -/

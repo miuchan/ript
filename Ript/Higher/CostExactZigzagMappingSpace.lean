@@ -36,7 +36,8 @@ normalized left/right whiskering and horizontal append, with exact three-model
 nerve formulas. A raw-cell normalization core records the completed identity,
 original, source-identity/inverse, source-composition/inverse, vertical,
 whiskering, marked-pair/inverse, and transport branches, plus a conditional
-all-cell induction from six remaining structural generators. Coverage of all
+left-unitor/inverse and transport branches, plus a conditional all-cell
+induction from four remaining structural generators. Coverage of all
 presented quotient 2-cells, competing-move
 coherence, and reduced-hammock invariance are still absent, so these results
 are not by themselves the final Dwyer--Kan theorem.
@@ -1432,6 +1433,20 @@ structure HammockRawCellNormalizationCore : Prop where
       (costExactArrows R)
       (Bicategory.MarkedZigzag.Cell.markedCounitInv
         (W := costExactArrows R) f hf)
+  /-- Left unitor is normalizable. -/
+  leftUnitor : ∀ {M N : ProcessModel.{u, v, w} R}
+      (word : CostExactZigzag.Word (R := R) M N),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.leftUnitor
+        (W := costExactArrows R) word)
+  /-- Inverse left unitor is normalizable. -/
+  leftUnitorInv : ∀ {M N : ProcessModel.{u, v, w} R}
+      (word : CostExactZigzag.Word (R := R) M N),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.leftUnitorInv
+        (W := costExactArrows R) word)
   /-- Raw left whiskering preserves normalizability. -/
   whiskerLeft : ∀ (M N P : ProcessModel.{u, v, w} R)
       (pre : CostExactZigzag.Word (R := R) M N)
@@ -1515,6 +1530,12 @@ theorem hammockRawCellNormalizationCore :
   markedCounitInv := fun f hf =>
     Bicategory.MarkedZigzag.HammockPath.markedCounitInv_normalizable
       (costExactArrows R) f hf
+  leftUnitor := fun word =>
+    Bicategory.MarkedZigzag.HammockPath.leftUnitor_normalizable
+      (costExactArrows R) word
+  leftUnitorInv := fun word =>
+    Bicategory.MarkedZigzag.HammockPath.leftUnitorInv_normalizable
+      (costExactArrows R) word
   whiskerLeft := fun _ _ _ pre {_ _} {_} member =>
     Bicategory.MarkedZigzag.HammockPath.whiskerLeft_normalizable
       (costExactArrows R) pre member

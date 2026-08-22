@@ -370,8 +370,10 @@ font-identecaj/inversaj kaj transportaj kazoj, kune kun vertikala/whiskering
 fermo, estas pruvitaj. Font-kompona/inversa estas pruvitaj per pura bikategoria
 du-atoma kohereco kaj ekzakta forward expand/contract. Ĝeneralaj malplena-
 vorto/du-atoma-ciklo formuloj normaligas markitajn unit/counit kaj inversojn
-per ekzakta para enmeto/forigo. La ceteraj ses asociatoraj kaj unuitoraj
-generatoraj kampoj estas eksplicitaj kaj kondiĉe
+per ekzakta para enmeto/forigo. Linearaj append-right-unit/asocieco kaj
+komputeblaj egalecvojoj estas aldonitaj; left-unitor kaj inverso normaligas al
+identeco per arbitra-izomorfia konjugacio. La ceteraj kvar asociatoraj kaj
+right-unitoraj generatoraj kampoj estas eksplicitaj kaj kondiĉe
 implicas normaligon de ĉiu kruda ĉelo, sed ne estas senkondiĉe pruvitaj.
 Semantika pleneco, kohereco de kritikaj paroj, reduktita-hammock invariant eco
 kaj norma malfort-ekvivalenta pako restas malfermitaj.
