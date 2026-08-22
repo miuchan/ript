@@ -389,6 +389,15 @@ nerva mapo havas eksplicitan homotopian inverson kaj strikte faktoriĝas tra la
 generita-al-lineara kaj lineara-al-cela komparoj. Kune kun ekstera esenca
 surĵeteco tio formas la kontrolitan `GeneratedHammockDwyerKanCore`.
 
+La unua kruda administra redukta tavolo ankaŭ kompiliĝas. Ĝi direktite
+forigas vertikalajn unuojn kaj maldekstran nestadon, kunfandas apudajn
+refinement/aligned-movojn kaj komun-prefiksan administradon, kaj nuligas
+plenumeblajn refinement-inversajn parojn en ĉiu voja kunteksto. La komputebla
+`nodeCount + leftWeight` strikte malpliiĝas je ĉiu paŝo; ĉiu vojo havas
+nereblan reduktaĵon kun la sama kvocienta semantiko. Konkuraj unupaŝaj movoj
+semantike konsentas, sed kruda kunigebleco, loka kunflueco kaj la ceteraj
+klasikaj arbitra-kradaj movoj restas malfermitaj.
+
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
 1-ĉelon antaŭen kaj nur markitan sagon malantaŭen. Kunmeto, longo, unuaj kaj

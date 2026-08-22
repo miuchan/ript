@@ -414,9 +414,16 @@ universe replacement, generated paths are now categorically equivalent
 directly to each actual localization-target local hom-category; the direct
 nerve map has an explicit homotopy inverse and factors strictly through the
 linear comparison. Together with outer essential surjectivity this forms an
-audited `GeneratedHammockDwyerKanCore`. Competing-move coherence, reduced-
+audited `GeneratedHammockDwyerKanCore`. Raw critical-pair joinability, reduced-
 hammock invariance, standard weak-equivalence packaging, and the global
-Dwyer--Kan/Rezk theorem remain.
+Dwyer--Kan/Rezk theorem remain. A first raw administrative reduction layer is
+now compiled: vertical units, left-nested composition, adjacent refinement or
+aligned moves, executable refinement inverse pairs, and common-prefix
+administration reduce in every path context. The executable
+`nodeCount + leftWeight` complexity strictly decreases, giving well-founded
+termination and a semantics-preserving irreducible reduct for every path.
+Competing one-step moves agree in quotient semantics; raw joinability/local
+confluence and the remaining classical arbitrary-grid moves are still open.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

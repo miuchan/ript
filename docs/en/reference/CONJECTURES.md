@@ -501,8 +501,14 @@ direct categorical equivalence from generated paths to the actual target
 local hom-category. Its nerve comparison has an explicit homotopy inverse and
 factors strictly through the independent linear comparison; outer essential
 surjectivity packages this as `GeneratedHammockDwyerKanCore`. Competing
-forward/marked moves, reduced-hammock moves, and their homotopical invariance
-remain open.
+forward/marked moves now have a first terminating administrative reduction
+layer: vertical units, left nesting, adjacent refinement/aligned/common-prefix
+administration, and executable refinement inverse pairs reduce under every
+path context. `nodeCount + leftWeight` strictly decreases, every path has an
+irreducible reduct, and all finite reductions preserve quotient semantics;
+every one-step critical pair is therefore semantically coherent. Raw
+joinability/local confluence, the additional classical arbitrary-grid moves,
+and their homotopical invariance remain open.
 The 0-truncated layer is now compiled separately: wrapped rows form a thin
 common-refinement groupoid categorically equivalent to the discrete row
 quotient, and its nerve comparison has an explicit simplicial homotopy inverse.
@@ -617,8 +623,13 @@ source-composition/inverse, and equality-transport normalization cases are
 proved; all marked unit/counit, unitor, and associator cases are proved too.
 Every raw cell is therefore normalizable, every quotient 2-cell between linear
 rows is in the generated semantic image, and the generated path category is
-equivalent to the full linear mapping category. Critical-pair coherence and
-reduced-hammock invariance remain open.
+equivalent to the full linear mapping category. Its first directed
+administrative reduction is terminating by a strictly decreasing executable
+complexity, preserves semantics for arbitrary finite sequences, and supplies
+an irreducible reduct for every path. Competing one-step reductions agree in
+quotient semantics. Raw critical-pair joinability/local confluence, the full
+classical arbitrary-grid move system, and reduced-hammock invariance remain
+open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

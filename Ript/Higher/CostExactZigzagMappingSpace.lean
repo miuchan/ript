@@ -37,10 +37,13 @@ nerve formulas. Recursive right-unit and associator paths now normalize every
 raw generator in both directions, so structural induction covers every raw
 cell unconditionally. Every quotient 2-cell is represented by a generated
 path; the semantic functor is therefore a categorical equivalence and its
-nerve map has an explicit simplicial homotopy inverse. Competing-move
-coherence and reduced-hammock invariance are still absent, so this stronger
+nerve map has an explicit simplicial homotopy inverse. Raw competing-move
+joinability and reduced-hammock invariance are still absent, so this stronger
 mapping-space presentation is not by itself the final global Dwyer--Kan/Rezk
-theorem.
+theorem. A first terminating administrative reduction now removes categorical
+units/nesting, fuses adjacent generated moves, cancels executable refinement
+inverses, and preserves exact quotient semantics in every path context; raw
+joinability and the remaining classical arbitrary-grid moves stay open.
 -/
 
 set_option autoImplicit false
@@ -1617,6 +1620,99 @@ theorem hammockRawCellNormalizationCore :
     Bicategory.MarkedZigzag.HammockPath.allCells_normalizable
       (costExactArrows R) cell
 
+/-- Machine-facing terminating administrative reduction interface for
+cost-exact generated hammock paths. -/
+structure HammockAdministrativeReductionCore : Prop where
+  /-- Every elementary administrative step strictly lowers its executable
+  complexity. -/
+  oneStep_decreases : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first second : LinearHammock M N}
+      {source target : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second},
+    Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.OneStep
+        (costExactArrows R) source target →
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.complexity
+          (costExactArrows R) target <
+        Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.complexity
+          (costExactArrows R) source
+  /-- Every generated path is accessible for the reversed reduction
+  relation. -/
+  terminating : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first second : LinearHammock M N}
+      (path : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second),
+    Acc (fun target source =>
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.OneStep
+        (costExactArrows R) source target) path
+  /-- Every elementary step preserves exact quotient semantics. -/
+  oneStep_semantic : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first second : LinearHammock M N}
+      {source target : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second},
+    Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.OneStep
+        (costExactArrows R) source target →
+      Bicategory.MarkedZigzag.HammockPath.toHom
+          (costExactArrows R) source =
+        Bicategory.MarkedZigzag.HammockPath.toHom
+          (costExactArrows R) target
+  /-- Every finite administrative reduction sequence preserves exact quotient
+  semantics. -/
+  reduces_semantic : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first second : LinearHammock M N}
+      {source target : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second},
+    Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.Reduces
+        (costExactArrows R) source target →
+      Bicategory.MarkedZigzag.HammockPath.toHom
+          (costExactArrows R) source =
+      Bicategory.MarkedZigzag.HammockPath.toHom
+          (costExactArrows R) target
+  /-- Every path has an irreducible reduct with unchanged quotient
+  semantics. -/
+  normal_form : ∀ (M N : ProcessModel.{u, v, w} R)
+      {first second : LinearHammock M N}
+      (path : Bicategory.MarkedZigzag.HammockPath
+        (costExactArrows R) first second),
+    ∃ normal,
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.Reduces
+          (costExactArrows R) path normal ∧
+        Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.Irreducible
+          (costExactArrows R) normal ∧
+        Bicategory.MarkedZigzag.HammockPath.toHom
+            (costExactArrows R) path =
+          Bicategory.MarkedZigzag.HammockPath.toHom
+            (costExactArrows R) normal
+
+/-- Every cost-exact model pair satisfies the terminating, semantics-
+preserving administrative reduction interface. -/
+theorem hammockAdministrativeReductionCore :
+    HammockAdministrativeReductionCore (R := R) where
+  oneStep_decreases := by
+    intro M N first second source target reduction
+    exact
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.complexity_lt
+        (costExactArrows R) reduction
+  terminating := by
+    intro M N first second path
+    exact
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.terminating
+        (costExactArrows R) path
+  oneStep_semantic := by
+    intro M N first second source target reduction
+    exact
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.toHom_eq
+        (costExactArrows R) reduction
+  reduces_semantic := by
+    intro M N first second source target reduction
+    exact
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.reduces_toHom_eq
+        (costExactArrows R) reduction
+  normal_form := by
+    intro M N first second path
+    exact
+      Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.exists_irreducible_semantic
+        (costExactArrows R) path
+
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
 underlying categories are definitionally the same presentation, but this
@@ -1931,6 +2027,10 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Non-groupoidal generated hammock paths combining refinements with
   arbitrary aligned/source 2-cells and strictly extending refinement paths. -/
   hammockPathNerve : HammockPathNerveCore M N
+  /-- Terminating semantics-preserving administrative reduction for generated
+  hammock paths. -/
+  hammockAdministrativeReduction :
+    HammockAdministrativeReductionCore.{u, v, w} (R := R)
   /-- Common-universe generated hammock paths are categorically equivalent
   directly to the actual localization-target local hom-category. -/
   generatedTargetCategoricalEquivalence :
@@ -2027,6 +2127,7 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
   refinementPathNerve := refinementPathNerveCore M N
   refinementImageNerve := refinementImageNerveCore M N
   hammockPathNerve := hammockPathNerveCore M N
+  hammockAdministrativeReduction := hammockAdministrativeReductionCore
   generatedTargetCategoricalEquivalence := generatedTargetEquivalence M N
   generatedTargetNerveEquivalence := generatedTargetNerveEquivalence M N
   generatedTargetHomotopyEquivalence :=

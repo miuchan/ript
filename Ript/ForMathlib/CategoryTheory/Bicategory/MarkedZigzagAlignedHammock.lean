@@ -946,6 +946,36 @@ theorem toIso_reverse {X Y : B}
   induction refinement <;> simp [reverse, toIso, *]
   all_goals (apply Iso.ext; rfl)
 
+/-- Executable reversal interprets as the inverse of the original refinement
+isomorphism. -/
+theorem toHom_reverse {X Y : B}
+    {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    toHom W (reverse W refinement) = (toIso W refinement).inv := by
+  rw [toHom_eq_toIso_hom, toIso_reverse]
+  rfl
+
+/-- A refinement followed by its executable reverse is semantically identity. -/
+theorem toHom_comp_reverse {X Y : B}
+    {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    AlignedCell.quotientVcomp W (toHom W refinement)
+        (toHom W (reverse W refinement)) =
+      𝟙 (LinearWord.toWord W source) := by
+  rw [toHom_eq_toIso_hom, toHom_reverse]
+  exact (toIso W refinement).hom_inv_id
+
+/-- The executable reverse followed by its refinement is also semantically
+identity. -/
+theorem toHom_reverse_comp {X Y : B}
+    {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    AlignedCell.quotientVcomp W (toHom W (reverse W refinement))
+        (toHom W refinement) =
+      𝟙 (LinearWord.toWord W target) := by
+  rw [toHom_reverse, toHom_eq_toIso_hom]
+  exact (toIso W refinement).inv_hom_id
+
 /-- Any semantic inverse pair remains inverse after refinement beneath one
 common prefix column.  Iterating `under` therefore transports the generator
 round trips to an arbitrary executable prefix. -/
@@ -3517,6 +3547,290 @@ entire linear mapping category, not merely to a refinement-generated image. -/
 noncomputable def semanticEquivalence (X Y : B) :
     HammockPathObject W X Y ≌ LinearWord W X Y :=
   (semanticFunctor W X Y).asEquivalence
+
+/-! ## Terminating administrative reduction -/
+
+namespace AdministrativeReduction
+
+/-- Number of raw administrative constructors in a generated path. Identity
+paths contribute zero; atomic refinement/aligned moves contribute one. -/
+def nodeCount {X Y : B} {first second : LinearWord W X Y} :
+    HammockPath W first second → ℕ
+  | .identity _ => 0
+  | .vcomp alpha beta => 1 + nodeCount alpha + nodeCount beta
+  | .ofRefinement _ => 1
+  | .ofAligned _ => 1
+  | .whiskerLeft _ path => 1 + nodeCount path
+  | .whiskerRight path _ => 1 + nodeCount path
+  | .under _ path => 1 + nodeCount path
+
+/-- Weight of left-nested vertical composition. Orienting associativity to the
+right strictly decreases this component while preserving `nodeCount`. -/
+def leftWeight {X Y : B} {first second : LinearWord W X Y} :
+    HammockPath W first second → ℕ
+  | .identity _ => 0
+  | .vcomp alpha beta =>
+      leftWeight alpha + leftWeight beta + nodeCount W alpha
+  | .ofRefinement _ => 0
+  | .ofAligned _ => 0
+  | .whiskerLeft _ path => leftWeight path
+  | .whiskerRight path _ => leftWeight path
+  | .under _ path => leftWeight path
+
+/-- Executable scalar complexity for administrative reduction. -/
+def complexity {X Y : B} {first second : LinearWord W X Y}
+    (path : HammockPath W first second) : ℕ :=
+  nodeCount W path + leftWeight W path
+
+/-- One directed administrative reduction step. These moves remove vertical
+units, right-associate vertical composition, fuse adjacent executable or
+aligned moves, cancel executable refinement inverses, and fuse common-prefix
+administration. Every constructor is closed under all generated path
+contexts. -/
+inductive OneStep : ∀ {X Y : B} {first second : LinearWord W X Y},
+    HammockPath W first second → HammockPath W first second → Prop where
+  | vcomp_id_left {X Y : B} {first second : LinearWord W X Y}
+      (path : HammockPath W first second) :
+      OneStep (.vcomp (.identity first) path) path
+  | vcomp_id_right {X Y : B} {first second : LinearWord W X Y}
+      (path : HammockPath W first second) :
+      OneStep (.vcomp path (.identity second)) path
+  | vcomp_assoc {X Y : B}
+      {first second third fourth : LinearWord W X Y}
+      (alpha : HammockPath W first second)
+      (beta : HammockPath W second third)
+      (gamma : HammockPath W third fourth) :
+      OneStep (.vcomp (.vcomp alpha beta) gamma)
+        (.vcomp alpha (.vcomp beta gamma))
+  | refinement_vcomp {X Y : B}
+      {first second third : LinearWord W X Y}
+      (alpha : ColumnRefinement W first second)
+      (beta : ColumnRefinement W second third) :
+      OneStep (.vcomp (.ofRefinement alpha) (.ofRefinement beta))
+        (.ofRefinement (.vcomp alpha beta))
+  | refinement_hom_inv {X Y : B}
+      {first second : LinearWord W X Y}
+      (refinement : ColumnRefinement W first second) :
+      OneStep (.ofRefinement
+          (.vcomp refinement (ColumnRefinement.reverse W refinement)))
+        (.identity first)
+  | refinement_inv_hom {X Y : B}
+      {first second : LinearWord W X Y}
+      (refinement : ColumnRefinement W first second) :
+      OneStep (.ofRefinement
+          (.vcomp (ColumnRefinement.reverse W refinement) refinement))
+        (.identity second)
+  | aligned_vcomp {X Y : B}
+      {first second third : LinearWord W X Y}
+      (alpha : AlignedCell W first second)
+      (beta : AlignedCell W second third) :
+      OneStep (.vcomp (.ofAligned alpha) (.ofAligned beta))
+        (.ofAligned (AlignedCell.vcomp W alpha beta))
+  | under_identity {X Y Z : B} (step : Step W X Y)
+      (row : LinearWord W Y Z) :
+      OneStep (.under step (.identity row)) (.identity (.cons step row))
+  | under_vcomp {X Y Z : B} (step : Step W X Y)
+      {first second third : LinearWord W Y Z}
+      (alpha : HammockPath W first second)
+      (beta : HammockPath W second third) :
+      OneStep (.vcomp (.under step alpha) (.under step beta))
+        (.under step (.vcomp alpha beta))
+  | under_refinement {X Y Z : B} (step : Step W X Y)
+      {first second : LinearWord W Y Z}
+      (refinement : ColumnRefinement W first second) :
+      OneStep (.under step (.ofRefinement refinement))
+        (.ofRefinement (.under step refinement))
+  | vcomp_left {X Y : B}
+      {first second third : LinearWord W X Y}
+      {alpha : HammockPath W first second}
+      {alpha' : HammockPath W first second}
+      (reduction : OneStep alpha alpha')
+      (beta : HammockPath W second third) :
+      OneStep (.vcomp alpha beta) (.vcomp alpha' beta)
+  | vcomp_right {X Y : B}
+      {first second third : LinearWord W X Y}
+      (alpha : HammockPath W first second)
+      {beta : HammockPath W second third}
+      {beta' : HammockPath W second third}
+      (reduction : OneStep beta beta') :
+      OneStep (.vcomp alpha beta) (.vcomp alpha beta')
+  | whiskerLeft_context {X Y Z : B} (pre : LinearWord W X Y)
+      {first second : LinearWord W Y Z}
+      {alpha beta : HammockPath W first second}
+      (reduction : OneStep alpha beta) :
+      OneStep (.whiskerLeft pre alpha) (.whiskerLeft pre beta)
+  | whiskerRight_context {X Y Z : B}
+      {first second : LinearWord W X Y}
+      {alpha beta : HammockPath W first second}
+      (reduction : OneStep alpha beta) (post : LinearWord W Y Z) :
+      OneStep (.whiskerRight alpha post) (.whiskerRight beta post)
+  | under_context {X Y Z : B} (step : Step W X Y)
+      {first second : LinearWord W Y Z}
+      {alpha beta : HammockPath W first second}
+      (reduction : OneStep alpha beta) :
+      OneStep (.under step alpha) (.under step beta)
+
+/-- Every administrative step weakly decreases both structural components,
+and strictly decreases at least one. -/
+theorem structural_decrease {X Y : B}
+    {first second : LinearWord W X Y}
+    {source target : HammockPath W first second}
+    (reduction : OneStep W source target) :
+    nodeCount W target ≤ nodeCount W source ∧
+      leftWeight W target ≤ leftWeight W source ∧
+      (nodeCount W target < nodeCount W source ∨
+        leftWeight W target < leftWeight W source) := by
+  induction reduction <;>
+    simp only [nodeCount, leftWeight] at * <;> omega
+
+/-- Every directed administrative step strictly lowers executable
+complexity. -/
+theorem complexity_lt {X Y : B}
+    {first second : LinearWord W X Y}
+    {source target : HammockPath W first second}
+    (reduction : OneStep W source target) :
+    complexity W target < complexity W source := by
+  rcases structural_decrease W reduction with ⟨nodes, weight, strict⟩
+  unfold complexity
+  omega
+
+/-- Every directed administrative step preserves exact quotient semantics. -/
+theorem toHom_eq {X Y : B} {first second : LinearWord W X Y}
+    {source target : HammockPath W first second}
+    (reduction : OneStep W source target) :
+    toHom W source = toHom W target := by
+  induction reduction with
+  | vcomp_id_left path =>
+      exact AlignedCell.quotientVcomp_id_comp W (toHom W path)
+  | vcomp_id_right path =>
+      exact AlignedCell.quotientVcomp_comp_id W (toHom W path)
+  | vcomp_assoc alpha beta gamma =>
+      exact AlignedCell.quotientVcomp_assoc W
+        (toHom W alpha) (toHom W beta) (toHom W gamma)
+  | refinement_vcomp alpha beta =>
+      exact (ColumnRefinement.toHom_vcomp W alpha beta).symm
+  | refinement_hom_inv refinement =>
+      exact ColumnRefinement.toHom_comp_reverse W refinement
+  | refinement_inv_hom refinement =>
+      exact ColumnRefinement.toHom_reverse_comp W refinement
+  | aligned_vcomp alpha beta =>
+      exact (AlignedCell.toHom_vcomp W alpha beta).symm
+  | under_identity step row =>
+      exact Quot.sound (Presented.Rel.whisker_left_id
+        (Word.atom step) (LinearWord.toWord W row))
+  | under_vcomp step alpha beta =>
+      exact (AlignedCell.whiskerLeftHom_vcomp W (Word.atom step)
+        (toHom W alpha) (toHom W beta)).symm
+  | under_refinement step refinement => rfl
+  | vcomp_left reduction beta ih =>
+      simp only [toHom_vcomp]
+      rw [ih]
+  | vcomp_right alpha reduction ih =>
+      simp only [toHom_vcomp]
+      rw [ih]
+  | whiskerLeft_context pre reduction ih =>
+      simp only [toHom_whiskerLeft]
+      rw [ih]
+  | whiskerRight_context reduction post ih =>
+      simp only [toHom_whiskerRight]
+      rw [ih]
+  | under_context step reduction ih =>
+      simp only [toHom_under]
+      rw [ih]
+
+/-- Reflexive-transitive administrative reduction. -/
+abbrev Reduces {X Y : B} {first second : LinearWord W X Y} :=
+  Relation.ReflTransGen (@OneStep B _ W X Y first second)
+
+/-- Administrative reduction is terminating for every fixed endpoint pair. -/
+theorem wellFounded {X Y : B} {first second : LinearWord W X Y} :
+    WellFounded (fun target source : HammockPath W first second =>
+      OneStep W source target) := by
+  apply Subrelation.wf (r := (measure (complexity W)).rel)
+  · intro target source reduction
+    exact complexity_lt W reduction
+  · exact (measure (complexity W)).wf
+
+/-- Every path is accessible for the reversed one-step relation. -/
+theorem terminating {X Y : B} {first second : LinearWord W X Y}
+    (path : HammockPath W first second) :
+    Acc (fun target source : HammockPath W first second =>
+      OneStep W source target) path :=
+  (wellFounded W).apply path
+
+/-- Any finite administrative reduction sequence preserves exact quotient
+semantics. -/
+theorem reduces_toHom_eq {X Y : B} {first second : LinearWord W X Y}
+    {source target : HammockPath W first second}
+    (reduction : Reduces W source target) :
+    toHom W source = toHom W target := by
+  induction reduction using Relation.ReflTransGen.trans_induction_on with
+  | refl => rfl
+  | single step => exact toHom_eq W step
+  | trans _ _ ihLeft ihRight => exact ihLeft.trans ihRight
+
+/-- A path is administratively irreducible when no directed elementary step
+leaves it. -/
+def Irreducible {X Y : B} {first second : LinearWord W X Y}
+    (path : HammockPath W first second) : Prop :=
+  ∀ target, ¬OneStep W path target
+
+/-- A critical pair is a pair of one-step reductions with a common source. -/
+def CriticalPair {X Y : B} {first second : LinearWord W X Y}
+    (source left right : HammockPath W first second) : Prop :=
+  OneStep W source left ∧ OneStep W source right
+
+/-- Two administrative reducts are joinable when they reach a common path. -/
+def Joinable {X Y : B} {first second : LinearWord W X Y}
+    (left right : HammockPath W first second) : Prop :=
+  ∃ common, Reduces W left common ∧ Reduces W right common
+
+/-- Competing one-step administrative moves always agree in quotient
+semantics. This is semantic coherence, not yet raw joinability. -/
+theorem criticalPair_toHom_eq {X Y : B}
+    {first second : LinearWord W X Y}
+    {source left right : HammockPath W first second}
+    (critical : CriticalPair W source left right) :
+    toHom W left = toHom W right :=
+  (toHom_eq W critical.1).symm.trans (toHom_eq W critical.2)
+
+/-- Raw joinability implies equality of quotient semantics. -/
+theorem joinable_toHom_eq {X Y : B}
+    {first second : LinearWord W X Y}
+    {left right : HammockPath W first second}
+    (joinable : Joinable W left right) :
+    toHom W left = toHom W right := by
+  rcases joinable with ⟨common, leftReduction, rightReduction⟩
+  exact (reduces_toHom_eq W leftReduction).trans
+    (reduces_toHom_eq W rightReduction).symm
+
+/-- Termination gives an administratively irreducible reduct of every path. -/
+theorem exists_irreducible {X Y : B}
+    {first second : LinearWord W X Y}
+    (path : HammockPath W first second) :
+    ∃ normal, Reduces W path normal ∧ Irreducible W normal := by
+  classical
+  induction path using (wellFounded W).induction with
+  | h path ih =>
+      by_cases irreducible : Irreducible W path
+      · exact ⟨path, Relation.ReflTransGen.refl, irreducible⟩
+      · simp only [Irreducible, not_forall, Classical.not_not] at irreducible
+        rcases irreducible with ⟨next, step⟩
+        rcases ih next step with ⟨normal, reduction, normalIrreducible⟩
+        exact ⟨normal, Relation.ReflTransGen.head step reduction,
+          normalIrreducible⟩
+
+/-- Every path has an irreducible reduct with exactly the same quotient
+semantics. -/
+theorem exists_irreducible_semantic {X Y : B}
+    {first second : LinearWord W X Y}
+    (path : HammockPath W first second) :
+    ∃ normal, Reduces W path normal ∧ Irreducible W normal ∧
+      toHom W path = toHom W normal := by
+  rcases exists_irreducible W path with ⟨normal, reduction, irreducible⟩
+  exact ⟨normal, reduction, irreducible, reduces_toHom_eq W reduction⟩
+
+end AdministrativeReduction
 
 /-- Original source 2-cells are hammock-normalizable. -/
 theorem original_normalizable {X Y : B} {f g : X ⟶ Y}
