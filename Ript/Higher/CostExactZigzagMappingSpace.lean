@@ -20,9 +20,10 @@ existing source-to-target local nerve map factors through it strictly.
 The file also supplies an independent linear-word model, arbitrary-height row
 paths, and a fixed-shape aligned multi-column hammock fragment with exact
 quotient and nerve interpretation.  Elementary executable identity/composite
-column refinements now have exact signed width and semantic round trips.
-General common-refinement quotients and reduced-hammock invariance are still
-absent, so these results are not by themselves the final Dwyer--Kan theorem.
+column refinements and marked unit/counit pair refinements now have exact
+signed width and semantic round trips. General common-refinement quotients and
+reduced-hammock invariance are still absent, so these results are not by
+themselves the final Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -383,8 +384,9 @@ structure AlignedHammockCore
             (costExactArrows R) (grid.cell i)))
 
 /-- Machine-facing core for executable column refinement.  It records the
-signed width representation, functorial interpretation, generator round
-trips, and stability of inverse moves beneath arbitrary common prefixes. -/
+signed width representation, functorial interpretation, forward and marked
+generator round trips, and stability of inverse moves beneath arbitrary
+common prefixes. -/
 structure ColumnRefinementCore
     (M N : ProcessModel.{u, v, w} R) : Prop where
   /-- Signed width change is exactly target length minus source length. -/
@@ -454,6 +456,48 @@ structure ColumnRefinementCore
           (W := costExactArrows R) f)
           (.cons (Bicategory.MarkedZigzag.Step.forward
             (W := costExactArrows R) g) rest)))
+  /-- Marked unit-pair insertion and deletion cancel in both directions. -/
+  markedUnit_roundTrips : ∀ {P : ProcessModel.{u, v, w} R}
+      (f : M ⟶ P) (hf : costExactArrows R f) (rest : LinearHammock M N),
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.deleteMarkedUnitPair f hf rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.insertMarkedUnitPair f hf rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
+        (.cons (Bicategory.MarkedZigzag.Step.forward
+          (W := costExactArrows R) f)
+          (.cons (Bicategory.MarkedZigzag.Step.backward
+            (W := costExactArrows R) f hf) rest))) ∧
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.insertMarkedUnitPair f hf rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.deleteMarkedUnitPair f hf rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R) rest)
+  /-- Marked counit-pair insertion and deletion cancel in both directions. -/
+  markedCounit_roundTrips : ∀ {P : ProcessModel.{u, v, w} R}
+      (f : P ⟶ M) (hf : costExactArrows R f) (rest : LinearHammock M N),
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.deleteMarkedCounitPair f hf rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.insertMarkedCounitPair f hf rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
+        (.cons (Bicategory.MarkedZigzag.Step.backward
+          (W := costExactArrows R) f hf)
+          (.cons (Bicategory.MarkedZigzag.Step.forward
+            (W := costExactArrows R) f) rest))) ∧
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.insertMarkedCounitPair f hf rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.deleteMarkedCounitPair f hf rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R) rest)
   /-- Semantic inverse refinements remain inverse beneath a common prefix. -/
   prefix_inverse : ∀ {P : ProcessModel.{u, v, w} R}
       (step : Bicategory.MarkedZigzag.Step (costExactArrows R) M P)
@@ -510,6 +554,16 @@ theorem columnRefinementCore (M N : ProcessModel.{u, v, w} R) :
         (costExactArrows R) f g rest,
       Bicategory.MarkedZigzag.ColumnRefinement.contractForward_expandForward
         (costExactArrows R) f g rest⟩
+  markedUnit_roundTrips := fun f hf rest =>
+    ⟨Bicategory.MarkedZigzag.ColumnRefinement.deleteMarkedUnitPair_insertMarkedUnitPair
+        (costExactArrows R) f hf rest,
+      Bicategory.MarkedZigzag.ColumnRefinement.insertMarkedUnitPair_deleteMarkedUnitPair
+        (costExactArrows R) f hf rest⟩
+  markedCounit_roundTrips := fun f hf rest =>
+    ⟨Bicategory.MarkedZigzag.ColumnRefinement.deleteMarkedCounitPair_insertMarkedCounitPair
+        (costExactArrows R) f hf rest,
+      Bicategory.MarkedZigzag.ColumnRefinement.insertMarkedCounitPair_deleteMarkedCounitPair
+        (costExactArrows R) f hf rest⟩
   prefix_inverse := Bicategory.MarkedZigzag.ColumnRefinement.under_inverse
     (costExactArrows R)
 

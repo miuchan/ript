@@ -448,9 +448,12 @@ aligned grids reconstruct genuine simplices with exact rows and interpreted
 edges. Elementary forward-column refinement is now executable: identity
 columns insert/delete, composite columns expand/contract, moves lift under
 arbitrary prefixes and compose, their signed width change is exact, and both
-generator pairs cancel in the quotient semantics. The remaining classical gap
-is a common-refinement quotient covering competing expansions and marked
-reverse columns, reduced-hammock moves, and their homotopical invariance.
+generator pairs cancel in the quotient semantics. Marked reverse structure is
+now present through executable insertion/deletion of both `f ; f⁻¹` unit pairs
+and `f⁻¹ ; f` counit pairs, with signed width `±2`, exact semantic isomorphisms,
+both round trips, and arbitrary-prefix stability. The remaining classical gap
+is a common-refinement quotient and coherence for competing forward/marked
+moves, reduced-hammock moves, and their homotopical invariance.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -542,8 +545,9 @@ hammock (or another accepted derived model) and standard weak-equivalence
 packaging. Arbitrary-height row grids and their exact nerve representation are
 proved. Fixed-shape aligned multi-column cells and grids now have exact
 quotient/nerve interpretation, and elementary executable forward-column
-refinements have exact signed-width and semantic inverse laws. A general
-common-refinement quotient and reduced-hammock invariance remain open.
+refinements plus marked unit/counit pair refinements have exact signed-width
+and semantic inverse laws. A general common-refinement quotient and reduced-
+hammock invariance remain open.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

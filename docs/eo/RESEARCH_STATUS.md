@@ -331,15 +331,18 @@ finpunktajn ekvaciojn, kaj strikta Segal-rekonstruo identigas ĝin kun la
 `n`-simplaĵoj de la lineara hammock-nervo. La samforma horizontala
 plurkolumna fragmento nun ankaŭ estas eksplicita: ĉiu komuna kolumno inter
 samformaj vicoj portas unu krudan atoman 2-ĉelon; larĝoj kaj horizontala
-plenumebla kunmeto estas ekzaktaj; la kvocienta interpreto konservas komponantajn
-identojn kaj vertikalan kunmeton per interŝanĝo; kaj ĉiu arbitra-alteca
+plenumebla kunmeto estas ekzaktaj; la kvocienta interpreto konservas
+komponantajn identojn kaj vertikalan kunmeton per interŝanĝo; kaj ĉiu arbitra-alteca
 vicigita krado rekonstruas veran simplaĵon kun ekzaktaj vicoj kaj interpretitaj
 eĝoj. Elementa antaŭa kolumna rafinado nun ankaŭ estas plenumebla: identaj
 kolumnoj enmetiĝas/foriĝas, kunmetitaj kolumnoj vastiĝas/kunpremiĝas, movoj
 leviĝas sub arbitraj komunaj prefiksoj kaj kunmetiĝas, la signita larĝoŝanĝo
-estas ekzakta, kaj ambaŭ generatoraj paroj semantike nuligas sin. Restas
-ĝenerala komun-rafinada kvociento por konkuraj vastigoj kaj markitaj inversaj
-kolumnoj, reduktita-hammock invariant eco kaj norma malfort-ekvivalenta pako.
+estas ekzakta, kaj ambaŭ generatoraj paroj semantike nuligas sin. La markita
+inversa strukturo nun ankaŭ havas plenumeblan enmeton/forigon de unit-paroj
+`f ; f⁻¹` kaj counit-paroj `f⁻¹ ; f`, kun signita larĝo `±2`, ekzaktaj semantikaj
+izomorfioj, ambaŭ rondiroj kaj arbitra-prefiksa stabileco. Restas ĝenerala
+komun-rafinada kvociento, kohereco de konkuraj movoj, reduktita-hammock
+invariant eco kaj norma malfort-ekvivalenta pako.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan
