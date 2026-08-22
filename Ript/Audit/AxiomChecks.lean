@@ -1016,8 +1016,15 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.linearHammockGridRow_equiv
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.toHom_identity
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.toHom_vcomp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.AlignedCell.width_append
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.target_length_eq_source_length_add_widthChange
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_vcomp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.deleteIdentity_insertIdentity
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.expandForward_contractForward
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.under_inverse
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk

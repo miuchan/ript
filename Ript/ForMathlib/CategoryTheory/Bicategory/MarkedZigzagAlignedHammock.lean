@@ -9,10 +9,13 @@ column between two linear words with the same intermediate objects.  Columns
 append horizontally, compose vertically componentwise, and interpret as one
 quotient 2-cell in the existing linear mapping category.
 
-This is the aligned multi-column fragment of a hammock presentation.  It does
-not yet identify grids up to insertion, deletion, or common refinement of
-columns, and therefore is not by itself the classical Dwyer--Kan hammock
-localization.
+The file also gives executable elementary column refinements: forward identity
+columns can be inserted/deleted, forward composite columns can be
+expanded/contracted, and moves lift beneath arbitrary prefixes and compose.
+Their signed width changes and quotient interpretations are exact, and inverse
+generator moves cancel semantically.  The syntax is not yet quotiented by
+general common refinements or reduced-hammock moves, so it is not by itself the
+classical Dwyer--Kan hammock localization.
 -/
 
 set_option autoImplicit false
@@ -98,17 +101,29 @@ def vcomp {X Y : B} {first middle last : LinearWord W X Y} :
       .cons (.vcomp firstColumn secondColumn)
         (vcomp firstRest secondRest)
 
-/-- Horizontal concatenation of aligned hammocks. -/
-noncomputable def append {X Y Z : B}
+/-- Structurally recursive horizontal concatenation with the second hammock
+fixed.  Making the changing source object explicit keeps this indexed
+recursion executable by Lean's code generator. -/
+def appendAux {Y Z : B}
+    {secondSource secondTarget : LinearWord W Y Z}
+    (second : AlignedCell W secondSource secondTarget) :
+    (X : B) → (firstSource firstTarget : LinearWord W X Y) →
+      AlignedCell W firstSource firstTarget →
+        AlignedCell W (LinearWord.append W firstSource secondSource)
+          (LinearWord.append W firstTarget secondTarget)
+  | _, .nil _, .nil _, .nil _ => second
+  | _, .cons _ _, .cons _ _, .cons column rest =>
+      .cons column (appendAux second _ _ _ rest)
+
+/-- Executable horizontal concatenation of aligned hammocks. -/
+def append {X Y Z : B}
     {firstSource firstTarget : LinearWord W X Y}
     {secondSource secondTarget : LinearWord W Y Z}
     (first : AlignedCell W firstSource firstTarget)
     (second : AlignedCell W secondSource secondTarget) :
     AlignedCell W (LinearWord.append W firstSource secondSource)
-      (LinearWord.append W firstTarget secondTarget) := by
-  induction first with
-  | nil => exact second
-  | cons column rest ih => exact .cons column (ih second)
+      (LinearWord.append W firstTarget secondTarget) :=
+  appendAux W second X firstSource firstTarget first
 
 /-- Horizontal concatenation adds the explicit column widths. -/
 theorem width_append {X Y Z : B}
@@ -325,5 +340,310 @@ theorem toHom_vcomp {X Y : B}
                     simp only [quotientVcomp, Category.assoc]
 
 end AlignedCell
+
+/-! ## Executable column refinements -/
+
+/-- Executable column-refinement moves between linear hammock rows.  The
+generators insert/delete a forward identity column or expand/contract one
+forward composite column.  `under` performs a move beneath any common prefix,
+and `vcomp` closes the moves under transitive composition. -/
+inductive ColumnRefinement : ∀ {X Y : B},
+    LinearWord W X Y → LinearWord W X Y → Type max u v where
+  /-- Reflexive refinement. -/
+  | identity {X Y : B} (word : LinearWord W X Y) :
+      ColumnRefinement word word
+  /-- Transitive composition of refinements. -/
+  | vcomp {X Y : B} {first middle last : LinearWord W X Y}
+      (alpha : ColumnRefinement first middle)
+      (beta : ColumnRefinement middle last) : ColumnRefinement first last
+  /-- Delete a leading forward identity column. -/
+  | deleteIdentity {X Y : B} (rest : LinearWord W X Y) :
+      ColumnRefinement
+        (.cons (Step.forward (W := W) (𝟙 X)) rest) rest
+  /-- Insert a leading forward identity column. -/
+  | insertIdentity {X Y : B} (rest : LinearWord W X Y) :
+      ColumnRefinement rest
+        (.cons (Step.forward (W := W) (𝟙 X)) rest)
+  /-- Expand a leading forward composite into two forward columns. -/
+  | expandForward {X Y Z T : B} (f : X ⟶ Y) (g : Y ⟶ Z)
+      (rest : LinearWord W Z T) :
+      ColumnRefinement
+        (.cons (Step.forward (W := W) (f ≫ g)) rest)
+        (.cons (Step.forward (W := W) f)
+          (.cons (Step.forward (W := W) g) rest))
+  /-- Contract two leading forward columns into their composite. -/
+  | contractForward {X Y Z T : B} (f : X ⟶ Y) (g : Y ⟶ Z)
+      (rest : LinearWord W Z T) :
+      ColumnRefinement
+        (.cons (Step.forward (W := W) f)
+          (.cons (Step.forward (W := W) g) rest))
+        (.cons (Step.forward (W := W) (f ≫ g)) rest)
+  /-- Perform a refinement beneath one common oriented prefix column. -/
+  | under {X Y Z : B} (step : Step W X Y)
+      {first last : LinearWord W Y Z}
+      (refinement : ColumnRefinement first last) :
+      ColumnRefinement (.cons step first) (.cons step last)
+
+namespace ColumnRefinement
+
+/-- Signed change in horizontal width: positive values insert/expand columns
+and negative values delete/contract them. -/
+def widthChange {X Y : B} {source target : LinearWord W X Y} :
+    ColumnRefinement W source target → ℤ
+  | .identity _ => 0
+  | .vcomp alpha beta => widthChange alpha + widthChange beta
+  | .deleteIdentity _ => -1
+  | .insertIdentity _ => 1
+  | .expandForward _ _ _ => 1
+  | .contractForward _ _ _ => -1
+  | .under _ refinement => widthChange refinement
+
+/-- The signed refinement counter is exactly the target width minus the
+source width, for every composite and prefixed refinement. -/
+theorem target_length_eq_source_length_add_widthChange
+    {X Y : B} {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    (LinearWord.length W target : ℤ) =
+      LinearWord.length W source + widthChange W refinement := by
+  induction refinement <;>
+    simp only [widthChange, LinearWord.length] at * <;> omega
+
+/-- Interpret an executable refinement as one raw 2-cell between the binary
+expansions of its source and target rows. -/
+def toCell {X Y : B} {source target : LinearWord W X Y} :
+    ColumnRefinement W source target →
+      Cell W (LinearWord.toWord W source) (LinearWord.toWord W target)
+  | .identity word => Cell.id (LinearWord.toWord W word)
+  | .vcomp alpha beta => Cell.vcomp (toCell alpha) (toCell beta)
+  | .deleteIdentity rest =>
+      Cell.vcomp
+        (Cell.whiskerRight (Cell.sourceId (W := W))
+          (LinearWord.toWord W rest))
+        (Cell.leftUnitor (W := W) (LinearWord.toWord W rest))
+  | .insertIdentity rest =>
+      Cell.vcomp
+        (Cell.leftUnitorInv (W := W) (LinearWord.toWord W rest))
+        (Cell.whiskerRight (Cell.sourceIdInv (W := W))
+          (LinearWord.toWord W rest))
+  | .expandForward f g rest =>
+      Cell.vcomp
+        (Cell.whiskerRight (Cell.sourceComp (W := W) f g)
+          (LinearWord.toWord W rest))
+        (Cell.associator (W := W) (Word.forward W f) (Word.forward W g)
+          (LinearWord.toWord W rest))
+  | .contractForward f g rest =>
+      Cell.vcomp
+        (Cell.associatorInv (W := W) (Word.forward W f) (Word.forward W g)
+          (LinearWord.toWord W rest))
+        (Cell.whiskerRight (Cell.sourceCompInv (W := W) f g)
+          (LinearWord.toWord W rest))
+  | .under step refinement =>
+      Cell.whiskerLeft (Word.atom step) (toCell refinement)
+
+/-- Quotient interpretation of an executable column refinement. -/
+def toHom {X Y : B} {source target : LinearWord W X Y}
+    (refinement : ColumnRefinement W source target) :
+    Presented.Hom W (LinearWord.toWord W source)
+      (LinearWord.toWord W target) :=
+  Presented.mk W (toCell W refinement)
+
+/-- Reflexive refinement interprets as the mapping-category identity. -/
+@[simp]
+theorem toHom_identity {X Y : B} (word : LinearWord W X Y) :
+    toHom W (.identity word) = 𝟙 (LinearWord.toWord W word) :=
+  rfl
+
+/-- Transitive refinement composition interprets as quotient vertical
+composition. -/
+@[simp]
+theorem toHom_vcomp {X Y : B}
+    {first middle last : LinearWord W X Y}
+    (alpha : ColumnRefinement W first middle)
+    (beta : ColumnRefinement W middle last) :
+    toHom W (.vcomp alpha beta) =
+      AlignedCell.quotientVcomp W (toHom W alpha) (toHom W beta) :=
+  rfl
+
+/-- Exact interpretation of forward identity-column deletion. -/
+theorem toHom_deleteIdentity {X Y : B} (rest : LinearWord W X Y) :
+    toHom W (.deleteIdentity rest) =
+      AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (LinearWord.toWord W rest)
+          (Presented.mk W (Cell.sourceId (W := W))))
+        (Presented.mk W
+          (Cell.leftUnitor (W := W) (LinearWord.toWord W rest))) :=
+  rfl
+
+/-- Exact interpretation of forward identity-column insertion. -/
+theorem toHom_insertIdentity {X Y : B} (rest : LinearWord W X Y) :
+    toHom W (.insertIdentity rest) =
+      AlignedCell.quotientVcomp W
+        (Presented.mk W
+          (Cell.leftUnitorInv (W := W) (LinearWord.toWord W rest)))
+        (Presented.whiskerRightHom W (LinearWord.toWord W rest)
+          (Presented.mk W (Cell.sourceIdInv (W := W)))) :=
+  rfl
+
+/-- Exact interpretation of forward composite-column expansion. -/
+theorem toHom_expandForward {X Y Z T : B} (f : X ⟶ Y) (g : Y ⟶ Z)
+    (rest : LinearWord W Z T) :
+    toHom W (.expandForward f g rest) =
+      AlignedCell.quotientVcomp W
+        (Presented.whiskerRightHom W (LinearWord.toWord W rest)
+          (Presented.mk W (Cell.sourceComp (W := W) f g)))
+        (Presented.mk W
+          (Cell.associator (W := W) (Word.forward W f) (Word.forward W g)
+            (LinearWord.toWord W rest))) :=
+  rfl
+
+/-- Exact interpretation of forward composite-column contraction. -/
+theorem toHom_contractForward {X Y Z T : B} (f : X ⟶ Y) (g : Y ⟶ Z)
+    (rest : LinearWord W Z T) :
+    toHom W (.contractForward f g rest) =
+      AlignedCell.quotientVcomp W
+        (Presented.mk W
+          (Cell.associatorInv (W := W) (Word.forward W f) (Word.forward W g)
+            (LinearWord.toWord W rest)))
+        (Presented.whiskerRightHom W (LinearWord.toWord W rest)
+          (Presented.mk W (Cell.sourceCompInv (W := W) f g))) :=
+  rfl
+
+/-- Refinement beneath a common prefix interprets by exact left
+whiskering. -/
+theorem toHom_under {X Y Z : B} (step : Step W X Y)
+    {first last : LinearWord W Y Z}
+    (refinement : ColumnRefinement W first last) :
+    toHom W (.under step refinement) =
+      Presented.whiskerLeftHom W (Word.atom step) (toHom W refinement) :=
+  rfl
+
+/-- The semantic isomorphism implemented by identity-column deletion and
+insertion. -/
+noncomputable def identityColumnIso {X Y : B} (rest : LinearWord W X Y) :
+    Word.append (W := W) (Word.forward W (𝟙 X))
+        (LinearWord.toWord W rest) ≅ LinearWord.toWord W rest :=
+  whiskerRightIso (B := Presented.Localization W)
+      (Presented.sourceIdIso W X) (LinearWord.toWord W rest) ≪≫
+    Presented.wordLeftUnitorIso W (LinearWord.toWord W rest)
+
+/-- Identity-column deletion is exactly the forward map of its semantic
+isomorphism. -/
+theorem toHom_deleteIdentity_eq_hom {X Y : B}
+    (rest : LinearWord W X Y) :
+    toHom W (.deleteIdentity rest) = (identityColumnIso W rest).hom := by
+  rfl
+
+/-- Identity-column insertion is exactly the inverse map of its semantic
+isomorphism. -/
+theorem toHom_insertIdentity_eq_inv {X Y : B}
+    (rest : LinearWord W X Y) :
+    toHom W (.insertIdentity rest) = (identityColumnIso W rest).inv := by
+  rfl
+
+/-- Deleting and reinserting a forward identity column is semantically the
+identity on the wider row. -/
+theorem deleteIdentity_insertIdentity {X Y : B}
+    (rest : LinearWord W X Y) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.deleteIdentity rest))
+        (toHom W (.insertIdentity rest)) =
+      𝟙 (LinearWord.toWord W
+        (.cons (Step.forward (W := W) (𝟙 X)) rest)) := by
+  rw [toHom_deleteIdentity_eq_hom, toHom_insertIdentity_eq_inv]
+  exact (identityColumnIso W rest).hom_inv_id
+
+/-- Inserting and deleting a forward identity column is semantically the
+identity on the narrower row. -/
+theorem insertIdentity_deleteIdentity {X Y : B}
+    (rest : LinearWord W X Y) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.insertIdentity rest))
+        (toHom W (.deleteIdentity rest)) =
+      𝟙 (LinearWord.toWord W rest) := by
+  rw [toHom_insertIdentity_eq_inv, toHom_deleteIdentity_eq_hom]
+  exact (identityColumnIso W rest).inv_hom_id
+
+/-- The semantic isomorphism implemented by expansion and contraction of a
+forward composite column. -/
+noncomputable def compositeColumnIso {X Y Z T : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (rest : LinearWord W Z T) :
+    Word.append (W := W) (Word.forward W (f ≫ g))
+        (LinearWord.toWord W rest) ≅
+      Word.append (W := W) (Word.forward W f)
+        (Word.append (W := W) (Word.forward W g)
+          (LinearWord.toWord W rest)) :=
+  whiskerRightIso (B := Presented.Localization W)
+      (Presented.sourceCompIso W f g) (LinearWord.toWord W rest) ≪≫
+    Presented.wordAssociatorIso W (Word.forward W f) (Word.forward W g)
+      (LinearWord.toWord W rest)
+
+/-- Composite-column expansion is exactly the forward map of its semantic
+isomorphism. -/
+theorem toHom_expandForward_eq_hom {X Y Z T : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (rest : LinearWord W Z T) :
+    toHom W (.expandForward f g rest) =
+      (compositeColumnIso W f g rest).hom := by
+  rfl
+
+/-- Composite-column contraction is exactly the inverse map of its semantic
+isomorphism. -/
+theorem toHom_contractForward_eq_inv {X Y Z T : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (rest : LinearWord W Z T) :
+    toHom W (.contractForward f g rest) =
+      (compositeColumnIso W f g rest).inv := by
+  rfl
+
+/-- Expanding and contracting a forward composite column is semantically the
+identity on the one-column row. -/
+theorem expandForward_contractForward {X Y Z T : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (rest : LinearWord W Z T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.expandForward f g rest))
+        (toHom W (.contractForward f g rest)) =
+      𝟙 (LinearWord.toWord W
+        (.cons (Step.forward (W := W) (f ≫ g)) rest)) := by
+  rw [toHom_expandForward_eq_hom, toHom_contractForward_eq_inv]
+  exact (compositeColumnIso W f g rest).hom_inv_id
+
+/-- Contracting and expanding two forward columns is semantically the
+identity on the two-column row. -/
+theorem contractForward_expandForward {X Y Z T : B}
+    (f : X ⟶ Y) (g : Y ⟶ Z) (rest : LinearWord W Z T) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.contractForward f g rest))
+        (toHom W (.expandForward f g rest)) =
+      𝟙 (LinearWord.toWord W
+        (.cons (Step.forward (W := W) f)
+          (.cons (Step.forward (W := W) g) rest))) := by
+  rw [toHom_contractForward_eq_inv, toHom_expandForward_eq_hom]
+  exact (compositeColumnIso W f g rest).inv_hom_id
+
+/-- Any semantic inverse pair remains inverse after refinement beneath one
+common prefix column.  Iterating `under` therefore transports the generator
+round trips to an arbitrary executable prefix. -/
+theorem under_inverse {X Y Z : B} (step : Step W X Y)
+    {first middle : LinearWord W Y Z}
+    (alpha : ColumnRefinement W first middle)
+    (beta : ColumnRefinement W middle first)
+    (inverse : AlignedCell.quotientVcomp W
+        (toHom W alpha) (toHom W beta) =
+      𝟙 (LinearWord.toWord W first)) :
+    AlignedCell.quotientVcomp W
+        (toHom W (.under step alpha))
+        (toHom W (.under step beta)) =
+      𝟙 (LinearWord.toWord W (.cons step first)) := by
+  rw [toHom_under, toHom_under]
+  change AlignedCell.quotientVcomp W
+      (Presented.whiskerLeftHom W (Word.atom step) (toHom W alpha))
+      (Presented.whiskerLeftHom W (Word.atom step) (toHom W beta)) =
+    𝟙 (Word.append (W := W) (Word.atom step)
+      (LinearWord.toWord W first))
+  rw [← AlignedCell.whiskerLeftHom_vcomp W (Word.atom step)
+    (toHom W alpha) (toHom W beta)]
+  rw [inverse]
+  exact Quot.sound (Presented.Rel.whisker_left_id
+    (Word.atom step) (LinearWord.toWord W first))
+
+end ColumnRefinement
 
 end CategoryTheory.Bicategory.MarkedZigzag
