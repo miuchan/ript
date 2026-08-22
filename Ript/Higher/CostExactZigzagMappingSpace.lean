@@ -35,8 +35,9 @@ canonical one-column representation. Generated paths are now also closed under
 normalized left/right whiskering and horizontal append, with exact three-model
 nerve formulas. A raw-cell normalization core records the completed identity,
 original, source-identity/inverse, source-composition/inverse, vertical,
-whiskering, and transport branches, plus a conditional all-cell induction from
-ten remaining structural generators. Coverage of all presented quotient 2-cells, competing-move
+whiskering, marked-pair/inverse, and transport branches, plus a conditional
+all-cell induction from six remaining structural generators. Coverage of all
+presented quotient 2-cells, competing-move
 coherence, and reduced-hammock invariance are still absent, so these results
 are not by themselves the final Dwyer--Kan theorem.
 -/
@@ -1403,6 +1404,34 @@ structure HammockRawCellNormalizationCore : Prop where
       (costExactArrows R)
       (Bicategory.MarkedZigzag.Cell.sourceCompInv
         (W := costExactArrows R) f g)
+  /-- Marked unit is normalizable. -/
+  markedUnit : ∀ {M N : ProcessModel.{u, v, w} R}
+      (f : M ⟶ N) (hf : costExactArrows R f),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.markedUnit
+        (W := costExactArrows R) f hf)
+  /-- Inverse marked unit is normalizable. -/
+  markedUnitInv : ∀ {M N : ProcessModel.{u, v, w} R}
+      (f : M ⟶ N) (hf : costExactArrows R f),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.markedUnitInv
+        (W := costExactArrows R) f hf)
+  /-- Marked counit is normalizable. -/
+  markedCounit : ∀ {M N : ProcessModel.{u, v, w} R}
+      (f : M ⟶ N) (hf : costExactArrows R f),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.markedCounit
+        (W := costExactArrows R) f hf)
+  /-- Inverse marked counit is normalizable. -/
+  markedCounitInv : ∀ {M N : ProcessModel.{u, v, w} R}
+      (f : M ⟶ N) (hf : costExactArrows R f),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.markedCounitInv
+        (W := costExactArrows R) f hf)
   /-- Raw left whiskering preserves normalizability. -/
   whiskerLeft : ∀ (M N P : ProcessModel.{u, v, w} R)
       (pre : CostExactZigzag.Word (R := R) M N)
@@ -1474,6 +1503,18 @@ theorem hammockRawCellNormalizationCore :
   sourceCompInv := fun f g =>
     Bicategory.MarkedZigzag.HammockPath.sourceCompInv_normalizable
       (costExactArrows R) f g
+  markedUnit := fun f hf =>
+    Bicategory.MarkedZigzag.HammockPath.markedUnit_normalizable
+      (costExactArrows R) f hf
+  markedUnitInv := fun f hf =>
+    Bicategory.MarkedZigzag.HammockPath.markedUnitInv_normalizable
+      (costExactArrows R) f hf
+  markedCounit := fun f hf =>
+    Bicategory.MarkedZigzag.HammockPath.markedCounit_normalizable
+      (costExactArrows R) f hf
+  markedCounitInv := fun f hf =>
+    Bicategory.MarkedZigzag.HammockPath.markedCounitInv_normalizable
+      (costExactArrows R) f hf
   whiskerLeft := fun _ _ _ pre {_ _} {_} member =>
     Bicategory.MarkedZigzag.HammockPath.whiskerLeft_normalizable
       (costExactArrows R) pre member
