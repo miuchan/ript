@@ -155,6 +155,8 @@ fold は一意な解釈です。生成合同は全代数で健全で、木項モ
 
 生成 hammock 圏の common-universe 版は、実際の局所化対象の local hom-category と直接圏同値になりました。対応する nerve map は明示的ホモトピー逆を持ち、generated-to-linear と linear-to-target の二段階へ厳密に分解します。outer 本質全射性と合わせて、監査済み `GeneratedHammockDwyerKanCore` を構成します。
 
+最初の raw administrative reduction 層もコンパイルされました。垂直単位、左入れ子合成、隣接 refinement/aligned move、実行可能 refinement の正逆対、共通 prefix 管理を全 path 文脈で方向付けて簡約します。実行可能な `nodeCount + leftWeight` は各 step で厳密に減少するため良基で、各 path は商意味論を厳密に保つ既約 reduct を持ちます。競合する一段階 move は商意味論上一致しますが、raw joinability、局所合流性、残りの古典的任意 grid move は未解決です。
+
 異なる資源代数のモデルは順序付き加法準同型で比較できます。直列、並列、構造、予算則が再添字
 付けされ、異種強モデル射は資源写像とともに合成します。これらは、資源代数とモデルを対象、
 資源変換と強モデル射を 1-セル、資源変換の等号とモノイダル自然変換を 2-セルとする全双圏を

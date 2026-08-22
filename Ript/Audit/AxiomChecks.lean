@@ -1166,6 +1166,19 @@ set_option autoImplicit false
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.allCells_normalizable
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.all_mem_semanticImage
 #print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.semanticEquivalence
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_reverse
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_comp_reverse
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.ColumnRefinement.toHom_reverse_comp
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.structural_decrease
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.complexity_lt
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.toHom_eq
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.wellFounded
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.terminating
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.reduces_toHom_eq
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.criticalPair_toHom_eq
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.joinable_toHom_eq
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.exists_irreducible
+#print axioms CategoryTheory.Bicategory.MarkedZigzag.HammockPath.AdministrativeReduction.exists_irreducible_semantic
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.AlignedHammockGrid.linearHammockGridEquiv_simplex
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.alignedHammockCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.columnRefinementCore
@@ -1193,6 +1206,7 @@ set_option autoImplicit false
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockPathSemanticComparison_appendEdge
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockPathWhiskeringCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockRawCellNormalizationCore
+#print axioms Ript.Higher.CostExactZigzagMappingSpace.hammockAdministrativeReductionCore
 #print axioms Ript.Higher.CostExactZigzagMappingSpace.core
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor
 #print axioms CategoryTheory.Pseudofunctor.homotopyFunctor_map_homMk

@@ -681,5 +681,11 @@ categorical and nerve equivalence with an explicit homotopy inverse. Its
 common-universe replacement is directly equivalent to the actual target local
 hom-category, factors strictly through the linear comparison, and joins outer
 essential surjectivity in `GeneratedHammockDwyerKanCore`. Critical-pair
-coherence and reduced-hammock invariance remain open. These
+coherence and reduced-hammock invariance remain open. A first directed
+administrative reduction is nevertheless complete: its executable
+`nodeCount + leftWeight` complexity strictly decreases, every path reaches an
+irreducible reduct, all finite reductions preserve exact quotient semantics,
+and every one-step critical pair is semantically coherent. Raw joinability,
+local confluence, and the remaining classical arbitrary-grid moves are open.
+These
 layers do not add `Equiv α β → α = β` and are not a complete presheaf model.

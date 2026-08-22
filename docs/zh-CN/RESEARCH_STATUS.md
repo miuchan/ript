@@ -148,6 +148,8 @@ quarter/half-flip 树分别实现为概率、保留相干的随机酉量子仪�
 
 生成 hammock 范畴的 common-universe 版本现又直接范畴等价于实际局部化目标的 local hom-category；对应 nerve map 具有显式同伦逆，并严格分解为 generated-to-linear 与 linear-to-target 两步。它与 outer 本质满性共同组成经审计的 `GeneratedHammockDwyerKanCore`。
 
+第一层 raw administrative reduction 也已编译：纵向单位、左嵌套复合、相邻 refinement/aligned move、可执行 refinement 正逆对和公共前缀管理均可在所有路径上下文中定向约化。可执行复杂度 `nodeCount + leftWeight` 每步严格下降，因此关系良基且每条路径都有保持精确商语义的不可约 reduct。竞争单步在商语义中一致；raw joinability、局部合流与其余经典任意网格 moves 仍开放。
+
 模型比较不再要求全局使用同一资源代数。有序加法同态重索引串行、并行、结构和预算律；跨资源
 代数的强辫模型态射随同态复合，并在每个固定资源映射上形成单子自然变换的局部范畴。四维计算
 成本到 `Nat` 步数的投影可执行且有定理支持。
