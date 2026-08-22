@@ -396,7 +396,9 @@ cost-exact three-model nerve formulas. Raw identity/original cells are
 normalizable, and vertical composition preserves normalizability. Normalization
 naturality for raw left/right whiskering is now proved by explicit append-iso
 exchange and cancellation; source identity/inverse and equality transport are
-normalizable as well. The remaining twelve structural generator obligations
+normalizable as well. Source composition/inverse now normalize exactly to
+executable forward expansion/contraction using a pure bicategorical two-atom
+coherence formula. The remaining ten marked-pair/associator/unitor obligations
 are recorded exactly and already imply all-cell normalization conditionally,
 but are not assumed unconditionally. Semantic fullness, competing-move
 coherence, reduced-hammock invariance, standard weak-equivalence packaging, and

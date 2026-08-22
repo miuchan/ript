@@ -34,9 +34,9 @@ the refinement-path nerve faithfully, and covers every source 2-cell in its
 canonical one-column representation. Generated paths are now also closed under
 normalized left/right whiskering and horizontal append, with exact three-model
 nerve formulas. A raw-cell normalization core records the completed identity,
-original, source-identity/inverse, vertical, whiskering, and transport branches
-and a conditional all-cell induction from twelve remaining structural
-generators. Coverage of all presented quotient 2-cells, competing-move
+original, source-identity/inverse, source-composition/inverse, vertical,
+whiskering, and transport branches, plus a conditional all-cell induction from
+ten remaining structural generators. Coverage of all presented quotient 2-cells, competing-move
 coherence, and reduced-hammock invariance are still absent, so these results
 are not by themselves the final Dwyer--Kan theorem.
 -/
@@ -1389,6 +1389,20 @@ structure HammockRawCellNormalizationCore : Prop where
       (costExactArrows R)
       (Bicategory.MarkedZigzag.Cell.sourceIdInv
         (W := costExactArrows R) (X := M))
+  /-- Source-composition comparison is normalizable. -/
+  sourceComp : ∀ {M N P : ProcessModel.{u, v, w} R}
+      (f : M ⟶ N) (g : N ⟶ P),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.sourceComp
+        (W := costExactArrows R) f g)
+  /-- Inverse source-composition comparison is normalizable. -/
+  sourceCompInv : ∀ {M N P : ProcessModel.{u, v, w} R}
+      (f : M ⟶ N) (g : N ⟶ P),
+    Bicategory.MarkedZigzag.HammockPath.Normalizable
+      (costExactArrows R)
+      (Bicategory.MarkedZigzag.Cell.sourceCompInv
+        (W := costExactArrows R) f g)
   /-- Raw left whiskering preserves normalizability. -/
   whiskerLeft : ∀ (M N P : ProcessModel.{u, v, w} R)
       (pre : CostExactZigzag.Word (R := R) M N)
@@ -1454,6 +1468,12 @@ theorem hammockRawCellNormalizationCore :
   sourceIdInv := fun _ =>
     Bicategory.MarkedZigzag.HammockPath.sourceIdInv_normalizable
       (costExactArrows R)
+  sourceComp := fun f g =>
+    Bicategory.MarkedZigzag.HammockPath.sourceComp_normalizable
+      (costExactArrows R) f g
+  sourceCompInv := fun f g =>
+    Bicategory.MarkedZigzag.HammockPath.sourceCompInv_normalizable
+      (costExactArrows R) f g
   whiskerLeft := fun _ _ _ pre {_ _} {_} member =>
     Bicategory.MarkedZigzag.HammockPath.whiskerLeft_normalizable
       (costExactArrows R) pre member

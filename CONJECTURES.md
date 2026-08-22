@@ -475,9 +475,11 @@ are normalizable, and normalizability is closed under vertical composition.
 Normalization naturality for both raw whiskerings is now proved by explicit
 append-isomorphism exchange and cancellation; source identity and inverse plus
 equality transport are normalizable too. The exact remaining induction basis
-is the twelve-field `StructuralGeneratorNormalizable` record: source composite
-and inverse, marked unit/counit and inverses, associator and inverse, and both
-unitors and inverses. That record already implies normalization of every raw
+has now shrunk to the ten-field `StructuralGeneratorNormalizable` record:
+marked unit/counit and inverses, associator and inverse, and both unitors and
+inverses. Source composition/inverse are now normalized exactly by executable
+forward expansion/contraction using the audited two-atomic-step coherence
+formula. The remaining record already implies normalization of every raw
 cell by structural induction, but none of its unproved fields is assumed in an
 unconditional theorem. Competing forward/marked moves, reduced-hammock moves,
 and their homotopical invariance remain open.
@@ -588,8 +590,9 @@ augmented path category now adds arbitrary pointwise raw cells, contains every
 source 2-cell in one-column form, strictly extends refinement paths, and is
 closed under normalized left/right whiskering and horizontal append. Identity,
 vertical-composite, original-cell, both whiskering, source-identity/inverse,
-and equality-transport normalization cases are proved. The remaining twelve
-structural generator obligations are explicit and sufficient for the complete
+source-composition/inverse, and equality-transport normalization cases are
+proved. The remaining ten structural generator obligations are explicit and
+sufficient for the complete
 induction, but remain unproved; critical-pair coherence and reduced-hammock
 invariance remain open.
 
