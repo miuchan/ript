@@ -358,12 +358,16 @@ edges, and endpoint equations, and strict-Segal reconstruction identifies it
 with the `n`-simplices of the linear hammock nerve. Row, edge, decoding, and
 both round-trip formulas are exact. The fixed-shape horizontal fragment is
 also explicit: equal-shape rows carry one raw atomic 2-cell per common column;
-widths and horizontal append are exact; quotient interpretation preserves
+widths and executable horizontal append are exact; quotient interpretation preserves
 componentwise identities and vertical composition by interchange; and every
 arbitrary-height aligned grid reconstructs a genuine simplex with exact rows
-and interpreted edges. Column insertion/deletion, common refinements,
-reduced-hammock moves and their homotopical invariance, standard weak-
-equivalence packaging, and the global Dwyer--Kan/Rezk theorem remain.
+and interpreted edges. Elementary forward-column refinement is also
+executable: identity columns insert/delete, composite columns
+expand/contract, moves lift beneath arbitrary prefixes and compose, signed
+width change is exact, and both generator pairs cancel semantically. A
+general common-refinement quotient, marked reverse-column refinements,
+reduced-hammock invariance, standard weak-equivalence packaging, and the
+global Dwyer--Kan/Rezk theorem remain.
 
 The actual construction has now begun with a computable presented syntax.
 `MarkedZigzag.Word` is endpoint-indexed, permits every source 1-cell forward,

@@ -19,9 +19,10 @@ existing source-to-target local nerve map factors through it strictly.
 
 The file also supplies an independent linear-word model, arbitrary-height row
 paths, and a fixed-shape aligned multi-column hammock fragment with exact
-quotient and nerve interpretation.  General column refinements and reduced-
-hammock invariance are still absent, so these results are not by themselves
-the final Dwyer--Kan theorem.
+quotient and nerve interpretation.  Elementary executable identity/composite
+column refinements now have exact signed width and semantic round trips.
+General common-refinement quotients and reduced-hammock invariance are still
+absent, so these results are not by themselves the final Dwyer--Kan theorem.
 -/
 
 set_option autoImplicit false
@@ -220,6 +221,12 @@ abbrev AlignedHammockCell {M N : ProcessModel.{u, v, w} R}
     (source target : LinearHammock M N) :=
   Bicategory.MarkedZigzag.AlignedCell (costExactArrows R) source target
 
+/-- Executable identity/composition column refinements for cost-exact linear
+hammock rows. -/
+abbrev HammockColumnRefinement {M N : ProcessModel.{u, v, w} R}
+    (source target : LinearHammock M N) :=
+  Bicategory.MarkedZigzag.ColumnRefinement (costExactArrows R) source target
+
 /-- An explicit aligned multi-column hammock grid of height `n`.  Every row is
 a linear marked zigzag and every adjacent pair is connected by componentwise
 atomic column cells with the same intermediate objects. -/
@@ -375,6 +382,101 @@ structure AlignedHammockCore
           (Bicategory.MarkedZigzag.AlignedCell.toHom
             (costExactArrows R) (grid.cell i)))
 
+/-- Machine-facing core for executable column refinement.  It records the
+signed width representation, functorial interpretation, generator round
+trips, and stability of inverse moves beneath arbitrary common prefixes. -/
+structure ColumnRefinementCore
+    (M N : ProcessModel.{u, v, w} R) : Prop where
+  /-- Signed width change is exactly target length minus source length. -/
+  width_change : ∀ {source target : LinearHammock M N}
+      (refinement : HammockColumnRefinement source target),
+    (Bicategory.MarkedZigzag.LinearWord.length (costExactArrows R)
+        target : ℤ) =
+      Bicategory.MarkedZigzag.LinearWord.length (costExactArrows R) source +
+        Bicategory.MarkedZigzag.ColumnRefinement.widthChange
+          (costExactArrows R) refinement
+  /-- Reflexive refinement maps to the quotient identity. -/
+  identity : ∀ (word : LinearHammock M N),
+    Bicategory.MarkedZigzag.ColumnRefinement.toHom (costExactArrows R)
+        (.identity word) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord
+        (costExactArrows R) word)
+  /-- Transitive refinement maps to quotient vertical composition. -/
+  vcomp : ∀ {first middle last : LinearHammock M N}
+      (alpha : HammockColumnRefinement first middle)
+      (beta : HammockColumnRefinement middle last),
+    Bicategory.MarkedZigzag.ColumnRefinement.toHom (costExactArrows R)
+        (.vcomp alpha beta) =
+      Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) alpha)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) beta)
+  /-- Identity-column insertion and deletion cancel in both directions. -/
+  identity_roundTrips : ∀ (rest : LinearHammock M N),
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.deleteIdentity rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.insertIdentity rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
+        (.cons (Bicategory.MarkedZigzag.Step.forward
+          (W := costExactArrows R) (𝟙 M)) rest)) ∧
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.insertIdentity rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.deleteIdentity rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R) rest)
+  /-- Composite-column expansion and contraction cancel in both directions. -/
+  composite_roundTrips : ∀ {P Q : ProcessModel.{u, v, w} R}
+      (f : M ⟶ P) (g : P ⟶ Q) (rest : LinearHammock Q N),
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.expandForward f g rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.contractForward f g rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
+        (.cons (Bicategory.MarkedZigzag.Step.forward
+          (W := costExactArrows R) (f ≫ g)) rest)) ∧
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.contractForward f g rest))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.expandForward f g rest)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
+        (.cons (Bicategory.MarkedZigzag.Step.forward
+          (W := costExactArrows R) f)
+          (.cons (Bicategory.MarkedZigzag.Step.forward
+            (W := costExactArrows R) g) rest)))
+  /-- Semantic inverse refinements remain inverse beneath a common prefix. -/
+  prefix_inverse : ∀ {P : ProcessModel.{u, v, w} R}
+      (step : Bicategory.MarkedZigzag.Step (costExactArrows R) M P)
+      {first middle : LinearHammock P N}
+      (alpha : HammockColumnRefinement first middle)
+      (beta : HammockColumnRefinement middle first),
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) alpha)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) beta) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord
+        (costExactArrows R) first) →
+    Bicategory.MarkedZigzag.AlignedCell.quotientVcomp
+        (costExactArrows R)
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.under step alpha))
+        (Bicategory.MarkedZigzag.ColumnRefinement.toHom
+          (costExactArrows R) (.under step beta)) =
+      𝟙 (Bicategory.MarkedZigzag.LinearWord.toWord (costExactArrows R)
+        (.cons step first))
+
 /-- Every cost-exact model pair satisfies the aligned multi-column hammock
 core. -/
 theorem alignedHammockCore (M N : ProcessModel.{u, v, w} R) :
@@ -386,6 +488,30 @@ theorem alignedHammockCore (M N : ProcessModel.{u, v, w} R) :
   simplex_path := AlignedHammockGrid.linearHammockGridEquiv_simplex
   row_exact := AlignedHammockGrid.linearHammockGridRow_toLinearGrid
   edge_exact := AlignedHammockGrid.toLinearGrid_arrow
+
+/-- Every cost-exact model pair satisfies the executable column-refinement
+core. -/
+theorem columnRefinementCore (M N : ProcessModel.{u, v, w} R) :
+    ColumnRefinementCore M N where
+  width_change :=
+    Bicategory.MarkedZigzag.ColumnRefinement.target_length_eq_source_length_add_widthChange
+      (costExactArrows R)
+  identity := Bicategory.MarkedZigzag.ColumnRefinement.toHom_identity
+    (costExactArrows R)
+  vcomp := Bicategory.MarkedZigzag.ColumnRefinement.toHom_vcomp
+    (costExactArrows R)
+  identity_roundTrips := fun rest =>
+    ⟨Bicategory.MarkedZigzag.ColumnRefinement.deleteIdentity_insertIdentity
+        (costExactArrows R) rest,
+      Bicategory.MarkedZigzag.ColumnRefinement.insertIdentity_deleteIdentity
+        (costExactArrows R) rest⟩
+  composite_roundTrips := fun f g rest =>
+    ⟨Bicategory.MarkedZigzag.ColumnRefinement.expandForward_contractForward
+        (costExactArrows R) f g rest,
+      Bicategory.MarkedZigzag.ColumnRefinement.contractForward_expandForward
+        (costExactArrows R) f g rest⟩
+  prefix_inverse := Bicategory.MarkedZigzag.ColumnRefinement.under_inverse
+    (costExactArrows R)
 
 /-- The source-defined relative mapping category is categorically equivalent
 to the actual local hom-category of the presented localization target. The
@@ -611,6 +737,9 @@ structure MappingSpaceCore (M N : ProcessModel.{u, v, w} R) where
   /-- Explicit aligned multi-column hammock syntax and its exact row/edge
   interpretation laws. -/
   alignedHammock : AlignedHammockCore M N
+  /-- Executable column insertion/deletion and composite expansion/contraction
+  with exact signed width and semantic round-trip laws. -/
+  columnRefinement : ColumnRefinementCore M N
   /-- Arbitrary-height row-grid representation of every linear hammock nerve
   simplex. -/
   linearGridRepresentation : ∀ n : ℕ,
@@ -683,6 +812,7 @@ noncomputable def core (M N : ProcessModel.{u, v, w} R) :
     MappingSpaceCore M N where
   localPresentation := localPresentationCore M N
   alignedHammock := alignedHammockCore M N
+  columnRefinement := columnRefinementCore M N
   linearGridRepresentation := linearHammockGridEquiv M N
   linearNerveEquivalence := linearComparisonNerveEquivalence M N
   linearHomotopyEquivalence := linearComparisonHomotopyEquivalence M N
