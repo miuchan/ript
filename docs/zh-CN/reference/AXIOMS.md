@@ -835,6 +835,11 @@
 | `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.descend_map_mk` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
 | `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.toFunctor_unique` | `[Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingPresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.liftNerveMap_unique` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingNervePresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveMap_simplex` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingNervePresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveMap_rawCellEdge` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingNervePresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveHomotopy` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingNervePresentation.lean` |
+| `CategoryTheory.Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveIsoHomotopies` | `[propext, Classical.choice, Quot.sound]` | `Ript/ForMathlib/CategoryTheory/Bicategory/MarkedZigzagMappingNervePresentation.lean` |
 | `Ript.Higher.CostExactZigzag.backwardCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.unitCellCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |
 | `Ript.Higher.CostExactZigzag.counitCellCostReflecting` | `[propext, Classical.choice, Quot.sound]` | `Ript/Higher/CostExactZigzag.lean` |

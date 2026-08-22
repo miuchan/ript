@@ -379,8 +379,9 @@ Every node in this graph is an existing compiled module.
 | 12 (relative-outer all-prism target-face gluing) | Every vertex of every actual target-local prism face in every degree is projected literally from the target prism, classified on the two sides of the compositor switch as `map(composite)` or `map(f) ≫ map(g)`, decoded to the same outer composite, and equipped with the complete relative two-arrow glue; the full local face/degeneracy core remains attached without collapsing noninvertible local cells | PROVED |
 | 12 (relative-zigzag mapping-space presentation) | For every source object pair, the nerve of the source-defined marked-zigzag word/quotient-2-cell category is categorically equivalent to the actual localization target's full local mapping nerve, carries a `NerveEquivalenceWitness` and explicit simplicial homotopy inverse, and strictly factors the existing local map in every degree with exact forward-word and arbitrary-2-cell action; the outer homotopy functor is essentially surjective | PROVED |
 | 12 (relative-zigzag local presentation universal property) | For every marked bicategory, source-object pair, target category, and assignment of target objects to words plus target morphisms to raw cells that respects all presentation relations, identities, and vertical composition, there exists a quotient-descended functor computing exactly on every raw representative; every compatible quotient lift and its functor are unique by quotient induction; the cost-exact mapping-space core carries the canonical specialization | PROVED |
+| 12 (relative-zigzag simplicial presentation universal property) | Every target-independent local interpretation induces a common-universe all-dimensional nerve map with exact word-vertex, raw-cell-edge, and arbitrary-simplex formulas; every compatible quotient lift induces exactly that nerve map; natural transformations and natural isomorphisms between descended interpretations induce genuine one-way and two-way `SSet.Homotopy` witnesses; the cost-exact local core records simplicial uniqueness | PROVED |
 | 12 (cost-exact two-layer global comparison) | Pseudofunctor-induced functor on homotopy categories; localization-aware relative Rezk map and auxiliary ordinary outer map into the actual marked-zigzag target; explicit source/target outer completeness homotopy equivalences; marked outer arrows factoring through the target actual-equivalence space; packaging with the exact non-groupoidal local nerve comparison; exact vertex, identity, horizontal-composition, associator, and left/right-unitor gluing; arbitrary invertible local 2-cell decoding; explicit pentagon and triangle compatibility | PROVED |
-| 12 (global cost-exact complete-Segal/Rezk equivalence) | Strengthen the compiled target-independent local presentation universal property to a homotopical derived or hammock mapping-space characterization, connect that result to an accepted weak-equivalence interface, and finish the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
+| 12 (global cost-exact complete-Segal/Rezk equivalence) | Strengthen the compiled target-independent algebraic and simplicial-homotopy presentation properties to a derived or hammock mapping-space characterization, connect that result to an accepted weak-equivalence interface, and finish the intended Dwyer--Kan/Rezk weak-equivalence and completeness theorem | OPEN_RESEARCH |
 
 ## Finite deterministic copy-discard theorem records
 
@@ -6143,10 +6144,13 @@ an analytic `CompletelyPositiveMap` interface for C\*-algebras via
   mapping category now has a target-independent presentation universal
   property: every relation-preserving raw-cell interpretation descends to a
   functor, computes exactly on generators, and is the unique compatible lift.
-  The generic descent audit uses only `Quot.sound`. The remaining boundary is
-  strengthening this algebraic presentation theorem to a homotopical derived
-  or hammock characterization, weak-equivalence packaging, and the final
-  Dwyer--Kan/Rezk statement.
+  The generic descent audit uses only `Quot.sound`. This universal property is
+  now lifted to common-universe nerves in every degree: compatible lifts give
+  the same simplicial map, word vertices/raw-cell edges/arbitrary simplices
+  compute exactly, and natural transformations or isomorphisms of descended
+  interpretations give genuine one-way or two-way simplicial homotopies. The
+  remaining boundary is a derived or hammock characterization, accepted weak-
+  equivalence packaging, and the final Dwyer--Kan/Rezk statement.
 - Noninvertible-2-cell witness: on the finite deterministic zero-cost model,
   cartesian discard is a monoidal natural transformation from the identity
   model morphism to the constant-terminal model morphism. Its `Bool`

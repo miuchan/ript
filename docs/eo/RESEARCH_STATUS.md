@@ -309,7 +309,12 @@ vortoj kaj krudaj 2-ĉeloj en ajnan kategorion, kiu respektas ĉiujn rilatojn,
 identecojn kaj vertikalan komponadon, descendas al funktoro, kalkulas ekzakte
 sur krudaj reprezentantoj kaj estas la unika kongrua levo. La ĝenerala
 descendo dependas nur de `Quot.sound`; la homotopia derived/hammock-a paŝo
-restas malfermita.
+restas malfermita. La rezulto nun leviĝas al komun-universaj kategoriaj nervoj
+en ĉiu grado: ĉiu kongrua levo induktas la kanonan nervan mapon; vortaj
+verticoj, krud-2-ĉelaj eĝoj kaj arbitraj simplaĵoj kalkuliĝas ekzakte; kaj
+naturaj transformoj aŭ izomorfioj inter descenditaj interpretoj donas faktajn
+unudirektajn aŭ dudirektajn `SSet.Homotopy`-atestojn. Sendependa
+derived/hammock-a komparo ankoraŭ mankas.
 
 La fakta konstruo nun komenciĝas per komputebla prezenta sintakso.
 `MarkedZigzag.Word` estas fintipita per siaj ekstremoj, permesas ĉiun fontan

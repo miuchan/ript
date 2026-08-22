@@ -419,9 +419,14 @@ presentation universal property: every interpretation of words and raw cells
 into an arbitrary category that respects all relations, identities, and
 vertical composition descends to a functor, computes exactly on every raw
 representative, and is the unique compatible lift. What remains is upgrading
-this algebraic universal property to a homotopical derived or hammock
-characterization, accepted weak-equivalence packaging, and the resulting
-Dwyer--Kan/Rezk theorem.
+this algebraic universal property to a derived or hammock characterization,
+accepted weak-equivalence packaging, and the resulting Dwyer--Kan/Rezk
+theorem. The intermediate simplicial step is now compiled: each interpretation
+induces an all-degree common-universe nerve map, all compatible lifts induce
+that same map, and natural transformations or natural isomorphisms of
+descended interpretations induce genuine one-way or two-way simplicial
+homotopies. What is still absent is the comparison with an independently
+specified derived/hammock construction.
 
 The ordinary-localization/Rezk comparison is now compiled separately.
 `RezkCore.diagramMap` is functorial in an ordinary functor, while
@@ -503,7 +508,9 @@ homotopy inverse, and strict factorization of the source local map in every
 degree. Proving model-independent derived mapping-space correctness and the
 complete-Segal/Rezk weak equivalence remains open. The target-independent
 quotient-presentation descent and uniqueness theorem is now compiled, but a
-hammock/derived homotopical comparison has not yet been deduced from it.
+hammock/derived homotopical comparison has not yet been deduced from it. The
+all-dimensional nerve-map uniqueness and natural-transformation homotopy
+invariance are now proved and available for that comparison.
 
 The first complete construction against that predicate is now kernel checked.
 Identity precomposition is an adjoint equivalence of pseudofunctors and an

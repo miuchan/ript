@@ -1,6 +1,6 @@
 import Ript.Higher.CostExactZigzagNerveComparison
 import Ript.ForMathlib.AlgebraicTopology.GroupoidalCompleteSegal
-import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingPresentation
+import Ript.ForMathlib.CategoryTheory.Bicategory.MarkedZigzagMappingNervePresentation
 
 /-!
 # Relative cost-exact zigzag mapping-space presentation
@@ -67,17 +67,24 @@ def LocalPresentationCore
   identityLift M N =
       Bicategory.MarkedZigzag.Presented.LocalInterpretation.descendLift
         (costExactArrows R) M N (identityInterpretation M N) ∧
+  (∀ (L :
+      Bicategory.MarkedZigzag.Presented.LocalInterpretation.LocalLift
+        (costExactArrows R) M N (identityInterpretation M N)),
+      L = Bicategory.MarkedZigzag.Presented.LocalInterpretation.descendLift
+        (costExactArrows R) M N (identityInterpretation M N)) ∧
   ∀ (L :
-    Bicategory.MarkedZigzag.Presented.LocalInterpretation.LocalLift
-      (costExactArrows R) M N (identityInterpretation M N)),
-    L = Bicategory.MarkedZigzag.Presented.LocalInterpretation.descendLift
-      (costExactArrows R) M N (identityInterpretation M N)
+      Bicategory.MarkedZigzag.Presented.LocalInterpretation.LocalLift
+        (costExactArrows R) M N (identityInterpretation M N)),
+    Bicategory.MarkedZigzag.Presented.LocalInterpretation.liftNerveMap
+        (costExactArrows R) M N (identityInterpretation M N) L =
+      Bicategory.MarkedZigzag.Presented.LocalInterpretation.nerveMap
+        (costExactArrows R) M N (identityInterpretation M N)
 
 /-- Every cost-exact model pair satisfies the source-defined local
 presentation universal property. -/
 theorem localPresentationCore (M N : ProcessModel.{u, v, w} R) :
     LocalPresentationCore M N := by
-  refine ⟨?_, ?_⟩
+  refine ⟨?_, ?_, ?_⟩
   · exact
     Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique
       (costExactArrows R) M N (identityInterpretation M N)
@@ -86,6 +93,10 @@ theorem localPresentationCore (M N : ProcessModel.{u, v, w} R) :
     intro L
     exact Bicategory.MarkedZigzag.Presented.LocalInterpretation.lift_unique
       (costExactArrows R) M N (identityInterpretation M N) L
+  · intro L
+    exact
+      Bicategory.MarkedZigzag.Presented.LocalInterpretation.liftNerveMap_unique
+        (costExactArrows R) M N (identityInterpretation M N) L
 
 /-- Common-universe small replacement of the source-defined category of
 cost-exact marked-zigzag words and quotient 2-cells from `M` to `N`. -/
